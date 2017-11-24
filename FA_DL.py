@@ -7,20 +7,21 @@ import json
 import glob
 from FA_DLSUB import download_submission
 
-def session_cookies(Session, cookies_file):
+def make_session(cookies_file='FA.cookies'):
+    Session = requests.Session()
+
     try:
         with open(cookies_file) as f: cookies = json.load(f)
         for cookie in cookies: Session.cookies.set(cookie['name'], cookie['value'])
         return Session
     except:
-        raise Exception('No FA.cookies file|2')
+        raise Exception('No FA.cookies file')
 
 def check_cookies(Session):
     check_r = Session.get('https://www.furaffinity.net/controls/settings/')
     check_p = bs4.BeautifulSoup(check_r.text, 'lxml')
 
-    if check_p.find('img', 'loggedin_user_avatar') is None:
-        raise Exception('Cookies failed|3')
+    if check_p.find('img', 'loggedin_user_avatar') is None: return False
 
 def check_usr(FA, usr):
     usr_r = FA.get('https://www.furaffinity.net/user/'+usr)
@@ -98,23 +99,6 @@ def dl_usr(FA, usr, folder, sync=False):
 
         page_i += 1
 
-def make_session():
-    try:
-        Session = requests.Session()
-        Session = session_cookies(Session, 'FA.cookies')
-        check_cookies(Session)
-        return Session
-    except Exception as error:
-        error = str(error)
-        print(error.split('|')[0])
-        exit(int(error.split('|')[-1]))
-
-
-FA = make_session()
-
 try: os.mkdir('FA Repo')
 except: pass
 os.chdir('FA Repo')
-
-for usr in sys.argv[1:]:
-    if check_usr(FA, usr): dl_usr(FA, usr, 'gallery')
