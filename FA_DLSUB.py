@@ -8,8 +8,7 @@ import magic
 def get_page(Session, ID):
     url = 'https://www.furaffinity.net/view/'+ID
     page_r = Session.get(url)
-    page_r = page_r.text
-    page = bs4.BeautifulSoup(page_r, 'lxml')
+    page = bs4.BeautifulSoup(page_r.text, 'lxml')
 
     return page
 
