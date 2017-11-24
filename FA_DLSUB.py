@@ -112,7 +112,7 @@ def set_dest(data, rule):
 
 def download_submission(Session, ID, folder, rule, quiet=False, check=False):
     if check:
-        if len(glob.glob(folder+'*'+ID+'*/info.txt')) == 1:
+        if len(glob.glob(folder+'* - '+ID.zfill(10)+' - */info.txt')) == 1:
             return 1
 
     page = get_page(Session, ID)
