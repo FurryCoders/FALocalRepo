@@ -41,6 +41,8 @@ def set_data(folder, usr):
         glob_string = '[0-9][0-9][0-9][0-9]-[01][0-9]-[0-3][0-9] - '
         rule = 'diat'
 
+    glob_string = usr+'/'+folder.lower()+'/'+glob_string
+
     return [url, glob_string, rule]
 
 def dl_usr(FA, usr, folder, sync=False):
@@ -62,13 +64,13 @@ def dl_usr(FA, usr, folder, sync=False):
             sub_i += 1
             print("%03d/%02d) %s - " % (page_i, sub_i, ID.zfill(10)), end='', flush=True)
 
-            if len(glob.glob(usr+'/'+folder.lower()+'/'+glob_string+ID.zfill(10)+' - */info.txt')) == 1:
+            if len(glob.glob(glob_string+ID.zfill(10)+' - */info.txt')) == 1:
                 cols = int(os.popen('tput cols').read()) - 34
                 print("%.*s | Repository" % (cols, i.find_all('a')[1].string))
                 if sync: return
                 else: continue
 
-            subB = download_submission(FA, ID, usr+"/"+folder.lower()+"/", rule, True)
+            subB = download_submission(FA, ID, usr+"/"+folder.lower()+"/", rule, quiet=True)
             if subB: print(" | Downloaded")
             else: print(" | Error 41")
 
