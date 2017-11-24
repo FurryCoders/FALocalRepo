@@ -7,18 +7,40 @@ import json
 import glob
 from FA_DLSUB import download_submission
 
+def session_cookies(Session, cookies_file):
+    try:
+        with open(cookies_file) as f: cookies = json.load(f)
+        for cookie in cookies: Session.cookies.set(cookie['name'], cookie['value'])
+        return Session
+    except:
+        raise Exception('No FA.cookies file|2')
+
+def check_cookies(Session):
+    check_r = Session.get('https://www.furaffinity.net/controls/settings/')
+    check_p = bs4.BeautifulSoup(check_r.text, 'lxml')
+
+    if check_p.find('img', 'loggedin_user_avatar') is None:
+        raise Exception('Cookies failed|3')
 
 def check_usr(FA, usr):
-    user_r = FA.get('https://www.furaffinity.net/user/'+usr)
-    user_t = bs4.BeautifulSoup(user_r.text, 'lxml').title.string
+    usr_r = FA.get('https://www.furaffinity.net/user/'+usr)
+    usr_t = bs4.BeautifulSoup(usr_r.text, 'lxml').title.string
 
-    if user_t == 'System Error': return False
-    elif user_t == 'Account disabled. -- Fur Affinity [dot] net': return False
-    elif user_r.status_code == 404: return False
+    if usr_t == 'System Error': return False
+    elif usr_t == 'Account disabled. -- Fur Affinity [dot] net': return False
+    elif usr_r.status_code == 404: return False
 
     return True
 
-def set_data(folder, usr):
+def check_id(FA, ID):
+    id_r = FA.get('https://www.furaffinity.net/view/'+ID)
+    id_t = bs4.BeautifulSoup(id_r.text, 'lxml').title.string
+
+    if id_t == 'System Error': return False
+    elif id_t == 'Account disabled. -- Fur Affinity [dot] net': return False
+    elif id_r.status_code == 404: return False
+
+def dl_usr_data(folder, usr):
     url ='https://www.furaffinity.net/'
     if folder == 'gallery':
         url += '{}/{}/'.format(folder, usr)
@@ -46,7 +68,7 @@ def set_data(folder, usr):
     return [url, glob_string, rule]
 
 def dl_usr(FA, usr, folder, sync=False):
-    url, glob_string, rule = set_data(folder, usr)
+    url, glob_string, rule = dl_usr_data(folder, usr)
 
     page_i = 1
     while True:
@@ -76,12 +98,19 @@ def dl_usr(FA, usr, folder, sync=False):
 
         page_i += 1
 
-FA = requests.Session()
-try:
-    with open('FA.cookies') as f: cookies = json.load(f)
-    for cookie in cookies: FA.cookies.set(cookie['name'], cookie['value'])
-except:
-    exit(1)
+def make_session():
+    try:
+        Session = requests.Session()
+        Session = session_cookies(Session, 'FA.cookies')
+        check_cookies(Session)
+        return Session
+    except Exception as error:
+        error = str(error)
+        print(error.split('|')[0])
+        exit(int(error.split('|')[-1]))
+
+
+FA = make_session()
 
 try: os.mkdir('FA Repo')
 except: pass
