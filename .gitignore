@@ -102,3 +102,6 @@ ENV/
 
 # cookies
 *.cookies
+
+# repo
+FA\ Repo/
