@@ -93,7 +93,6 @@ def get_file(link, folder, speed=1):
     mime = magic.from_file(folder+'/submission.temp', mime=True)
     mime = filetypes.get(mime, mime.split('/')[-1])
 
-
     if mime == 'inode/x-empty': os.remove(folder+'/submission.temp')
     else: os.rename(folder+'/submission.temp', folder+'/submission.'+mime)
 
