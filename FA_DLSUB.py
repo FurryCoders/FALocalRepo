@@ -5,6 +5,20 @@ import os
 import glob
 import time
 import magic
+months = {
+    'January' : '01',
+    'February' : '02',
+    'March' : '03',
+    'April' : '04',
+    'May' : '05',
+    'June' : '06',
+    'July' : '07',
+    'August' : '08',
+    'September' : '09',
+    'October' : '10',
+    'November' : '11',
+    'December' : '12'
+    }
 filetypes = {
     'application/msword.vnd.openxmlformats-officedocument.wordprocessingml.document' : 'docx',
     'application/vnd.openxmlformats-officedocument.wordprocessingml.document' : 'docx',
@@ -20,8 +34,8 @@ filetypes = {
 
 def get_page(Session, ID):
     url = 'https://www.furaffinity.net/view/'+ID
-    page_r = Session.get(url)
-    page = bs4.BeautifulSoup(page_r.text, 'lxml')
+    page = Session.get(url)
+    page = bs4.BeautifulSoup(page.text, 'lxml')
 
     return page
 
@@ -40,18 +54,7 @@ def get_info(page):
     date_r = date_r.get('content').replace(',', '')
     date_r = date_r.split(' ')
     date = [date_r[2], '', date_r[1].rjust(2, '0')]
-    if   date_r[0] == 'January': date[1] = '01'
-    elif date_r[0] == 'February': date[1] = '02'
-    elif date_r[0] == 'March': date[1] = '03'
-    elif date_r[0] == 'April': date[1] = '04'
-    elif date_r[0] == 'May': date[1] = '05'
-    elif date_r[0] == 'June': date[1] = '06'
-    elif date_r[0] == 'July': date[1] = '07'
-    elif date_r[0] == 'August': date[1] = '08'
-    elif date_r[0] == 'September': date[1] = '09'
-    elif date_r[0] == 'October': date[1] = '10'
-    elif date_r[0] == 'November': date[1] = '11'
-    elif date_r[0] == 'December': date[1] = '12'
+    date[1] = months.get(date_r[0])
     data.append("-".join(date))
 
     keyw = []
@@ -69,8 +72,8 @@ def get_link(page):
     return link
 
 def get_desc(page):
-    desc_r = page.find('div', 'submission-description-container')
-    desc = str(desc_r)
+    desc = page.find('div', 'submission-description-container')
+    desc = str(desc)
     desc = desc.split('</div>', 1)[-1]
     desc = desc.rsplit('</div>', 1)[0]
     desc = desc.strip()
@@ -78,7 +81,8 @@ def get_desc(page):
     return desc
 
 def get_file(link, folder, speed=1):
-    if os.path.isfile(folder+'/submission.temp'): os.remove(folder+'/submission.temp')
+    if os.path.isfile(folder+'/submission.temp'):
+        os.remove(folder+'/submission.temp')
 
     try: sub = requests.get(link, stream=True)
     except: return False
@@ -114,7 +118,7 @@ def set_dest(data, rule):
     return folder
 
 
-def download_submission(Session, ID, folder, rule, quiet=False, check=False, speed=1):
+def dl_sub(Session, ID, folder, rule, quiet=False, check=False, speed=1):
     if check:
         if len(glob.glob(folder+'* - '+ID.zfill(10)+' - */info.txt')) == 1:
             return 1
