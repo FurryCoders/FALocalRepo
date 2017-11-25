@@ -35,29 +35,29 @@ def check_page(FA, url):
 
     return true
 
-def dl_usr_data(folder, usr):
+def dl_usr_data(section, usr):
     url ='https://www.furaffinity.net/'
-    if folder == 'g':
+    if section == 'g':
         folder = 'gallery'
         url += '{}/{}/'.format(folder, usr)
         glob_string = '[0-9][0-9][0-9][0-9]-[01][0-9]-[0-3][0-9] - '
         rule = 'dit'
-    elif folder == 's':
+    elif section == 's':
         folder = 'scraps'
         url += '{}/{}/'.format(folder, usr)
         glob_string = '[0-9][0-9][0-9][0-9]-[01][0-9]-[0-3][0-9] - '
         rule = 'dit'
-    elif folder == 'f':
+    elif section == 'f':
         folder = 'favorites'
         url += '{}/{}/'.format(folder, usr)
         glob_string = '* - '
         rule = 'ait'
-    elif folder == 'e':
+    elif section == 'e':
         folder = 'extra'
         url += 'search/?q=( ":icon{0}:" | ":{0}icon:" ) ! ( @lower {0} )&order-by=date&page='.format(usr)
         glob_string = '[0-9][0-9][0-9][0-9]-[01][0-9]-[0-3][0-9] - '
         rule = 'diat'
-    elif folder == 'E':
+    elif section == 'E':
         folder = 'Extra'
         url += 'search/?q=( ":icon{0}:" | ":{0}icon:" | "{0}" ) ! ( @lower {0} )&order-by=date&page='.format(usr)
         glob_string = '[0-9][0-9][0-9][0-9]-[01][0-9]-[0-3][0-9] - '
@@ -104,10 +104,9 @@ def dl_usr(FA, usr, section, sync=False, speed=1):
 
 def dl(FA, users, orders, options=''):
     sync = False ; speed = 1
-    for o in orders:
+    for o in options:
         if o == 'Y': sync = True
         if o == 'Q': speed = 2
-    orders = re.sub('[^gsfeE]', '', orders)
 
     for usr in users:
         if not check_page(FA, 'user/'+usr): continue
@@ -122,10 +121,10 @@ usrs = []
 for u in sys.argv[1:]:
     usrs.append(u)
 
-ords = 'Qgs'
+ords = 'gs'
 
 try: os.mkdir('FA Repo')
 except: pass
 os.chdir('FA Repo')
 
-dl(FA, usrs, ords)
+dl(FA, usrs, ords, 'Q')
