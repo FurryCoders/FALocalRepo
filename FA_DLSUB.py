@@ -3,7 +3,20 @@ import bs4
 import re
 import os
 import glob
+import time
 import magic
+filetypes = {
+    'application/msword.vnd.openxmlformats-officedocument.wordprocessingml.document' : 'docx',
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document' : 'docx',
+    'application/msword' : 'doc',
+    'application/vnd.oasis.opendocument.text' : 'odt',
+    'text/plain' : 'txt',
+    'image/vnd.adobe.photoshop' : 'tif',
+    'audio/x-wav' : 'wav',
+    'application/x-shockwave-flash' : 'swf',
+    'application/x-rar' : 'rar',
+    'inode/x-empty': 'inode/x-empty'
+    }
 
 def get_page(Session, ID):
     url = 'https://www.furaffinity.net/view/'+ID
@@ -64,30 +77,22 @@ def get_desc(page):
 
     return desc
 
-def get_file(link, folder):
+def get_file(link, folder, speed=1):
     if os.path.isfile(folder+'/submission.temp'): os.remove(folder+'/submission.temp')
 
     try: sub = requests.get(link, stream=True)
-    except: return
+    except: return False
 
     with open(folder+'/submission.temp', 'wb') as f:
         for chunk in sub.iter_content(chunk_size=1024):
             if chunk: f.write(chunk)
+            if speed == 1: time.sleep(.01)
 
     if not os.path.isfile(folder+'/submission.temp'): return False
 
     mime = magic.from_file(folder+'/submission.temp', mime=True)
-    if mime == 'application/msword.vnd.openxmlformats-officedocument.wordprocessingml.document': mime = 'docx'
-    elif mime == 'application/vnd.openxmlformats-officedocument.wordprocessingml.document': mime = 'docx'
-    elif mime == 'application/msword': mime = 'doc'
-    elif mime == 'application/vnd.oasis.opendocument.text': mime = 'odt'
-    elif mime == 'text/plain': mime = 'txt'
-    elif mime == 'image/vnd.adobe.photoshop': mime = 'tif'
-    elif mime == 'audio/x-wav': mime = 'wav'
-    elif mime == 'application/x-shockwave-flash': mime = 'swf'
-    elif mime == 'application/x-rar': mime = 'rar'
-    elif mime == 'inode/x-empty': pass
-    else: mime = mime.split('/')[-1]
+    mime = filetypes.get(mime, mime.split('/')[-1])
+
 
     if mime == 'inode/x-empty': os.remove(folder+'/submission.temp')
     else: os.rename(folder+'/submission.temp', folder+'/submission.'+mime)
@@ -110,7 +115,7 @@ def set_dest(data, rule):
     return folder
 
 
-def download_submission(Session, ID, folder, rule, quiet=False, check=False):
+def download_submission(Session, ID, folder, rule, quiet=False, check=False, speed=1):
     if check:
         if len(glob.glob(folder+'* - '+ID.zfill(10)+' - */info.txt')) == 1:
             return 1
@@ -135,7 +140,7 @@ def download_submission(Session, ID, folder, rule, quiet=False, check=False):
     try: os.makedirs(folder)
     except: pass
 
-    subf = get_file(link, folder)
+    subf = get_file(link, folder, speed)
 
     with open(folder+'/description.html', 'w') as f:
         f.write(desc)
