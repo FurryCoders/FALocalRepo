@@ -5,20 +5,22 @@ import sys
 import bs4
 import json
 import glob
-from FA_DLSUB import download_submission
+import FA_DLSUB as dlsub
 
 def make_session(cookies_file='FA.cookies'):
     Session = requests.Session()
 
     try:
         with open(cookies_file) as f: cookies = json.load(f)
-        for cookie in cookies: Session.cookies.set(cookie['name'], cookie['value'])
-        return Session
-    except:
-        raise Exception('No FA.cookies file')
+    except FileNotFoundError as err:
+        raise err
 
-def check_cookies(Session):
-    check_r = Session.get('https://www.furaffinity.net/controls/settings/')
+    for cookie in cookies: Session.cookies.set(cookie['name'], cookie['value'])
+
+    return Session
+
+def check_cookies(FA):
+    check_r = FA.get('https://www.furaffinity.net/controls/settings/')
     check_p = bs4.BeautifulSoup(check_r.text, 'lxml')
 
     if check_p.find('img', 'loggedin_user_avatar') is None: return False
@@ -43,33 +45,40 @@ def check_id(FA, ID):
 
 def dl_usr_data(folder, usr):
     url ='https://www.furaffinity.net/'
-    if folder == 'gallery':
+    if folder == 'g':
+        folder = 'gallery'
         url += '{}/{}/'.format(folder, usr)
         glob_string = '[0-9][0-9][0-9][0-9]-[01][0-9]-[0-3][0-9] - '
         rule = 'dit'
-    elif folder == 'scraps':
+    elif folder == 's':
+        folder = 'scraps'
         url += '{}/{}/'.format(folder, usr)
         glob_string = '[0-9][0-9][0-9][0-9]-[01][0-9]-[0-3][0-9] - '
         rule = 'dit'
-    elif folder == 'favorites':
+    elif folder == 'f':
+        folder = 'favorites'
         url += '{}/{}/'.format(folder, usr)
         glob_string = '* - '
         rule = 'ait'
-    elif folder == 'extra':
+    elif folder == 'e':
+        folder = 'extra'
         url += 'search/?q=( ":icon{0}:" | ":{0}icon:" ) ! ( @lower {0} )&order-by=date&page='.format(usr)
         glob_string = '[0-9][0-9][0-9][0-9]-[01][0-9]-[0-3][0-9] - '
         rule = 'diat'
-    elif folder == 'Extra':
+    elif folder == 'E':
+        folder = 'Extra'
         url += 'search/?q=( ":icon{0}:" | ":{0}icon:" | "{0}" ) ! ( @lower {0} )&order-by=date&page='.format(usr)
         glob_string = '[0-9][0-9][0-9][0-9]-[01][0-9]-[0-3][0-9] - '
         rule = 'diat'
 
     glob_string = usr+'/'+folder.lower()+'/'+glob_string
 
-    return [url, glob_string, rule]
+    return [url, glob_string, folder, rule]
 
-def dl_usr(FA, usr, folder, sync=False):
-    url, glob_string, rule = dl_usr_data(folder, usr)
+def dl_usr(FA, usr, section, sync=False, speed=1):
+    url, glob_string, folder, rule = dl_usr_data(section, usr)
+    print("--> %s" % folder)
+    folder = folder.lower()
 
     page_i = 1
     while True:
@@ -78,14 +87,16 @@ def dl_usr(FA, usr, folder, sync=False):
         page_p = page_p.find('section', id="gallery-gallery")
 
         if page_p.find('figure') is None:
-            if page_i == 1: return 1
+            if page_i == 1:
+                print("--->No submissions to download")
+                return 1
             else: return 0
 
         sub_i = 0
         for i in page_p.find_all('figure'):
             ID = re.sub('[^0-9]', '', i.get('id'))
             sub_i += 1
-            print("%03d/%02d) %s - " % (page_i, sub_i, ID.zfill(10)), end='', flush=True)
+            print("--->%03d/%02d) %s - " % (page_i, sub_i, ID.zfill(10)), end='', flush=True)
 
             if len(glob.glob(glob_string+ID.zfill(10)+' - */info.txt')) == 1:
                 cols = int(os.popen('tput cols').read()) - 34
@@ -93,12 +104,33 @@ def dl_usr(FA, usr, folder, sync=False):
                 if sync: return
                 else: continue
 
-            subB = download_submission(FA, ID, usr+"/"+folder.lower()+"/", rule, quiet=True)
+            subB = dlsub.download_submission(FA, ID, usr+"/"+folder+"/", rule, quiet=True)
             if subB: print(" | Downloaded")
             else: print(" | Error 41")
 
         page_i += 1
 
+def dl(FA, users, orders, options=['']):
+    sync = False ; speed = 1
+    for o in orders:
+        if o == 'Y': sync = True
+        if o == 'Q': speed = 2
+    orders = re.sub('[^gsfeE]', '', orders)
+
+    for usr in users:
+        if not check_usr(FA, usr): continue
+        print('-> %s' % usr)
+        for o in orders:
+            dl_usr(FA, usr, o, sync, speed)
+
+
+try: FA = make_session()
+except FileNotFoundError: exit(1)
+usrs = ['flameoffurious', '0redwall0']
+ords = 'Qgs'
+
 try: os.mkdir('FA Repo')
 except: pass
 os.chdir('FA Repo')
+
+dl(FA, usrs, ords)
