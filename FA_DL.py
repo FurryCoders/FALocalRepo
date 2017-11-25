@@ -25,23 +25,15 @@ def check_cookies(FA):
 
     if check_p.find('img', 'loggedin_user_avatar') is None: return False
 
-def check_usr(FA, usr):
-    usr_r = FA.get('https://www.furaffinity.net/user/'+usr)
-    usr_t = bs4.BeautifulSoup(usr_r.text, 'lxml').title.string
+def check_page(FA, url):
+    page_r = FA.get('https://www.furaffinity.net/'+url)
+    page_t = bs4.BeautifulSoup(page_r.text, 'lxml').title.string
 
-    if usr_t == 'System Error': return False
-    elif usr_t == 'Account disabled. -- Fur Affinity [dot] net': return False
-    elif usr_r.status_code == 404: return False
+    if page_t == 'System Error': return False
+    elif page_t == 'Account disabled. -- Fur Affinity [dot] net': return False
+    elif page_r.status_code == 404: return False
 
-    return True
-
-def check_id(FA, ID):
-    id_r = FA.get('https://www.furaffinity.net/view/'+ID)
-    id_t = bs4.BeautifulSoup(id_r.text, 'lxml').title.string
-
-    if id_t == 'System Error': return False
-    elif id_t == 'Account disabled. -- Fur Affinity [dot] net': return False
-    elif id_r.status_code == 404: return False
+    return true
 
 def dl_usr_data(folder, usr):
     url ='https://www.furaffinity.net/'
@@ -78,7 +70,7 @@ def dl_usr_data(folder, usr):
 def dl_usr(FA, usr, section, sync=False, speed=1):
     url, glob_string, folder, rule = dl_usr_data(section, usr)
     print("--> %s" % folder)
-    folder = folder.lower()
+    folder = usr+"/"+folder.lower()+"/"
 
     page_i = 1
     while True:
@@ -104,13 +96,13 @@ def dl_usr(FA, usr, section, sync=False, speed=1):
                 if sync: return
                 else: continue
 
-            subB = dlsub.download_submission(FA, ID, usr+"/"+folder+"/", rule, quiet=True)
+            subB = dlsub.dl_sub(FA, ID, folder, rule, quiet=True, speed=speed)
             if subB: print(" | Downloaded")
             else: print(" | Error 41")
 
         page_i += 1
 
-def dl(FA, users, orders, options=['']):
+def dl(FA, users, orders, options=''):
     sync = False ; speed = 1
     for o in orders:
         if o == 'Y': sync = True
@@ -118,7 +110,7 @@ def dl(FA, users, orders, options=['']):
     orders = re.sub('[^gsfeE]', '', orders)
 
     for usr in users:
-        if not check_usr(FA, usr): continue
+        if not check_page(FA, 'user/'+usr): continue
         print('-> %s' % usr)
         for o in orders:
             dl_usr(FA, usr, o, sync, speed)
@@ -126,7 +118,10 @@ def dl(FA, users, orders, options=['']):
 
 try: FA = make_session()
 except FileNotFoundError: exit(1)
-usrs = ['flameoffurious', '0redwall0']
+usrs = []
+for u in sys.argv[1:]:
+    usrs.append(u)
+
 ords = 'Qgs'
 
 try: os.mkdir('FA Repo')
