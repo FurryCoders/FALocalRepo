@@ -19,21 +19,21 @@ def make_session(cookies_file='FA.cookies'):
 
     return Session
 
-def check_cookies(FA):
-    check_r = FA.get('https://www.furaffinity.net/controls/settings/')
+def check_cookies(Session):
+    check_r = Session.get('https://www.furaffinity.net/controls/settings/')
     check_p = bs4.BeautifulSoup(check_r.text, 'lxml')
 
     if check_p.find('img', 'loggedin_user_avatar') is None: return False
 
-def check_page(FA, url):
-    page_r = FA.get('https://www.furaffinity.net/'+url)
+def check_page(Session, url):
+    page_r = Session.get('https://www.furaffinity.net/'+url)
     page_t = bs4.BeautifulSoup(page_r.text, 'lxml').title.string
 
     if page_t == 'System Error': return False
     elif page_t == 'Account disabled. -- Fur Affinity [dot] net': return False
     elif page_r.status_code == 404: return False
 
-    return true
+    return True
 
 def dl_usr_data(section, usr):
     url ='https://www.furaffinity.net/'
@@ -73,12 +73,12 @@ def dl_usr_data(section, usr):
 
     return [url, glob_string, folder, rule]
 
-def dl_usr(FA, usr, section, sync=False, speed=1):
+def dl_usr(Session, usr, section, sync=False, speed=1):
     url, glob_string, folder, rule = dl_usr_data(section, usr)
 
     page_i = 1
     while True:
-        page_r = FA.get(url+str(page_i))
+        page_r = Session.get(url+str(page_i))
         page_p = bs4.BeautifulSoup(page_r.text, 'lxml')
         page_p = page_p.find('section', id="gallery-gallery")
 
@@ -100,26 +100,26 @@ def dl_usr(FA, usr, section, sync=False, speed=1):
                 if sync: return
                 else: continue
 
-            subB = dlsub.dl_sub(FA, ID, folder, rule, quiet=True, speed=speed)
+            subB = dlsub.dl_sub(Session, ID, folder, rule, quiet=True, speed=speed)
             if subB: print(" | Downloaded")
             else: print(" | Error 41")
 
         page_i += 1
 
-def dl(FA, users, sections, options=''):
+def dl(Session, users, sections, options=''):
     sync = False ; speed = 1
     for o in options:
         if o == 'Y': sync = True
         if o == 'Q': speed = 2
 
     for usr in users:
-        if not check_page(FA, 'user/'+usr): continue
+        if not check_page(Session, 'user/'+usr): continue
         print('-> %s' % usr)
         for s in sections:
-            dl_usr(FA, usr, s, sync, speed)
+            dl_usr(Session, usr, s, sync, speed)
 
 
-try: FA = make_session()
+try: Session = make_session()
 except FileNotFoundError: exit(1)
 usrs = []
 for u in sys.argv[1:]:
@@ -131,4 +131,4 @@ try: os.mkdir('FA Repo')
 except: pass
 os.chdir('FA Repo')
 
-dl(FA, usrs, ords, 'Q')
+dl(Session, usrs, ords, 'Q')
