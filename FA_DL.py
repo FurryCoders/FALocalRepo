@@ -38,39 +38,43 @@ def check_page(FA, url):
 def dl_usr_data(section, usr):
     url ='https://www.furaffinity.net/'
     if section == 'g':
+        print('-> gallery')
         folder = 'gallery'
         url += '{}/{}/'.format(folder, usr)
         glob_string = '[0-9][0-9][0-9][0-9]-[01][0-9]-[0-3][0-9] - '
         rule = 'dit'
     elif section == 's':
+        print('-> scraps')
         folder = 'scraps'
         url += '{}/{}/'.format(folder, usr)
         glob_string = '[0-9][0-9][0-9][0-9]-[01][0-9]-[0-3][0-9] - '
         rule = 'dit'
     elif section == 'f':
+        print('-> favorites')
         folder = 'favorites'
         url += '{}/{}/'.format(folder, usr)
         glob_string = '* - '
         rule = 'ait'
     elif section == 'e':
+        print('-> extra (partial)')
         folder = 'extra'
         url += 'search/?q=( ":icon{0}:" | ":{0}icon:" ) ! ( @lower {0} )&order-by=date&page='.format(usr)
         glob_string = '[0-9][0-9][0-9][0-9]-[01][0-9]-[0-3][0-9] - '
         rule = 'diat'
     elif section == 'E':
+        print('-> extra (full)')
         folder = 'Extra'
         url += 'search/?q=( ":icon{0}:" | ":{0}icon:" | "{0}" ) ! ( @lower {0} )&order-by=date&page='.format(usr)
         glob_string = '[0-9][0-9][0-9][0-9]-[01][0-9]-[0-3][0-9] - '
         rule = 'diat'
 
-    glob_string = usr+'/'+folder.lower()+'/'+glob_string
+    folder = usr+"/"+folder+"/"
+    glob_string = usr+'/'+folder+'/'+glob_string
 
     return [url, glob_string, folder, rule]
 
 def dl_usr(FA, usr, section, sync=False, speed=1):
     url, glob_string, folder, rule = dl_usr_data(section, usr)
-    print("--> %s" % folder)
-    folder = usr+"/"+folder.lower()+"/"
 
     page_i = 1
     while True:
@@ -102,7 +106,7 @@ def dl_usr(FA, usr, section, sync=False, speed=1):
 
         page_i += 1
 
-def dl(FA, users, orders, options=''):
+def dl(FA, users, sections, options=''):
     sync = False ; speed = 1
     for o in options:
         if o == 'Y': sync = True
@@ -111,8 +115,8 @@ def dl(FA, users, orders, options=''):
     for usr in users:
         if not check_page(FA, 'user/'+usr): continue
         print('-> %s' % usr)
-        for o in orders:
-            dl_usr(FA, usr, o, sync, speed)
+        for s in sections:
+            dl_usr(FA, usr, s, sync, speed)
 
 
 try: FA = make_session()
