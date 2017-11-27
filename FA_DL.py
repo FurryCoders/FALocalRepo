@@ -63,7 +63,7 @@ def dl_usr_data(section, usr):
         rule = 'diat'
     elif section == 'E':
         print('-> extra (full)')
-        folder = 'Extra'
+        folder = 'extra'
         url += 'search/?q=( ":icon{0}:" | ":{0}icon:" | "{0}" ) ! ( @lower {0} )&order-by=date&page='.format(usr)
         glob_string = '[0-9][0-9][0-9][0-9]-[01][0-9]-[0-3][0-9] - '
         rule = 'diat'
