@@ -69,7 +69,7 @@ def dl_usr_data(section, usr):
         rule = 'diat'
 
     folder = usr+"/"+folder+"/"
-    glob_string = usr+'/'+folder+'/'+glob_string
+    glob_string = folder+glob_string
 
     return [url, glob_string, folder, rule]
 
