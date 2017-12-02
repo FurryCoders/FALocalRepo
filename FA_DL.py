@@ -53,6 +53,9 @@ def dl_url_print(section, usr):
 
     return url
 
+def dl_usr(Session, user, section, DB, sync=False):
+
+def sync(Session, DB, users='', sections=''):
 
 try: Session = make_session()
 except FileNotFoundError: exit(1)
