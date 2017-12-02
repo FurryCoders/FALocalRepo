@@ -19,8 +19,8 @@ def make_session(cookies_file='FA.cookies'):
 
     try:
         with open(cookies_file) as f: cookies = json.load(f)
-    except FileNotFoundError as err:
-        raise err
+    except FileNotFoundError:
+        raise
 
     for cookie in cookies: Session.cookies.set(cookie['name'], cookie['value'])
 
