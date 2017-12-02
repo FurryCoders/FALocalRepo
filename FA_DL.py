@@ -1,6 +1,7 @@
 import requests, json, bs4
 import os, sys
 import re
+import sqlite3
 import FA_DLSUB as dlsub
 
 section_full = {
@@ -59,3 +60,21 @@ except FileNotFoundError: exit(1)
 usrs = []
 for u in sys.argv[1:]:
     usrs.append(u)
+
+fadb = sqlite3.connect('FA.db')
+fadb.execute('''CREATE TABLE IF NOT EXISTS SUBMISSIONS
+    (ID INT UNIQUE PRIMARY KEY NOT NULL,
+    AUTHOR TEXT NOT NULL,
+    AUTHORURL TEXT NOT NULL,
+    TITLE TEXT,
+    UDATE CHAR(10) NOT NULL,
+    TAGS TEXT,
+    FILE TEXT,
+    LOCATION TEXT NOT NULL);''')
+fadb.execute('''CREATE TABLE IF NOT EXISTS USERS
+    (NAME TEXT UNIQUE PRIMARY KEY NOT NULL,
+    FOLDERS CHAR(4) NOT NULL,
+    GALLERY TEXT,
+    SCRAPS TEXT,
+    FAVORITES TEXT,
+    EXTRAS TEXT);''')
