@@ -2,7 +2,6 @@ import requests
 import bs4
 import re
 import os
-import glob
 import time
 import magic
 months = {
