@@ -4,7 +4,6 @@ import re
 import sys
 import bs4
 import json
-import glob
 import FA_DLSUB as dlsub
 section_full = {
     'g' : 'gallery',
