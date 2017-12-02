@@ -1,10 +1,8 @@
-import requests
-import os
+import requests, json, bs4
+import os, sys
 import re
-import sys
-import bs4
-import json
 import FA_DLSUB as dlsub
+
 section_full = {
     'g' : 'gallery',
     's' : 'scraps',
