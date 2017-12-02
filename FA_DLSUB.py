@@ -129,7 +129,7 @@ def dl_sub(Session, ID, folder, rule, quiet=False, check=False, speed=1):
     desc = get_desc(page)
 
     if quiet:
-        cols = int(os.popen('tput cols').read())
+        cols = os.get_terminal_size()[0]
         print("%.*s" % ((cols-34), data[1]), end='', flush=True)
     else:
         print("->Author: %s" % data[0])
@@ -140,8 +140,7 @@ def dl_sub(Session, ID, folder, rule, quiet=False, check=False, speed=1):
         print("->File: %s" % link.split('/')[-1])
 
     folder += set_dest(data, rule)
-    try: os.makedirs(folder)
-    except: pass
+    os.makedirs(folder, exist_ok=True)
 
     subf = get_file(link, folder, speed)
 
