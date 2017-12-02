@@ -80,7 +80,10 @@ def dl_usr(Session, usr, section, sync=False, speed=1):
     while True:
         page_r = Session.get(url+str(page_i))
         page_p = bs4.BeautifulSoup(page_r.text, 'lxml')
-        page_p = page_p.find('section', id="gallery-gallery")
+        if section == 'e' or section == 'E':
+            page_p = page_p.find('section', id="gallery-search-results")
+        else:
+            page_p = page_p.find('section', id="gallery-gallery")
 
         if page_p.find('figure') is None:
             if page_i == 1:
@@ -125,7 +128,7 @@ usrs = []
 for u in sys.argv[1:]:
     usrs.append(u)
 
-ords = 'gs'
+ords = 'gse'
 
 try: os.mkdir('FA Repo')
 except: pass
