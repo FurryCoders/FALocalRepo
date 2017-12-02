@@ -105,22 +105,10 @@ def get_file(link, folder, speed=1):
 def str_clean(string):
     return re.sub('[()%.:;![\]"&*/\\\]', '', string)
 
-def set_dest(data, rule):
-    folder = ''
-    for i in range(0,len(rule)):
-        if rule[i] == 'a': folder += data[0]
-        elif rule[i] == 't': folder += str_clean(data[1])
-        elif rule[i] == 'd': folder += data[2]
-        elif rule[i] == 'i': folder += data[4].zfill(10)
 
-        if i < len(rule)-1: folder += ' - '
-
-    return folder
-
-
-def dl_sub(Session, ID, folder, rule, quiet=False, check=False, speed=1):
+def dl_sub(Session, ID, folder, DB, quiet=False, check=False, speed=1):
     if check:
-        if len(glob.glob(folder+'* - '+ID.zfill(10)+' - */info.txt')) == 1:
+        if os.path.isfile(folder+'/info.txt'):
             return 1
 
     page = get_page(Session, ID)
@@ -139,7 +127,6 @@ def dl_sub(Session, ID, folder, rule, quiet=False, check=False, speed=1):
         print("->ID: %s" % data[4])
         print("->File: %s" % link.split('/')[-1])
 
-    folder += set_dest(data, rule)
     os.makedirs(folder, exist_ok=True)
 
     subf = get_file(link, folder, speed)
@@ -154,5 +141,16 @@ def dl_sub(Session, ID, folder, rule, quiet=False, check=False, speed=1):
         f.write("Keywords: %s\n" % data[3])
         f.write("ID: %s\n" % data[4])
         f.write("File: %s\n" % link)
+
+    sub_info = (data[4], data[0], data[0].lower().replace('_', ''), data[1], data[2], data[3], link, folder)
+    try:
+        DB.execute(f'''INSERT INTO SUBMISSIONS
+            (ID,AUTHOR,AUTHORURL,TITLE,UDATE,TAGS,FILE,LOCATION)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)''', sub_info)
+        DB.commit()
+    except sqlite3.IntegrityError:
+        continue
+    except:
+        raise
 
     return subf
