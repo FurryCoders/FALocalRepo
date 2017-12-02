@@ -6,6 +6,13 @@ import bs4
 import json
 import glob
 import FA_DLSUB as dlsub
+section_full = {
+    'g' : 'gallery',
+    's' : 'scraps',
+    'f' : 'favorites',
+    'e' : 'extra (partial)',
+    'E' : 'extra (full)'
+    }
 
 def make_session(cookies_file='FA.cookies'):
     Session = requests.Session()
@@ -37,20 +44,11 @@ def check_page(Session, url):
 
 def dl_url_print(section, usr):
     url ='https://www.furaffinity.net/'
-    if section == 'g':
-        print('-> gallery')
-        url += '{}/{}/'.format(folder, usr)
-    elif section == 's':
-        print('-> scraps')
-        url += '{}/{}/'.format(folder, usr)
-    elif section == 'f':
-        print('-> favorites')
-        url += '{}/{}/'.format(folder, usr)
+    if section in ('g', 's', 'f'):
+        url += '{}/{}/'.format(section_full[section], usr)
     elif section == 'e':
-        print('-> extra (partial)')
         url += 'search/?q=( ":icon{0}:" | ":{0}icon:" ) ! ( @lower {0} )&order-by=date&page='.format(usr)
     elif section == 'E':
-        print('-> extra (full)')
         url += 'search/?q=( ":icon{0}:" | ":{0}icon:" | "{0}" ) ! ( @lower {0} )&order-by=date&page='.format(usr)
 
     return url
