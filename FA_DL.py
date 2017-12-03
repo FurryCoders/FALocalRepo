@@ -89,7 +89,7 @@ def dl_usr(Session, user, section, DB, sync=False, speed=1):
         else:
             page_p = page_p.find('section', id="gallery-gallery")
 
-        if page_p.find('figure') is None:
+        if page_p is None:
             if page_i == 1:
                 print("--->No submissions to download")
                 return 1
@@ -99,7 +99,7 @@ def dl_usr(Session, user, section, DB, sync=False, speed=1):
         sub_i = 0
         for sub in page_p.findAll('figure'):
             sub_i += 1
-            ID = rsub.get('id')[4:]
+            ID = sub.get('id')[4:]
             print(f'--->{page_i:03d}/{sub_i:02d}) {ID:0>10} - ', end='', flush=True)
             folder = f'__files/{tiers(ID)}/{ID:0>10}'
 
