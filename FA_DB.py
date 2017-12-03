@@ -40,10 +40,13 @@ def db_usr_rep(DB, user, find, replace, column):
     col = DB.execute(f"SELECT {column} FROM users WHERE name = '{user}'")
     col = col.fetchall()[0]
     col = "".join(col).split(',')
-    col_new = []
+    col_new = [] ; rep = False
     for entry in col:
-        if entry == find: entry = replace
+        if entry == find:
+            entry = replace
+            rep = True
         col_new.append(entry)
+    if not rep: col_new.append(replace)
     col_new.sort()
     col_new = ",".join(col)
     DB.execute(f"UPDATE users SET {column} = '{col_new}' WHERE name = '{user}'")
