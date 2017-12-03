@@ -40,7 +40,7 @@ def check_page(Session, url):
 
     return True
 
-def dl_url_print(section, usr):
+def dl_url(section, usr):
     url ='https://www.furaffinity.net/'
     if section in ('g', 's', 'f'):
         url += '{}/{}/'.format(section_full[section], usr)
