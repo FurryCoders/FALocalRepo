@@ -117,14 +117,14 @@ def dl_sub(Session, ID, folder, DB, quiet=False, check=False, speed=1):
 
     if quiet:
         cols = os.get_terminal_size()[0]
-        print("%.*s" % ((cols-34), data[1]), end='', flush=True)
+        print(f'{data[1][0:cols-34]}', end='', flush=True)
     else:
-        print("->Author: %s" % data[0])
-        print("->Title: %s" % data[1])
-        print("->Upload date: %s" % data[2])
-        print("->Keywords: %s" % data[3])
-        print("->ID: %s" % data[4])
-        print("->File: %s" % link.split('/')[-1])
+        print(f'->Author: {data[0]}')
+        print(f'->Title: {data[1]}')
+        print(f'->Upload date: {data[2]}')
+        print(f'->Keywords: {data[3]}')
+        print(f'->ID: {data[4]}')
+        print(f'->File: {link.split('/')[-1]}')
 
     os.makedirs(folder, exist_ok=True)
 
@@ -134,12 +134,12 @@ def dl_sub(Session, ID, folder, DB, quiet=False, check=False, speed=1):
         f.write(desc)
 
     with open(folder+'/info.txt', 'w') as f:
-        f.write("Author: %s\n" % data[0])
-        f.write("Title: %s\n" % data[1])
-        f.write("Upload date: %s\n" % data[2])
-        f.write("Keywords: %s\n" % data[3])
-        f.write("ID: %s\n" % data[4])
-        f.write("File: %s\n" % link)
+        f.write(f'Author: {data[0]}\n')
+        f.write(f'Title: {data[1]}\n')
+        f.write(f'Upload date: {data[2]}\n')
+        f.write(f'Keywords: {data[3]}\n')
+        f.write(f'ID: {data[4]}\n')
+        f.write(f'File: {link}\n')
 
     sub_info = (data[4], data[0], data[0].lower().replace('_', ''), data[1], data[2], data[3], link, folder)
     try:
