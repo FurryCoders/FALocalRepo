@@ -85,9 +85,9 @@ def dl_usr(Session, user, section, DB, sync=False, speed=1):
         if page_p.find('figure') is None:
             if page_i == 1:
                 print("--->No submissions to download")
-                return 1
+                return False
             else:
-                return 0
+                return True
 
         sub_i = 0
         for sub in page_p.findAll('figure'):
@@ -99,7 +99,7 @@ def dl_usr(Session, user, section, DB, sync=False, speed=1):
             if os.path.isfile(folder+'/info.txt'):
                 cols = os.get_terminal_size()[0]
                 print("%.*s | Repository" % ((cols-34), sub.find_all('a')[1].string))
-                if sync: return
+                if sync: return True
                 else: continue
 
             sub_ret = dlsub.dl_sub(Session, ID, folder, DB, True, False, speed)
