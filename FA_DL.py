@@ -2,6 +2,7 @@ import requests, json, bs4
 import os, sys
 import sqlite3
 import FA_DLSUB as dlsub
+import FA_DB as db
 
 section_full = {
     'g' : 'gallery',
@@ -25,20 +26,6 @@ def tiers(ID, t1=10000000, t2=1000000, t3=1000):
     tier3 = ((ID-(t1*tier1))-(t2*tier2))//t3
 
     return f'{tier1}/{tier2}/{tier3:03d}'
-
-def db_usr_up(DB, user, to_add, column):
-    col = DB.execute(f"SELECT {column} FROM users WHERE name = '{user}'")
-    col = col.fetchall()[0]
-    col = "".join(col).split(',')
-    if to_add in col: return 1
-    if col[0] == '':
-        col = [to_add]
-    else:
-        col.append(to_add)
-    col.sort()
-    col = ",".join(col)
-    DB.execute(f"UPDATE users SET {column} = '{col}' WHERE name = '{user}'")
-    DB.commit()
 
 def make_session(cookies_file='FA.cookies'):
     Session = requests.Session()
@@ -119,7 +106,7 @@ def dl_usr(Session, user, section, DB, sync=False, speed=1):
             if sub_ret: print(" | Downloaded")
             else: print(" | Error 41")
 
-            db_usr_up(DB, user, ID, section_db[section])
+            db.db_usr_up(DB, user, ID, section_db[section])
 
         page_i += 1
 
