@@ -13,3 +13,25 @@ def db_usr_up(DB, user, to_add, column):
     col = ",".join(col)
     DB.execute(f"UPDATE users SET {column} = '{col}' WHERE name = '{user}'")
     DB.commit()
+
+def db_ins_usr(DB, user):
+    try:
+        DB.execute(f'''INSERT INTO USERS
+            (NAME,FOLDERS,GALLERY,SCRAPS,FAVORITES,EXTRAS)
+            VALUES ({user}, "", "", "", "", "")''')
+        DB.commit()
+    except sqlite3.IntegrityError:
+        pass
+    except:
+        raise
+
+def db_ins_sub(DB, infos):
+    try:
+        DB.execute(f'''INSERT INTO SUBMISSIONS
+            (ID,AUTHOR,AUTHORURL,TITLE,UDATE,TAGS,FILE,LOCATION)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)''', infos)
+        DB.commit()
+    except sqlite3.IntegrityError:
+        pass
+    except:
+        raise
