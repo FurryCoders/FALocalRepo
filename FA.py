@@ -3,22 +3,25 @@ import re
 import FA_DL as fadl
 import FA_DB as fadb
 
-users = input('Insert username: ')
-users = re.sub('([^a-zA-Z0-9\-., ])', '', users)
-users = re.sub('( )+', ',', users.strip())
-users = users.split(',')
+try:
+    users = input('Insert username: ')
+    users = re.sub('([^a-zA-Z0-9\-., ])', '', users)
+    users = re.sub('( )+', ',', users.strip())
+    users = users.split(',')
 
-sections = input('Insert sections: ')
-sections = [s for s in sections if s in ('g','s','f','e','E')]
+    sections = input('Insert sections: ')
+    sections = [s for s in sections if s in ('g','s','f','e','E')]
 
-speed = 1 ; update = False ; sync = False
-for o in input('Insert options: '):
-    if o == 'Q': speed = 2
-    elif o == 'S': speed = 0
-    elif o == 'U': update = True
-    elif o == 'Y': sync = True
+    speed = 1 ; update = False ; sync = False
+    for o in input('Insert options: '):
+        if o == 'Q': speed = 2
+        elif o == 'S': speed = 0
+        elif o == 'U': update = True
+        elif o == 'Y': sync = True
 
-if not update and (len(users) == 0 or len(sections) == 0): exit(1)
+    if not update and (len(users) == 0 or len(sections) == 0): exit(1)
+except KeyboardInterrupt:
+    exit()
 
 print()
 
