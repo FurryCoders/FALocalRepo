@@ -71,7 +71,7 @@ def dl_url(section, usr):
 
 def dl_usr(Session, user, section, DB, sync=False, speed=1):
     url = dl_url(section, user)
-    print(f'--> {section_full[section]}')
+    print(f'-->{section_full[section]}')
 
     page_i = 1
     while True:
