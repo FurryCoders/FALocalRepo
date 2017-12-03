@@ -1,5 +1,6 @@
 import sqlite3
 import re
+import sys
 import FA_DL as fadl
 import FA_DB as fadb
 
@@ -21,7 +22,8 @@ try:
 
     if not update and (len(users) == 0 or len(sections) == 0): exit(1)
 except KeyboardInterrupt:
-    exit()
+    print()
+    sys.exit(0)
 
 print()
 
@@ -71,4 +73,5 @@ try:
                     else:
                         fadb.db_usr_up(DB, u, s, 'FOLDERS')
 except KeyboardInterrupt:
-    exit()
+    print()
+    sys.exit(0)
