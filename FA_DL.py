@@ -106,7 +106,7 @@ def dl_usr(Session, user, section, DB, sync=False, speed=1):
             if sub_ret: print(" | Downloaded")
             else: print(" | Error 41")
 
-            fadb.db_usr_up(DB, user, ID, section_db[section])
+            fadb.db_usr_up(DB, user, ID.zfill(10), section_db[section])
 
         page_i += 1
 
