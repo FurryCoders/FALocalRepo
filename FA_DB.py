@@ -18,7 +18,7 @@ def db_ins_usr(DB, user):
     try:
         DB.execute(f'''INSERT INTO USERS
             (NAME,FOLDERS,GALLERY,SCRAPS,FAVORITES,EXTRAS)
-            VALUES ({user}, "", "", "", "", "")''')
+            VALUES ("{user}", "", "", "", "", "")''')
         DB.commit()
     except sqlite3.IntegrityError:
         pass
