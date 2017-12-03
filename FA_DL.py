@@ -126,8 +126,8 @@ def sync(Session, DB, users='', sections=''):
 try: Session = make_session()
 except FileNotFoundError: exit(1)
 try:
-    user = sys.argv[0]
-    section = sys.argv[1][0]
+    user = sys.argv[1]
+    section = sys.argv[2][0]
 except:
     exit(1)
 
