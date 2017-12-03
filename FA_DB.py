@@ -9,7 +9,7 @@ def db_usr_up(DB, user, to_add, column):
         col = [to_add]
     else:
         col.append(to_add)
-    col.sort()
+    col.sort(key=str.lower)
     col = ",".join(col)
     DB.execute(f"UPDATE users SET {column} = '{col}' WHERE name = '{user}'")
     DB.commit()
@@ -48,7 +48,7 @@ def db_usr_rep(DB, user, find, replace, column):
         col.append(replace)
     else:
         col = [e.replace(find, replace) for e in col]
-    col.sort()
+    col.sort(key=str.lower)
     col = ",".join(col)
-    DB.execute(f"UPDATE users SET {column} = '{col_new}' WHERE name = '{user}'")
+    DB.execute(f"UPDATE users SET {column} = '{col}' WHERE name = '{user}'")
     DB.commit()
