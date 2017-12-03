@@ -125,9 +125,11 @@ def sync(Session, DB, users='', sections=''):
 
 try: Session = make_session()
 except FileNotFoundError: exit(1)
-usrs = []
-for u in sys.argv[1:]:
-    usrs.append(u)
+try:
+    user = sys.argv[0]
+    section = sys.argv[1][0]
+except:
+    exit(1)
 
 fadb = sqlite3.connect('FA.db')
 fadb.execute('''CREATE TABLE IF NOT EXISTS SUBMISSIONS
@@ -146,3 +148,5 @@ fadb.execute('''CREATE TABLE IF NOT EXISTS USERS
     SCRAPS TEXT,
     FAVORITES TEXT,
     EXTRAS TEXT);''')
+
+dl_usr(Session, user, section, fadb, speed=2)
