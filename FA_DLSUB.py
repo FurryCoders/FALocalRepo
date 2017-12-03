@@ -124,7 +124,7 @@ def dl_sub(Session, ID, folder, DB, quiet=False, check=False, speed=1):
         print(f'->Upload date: {data[2]}')
         print(f'->Keywords: {data[3]}')
         print(f'->ID: {data[4]}')
-        print(f'->File: {link.split('/')[-1]}')
+        print(f'->File: {link.split("/")[-1]}')
 
     os.makedirs(folder, exist_ok=True)
 
