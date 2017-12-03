@@ -118,6 +118,7 @@ def dl_usr(Session, user, section, DB, sync=False, speed=1):
         page_i += 1
 
 def sync(Session, DB, users='', sections=''):
+    pass
 
 try: Session = make_session()
 except FileNotFoundError: exit(1)
