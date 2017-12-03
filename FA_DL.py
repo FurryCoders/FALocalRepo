@@ -161,4 +161,7 @@ except:
 
 db_usr_up(fadb, user, section, 'FOLDERS')
 
-dl_usr(Session, user, section, fadb, speed=2)
+try:
+    dl_usr(Session, user, section, fadb, speed=2)
+except KeyboardInterrupt:
+    exit()
