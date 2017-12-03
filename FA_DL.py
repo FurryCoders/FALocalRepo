@@ -127,7 +127,7 @@ def sync(Session, DB, users='', sections=''):
     users_db = DB.execute("SELECT name, folders FROM users")
     for u in users_db:
         if len(users) != 0 and u[0] not in users: continue
-        print(f'->{u[0]})
+        print(f'->{u[0]}')
         for s in u[1].split(','):
             if len(sections) != 0 and s not in sections: continue
             try:
