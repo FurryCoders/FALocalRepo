@@ -92,7 +92,7 @@ def dl_usr(Session, user, section, DB, sync=False, speed=1):
         else:
             page_p = page_p.find('section', id="gallery-gallery")
 
-        if page_p is None:
+        if page_p.find('figure') is None:
             if page_i == 1:
                 print("--->No submissions to download")
                 return 1
@@ -160,6 +160,7 @@ except:
     raise
 
 db_usr_up(fadb, user, section, 'FOLDERS')
+fadb.commit()
 
 try:
     dl_usr(Session, user, section, fadb, speed=2)
