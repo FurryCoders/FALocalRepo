@@ -1,5 +1,4 @@
-import requests
-import bs4
+import requests, bs4
 import re
 import os
 import time
