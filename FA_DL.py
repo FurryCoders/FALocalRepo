@@ -149,4 +149,16 @@ fadb.execute('''CREATE TABLE IF NOT EXISTS USERS
     FAVORITES TEXT,
     EXTRAS TEXT);''')
 
+try:
+    usr_info = (user, '', '', '', '', '')
+    fadb.execute(f'''INSERT INTO USERS
+        (NAME,FOLDERS,GALLERY,SCRAPS,FAVORITES,EXTRAS)
+        VALUES (?, ?, ?, ?, ?, ?)''', usr_info)
+except sqlite3.IntegrityError:
+    pass
+except:
+    raise
+
+db_usr_up(fadb, user, section, 'FOLDERS')
+
 dl_usr(Session, user, section, fadb, speed=2)
