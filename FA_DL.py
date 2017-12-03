@@ -2,7 +2,7 @@ import requests, json, bs4
 import os, sys
 import sqlite3
 import FA_DLSUB as dlsub
-import FA_DB as db
+import FA_DB as fadb
 
 section_full = {
     'g' : 'gallery',
@@ -106,11 +106,11 @@ def dl_usr(Session, user, section, DB, sync=False, speed=1):
             if sub_ret: print(" | Downloaded")
             else: print(" | Error 41")
 
-            db.db_usr_up(DB, user, ID, section_db[section])
+            fadb.db_usr_up(DB, user, ID, section_db[section])
 
         page_i += 1
 
-def sync(Session, DB, users=[], sections=[]):
+def update(Session, DB, users=[], sections=[]):
     users_db = DB.execute("SELECT name, folders FROM users")
     for u in users_db:
         if len(users) != 0 and u[0] not in users: continue
