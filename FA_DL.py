@@ -1,6 +1,5 @@
 import requests, json, bs4
 import os, sys
-import re
 import sqlite3
 import FA_DLSUB as dlsub
 
@@ -11,6 +10,14 @@ section_full = {
     'e' : 'extra (partial)',
     'E' : 'extra (full)'
     }
+
+def tiers(ID, t1=10000000, t2=1000000, t3=1000):
+    ID = int(ID)
+    tier1 = ID//t1
+    tier2 = (ID-(t1*tier1))//t2
+    tier3 = ((ID-(t1*tier1))-(t2*tier2))//t3
+
+    return f'{tier1}/{tier2}/{tier3:03d}'
 
 def make_session(cookies_file='FA.cookies'):
     Session = requests.Session()
@@ -51,7 +58,44 @@ def dl_url(section, usr):
 
     return url
 
-def dl_usr(Session, user, section, DB, sync=False):
+def dl_usr(Session, user, section, DB, sync=False, speed=1):
+    url = dl_url(section, user)
+    print(f'--> {section_full[section]}')
+
+    page_i = 1
+    while True:
+        page_r = Session.get(url+str(page_i))
+        page_p = bs4.BeautifulSoup(page_r.text, 'lxml')
+        if section in ('e', 'E'):
+            page_p = page_p.find('section', id="gallery-search-results")
+        else:
+            page_p = page_p.find('section', id="gallery-gallery")
+
+        if page_p.find('figure') is None:
+            if page_i == 1:
+                print("--->No submissions to download")
+                return 1
+            else:
+                return 0
+
+        sub_i = 0
+        for sub in page_p.findAll('figure'):
+            sub_i += 1
+            ID = rsub.get('id')[4:]
+            print(f'--->{page_i:03d}/{sub_i:02d}) {ID:0>10} - ', end='', flush=True)
+            folder = f'__files/{tiers(ID)}/{ID:0>10}'
+
+            if os.path.isfile(folder+'/info.txt'):
+                cols = os.get_terminal_size()[0]
+                print("%.*s | Repository" % ((cols-34), sub.find_all('a')[1].string))
+                if sync: return
+                else: continue
+
+            sub_ret = dlsub.dl_sub(Session, ID, folder, DB, True, False, speed)
+            if sub_ret: print(" | Downloaded")
+            else: print(" | Error 41")
+
+        page_i += 1
 
 def sync(Session, DB, users='', sections=''):
 
