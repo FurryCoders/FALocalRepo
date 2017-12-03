@@ -121,7 +121,13 @@ def dl_usr(Session, user, section, DB, sync=False, speed=1):
         page_i += 1
 
 def sync(Session, DB, users='', sections=''):
-    pass
+    users = DB.execute("SELECT name, folders FROM users")
+    for u in users:
+        for s in u[1].split(','):
+            try:
+                dl_usr(Session, u[0], s, DB, True, 2)
+            except KeyboardInterrupt:
+                exit()
 
 try: Session = make_session()
 except FileNotFoundError: exit(1)
