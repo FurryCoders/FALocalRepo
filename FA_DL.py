@@ -113,6 +113,8 @@ def dl_usr(Session, user, section, DB, sync=False, speed=1):
             if sub_ret: print(" | Downloaded")
             else: print(" | Error 41")
 
+            db_usr_up(DB, user, ID, section_db[section])
+
         page_i += 1
 
 def sync(Session, DB, users='', sections=''):
