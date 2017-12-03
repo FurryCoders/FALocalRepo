@@ -123,10 +123,7 @@ def dl_usr(Session, user, section, DB, sync=False, speed=1):
 
         page_i += 1
 
-def sync(Session, DB, users='', sections=''):
-    users = users.split(' ')
-    sections = sections.split(' ')
-
+def sync(Session, DB, users=[], sections=[]):
     users_db = DB.execute("SELECT name, folders FROM users")
     for u in users_db:
         if len(users) != 0 and u[0] not in users: continue
