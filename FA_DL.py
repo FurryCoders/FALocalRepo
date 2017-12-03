@@ -121,9 +121,14 @@ def dl_usr(Session, user, section, DB, sync=False, speed=1):
         page_i += 1
 
 def sync(Session, DB, users='', sections=''):
-    users = DB.execute("SELECT name, folders FROM users")
-    for u in users:
+    users = users.split(' ')
+    sections = sections.split(' ')
+
+    users_db = DB.execute("SELECT name, folders FROM users")
+    for u in users_db:
+        if len(users) != 0 and u[0] not in users: continue
         for s in u[1].split(','):
+            if len(sections) != 0 and s not in sections: continue
             try:
                 dl_usr(Session, u[0], s, DB, True, 2)
             except KeyboardInterrupt:
