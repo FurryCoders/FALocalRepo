@@ -149,7 +149,7 @@ def dl_sub(Session, ID, folder, DB, quiet=False, check=False, speed=1):
             VALUES (?, ?, ?, ?, ?, ?, ?, ?)''', sub_info)
         DB.commit()
     except sqlite3.IntegrityError:
-        continue
+        pass
     except:
         raise
 
