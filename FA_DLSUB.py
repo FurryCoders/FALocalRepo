@@ -3,6 +3,7 @@ import re
 import os
 import time
 import magic
+import FA_DB as fadb
 
 months = {
     'January' : '01',
@@ -142,14 +143,6 @@ def dl_sub(Session, ID, folder, DB, quiet=False, check=False, speed=1):
         f.write(f'File: {link}\n')
 
     sub_info = (data[4], data[0], data[0].lower().replace('_', ''), data[1], data[2], data[3], link, folder)
-    try:
-        DB.execute(f'''INSERT INTO SUBMISSIONS
-            (ID,AUTHOR,AUTHORURL,TITLE,UDATE,TAGS,FILE,LOCATION)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)''', sub_info)
-        DB.commit()
-    except sqlite3.IntegrityError:
-        pass
-    except:
-        raise
+    fadb.db_ins_sub(DB, sub_info)
 
     return subf
