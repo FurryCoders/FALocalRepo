@@ -28,8 +28,8 @@ def db_ins_usr(DB, user):
 def db_ins_sub(DB, infos):
     try:
         DB.execute(f'''INSERT INTO SUBMISSIONS
-            (ID,AUTHOR,AUTHORURL,TITLE,UDATE,TAGS,FILE,LOCATION)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)''', infos)
+            (ID,AUTHOR,AUTHORURL,TITLE,UDATE,TAGS,FILELINK,FILENAME,LOCATION)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)''', infos)
         DB.commit()
     except sqlite3.IntegrityError:
         pass
@@ -43,7 +43,7 @@ def db_usr_rep(DB, user, find, replace, column):
     if replace in col:
         return 1
     elif col[0] == '':
-        col = [find]
+        col = [replace]
     elif find not in col:
         col.append(replace)
     else:

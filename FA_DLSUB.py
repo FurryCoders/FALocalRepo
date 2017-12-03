@@ -97,10 +97,16 @@ def get_file(link, folder, speed=1):
     mime = magic.from_file(folder+'/submission.temp', mime=True)
     mime = filetypes.get(mime, mime.split('/')[-1])
 
-    if mime == 'inode/x-empty': os.remove(folder+'/submission.temp')
-    else: os.rename(folder+'/submission.temp', folder+'/submission.'+mime)
+    if mime == 'inode/x-empty':
+        os.remove(folder+'/submission.temp')
+        mime = ''
+    else:
+        os.rename(folder+'/submission.temp', folder+'/submission.'+mime)
 
-    return os.path.isfile(folder+'/submission.'+mime)
+    if mime == '':
+        return False
+    else:
+        return 'submission.'+mime
 
 def str_clean(string):
     return re.sub('[()%.:;![\]"&*/\\\]', '', string)
@@ -142,7 +148,7 @@ def dl_sub(Session, ID, folder, DB, quiet=False, check=False, speed=1):
         f.write(f'ID: {data[4]}\n')
         f.write(f'File: {link}\n')
 
-    sub_info = (data[4], data[0], data[0].lower().replace('_', ''), data[1], data[2], data[3], link, folder)
+    sub_info = (data[4], data[0], data[0].lower().replace('_', ''), data[1], data[2], data[3], link, subf, folder)
     fadb.db_ins_sub(DB, sub_info)
 
     return subf
