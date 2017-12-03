@@ -35,3 +35,16 @@ def db_ins_sub(DB, infos):
         pass
     except:
         raise
+
+def db_usr_rep(DB, user, find, replace, column):
+    col = DB.execute(f"SELECT {column} FROM users WHERE name = '{user}'")
+    col = col.fetchall()[0]
+    col = "".join(col).split(',')
+    col_new = []
+    for entry in col:
+        if entry == find: entry = replace
+        col_new.append(entry)
+    col_new.sort()
+    col_new = ",".join(col)
+    DB.execute(f"UPDATE users SET {column} = '{col_new}' WHERE name = '{user}'")
+    DB.commit()
