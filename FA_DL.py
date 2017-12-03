@@ -56,7 +56,10 @@ def check_cookies(Session):
     check_r = Session.get('https://www.furaffinity.net/controls/settings/')
     check_p = bs4.BeautifulSoup(check_r.text, 'lxml')
 
-    if check_p.find('img', 'loggedin_user_avatar') is None: return False
+    if check_p.find('a', id='my-username') is None:
+        return False
+    else:
+        return True
 
 def check_page(Session, url):
     page_r = Session.get('https://www.furaffinity.net/'+url)
@@ -134,57 +137,3 @@ def sync(Session, DB, users='', sections=''):
                 dl_usr(Session, u[0], s, DB, True, 2)
             except KeyboardInterrupt:
                 exit()
-
-try: Session = make_session()
-except FileNotFoundError: exit(1)
-
-fadb = sqlite3.connect('FA.db')
-fadb.execute('''CREATE TABLE IF NOT EXISTS SUBMISSIONS
-    (ID INT UNIQUE PRIMARY KEY NOT NULL,
-    AUTHOR TEXT NOT NULL,
-    AUTHORURL TEXT NOT NULL,
-    TITLE TEXT,
-    UDATE CHAR(10) NOT NULL,
-    TAGS TEXT,
-    FILE TEXT,
-    LOCATION TEXT NOT NULL);''')
-fadb.execute('''CREATE TABLE IF NOT EXISTS USERS
-    (NAME TEXT UNIQUE PRIMARY KEY NOT NULL,
-    FOLDERS CHAR(4) NOT NULL,
-    GALLERY TEXT,
-    SCRAPS TEXT,
-    FAVORITES TEXT,
-    EXTRAS TEXT);''')
-
-try:
-    if sys.argv[1] == '@sync':
-        users = sys.argv[2]
-        sections = sys.argv[3]
-        print('Sync')
-        sync(Session, fadb, users, sections)
-
-    else:
-        user = sys.argv[1]
-        section = sys.argv[2]
-
-        print('Download')
-        print(f'->{user} - {section}')
-
-        try:
-            usr_info = (user, '', '', '', '', '')
-            fadb.execute(f'''INSERT INTO USERS
-                (NAME,FOLDERS,GALLERY,SCRAPS,FAVORITES,EXTRAS)
-                VALUES (?, ?, ?, ?, ?, ?)''', usr_info)
-        except sqlite3.IntegrityError:
-            pass
-        except:
-            raise
-
-        db_usr_up(fadb, user, section, 'FOLDERS')
-        fadb.commit()
-
-        dl_usr(Session, user, section, fadb, speed=2)
-except KeyboardInterrupt:
-    exit()
-except:
-    exit(1)
