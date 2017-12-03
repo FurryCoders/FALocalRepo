@@ -4,9 +4,9 @@ import FA_DL as fadl
 import FA_DB as fadb
 
 users = input('Insert username: ')
-users = re.sub('( ){2,}', ' ', users.strip())
-users = re.sub('([^a-zA-Z0-9\-. ])', '', users.strip())
-users = users.split(' ')
+users = re.sub('([^a-zA-Z0-9\-., ])', '', users)
+users = re.sub('( )+', ',', users.strip())
+users = users.split(',')
 
 sections = input('Insert sections: ')
 sections = [s for s in sections if s in ('g','s','f','e','E')]
