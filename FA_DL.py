@@ -136,11 +136,6 @@ def sync(Session, DB, users='', sections=''):
 
 try: Session = make_session()
 except FileNotFoundError: exit(1)
-try:
-    user = sys.argv[1]
-    section = sys.argv[2][0]
-except:
-    exit(1)
 
 fadb = sqlite3.connect('FA.db')
 fadb.execute('''CREATE TABLE IF NOT EXISTS SUBMISSIONS
@@ -161,19 +156,34 @@ fadb.execute('''CREATE TABLE IF NOT EXISTS USERS
     EXTRAS TEXT);''')
 
 try:
-    usr_info = (user, '', '', '', '', '')
-    fadb.execute(f'''INSERT INTO USERS
-        (NAME,FOLDERS,GALLERY,SCRAPS,FAVORITES,EXTRAS)
-        VALUES (?, ?, ?, ?, ?, ?)''', usr_info)
-except sqlite3.IntegrityError:
-    pass
-except:
-    raise
+    if sys.argv[1] == '@sync':
+        users = sys.argv[2]
+        sections = sys.argv[3]
+        print('Sync')
+        sync(Session, fadb, users, sections)
 
-db_usr_up(fadb, user, section, 'FOLDERS')
-fadb.commit()
+    else:
+        user = sys.argv[1]
+        section = sys.argv[2]
 
-try:
-    dl_usr(Session, user, section, fadb, speed=2)
+        print('Download')
+        print(f'->{user} - {section}')
+
+        try:
+            usr_info = (user, '', '', '', '', '')
+            fadb.execute(f'''INSERT INTO USERS
+                (NAME,FOLDERS,GALLERY,SCRAPS,FAVORITES,EXTRAS)
+                VALUES (?, ?, ?, ?, ?, ?)''', usr_info)
+        except sqlite3.IntegrityError:
+            pass
+        except:
+            raise
+
+        db_usr_up(fadb, user, section, 'FOLDERS')
+        fadb.commit()
+
+        dl_usr(Session, user, section, fadb, speed=2)
 except KeyboardInterrupt:
     exit()
+except:
+    exit(1)
