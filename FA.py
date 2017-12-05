@@ -9,6 +9,7 @@ try:
     users = re.sub('([^a-zA-Z0-9\-., ])', '', users)
     users = re.sub('( )+', ',', users.strip())
     users = users.split(',')
+    users = [u for u in users if u != '']
 
     sections = input('Insert sections: ')
     sections = [s for s in sections if s in ('g','s','f','e','E')]
