@@ -100,7 +100,7 @@ def dl_usr(Session, user, section, DB, sync=False, speed=1):
             sub_i += 1
             ID = sub.get('id')[4:]
             print(f'--->{page_i:03d}/{sub_i:02d}) {ID:0>10} - ', end='', flush=True)
-            folder = f'__files/{tiers(ID)}/{ID:0>10}'
+            folder = f'FA.files/{tiers(ID)}/{ID:0>10}'
 
             if os.path.isfile(folder+'/info.txt'):
                 cols = os.get_terminal_size()[0]
