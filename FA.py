@@ -14,12 +14,14 @@ try:
     sections = input('Insert sections: ')
     sections = [s for s in sections if s in ('g','s','f','e','E')]
 
-    speed = 1 ; update = False ; sync = False
+    speed = 1 ; update = False
+    sync = False ; force = True
     for o in input('Insert options: '):
         if o == 'Q': speed = 2
         elif o == 'S': speed = 0
         elif o == 'U': update = True
         elif o == 'Y': sync = True
+        elif o == 'F': force = True
 
     if not update and (len(users) == 0 or len(sections) == 0): sys.exit(1)
 except KeyboardInterrupt:
@@ -54,7 +56,7 @@ try:
 
     if update:
         print('Update')
-        fadl.update(Session, DB, users, sections)
+        fadl.update(Session, DB, users, sections, force)
     else:
         print('Download', end='')
         for u in users:
@@ -66,7 +68,7 @@ try:
                 print()
             fadb.db_ins_usr(DB, u)
             for s in sections:
-                d = fadl.dl_usr(Session, u, s, DB, sync, speed)
+                d = fadl.dl_usr(Session, u, s, DB, sync, speed, force)
                 if d in (0,1,2,3):
                     if s == 'e':
                         fadb.db_usr_rep(DB, u, 'E', 'e', 'FOLDERS')

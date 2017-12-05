@@ -69,7 +69,7 @@ def dl_url(section, usr):
 
     return url
 
-def dl_usr(Session, user, section, DB, sync=False, speed=1):
+def dl_usr(Session, user, section, DB, sync=False, speed=1, force=False):
     url = dl_url(section, user)
     print(f'-->{section_full[section]}')
 
@@ -106,8 +106,9 @@ def dl_usr(Session, user, section, DB, sync=False, speed=1):
                 cols = os.get_terminal_size()[0]
                 title = sub.find_all('a')[1].string
                 print("%.*s | Repository" % ((cols-38), dlsub.str_clean(title)))
+                if force and page_i <= 2: continue
                 if sync and sub_i > 1: return 2
-                elif sync and sub_i == 1: return 3
+                elif sync and sub_i+page_i == 2: return 3
                 else: continue
 
             sub_ret = dlsub.dl_sub(Session, ID, folder, DB, True, True, speed)
@@ -118,7 +119,7 @@ def dl_usr(Session, user, section, DB, sync=False, speed=1):
 
         page_i += 1
 
-def update(Session, DB, users=[], sections=[]):
+def update(Session, DB, users=[], sections=[], force=False):
     users_db = DB.execute("SELECT name, folders FROM users ORDER BY name ASC")
     download = False
     for u in users_db:
@@ -129,7 +130,7 @@ def update(Session, DB, users=[], sections=[]):
             if len(sections) != 0 and s not in sections: continue
             if s[-1] == '!': continue
             try:
-                d = dl_usr(Session, u[0], s, DB, True, 2)
+                d = dl_usr(Session, u[0], s, DB, True, 2, force)
                 if d in (0,2):
                     print('\033[1A\033[2K', end='', flush=True)
                     download_u = True
