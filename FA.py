@@ -20,7 +20,7 @@ try:
         elif o == 'U': update = True
         elif o == 'Y': sync = True
 
-    if not update and (len(users) == 0 or len(sections) == 0): exit(1)
+    if not update and (len(users) == 0 or len(sections) == 0): sys.exit(1)
 except KeyboardInterrupt:
     print()
     sys.exit(0)
