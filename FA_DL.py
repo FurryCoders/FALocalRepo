@@ -137,6 +137,7 @@ def update(Session, DB, users=[], sections=[]):
                     print('\033[1A\033[2K', end='', flush=True)
                     print(f'-->{section_full[s]} DISABLED')
                     fadb.db_usr_rep(DB, u[0], s, s+'!', 'FOLDERS')
+                    download = True
             except KeyboardInterrupt:
                 return
         if not download: print('\033[1A\033[2K', end='', flush=True)
