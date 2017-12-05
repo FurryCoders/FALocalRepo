@@ -52,3 +52,10 @@ def db_usr_rep(DB, user, find, replace, column):
     col = ",".join(col)
     DB.execute(f"UPDATE users SET {column} = '{col}' WHERE name = '{user}'")
     DB.commit()
+
+def db_usr_src(DB, user, find, column):
+    col = DB.execute(f"SELECT {column} FROM users WHERE name = '{user}'")
+    col = col.fetchall()[0]
+    col = "".join(col).split(',')
+    if find in col: return True
+    else: return False
