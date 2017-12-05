@@ -29,8 +29,8 @@ print()
 
 try:
     try: Session = fadl.make_session()
-    except FileNotFoundError: exit(1)
-    if not fadl.check_cookies(Session): exit(2)
+    except FileNotFoundError: sys.exit(1)
+    if not fadl.check_cookies(Session): sys.exit(2)
 
     DB = sqlite3.connect('FA.db')
     DB.execute('''CREATE TABLE IF NOT EXISTS SUBMISSIONS
