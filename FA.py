@@ -15,13 +15,14 @@ try:
     sections = [s for s in sections if s in ('g','s','f','e','E')]
 
     speed = 1 ; update = False
-    sync = False ; force = True
+    sync = False ; force = 0
     for o in input('Insert options: '):
         if o == 'Q': speed = 2
         elif o == 'S': speed = 0
         elif o == 'U': update = True
         elif o == 'Y': sync = True
-        elif o == 'F': force = True
+        elif o == 'F': force = 1
+        elif o == 'A': force = 2
 
     if not update and (len(users) == 0 or len(sections) == 0): sys.exit(1)
 except KeyboardInterrupt:

@@ -69,7 +69,7 @@ def dl_url(section, usr):
 
     return url
 
-def dl_usr(Session, user, section, DB, sync=False, speed=1, force=False):
+def dl_usr(Session, user, section, DB, sync=False, speed=1, force=0):
     url = dl_url(section, user)
     print(f'-->{section_full[section]}')
 
@@ -106,7 +106,8 @@ def dl_usr(Session, user, section, DB, sync=False, speed=1, force=False):
                 cols = os.get_terminal_size()[0]
                 title = sub.find_all('a')[1].string
                 print("%.*s | Repository" % ((cols-38), dlsub.str_clean(title)))
-                if force and page_i <= 2: continue
+                if force == 1 and page_i <= 2: continue
+                if force == 2: continue
                 if sync and sub_i > 1: return 2
                 elif sync and sub_i+page_i == 2: return 3
                 else: continue
@@ -119,7 +120,7 @@ def dl_usr(Session, user, section, DB, sync=False, speed=1, force=False):
 
         page_i += 1
 
-def update(Session, DB, users=[], sections=[], force=False):
+def update(Session, DB, users=[], sections=[], force=0):
     users_db = DB.execute("SELECT name, folders FROM users ORDER BY name ASC")
     download = False
     for u in users_db:
@@ -132,10 +133,10 @@ def update(Session, DB, users=[], sections=[], force=False):
             try:
                 d = dl_usr(Session, u[0], s, DB, True, 2, force)
                 if d in (0,2):
-                    if not force: print('\033[1A\033[2K', end='', flush=True)
+                    if force in (1,2): print('\033[1A\033[2K', end='', flush=True)
                     download_u = True
                 elif d in (1,3):
-                    if not force: print('\033[1A\033[2K\033[1A\033[2K', end='', flush=True)
+                    if force in (1,2): print('\033[1A\033[2K\033[1A\033[2K', end='', flush=True)
                 elif d == 4:
                     print('\033[1A\033[2K', end='', flush=True)
                     print(f'-->{section_full[s]} DISABLED')
@@ -144,6 +145,6 @@ def update(Session, DB, users=[], sections=[], force=False):
             except KeyboardInterrupt:
                 return
         if not download_u:
-            if not force: print('\033[1A\033[2K', end='', flush=True)
+            if force in (1,2): print('\033[1A\033[2K', end='', flush=True)
         else: download = True
     if not download: print("Nothing new to download")
