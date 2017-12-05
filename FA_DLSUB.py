@@ -124,7 +124,7 @@ def dl_sub(Session, ID, folder, DB, quiet=False, check=False, speed=1):
 
     if quiet:
         cols = os.get_terminal_size()[0]
-        print(f'{data[1][0:cols-34]}', end='', flush=True)
+        print(f'{data[1][0:cols-38]}', end='', flush=True)
     else:
         print(f'->Author: {data[0]}')
         print(f'->Title: {data[1]}')
