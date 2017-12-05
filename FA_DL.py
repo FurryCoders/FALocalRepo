@@ -119,25 +119,28 @@ def dl_usr(Session, user, section, DB, sync=False, speed=1):
 
 def update(Session, DB, users=[], sections=[]):
     users_db = DB.execute("SELECT name, folders FROM users ORDER BY name ASC")
+    download = False
     for u in users_db:
         if len(users) != 0 and u[0] not in users: continue
-        download = False
+        download_u = False
         print(f'->{u[0]}')
         for s in u[1].split(','):
             if len(sections) != 0 and s not in sections: continue
             if s[-1] == '!': continue
             try:
                 d = dl_usr(Session, u[0], s, DB, True, 2)
-                if d in (0,1,2):
+                if d in (0,2):
                     print('\033[1A\033[2K', end='', flush=True)
-                    download = True
-                elif d == 3:
+                    download_u = True
+                elif d in (1,3):
                     print('\033[1A\033[2K\033[1A\033[2K', end='', flush=True)
                 elif d == 4:
                     print('\033[1A\033[2K', end='', flush=True)
                     print(f'-->{section_full[s]} DISABLED')
                     fadb.db_usr_rep(DB, u[0], s, s+'!', 'FOLDERS')
-                    download = True
+                    download_u = True
             except KeyboardInterrupt:
                 return
-        if not download: print('\033[1A\033[2K', end='', flush=True)
+        if not download_u: print('\033[1A\033[2K', end='', flush=True)
+        else: download = True
+    if not download: print("Nothing new to download")
