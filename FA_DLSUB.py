@@ -109,7 +109,7 @@ def get_file(link, folder, speed=1):
         return 'submission.'+mime
 
 def str_clean(string):
-    return re.sub('[()%.:;![\]"&*/\\\]', '', string)
+    return re.sub('[^\x00-\x7F]', '', string)
 
 
 def dl_sub(Session, ID, folder, DB, quiet=False, check=False, speed=1):
@@ -124,14 +124,14 @@ def dl_sub(Session, ID, folder, DB, quiet=False, check=False, speed=1):
 
     if quiet:
         cols = os.get_terminal_size()[0]
-        print(f'{data[1][0:cols-38]}', end='', flush=True)
+        print(f'{str_clean(data[1])[0:cols-38]}', end='', flush=True)
     else:
-        print(f'->Author: {data[0]}')
-        print(f'->Title: {data[1]}')
-        print(f'->Upload date: {data[2]}')
-        print(f'->Keywords: {data[3]}')
-        print(f'->ID: {data[4]}')
-        print(f'->File: {link.split("/")[-1]}')
+        print(f'->Author: {str_clean(data[0])}')
+        print(f'->Title: {str_clean(data[1])}')
+        print(f'->Upload date: {str_clean(data[2])}')
+        print(f'->Keywords: {str_clean(data[3])}')
+        print(f'->ID: {str_clean(data[4])}')
+        print(f'->File: {str_clean(link.split("/")[-1])}')
 
     os.makedirs(folder, exist_ok=True)
 

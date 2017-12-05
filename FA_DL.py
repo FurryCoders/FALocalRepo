@@ -104,7 +104,8 @@ def dl_usr(Session, user, section, DB, sync=False, speed=1):
 
             if os.path.isfile(folder+'/info.txt'):
                 cols = os.get_terminal_size()[0]
-                print("%.*s | Repository" % ((cols-38), sub.find_all('a')[1].string))
+                title = sub.find_all('a')[1].string
+                print("%.*s | Repository" % ((cols-38), dlsub.str_clean(title)))
                 if sync and sub_i > 1: return 2
                 elif sync and sub_i == 1: return 3
                 else: continue
