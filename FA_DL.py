@@ -101,7 +101,8 @@ def dl_usr(Session, user, section, DB, sync=False, speed=1):
             if os.path.isfile(folder+'/info.txt'):
                 cols = os.get_terminal_size()[0]
                 print("%.*s | Repository" % ((cols-34), sub.find_all('a')[1].string))
-                if sync: return True
+                if sync and sub_i > 1: return True
+                elif sync and sub_i == 1: return False
                 else: continue
 
             sub_ret = dlsub.dl_sub(Session, ID, folder, DB, True, False, speed)
@@ -116,10 +117,15 @@ def update(Session, DB, users=[], sections=[]):
     users_db = DB.execute("SELECT name, folders FROM users")
     for u in users_db:
         if len(users) != 0 and u[0] not in users: continue
+        download = False
         print(f'->{u[0]}')
         for s in u[1].split(','):
             if len(sections) != 0 and s not in sections: continue
             try:
-                dl_usr(Session, u[0], s, DB, True, 2)
+                if dl_usr(Session, u[0], s, DB, True, 2):
+                    download = True
+                else:
+                    print('\033[1A\033[2K\033[1A\033[2K', end='', flush=True)
             except KeyboardInterrupt:
                 exit()
+        if not download: print('\033[1A\033[2K', end='', flush=True)
