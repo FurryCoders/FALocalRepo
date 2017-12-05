@@ -109,6 +109,8 @@ def get_file(link, folder, speed=1):
         return 'submission.'+mime
 
 def str_clean(string):
+    if string == None or string == '':
+        return ''
     return re.sub('[^\x00-\x7F]', '', string)
 
 
