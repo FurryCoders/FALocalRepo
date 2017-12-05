@@ -102,7 +102,7 @@ def dl_usr(Session, user, section, DB, sync=False, speed=1):
             print(f'--->{page_i:03d}/{sub_i:02d}) {ID:0>10} - ', end='', flush=True)
             folder = f'FA.files/{tiers(ID)}/{ID:0>10}'
 
-            if os.path.isfile(folder+'/info.txt'):
+            if fadb.db_usr_src(DB, user, ID.zfill(10), section_db[section]):
                 cols = os.get_terminal_size()[0]
                 title = sub.find_all('a')[1].string
                 print("%.*s | Repository" % ((cols-38), dlsub.str_clean(title)))
@@ -110,7 +110,7 @@ def dl_usr(Session, user, section, DB, sync=False, speed=1):
                 elif sync and sub_i == 1: return 3
                 else: continue
 
-            sub_ret = dlsub.dl_sub(Session, ID, folder, DB, True, False, speed)
+            sub_ret = dlsub.dl_sub(Session, ID, folder, DB, True, True, speed)
             if sub_ret: print(" | Downloaded")
             else: print(" | Error 41")
 
