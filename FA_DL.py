@@ -120,7 +120,7 @@ def dl_usr(Session, user, section, DB, sync=False, speed=1, force=0):
 
         page_i += 1
 
-def update(Session, DB, users=[], sections=[], force=0):
+def update(Session, DB, users=[], sections=[], force=0, speed=2):
     users_db = DB.execute("SELECT name, folders FROM users ORDER BY name ASC")
     download = False
     for u in users_db:
@@ -131,7 +131,7 @@ def update(Session, DB, users=[], sections=[], force=0):
             if len(sections) != 0 and s not in sections: continue
             if s[-1] == '!': continue
             try:
-                d = dl_usr(Session, u[0], s, DB, True, 2, force)
+                d = dl_usr(Session, u[0], s, DB, True, speed, force)
                 if d in (0,2):
                     if force in (1,2): print('\033[1A\033[2K', end='', flush=True)
                     download_u = True

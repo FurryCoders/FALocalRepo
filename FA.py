@@ -23,6 +23,7 @@ try:
         elif o == 'Y': sync = True
         elif o == 'F': force = 1
         elif o == 'A': force = 2
+    if force != 0: speed = 1
 
     if not update and (len(users) == 0 or len(sections) == 0): sys.exit(1)
 except KeyboardInterrupt:
