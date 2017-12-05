@@ -35,7 +35,7 @@ def db_usr_up(DB, user, to_add, column):
     col = ",".join(col)
     DB.execute(f"UPDATE users SET {column} = '{col}' WHERE name = '{user}'")
     DB.commit()
-        
+
 def db_usr_rep(DB, user, find, replace, column):
     col = DB.execute(f"SELECT {column} FROM users WHERE name = '{user}'")
     col = col.fetchall()[0]
