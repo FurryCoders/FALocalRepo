@@ -66,13 +66,16 @@ try:
                 print()
             fadb.db_ins_usr(DB, u)
             for s in sections:
-                if fadl.dl_usr(Session, u, s, DB, sync, speed):
+                d = fadl.dl_usr(Session, u, s, DB, sync, speed)
+                if d in (0,1,2,3):
                     if s == 'e':
                         fadb.db_usr_rep(DB, u, 'E', 'e', 'FOLDERS')
                     elif s == 'E':
                         fadb.db_usr_rep(DB, u, 'e', 'E', 'FOLDERS')
                     else:
                         fadb.db_usr_up(DB, u, s, 'FOLDERS')
+                elif d == 4:
+                    fadb.db_usr_rep(DB, u, s, s+'!', 'FOLDERS')
 except KeyboardInterrupt:
     print('\033[2D  \033[2D', end='', flush=True)
     sys.exit(0)

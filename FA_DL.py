@@ -84,12 +84,16 @@ def dl_usr(Session, user, section, DB, sync=False, speed=1):
         else:
             page_p = page_p.find('section', id="gallery-gallery")
 
+        if page_p == None:
+            if page_i == 1: return 4
+            else: return 0
+
         if page_p.find('figure') is None:
             if page_i == 1:
                 print("--->No submissions to download")
-                return False
+                return 1
             else:
-                return True
+                return 0
 
         sub_i = 0
         for sub in page_p.findAll('figure'):
@@ -101,8 +105,8 @@ def dl_usr(Session, user, section, DB, sync=False, speed=1):
             if os.path.isfile(folder+'/info.txt'):
                 cols = os.get_terminal_size()[0]
                 print("%.*s | Repository" % ((cols-34), sub.find_all('a')[1].string))
-                if sync and sub_i > 1: return True
-                elif sync and sub_i == 1: return False
+                if sync and sub_i > 1: return 2
+                elif sync and sub_i == 1: return 3
                 else: continue
 
             sub_ret = dlsub.dl_sub(Session, ID, folder, DB, True, False, speed)
@@ -114,19 +118,25 @@ def dl_usr(Session, user, section, DB, sync=False, speed=1):
         page_i += 1
 
 def update(Session, DB, users=[], sections=[]):
-    users_db = DB.execute("SELECT name, folders FROM users")
+    users_db = DB.execute("SELECT name, folders FROM users ORDER BY name ASC")
     for u in users_db:
         if len(users) != 0 and u[0] not in users: continue
         download = False
         print(f'->{u[0]}')
         for s in u[1].split(','):
             if len(sections) != 0 and s not in sections: continue
+            if s[-1] == '!': continue
             try:
-                if dl_usr(Session, u[0], s, DB, True, 2):
+                d = dl_usr(Session, u[0], s, DB, True, 2)
+                if d in (0,1,2):
                     print('\033[1A\033[2K', end='', flush=True)
                     download = True
-                else:
+                elif d == 3:
                     print('\033[1A\033[2K\033[1A\033[2K', end='', flush=True)
+                elif d == 4:
+                    print('\033[1A\033[2K', end='', flush=True)
+                    print(f'-->{section_full[s]} DISABLED')
+                    fadb.db_usr_rep(DB, u[0], s, s+'!', 'FOLDERS')
             except KeyboardInterrupt:
                 return
         if not download: print('\033[1A\033[2K', end='', flush=True)
