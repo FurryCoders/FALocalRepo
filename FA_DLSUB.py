@@ -115,7 +115,7 @@ def str_clean(string):
 def dl_sub(Session, ID, folder, DB, quiet=False, check=False, speed=1):
     if check:
         if os.path.isfile(folder+'/info.txt'):
-            return 1
+            return True
 
     page = get_page(Session, ID)
     data = get_info(page) ; data.append(ID)
