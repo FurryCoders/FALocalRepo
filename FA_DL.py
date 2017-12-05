@@ -79,7 +79,7 @@ def dl_usr(Session, user, section, DB, sync=False, speed=1):
         page_p = bs4.BeautifulSoup(page_r.text, 'lxml')
         if section in ('e', 'E'):
             page_p = page_p.find('section', id="gallery-search-results")
-        elif section = 'f':
+        elif section == 'f':
             page_p = page_p.find('section', id="gallery-favorites")
         else:
             page_p = page_p.find('section', id="gallery-gallery")
