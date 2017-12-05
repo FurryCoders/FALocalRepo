@@ -123,6 +123,7 @@ def update(Session, DB, users=[], sections=[]):
             if len(sections) != 0 and s not in sections: continue
             try:
                 if dl_usr(Session, u[0], s, DB, True, 2):
+                    print('\033[1A\033[2K', end='', flush=True)
                     download = True
                 else:
                     print('\033[1A\033[2K\033[1A\033[2K', end='', flush=True)
