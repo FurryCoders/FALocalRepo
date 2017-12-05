@@ -133,10 +133,10 @@ def update(Session, DB, users=[], sections=[], force=0, speed=2):
             try:
                 d = dl_usr(Session, u[0], s, DB, True, speed, force)
                 if d in (0,2):
-                    if force in (1,2): print('\033[1A\033[2K', end='', flush=True)
+                    if force not in (1,2): print('\033[1A\033[2K', end='', flush=True)
                     download_u = True
                 elif d in (1,3):
-                    if force in (1,2): print('\033[1A\033[2K\033[1A\033[2K', end='', flush=True)
+                    if force not in (1,2): print('\033[1A\033[2K\033[1A\033[2K', end='', flush=True)
                 elif d == 4:
                     print('\033[1A\033[2K', end='', flush=True)
                     print(f'-->{section_full[s]} DISABLED')
@@ -145,6 +145,6 @@ def update(Session, DB, users=[], sections=[], force=0, speed=2):
             except KeyboardInterrupt:
                 return
         if not download_u:
-            if force in (1,2): print('\033[1A\033[2K', end='', flush=True)
+            if force not in (1,2): print('\033[1A\033[2K', end='', flush=True)
         else: download = True
     if not download: print("Nothing new to download")
