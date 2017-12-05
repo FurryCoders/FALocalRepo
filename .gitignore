@@ -104,5 +104,5 @@ ENV/
 *.cookies
 
 # repo
-__files
+FA.files
 FA.db
