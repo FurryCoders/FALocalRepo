@@ -127,5 +127,5 @@ def update(Session, DB, users=[], sections=[]):
                 else:
                     print('\033[1A\033[2K\033[1A\033[2K', end='', flush=True)
             except KeyboardInterrupt:
-                exit()
+                return
         if not download: print('\033[1A\033[2K', end='', flush=True)
