@@ -104,8 +104,8 @@ def dl_usr(Session, user, section, DB, sync=False, speed=1, force=0):
 
             if fadb.db_usr_src(DB, user, ID.zfill(10), section_db[section]):
                 cols = os.get_terminal_size()[0]
-                title = sub.find_all('a')[1].string
-                print("%.*s | Repository" % ((cols-38), dlsub.str_clean(title)))
+                titl = dlsub.str_clean(sub.find_all('a')[1].string)
+                print(f'{titl[0:cols-38]} | Repository')
                 if force == 1 and page_i <= 2: continue
                 if force == 2: continue
                 if sync and sub_i > 1: return 2
