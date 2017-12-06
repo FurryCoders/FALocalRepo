@@ -117,7 +117,9 @@ def str_clean(string):
 def dl_sub(Session, ID, folder, DB, quiet=False, check=False, speed=1):
     if check:
         if os.path.isfile(folder+'/info.txt'):
-            fadb.db_sub_read(DB, ID, 'title')
+            cols = os.get_terminal_size()[0]
+            titl = str_clean(fadb.db_sub_read(DB, ID, "title"))
+            print(f'{titl[0:cols-38]}', end='', flush=True)
             return True
 
     page = get_page(Session, ID)
