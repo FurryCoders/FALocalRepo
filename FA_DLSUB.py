@@ -116,7 +116,7 @@ def str_clean(string):
 
 def dl_sub(Session, ID, folder, DB, quiet=False, check=False, speed=1):
     if check:
-        if os.path.isfile(folder+'/info.txt'):
+        if fadb.db_sub_exists(DB, ID):
             cols = os.get_terminal_size()[0]
             titl = str_clean(fadb.db_sub_read(DB, ID, "title"))
             print(f'{titl[0:cols-38]}', end='', flush=True)
