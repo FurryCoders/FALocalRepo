@@ -1,6 +1,6 @@
 import sqlite3
 
-def db_ins_usr(DB, user):
+def ins_usr(DB, user):
     try:
         DB.execute(f'''INSERT INTO USERS
             (NAME,FOLDERS,GALLERY,SCRAPS,FAVORITES,EXTRAS)
@@ -11,7 +11,7 @@ def db_ins_usr(DB, user):
     except:
         raise
 
-def db_ins_sub(DB, infos):
+def ins_sub(DB, infos):
     try:
         DB.execute(f'''INSERT INTO SUBMISSIONS
             (ID,AUTHOR,AUTHORURL,TITLE,UDATE,TAGS,FILELINK,FILENAME,LOCATION)
@@ -22,7 +22,7 @@ def db_ins_sub(DB, infos):
     except:
         raise
 
-def db_usr_up(DB, user, to_add, column):
+def usr_up(DB, user, to_add, column):
     col = DB.execute(f"SELECT {column} FROM users WHERE name = '{user}'")
     col = col.fetchall()[0]
     col = "".join(col).split(',')
@@ -36,7 +36,7 @@ def db_usr_up(DB, user, to_add, column):
     DB.execute(f"UPDATE users SET {column} = '{col}' WHERE name = '{user}'")
     DB.commit()
 
-def db_usr_rep(DB, user, find, replace, column):
+def usr_rep(DB, user, find, replace, column):
     col = DB.execute(f"SELECT {column} FROM users WHERE name = '{user}'")
     col = col.fetchall()[0]
     col = "".join(col).split(',')
@@ -53,19 +53,19 @@ def db_usr_rep(DB, user, find, replace, column):
     DB.execute(f"UPDATE users SET {column} = '{col}' WHERE name = '{user}'")
     DB.commit()
 
-def db_usr_src(DB, user, find, column):
+def usr_src(DB, user, find, column):
     col = DB.execute(f"SELECT {column} FROM users WHERE name = '{user}'")
     col = col.fetchall()[0]
     col = "".join(col).split(',')
     if find in col: return True
     else: return False
 
-def db_sub_read(DB, ID, column):
+def sub_read(DB, ID, column):
     col = DB.execute(f"SELECT {column} FROM submissions WHERE id = '{ID}'")
     col = col.fetchall()[0]
     return col[0]
 
-def db_sub_search(DB, terms):
+def sub_search(DB, terms):
     return DB.execute('''SELECT author, udate, title FROM submissions
         WHERE id LIKE ? AND
         authorurl LIKE ? AND
@@ -73,6 +73,6 @@ def db_sub_search(DB, terms):
         tags REGEXP ?
         ORDER BY authorurl ASC, id ASC''', terms)
 
-def db_sub_exists(DB, ID):
+def sub_exists(DB, ID):
     exists = DB.execute(f'SELECT EXISTS(SELECT id FROM submissions WHERE id = "{ID}" LIMIT 1);')
     return exists.fetchall()[0][0]

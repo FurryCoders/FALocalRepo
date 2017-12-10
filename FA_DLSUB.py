@@ -116,9 +116,9 @@ def str_clean(string):
 
 def dl_sub(Session, ID, folder, DB, quiet=False, check=False, speed=1):
     if check:
-        if fadb.db_sub_exists(DB, ID):
+        if fadb.sub_exists(DB, ID):
             cols = os.get_terminal_size()[0]
-            titl = str_clean(fadb.db_sub_read(DB, ID, "title"))
+            titl = str_clean(fadb.sub_read(DB, ID, "title"))
             print(f'{titl[0:cols-38]}', end='', flush=True)
             return 2
 
@@ -155,7 +155,7 @@ def dl_sub(Session, ID, folder, DB, quiet=False, check=False, speed=1):
         f.write(f'File: {link}\n')
 
     sub_info = (data[4], data[0], data[0].lower().replace('_', ''), data[1], data[2], data[3], link, subf, folder)
-    fadb.db_ins_sub(DB, sub_info)
+    fadb.ins_sub(DB, sub_info)
 
     if subf == '':
         return 1

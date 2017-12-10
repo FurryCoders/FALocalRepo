@@ -102,7 +102,7 @@ def dl_usr(Session, user, section, DB, sync=False, speed=1, force=0):
             print(f'--->{page_i:03d}/{sub_i:02d}) {ID:0>10} - ', end='', flush=True)
             folder = f'FA.files/{tiers(ID)}/{ID:0>10}'
 
-            if fadb.db_usr_src(DB, user, ID.zfill(10), section_db[section]):
+            if fadb.usr_src(DB, user, ID.zfill(10), section_db[section]):
                 cols = os.get_terminal_size()[0]
                 titl = dlsub.str_clean(sub.find_all('a')[1].string)
                 print(f'{titl[0:cols-38]} | Repository')
@@ -115,13 +115,13 @@ def dl_usr(Session, user, section, DB, sync=False, speed=1, force=0):
             s_ret = dlsub.dl_sub(Session, ID, folder, DB, True, True, speed)
             if s_ret == 0:
                 print(" | Downloaded")
-                fadb.db_usr_up(DB, user, ID.zfill(10), section_db[section])
+                fadb.usr_up(DB, user, ID.zfill(10), section_db[section])
             elif s_ret == 1:
                 print(" | File Error")
-                fadb.db_usr_up(DB, user, ID.zfill(10), section_db[section])
+                fadb.usr_up(DB, user, ID.zfill(10), section_db[section])
             elif s_ret == 2:
                 print(" | Repository")
-                fadb.db_usr_up(DB, user, ID.zfill(10), section_db[section])
+                fadb.usr_up(DB, user, ID.zfill(10), section_db[section])
             elif s_ret == 3:
                 print(" | Page Error")
 
@@ -147,7 +147,7 @@ def update(Session, DB, users=[], sections=[], force=0, speed=2):
                 elif d == 4:
                     print('\033[1A\033[2K', end='', flush=True)
                     print(f'-->{section_full[s]} DISABLED')
-                    fadb.db_usr_rep(DB, u[0], s, s+'!', 'FOLDERS')
+                    fadb.usr_rep(DB, u[0], s, s+'!', 'FOLDERS')
                     download_u = True
             except KeyboardInterrupt:
                 return
