@@ -72,3 +72,7 @@ def db_sub_search(DB, terms):
         title LIKE ? AND
         tags REGEXP ?
         ORDER BY authorurl ASC, id ASC''', terms)
+
+def db_sub_exists(DB, ID):
+    exists = DB.execute(f'SELECT EXISTS(SELECT id FROM submissions WHERE id = "{ID}" LIMIT 1);')
+    return exists.fetchall()[0][0]
