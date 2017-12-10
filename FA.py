@@ -1,6 +1,6 @@
 import sqlite3
 import re
-import sys
+import sys, signal
 import FA_DL as fadl
 import FA_DB as fadb
 
@@ -56,6 +56,8 @@ try:
         FAVORITES TEXT,
         EXTRAS TEXT);''')
 
+    signal.pthread_sigmask(signal.SIG_BLOCK, {signal.SIGINT})
+
     if update:
         print('Update')
         fadl.update(Session, DB, users, sections, force)
@@ -80,6 +82,8 @@ try:
                         fadb.usr_up(DB, u, s, 'FOLDERS')
                 elif d == 4:
                     fadb.usr_rep(DB, u, s, s+'!', 'FOLDERS')
+
+    signal.pthread_sigmask(signal.SIG_UNBLOCK, {signal.SIGINT})
 except KeyboardInterrupt:
     print('\033[2D  \033[2D', flush=True)
     sys.exit(0)
