@@ -112,11 +112,18 @@ def dl_usr(Session, user, section, DB, sync=False, speed=1, force=0):
                 elif sync and sub_i+page_i == 2: return 3
                 else: continue
 
-            sub_ret = dlsub.dl_sub(Session, ID, folder, DB, True, True, speed)
-            if sub_ret: print(" | Downloaded")
-            else: print(" | Error 41")
-
-            fadb.db_usr_up(DB, user, ID.zfill(10), section_db[section])
+            s_ret = dlsub.dl_sub(Session, ID, folder, DB, True, True, speed)
+            if s_ret == 0:
+                print(" | Downloaded")
+                fadb.db_usr_up(DB, user, ID.zfill(10), section_db[section])
+            elif s_ret == 1:
+                print(" | File Error")
+                fadb.db_usr_up(DB, user, ID.zfill(10), section_db[section])
+            elif s_ret == 2:
+                print(" | Repository")
+                fadb.db_usr_up(DB, user, ID.zfill(10), section_db[section])
+            elif s_ret == 3:
+                print(" | Page Error")
 
         page_i += 1
 

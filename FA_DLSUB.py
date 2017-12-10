@@ -120,9 +120,10 @@ def dl_sub(Session, ID, folder, DB, quiet=False, check=False, speed=1):
             cols = os.get_terminal_size()[0]
             titl = str_clean(fadb.db_sub_read(DB, ID, "title"))
             print(f'{titl[0:cols-38]}', end='', flush=True)
-            return True
+            return 2
 
     page = get_page(Session, ID)
+    if page == None: return 3
     data = get_info(page) ; data.append(ID)
     link = get_link(page)
     desc = get_desc(page)
@@ -156,4 +157,7 @@ def dl_sub(Session, ID, folder, DB, quiet=False, check=False, speed=1):
     sub_info = (data[4], data[0], data[0].lower().replace('_', ''), data[1], data[2], data[3], link, subf, folder)
     fadb.db_ins_sub(DB, sub_info)
 
-    return subf
+    if subf == '':
+        return 1
+    else:
+        return 0
