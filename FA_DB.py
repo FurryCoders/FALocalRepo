@@ -63,7 +63,7 @@ def db_usr_src(DB, user, find, column):
 def db_sub_read(DB, ID, column):
     col = DB.execute(f"SELECT {column} FROM submissions WHERE id = '{ID}'")
     col = col.fetchall()[0]
-    print(col[0], end='', flush=True)
+    return col[0]
 
 def db_sub_search(DB, terms):
     return DB.execute('''SELECT author, udate, title FROM submissions
