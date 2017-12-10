@@ -27,7 +27,7 @@ try:
 
     if not update and (len(users) == 0 or len(sections) == 0): sys.exit(1)
 except KeyboardInterrupt:
-    print('\033[2D  \033[2D', end='', flush=True)
+    print('\033[2D  \033[2D', flush=True)
     sys.exit(0)
 
 print()
@@ -81,5 +81,5 @@ try:
                 elif d == 4:
                     fadb.usr_rep(DB, u, s, s+'!', 'FOLDERS')
 except KeyboardInterrupt:
-    print('\033[2D  \033[2D', end='', flush=True)
+    print('\033[2D  \033[2D', flush=True)
     sys.exit(0)
