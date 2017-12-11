@@ -6,6 +6,7 @@ import FA_DB as fadb
 
 try:
     users = input('Insert username: ')
+    users = users.lower()
     users = re.sub('([^a-zA-Z0-9\-., ])', '', users)
     users = re.sub('( )+', ',', users.strip())
     users = users.split(',')
