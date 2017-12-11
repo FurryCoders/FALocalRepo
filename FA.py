@@ -34,9 +34,10 @@ except KeyboardInterrupt:
 print()
 
 try:
+    if not fadl.ping('http://www.furaffinity.net'): sys.exit(2)
     try: Session = fadl.make_session()
-    except FileNotFoundError: sys.exit(1)
-    if not fadl.check_cookies(Session): sys.exit(2)
+    except FileNotFoundError: sys.exit(3)
+    if not fadl.check_cookies(Session): sys.exit(4)
 
     DB = sqlite3.connect('FA.db')
     DB.execute('''CREATE TABLE IF NOT EXISTS SUBMISSIONS

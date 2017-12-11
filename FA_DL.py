@@ -27,6 +27,13 @@ def tiers(ID, t1=10000000, t2=1000000, t3=1000):
 
     return f'{tier1}/{tier2}/{tier3:03d}'
 
+def ping(url):
+    try:
+        requests.get(url, stream=True)
+        return True
+    except:
+        return False
+
 def make_session(cookies_file='FA.cookies'):
     Session = requests.Session()
 
