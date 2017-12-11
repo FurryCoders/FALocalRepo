@@ -68,7 +68,8 @@ try:
             print(f'\n->{u}', end='', flush=True)
             if not fadl.check_page(Session, f'user/{u}'):
                 print(' - Failed')
-                continue
+                if 'g' in sections or 's' in sections:
+                    continue
             else:
                 print()
             fadb.ins_usr(DB, u)
