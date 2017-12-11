@@ -60,7 +60,7 @@ try:
 
     if update:
         print('Update')
-        fadl.update(Session, DB, users, sections, force)
+        fadl.update(Session, DB, users, sections, speed, force)
     else:
         print('Download', end='')
         for u in users:

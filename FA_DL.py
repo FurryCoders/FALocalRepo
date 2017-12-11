@@ -128,7 +128,7 @@ def dl_usr(Session, user, section, DB, sync=False, speed=1, force=0):
 
         page_i += 1
 
-def update(Session, DB, users=[], sections=[], force=0, speed=2):
+def update(Session, DB, users=[], sections=[], speed=2, force=0):
     users_db = DB.execute("SELECT name, folders FROM users ORDER BY name ASC")
     download = False
     for u in users_db:
