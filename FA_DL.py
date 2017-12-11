@@ -124,7 +124,7 @@ def dl_usr(Session, user, section, DB, sync=False, speed=1, force=0):
                 fadb.usr_up(DB, user, ID.zfill(10), section_db[section])
             elif s_ret == 3:
                 print(" | Page Error")
-            if signal.SIGINT in signal.sigpending(): return 0
+            if signal.SIGINT in signal.sigpending(): return 5
 
         page_i += 1
 

@@ -73,7 +73,7 @@ try:
             fadb.ins_usr(DB, u)
             for s in sections:
                 d = fadl.dl_usr(Session, u, s, DB, sync, speed, force)
-                if d in (0,1,2,3):
+                if d in (0,1,2,3,5):
                     if s == 'e':
                         fadb.usr_rep(DB, u, 'E', 'e', 'FOLDERS')
                     elif s == 'E':
@@ -82,6 +82,7 @@ try:
                         fadb.usr_up(DB, u, s, 'FOLDERS')
                 elif d == 4:
                     fadb.usr_rep(DB, u, s, s+'!', 'FOLDERS')
+                if d == 5: sys.exit(130)
 
     signal.pthread_sigmask(signal.SIG_UNBLOCK, {signal.SIGINT})
 except KeyboardInterrupt:
