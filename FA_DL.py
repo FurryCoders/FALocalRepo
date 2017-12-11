@@ -85,8 +85,13 @@ def dl_usr(Session, user, section, DB, sync=False, speed=1, force=0):
             page_p = page_p.find('section', id="gallery-gallery")
 
         if page_p == None:
-            if page_i == 1: return 4
-            else: return 0
+            if section in ('e','E'):
+                print("--->No submissions to download")
+                return 1
+            elif page_i == 1:
+                return 4
+            else:
+                return 0
 
         if page_p.find('figure') is None:
             if page_i == 1:
