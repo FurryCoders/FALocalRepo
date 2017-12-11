@@ -155,6 +155,7 @@ def update(Session, DB, users=[], sections=[], speed=2, force=0):
                     print(f'-->{section_full[s]} DISABLED')
                     fadb.usr_rep(DB, u[0], s, s+'!', 'FOLDERS')
                     download_u = True
+                if d == 5: return
             except KeyboardInterrupt:
                 return
         if not download_u:
