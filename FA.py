@@ -13,7 +13,7 @@ try:
     users = [u for u in users if u != '']
 
     sections = input('Insert sections: ')
-    sections = [s for s in sections if s in ('g','s','f','e','E')]
+    sections = re.sub('[^gsfeE]', '', sections)
 
     speed = 1 ; update = False
     sync = False ; force = 0
@@ -67,14 +67,14 @@ try:
         print('Download', end='')
         for u in users:
             print(f'\n->{u}', end='', flush=True)
+            sections_u = sections
             if not fadl.check_page(Session, f'user/{u}'):
-                print(' - Failed')
-                if 'g' in sections or 's' in sections:
-                    continue
-            else:
-                print()
+                print(' - Failed', end='')
+                sections_u = re.sub('[^eE]', '', sections_u)
+            print()
+            if len(sections_u) == 0: continue
             fadb.ins_usr(DB, u)
-            for s in sections:
+            for s in sections_u:
                 d = fadl.dl_usr(Session, u, s, DB, sync, speed, force)
                 if d in (0,1,2,3,5):
                     if s == 'e':
