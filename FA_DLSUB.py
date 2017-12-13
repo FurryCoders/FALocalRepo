@@ -117,9 +117,10 @@ def str_clean(string):
 def dl_sub(Session, ID, folder, DB, quiet=False, check=False, speed=1):
     if check:
         if fadb.sub_exists(DB, ID):
-            cols = os.get_terminal_size()[0]
+            cols = os.get_terminal_size()[0] - 38
+            if cols < 0: cols = 0
             titl = str_clean(fadb.sub_read(DB, ID, "title"))
-            print(f'{titl[0:cols-38]}', end='', flush=True)
+            print(f'{titl[0:cols-38]} ... ', end='', flush=True)
             return 2
 
     page = get_page(Session, ID)
@@ -129,8 +130,9 @@ def dl_sub(Session, ID, folder, DB, quiet=False, check=False, speed=1):
     desc = get_desc(page)
 
     if quiet:
-        cols = os.get_terminal_size()[0]
-        print(f'{str_clean(data[1])[0:cols-38]}', end='', flush=True)
+        cols = os.get_terminal_size()[0] - 38
+        if cols < 0: cols = 0
+        print(f'{str_clean(data[1])[0:cols-38]} ... ', end='', flush=True)
     else:
         print(f'->Author: {str_clean(data[0])}')
         print(f'->Title: {str_clean(data[1])}')

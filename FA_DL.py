@@ -115,9 +115,10 @@ def dl_usr(Session, user, section, DB, sync=False, speed=1, force=0):
             folder = f'FA.files/{tiers(ID)}/{ID:0>10}'
 
             if fadb.usr_src(DB, user, ID.zfill(10), section_db[section]):
-                cols = os.get_terminal_size()[0]
+                cols = os.get_terminal_size()[0] - 38
+                if cols < 0: cols = 0
                 titl = dlsub.str_clean(sub.find_all('a')[1].string)
-                print(f'{titl[0:cols-38]} | Repository')
+                print(f'{titl[0:cols]} | Repository')
                 if force == 1 and page_i <= 2: continue
                 if force == 2: continue
                 if sync and sub_i > 1: return 2
@@ -126,16 +127,16 @@ def dl_usr(Session, user, section, DB, sync=False, speed=1, force=0):
 
             s_ret = dlsub.dl_sub(Session, ID, folder, DB, True, True, speed)
             if s_ret == 0:
-                print(" | Downloaded")
+                print("\033[5D | Downloaded")
                 fadb.usr_up(DB, user, ID.zfill(10), section_db[section])
             elif s_ret == 1:
-                print(" | File Error")
+                print("\033[5D | File Error")
                 fadb.usr_up(DB, user, ID.zfill(10), section_db[section])
             elif s_ret == 2:
-                print(" | Repository")
+                print("\033[5D | Repository")
                 fadb.usr_up(DB, user, ID.zfill(10), section_db[section])
             elif s_ret == 3:
-                print(" | Page Error")
+                print("\033[5D | Page Error")
             if signal.SIGINT in signal.sigpending(): return 5
 
         page_i += 1
