@@ -109,6 +109,8 @@ def dl_usr(Session, user, section, DB, sync=False, speed=1, force=0):
 
         sub_i = 0
         for sub in page_p.findAll('figure'):
+            if signal.SIGINT in signal.sigpending(): return 5
+            
             sub_i += 1
             ID = sub.get('id')[4:]
             print(f'--->{page_i:03d}/{sub_i:02d}) {ID:0>10} - ', end='', flush=True)
@@ -125,6 +127,8 @@ def dl_usr(Session, user, section, DB, sync=False, speed=1, force=0):
                 elif sync and sub_i+page_i == 2: return 3
                 else: continue
 
+            if signal.SIGINT in signal.sigpending(): return 5
+
             s_ret = dlsub.dl_sub(Session, ID, folder, DB, True, True, speed)
             if s_ret == 0:
                 print("\033[5D | Downloaded")
@@ -137,6 +141,7 @@ def dl_usr(Session, user, section, DB, sync=False, speed=1, force=0):
                 fadb.usr_up(DB, user, ID.zfill(10), section_db[section])
             elif s_ret == 3:
                 print("\033[5D | Page Error")
+
             if signal.SIGINT in signal.sigpending(): return 5
 
         page_i += 1
@@ -151,21 +156,19 @@ def update(Session, DB, users=[], sections=[], speed=2, force=0):
         for s in u[1].split(','):
             if len(sections) != 0 and s not in sections: continue
             if s[-1] == '!': continue
-            try:
-                d = dl_usr(Session, u[0], s, DB, True, speed, force)
-                if d in (0,2):
-                    if force not in (1,2): print('\033[1A\033[2K', end='', flush=True)
-                    download_u = True
-                elif d in (1,3):
+            d = dl_usr(Session, u[0], s, DB, True, speed, force)
+            if d in (0,2):
+                if force not in (1,2): print('\033[1A\033[2K', end='', flush=True)
+                download_u = True
+            elif d in (1,3):
                     if force not in (1,2): print('\033[1A\033[2K\033[1A\033[2K', end='', flush=True)
-                elif d == 4:
-                    print('\033[1A\033[2K', end='', flush=True)
-                    print(f'-->{section_full[s]} DISABLED')
-                    fadb.usr_rep(DB, u[0], s, s+'!', 'FOLDERS')
-                    download_u = True
-                if d == 5: return
-            except KeyboardInterrupt:
-                return
+            elif d == 4:
+                print('\033[1A\033[2K', end='', flush=True)
+                print(f'-->{section_full[s]} DISABLED')
+                fadb.usr_rep(DB, u[0], s, s+'!', 'FOLDERS')
+                download_u = True
+            if d == 5: return
+            if signal.SIGINT in signal.sigpending(): return
         if not download_u:
             if force not in (1,2): print('\033[1A\033[2K', end='', flush=True)
         else: download = True

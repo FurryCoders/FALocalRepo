@@ -63,6 +63,7 @@ try:
     if update:
         print('Update')
         fadl.update(Session, DB, users, sections, speed, force)
+        if signal.SIGINT in signal.sigpending():  sys.exit(130)
     else:
         print('Download', end='')
         for u in users:
