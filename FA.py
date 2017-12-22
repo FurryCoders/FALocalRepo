@@ -4,6 +4,30 @@ import sys, signal
 import FA_DL as fadl
 import FA_DB as fadb
 
+def session():
+    print('Checking connection ... ', end='', flush=True)
+    if fadl.ping('http://www.furaffinity.net'):
+        print('Done')
+    else:
+        print('Failed')
+        sys.exit(2)
+
+    print('Creating session & adding cookies ... ', end='', flush=True)
+    try:
+        Session = fadl.make_session()
+        print('Done')
+    except FileNotFoundError:
+        print('Failed')
+        sys.exit(3)
+
+    print('Checking cookies & bypassing cloudflare ... ', end='', flush=True)
+    if fadl.check_cookies(Session):
+        print('Done')
+    else:
+        print('Failed')
+        sys.exit(4)
+    return Session
+
 try:
     users = input('Insert username: ')
     users = users.lower()
@@ -34,10 +58,8 @@ except KeyboardInterrupt:
 print()
 
 try:
-    if not fadl.ping('http://www.furaffinity.net'): sys.exit(2)
-    try: Session = fadl.make_session()
-    except FileNotFoundError: sys.exit(3)
-    if not fadl.check_cookies(Session): sys.exit(4)
+    Session = session()
+    print()
 
     DB = sqlite3.connect('FA.db')
     DB.execute('''CREATE TABLE IF NOT EXISTS SUBMISSIONS
