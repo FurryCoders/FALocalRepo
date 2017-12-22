@@ -159,7 +159,7 @@ def dl_sub(Session, ID, folder, DB, quiet=False, check=False, speed=1):
     sub_info = (data[4], data[0], data[0].lower().replace('_', ''), data[1], data[2], data[3], link, subf, folder.split('/',1)[-1])
     fadb.ins_sub(DB, sub_info)
 
-    if subf == '':
+    if subf == False:
         return 1
     else:
         return 0
