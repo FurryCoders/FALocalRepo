@@ -1,4 +1,4 @@
-import requests, json, bs4
+import requests, cfscrape, json, bs4
 import os, sys, signal
 import sqlite3
 import FA_DLSUB as dlsub
@@ -35,7 +35,7 @@ def ping(url):
         return False
 
 def make_session(cookies_file='FA.cookies'):
-    Session = requests.Session()
+    Session = cfscrape.create_scraper()
 
     try:
         with open(cookies_file) as f: cookies = json.load(f)
@@ -110,7 +110,7 @@ def dl_usr(Session, user, section, DB, sync=False, speed=1, force=0):
         sub_i = 0
         for sub in page_p.findAll('figure'):
             if signal.SIGINT in signal.sigpending(): return 5
-            
+
             sub_i += 1
             ID = sub.get('id')[4:]
             print(f'--->{page_i:03d}/{sub_i:02d}) {ID:0>10} - ', end='', flush=True)
