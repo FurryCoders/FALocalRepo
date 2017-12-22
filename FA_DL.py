@@ -34,7 +34,7 @@ def ping(url):
     except:
         return False
 
-def make_session(cookies_file='FA.cookies'):
+def session_make(cookies_file='FA.cookies'):
     Session = cfscrape.create_scraper()
 
     try:

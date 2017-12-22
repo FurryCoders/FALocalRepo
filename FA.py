@@ -14,7 +14,7 @@ def session():
 
     print('Creating session & adding cookies ... ', end='', flush=True)
     try:
-        Session = fadl.make_session()
+        Session = fadl.session_make()
         print('Done')
     except FileNotFoundError:
         print('Failed')
