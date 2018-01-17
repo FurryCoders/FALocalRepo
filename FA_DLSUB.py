@@ -2,8 +2,13 @@ import requests, bs4
 import re
 import os
 import time
-import magic
 import FA_DB as fadb
+
+if sys.platform not in ('win32', 'cygwin'):
+    import magic
+    magic_flag = True
+else:
+    magic_flag = False
 
 months = {
     'January' : '01',
@@ -94,8 +99,11 @@ def get_file(link, folder, speed=1):
 
     if not os.path.isfile(folder+'/submission.temp'): return False
 
-    mime = magic.from_file(folder+'/submission.temp', mime=True)
-    mime = filetypes.get(mime, mime.split('/')[-1])
+    if magic_flag:
+        mime = magic.from_file(folder+'/submission.temp', mime=True)
+        mime = filetypes.get(mime, mime.split('/')[-1])
+    else:
+        mime = link.split('.')[-1]
 
     if mime == 'inode/x-empty':
         os.remove(folder+'/submission.temp')
