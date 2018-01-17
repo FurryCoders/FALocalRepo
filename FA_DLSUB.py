@@ -1,6 +1,6 @@
 import requests, bs4
 import re
-import os
+import os, sys
 import time
 import FA_DB as fadb
 
