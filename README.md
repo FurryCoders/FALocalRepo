@@ -2,10 +2,10 @@
 Pure Python script to download any user's gallery/scraps/favorites and more from FurAffinity forum in an easily handled database.
 
 **Warning**: A cookie file named FA.cookies in json format is needed.<br>
-**Warning**: At the moment the script does NOT work on Windows because of how Windows handles signals, specifically SIGINT which is intercepted to exit the script safely.
+**Warning**: On windows safe exit and automated filetype management do NOT work
 
 ## Usage
-Run `FA.py` with Python 3.x or create a binary.
+Run `FA.py` with Python 3.x, use the provided binaries or compile your own.
 
 1. `Insert username: `<br>
 First field is reserved for users. To download or sync a specific user/s insert the username (url or userpage name are both valid)
