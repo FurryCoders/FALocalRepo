@@ -1,8 +1,14 @@
 import requests, cfscrape, json, bs4
-import os, sys, signal
+import os, sys
 import sqlite3
 import FA_DLSUB as dlsub
 import FA_DB as fadb
+
+if sys.platform not in ('win32', 'cygwin'):
+    import signal
+    signal_flag = True
+else:
+    signal_flag = False
 
 section_full = {
     'g' : 'gallery',
@@ -109,7 +115,8 @@ def dl_usr(Session, user, section, DB, sync=False, speed=1, force=0):
 
         sub_i = 0
         for sub in page_p.findAll('figure'):
-            if signal.SIGINT in signal.sigpending(): return 5
+            if signal_flag:
+                if signal.SIGINT in signal.sigpending(): return 5
 
             sub_i += 1
             ID = sub.get('id')[4:]
@@ -128,7 +135,8 @@ def dl_usr(Session, user, section, DB, sync=False, speed=1, force=0):
                     else: return 2
                 continue
 
-            if signal.SIGINT in signal.sigpending(): return 5
+            if signal_flag:
+                if signal.SIGINT in signal.sigpending(): return 5
 
             s_ret = dlsub.dl_sub(Session, ID, folder, DB, True, True, speed)
             if s_ret == 0:
@@ -143,7 +151,8 @@ def dl_usr(Session, user, section, DB, sync=False, speed=1, force=0):
             elif s_ret == 3:
                 print("\033[5D | Page Error")
 
-            if signal.SIGINT in signal.sigpending(): return 5
+            if signal_flag:
+                if signal.SIGINT in signal.sigpending(): return 5
 
         page_i += 1
 
@@ -169,7 +178,8 @@ def update(Session, DB, users=[], sections=[], speed=2, force=0):
                 fadb.usr_rep(DB, u[0], s, s+'!', 'FOLDERS')
                 download_u = True
             if d == 5: return
-            if signal.SIGINT in signal.sigpending(): return
+            if signal_flag:
+                if signal.SIGINT in signal.sigpending(): return
         if not download_u:
             if force not in (1,2): print('\033[1A\033[2K', end='', flush=True)
         else: download = True

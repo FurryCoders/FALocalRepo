@@ -1,8 +1,14 @@
 import sqlite3
 import re
-import sys, signal
+import sys
 import FA_DL as fadl
 import FA_DB as fadb
+
+if sys.platform not in ('win32', 'cygwin'):
+    import signal
+    signal_flag = True
+else:
+    signal_flag = False
 
 def session():
     print('Checking connection ... ', end='', flush=True)
@@ -80,12 +86,14 @@ try:
         FAVORITES TEXT,
         EXTRAS TEXT);''')
 
-    signal.pthread_sigmask(signal.SIG_BLOCK, {signal.SIGINT})
+    if signal_flag:
+        signal.pthread_sigmask(signal.SIG_BLOCK, {signal.SIGINT})
 
     if update:
         print('Update')
         fadl.update(Session, DB, users, sections, speed, force)
-        if signal.SIGINT in signal.sigpending():  sys.exit(130)
+        if signal_flag:
+            if signal.SIGINT in signal.sigpending():  sys.exit(130)
     else:
         print('Download', end='')
         for u in users:
@@ -110,7 +118,8 @@ try:
                     fadb.usr_rep(DB, u, s, s+'!', 'FOLDERS')
                 if d == 5: sys.exit(130)
 
-    signal.pthread_sigmask(signal.SIG_UNBLOCK, {signal.SIGINT})
+    if signal_flag:
+        signal.pthread_sigmask(signal.SIG_UNBLOCK, {signal.SIGINT})
 except KeyboardInterrupt:
     print('\033[2D  \033[2D', flush=True)
     sys.exit(0)
