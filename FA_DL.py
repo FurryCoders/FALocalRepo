@@ -121,11 +121,12 @@ def dl_usr(Session, user, section, DB, sync=False, speed=1, force=0):
                 if cols < 0: cols = 0
                 titl = dlsub.str_clean(sub.find_all('a')[1].string)
                 print(f'{titl[0:cols]} | Repository')
-                if force == 1 and page_i <= 2: continue
-                if force == 2: continue
-                if sync and sub_i > 1: return 2
-                elif sync and sub_i+page_i == 2: return 3
-                else: continue
+                if sync:
+                    if force == 1 and page_i <= 2: continue
+                    if force == 2: continue
+                    if sub_i+page_i == 2: return 3
+                    else: return 2
+                continue
 
             if signal.SIGINT in signal.sigpending(): return 5
 
