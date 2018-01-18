@@ -1,5 +1,5 @@
 # FALocalRepo
-Pure Python script to download any user's gallery/scraps/favorites and more from FurAffinity forum in an easily handled database.
+Pure Python program to download any user's gallery/scraps/favorites and more from FurAffinity forum in an easily handled database.
 
 **Warning**: A cookie file named FA.cookies in json format is needed.<br>
 **Warning**: On windows safe exit and automated filetype management do NOT work
@@ -33,8 +33,19 @@ Last field is reserved for options. These can be:
     * A - All<br>
     Like 'F' but it will prevent interrupting download for the whole section (this means **ALL** pages from each user will be checked, only use for a limited ammount of users)
 
+After inserting the necessary usernames/sections/options (and making sure their combination is valid) the program will:
+1. Check connection to FA website
+2. Build a Session object and add the provided cookies
+3. Check validity of cookies and bypass cloudflare
+
+If all these steps are completed without errors then the program will proceed to download the targets. As a bonus feature the program will also handle filetypes to make sure the submission files have the correct extension.
+
+If you run the program on Unix systems then you can use CTRL-C to safely interrupt the program. It will complete the submission download in progress and exit at the first safe point, this works in all parts of the program, download, sync and update.
+
+If you run the program on Windows systems however safe exit will **NOT** work. This is caused byt the completely different way in which Windows handles signals, specifically SIGINT, interrupt signal sent by CTRL-C and used by this program. The functions are built to be realtively safe in how they handles database updates and downloads but it is suggested not to interrupt any operation to avoid errors. Automatic filetypes handling will not work either, instead the program will use the submission file link to determine the correct extension but this can cause problems, especially with image files as often they are incorrectly handled by FA. A future update will include a fix for this issue as well as a tool to check downloaded submission files and their filetypes.
+
 ## Cookies
-The script needs to use cookies from a login session to successfully connect to FA. These cookies need to be in json format and can be easily extracted from Firefox/Chrome/Opera/Vivaldi/etc... using extensions or  manually. The value must be written in a file named FA.cookies<br>
+The program needs to use cookies from a login session to successfully connect to FA. These cookies need to be in json format and can be easily extracted from Firefox/Chrome/Opera/Vivaldi/etc... using extensions or  manually. The value must be written in a file named FA.cookies<br>
 What follows is an example cookie (not working).
 ```json
 [
