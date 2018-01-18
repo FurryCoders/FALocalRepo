@@ -1,8 +1,8 @@
 import requests, cfscrape, json, bs4
 import os, sys
 import sqlite3
-import FA_DLSUB as dlsub
-import FA_DB as fadb
+from .FA_DLSUB import dl_sub, str_clean
+from .FA_DB import usr_src, usr_up, usr_rep
 
 if sys.platform not in ('win32', 'cygwin'):
     import signal
@@ -123,10 +123,10 @@ def dl_usr(Session, user, section, DB, sync=False, speed=1, force=0):
             print(f'--->{page_i:03d}/{sub_i:02d}) {ID:0>10} - ', end='', flush=True)
             folder = f'FA.files/{tiers(ID)}/{ID:0>10}'
 
-            if fadb.usr_src(DB, user, ID.zfill(10), section_db[section]):
+            if usr_src(DB, user, ID.zfill(10), section_db[section]):
                 cols = os.get_terminal_size()[0] - 38
                 if cols < 0: cols = 0
-                titl = dlsub.str_clean(sub.find_all('a')[1].string)
+                titl = str_clean(sub.find_all('a')[1].string)
                 print(f'{titl[0:cols]} | Repository')
                 if sync:
                     if force == 1 and page_i <= 2: continue
@@ -138,16 +138,16 @@ def dl_usr(Session, user, section, DB, sync=False, speed=1, force=0):
             if signal_flag:
                 if signal.SIGINT in signal.sigpending(): return 5
 
-            s_ret = dlsub.dl_sub(Session, ID, folder, DB, True, True, speed)
+            s_ret = dl_sub(Session, ID, folder, DB, True, True, speed)
             if s_ret == 0:
                 print("\033[5D | Downloaded")
-                fadb.usr_up(DB, user, ID.zfill(10), section_db[section])
+                usr_up(DB, user, ID.zfill(10), section_db[section])
             elif s_ret == 1:
                 print("\033[5D | File Error")
-                fadb.usr_up(DB, user, ID.zfill(10), section_db[section])
+                usr_up(DB, user, ID.zfill(10), section_db[section])
             elif s_ret == 2:
                 print("\033[5D | Repository")
-                fadb.usr_up(DB, user, ID.zfill(10), section_db[section])
+                usr_up(DB, user, ID.zfill(10), section_db[section])
             elif s_ret == 3:
                 print("\033[5D | Page Error")
 
@@ -175,7 +175,7 @@ def update(Session, DB, users=[], sections=[], speed=2, force=0):
             elif d == 4:
                 print('\033[1A\033[2K', end='', flush=True)
                 print(f'-->{section_full[s]} DISABLED')
-                fadb.usr_rep(DB, u[0], s, s+'!', 'FOLDERS')
+                usr_rep(DB, u[0], s, s+'!', 'FOLDERS')
                 download_u = True
             if d == 5: return
             if signal_flag:

@@ -2,7 +2,7 @@ import requests, bs4
 import re
 import os, sys
 import time
-import FA_DB as fadb
+from .FA_DB import sub_exists,sub_read, ins_sub
 
 if sys.platform not in ('win32', 'cygwin'):
     import magic
@@ -125,10 +125,10 @@ def str_clean(string):
 
 def dl_sub(Session, ID, folder, DB, quiet=False, check=False, speed=1):
     if check:
-        if fadb.sub_exists(DB, ID):
+        if sub_exists(DB, ID):
             cols = os.get_terminal_size()[0] - 38
             if cols < 0: cols = 0
-            titl = str_clean(fadb.sub_read(DB, ID, "title"))
+            titl = str_clean(sub_read(DB, ID, "title"))
             print(f'{titl[0:cols]} ... ', end='', flush=True)
             return 2
 
@@ -166,7 +166,7 @@ def dl_sub(Session, ID, folder, DB, quiet=False, check=False, speed=1):
         f.write(f'File: {link}\n')
 
     sub_info = (data[4], data[0], data[0].lower().replace('_', ''), data[1], data[2], data[3], link, subf, folder.split('/',1)[-1])
-    fadb.ins_sub(DB, sub_info)
+    ins_sub(DB, sub_info)
 
     if subf == False:
         return 1
