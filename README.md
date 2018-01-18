@@ -40,9 +40,8 @@ After inserting the necessary usernames/sections/options (and making sure their 
 
 If all these steps are completed without errors then the program will proceed to download the targets. As a bonus feature the program will also handle filetypes to make sure the submission files have the correct extension.
 
-If you run the program on Unix systems then you can use CTRL-C to safely interrupt the program. It will complete the submission download in progress and exit at the first safe point, this works in all parts of the program, download, sync and update.
-
-If you run the program on Windows systems however safe exit will **NOT** work. This is caused byt the completely different way in which Windows handles signals, specifically SIGINT, interrupt signal sent by CTRL-C and used by this program. The functions are built to be realtively safe in how they handles database updates and downloads but it is suggested not to interrupt any operation to avoid errors. Automatic filetypes handling will not work either, instead the program will use the submission file link to determine the correct extension but this can cause problems, especially with image files as often they are incorrectly handled by FA. A future update will include a fix for this issue as well as a tool to check downloaded submission files and their filetypes.
+If you run the program on Unix systems then you can use CTRL-C to safely interrupt the program. It will complete the submission download in progress and exit at the first safe point, this works in all parts of the program, download, sync and update.<br>
+If you run the program on Windows systems however safe exit will **NOT** work. This is caused byt the completely different way in which Windows handles signals, specifically SIGINT, interrupt signal sent by CTRL-C and used by this program. The functions are built to be realtively safe in how they handles database updates and downloads but it is suggested not to interrupt any operation to avoid errors.
 
 ## Cookies
 The program needs to use cookies from a login session to successfully connect to FA. These cookies need to be in json format and can be easily extracted from Firefox/Chrome/Opera/Vivaldi/etc... using extensions or  manually. The value must be written in a file named FA.cookies<br>
@@ -91,6 +90,7 @@ The following modules are used but available by default:
 * [json](https://docs.python.org/3/library/json.html)
 * [os](https://docs.python.org/3.1/library/os.html)
 * [re](https://docs.python.org/3.1/library/re.html)
+* [signal](https://docs.python.org/3.1/library/signal.html) (only for Unix)
 * [sqlite3](https://docs.python.org/3.1/library/sqlite3.html)
 * [sys](https://docs.python.org/3.1/library/sys.html)
 * [time](https://docs.python.org/3.1/library/time.html)
