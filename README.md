@@ -12,24 +12,24 @@ First field is reserved for users. To download or sync a specific user/s insert 
 
 2. `Insert sections: `<br>
 Second field is reserved for sections. These can be:
-  * g - Gallery
-  * s - Scraps
-  * f - Favorites
-  * e - Extras partial<br>
-  Searches submissions that contain ':iconusername:' OR ':usernameicon:' in the description AND NOT from username gallery/scraps
-  * E - Extras full<br>
-  Like partial but also searches for 'username' in the descriptions
+    * g - Gallery
+    * s - Scraps
+    * f - Favorites
+    * e - Extras partial<br>
+    Searches submissions that contain ':iconusername:' OR ':usernameicon:' in the description AND NOT from username gallery/scraps
+    * E - Extras full<br>
+    Like partial but also searches for 'username' in the descriptions
 
 3. `Insert options: `<br>
 Last field is reserved for options. These can be:
-  * Y - Sync<br>
-  Stops download when a submission already present in the user database entry is encountered
-  * U - Update<br>
-  Reads usernames from the database and downloads new submissions in the respective sections. This option can be used without specifying a users or sections, if either is specified then the uodatewill belimited to those user/s and/or section/s.
-  * F - Force<br>
-  Prevents update and sync from stopping download at the first already present submission. Download stops at the first downloaded submission from page 3 included
-  * A - All<br>
-  Like 'F' but it will prevent interrupting download for the whole section (this means **ALL** pages from each user will be checked, only use for a limited ammount of users)
+    * Y - Sync<br>
+    Stops download when a submission already present in the user database entry is encountered
+    * U - Update<br>
+    Reads usernames from the database and downloads new submissions in the respective sections. This option can be used without specifying a users or sections, if either is specified then the uodatewill belimited to those user/s and/or section/s.
+    * F - Force<br>
+    Prevents update and sync from stopping download at the first already present submission. Download stops at the first downloaded submission from page 3 included
+    * A - All<br>
+    Like 'F' but it will prevent interrupting download for the whole section (this means **ALL** pages from each user will be checked, only use for a limited ammount of users)
 
 ## Cookies
 The script needs to use cookies from a login session to successfully connect to FA. These cookies need to be in json format and can be easily extracted from Firefox/Chrome/Opera/Vivaldi/etc... using extensions or  manually. The value must be wirtten in a file named FA.cookies<br>
