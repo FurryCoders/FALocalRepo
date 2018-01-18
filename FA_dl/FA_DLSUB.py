@@ -2,13 +2,8 @@ import requests, bs4
 import re
 import os, sys
 import time
+import filetype
 from FA_db import sub_exists, sub_read, ins_sub
-
-if sys.platform not in ('win32', 'cygwin'):
-    import magic
-    magic_flag = True
-else:
-    magic_flag = False
 
 months = {
     'January' : '01',
@@ -23,18 +18,6 @@ months = {
     'October' : '10',
     'November' : '11',
     'December' : '12'
-    }
-filetypes = {
-    'application/msword.vnd.openxmlformats-officedocument.wordprocessingml.document' : 'docx',
-    'application/vnd.openxmlformats-officedocument.wordprocessingml.document' : 'docx',
-    'application/msword' : 'doc',
-    'application/vnd.oasis.opendocument.text' : 'odt',
-    'text/plain' : 'txt',
-    'image/vnd.adobe.photoshop' : 'tif',
-    'audio/x-wav' : 'wav',
-    'application/x-shockwave-flash' : 'swf',
-    'application/x-rar' : 'rar',
-    'inode/x-empty': 'inode/x-empty'
     }
 
 def get_page(Session, ID):
@@ -99,23 +82,13 @@ def get_file(link, folder, speed=1):
 
     if not os.path.isfile(folder+'/submission.temp'): return False
 
-    if magic_flag:
-        mime = magic.from_file(folder+'/submission.temp', mime=True)
-        mime = filetypes.get(mime, mime.split('/')[-1])
-    else:
-        mime = link.split('.')[-1].lower()
-        if mime == link.lower(): mime = 'uknwn'
+    ext = filetype.guess_extension(folder+'/submission.temp')
+    os.rename(folder+'/submission.temp', folder+'/submission.'+str(ext))
 
-    if mime == 'inode/x-empty':
-        os.remove(folder+'/submission.temp')
-        mime = ''
+    if ext:
+        return 'submission.'+str(ext)
     else:
-        os.rename(folder+'/submission.temp', folder+'/submission.'+mime)
-
-    if mime == '':
         return False
-    else:
-        return 'submission.'+mime
 
 def str_clean(string):
     if string == None or string == '':
