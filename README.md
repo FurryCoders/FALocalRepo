@@ -5,7 +5,7 @@ Pure Python program to download any user's gallery/scraps/favorites and more fro
 **Warning**: On windows safe exit and automated filetype management do NOT work
 
 ## Usage
-Run `FA.py` with Python 3.x, use the provided binaries or compile your own.
+Use the provided binaries or build your own (build instructions at the end)
 
 1. `Insert username: `<br>
 First field is reserved for users. To download or sync a specific user/s insert the username/s (url or userpage name are both valid)
@@ -76,3 +76,25 @@ The following cookie names are needed in order to successfully connect:
 * n
 * s
 * \_adb
+
+## Build & Run without binaries
+This program is coded with Python 3.x in mind, Python 2.x will **NOT** work.
+
+To run and/or build the program you will need the following pypi modules:
+* [requests](https://github.com/requests/requests)
+* [cfscrape](https://github.com/Anorov/cloudflare-scrape)
+* [beautifulsoup4](https://www.crummy.com/software/BeautifulSoup/)
+* [lxml](https://github.com/lxml/lxml/)
+
+The following modules are needed only on Unix for the time being:
+* [python-magic](http://github.com/ahupp/python-magic)
+
+The following modules are used but available by default:
+* [json](https://docs.python.org/3/library/json.html)
+* [os](https://docs.python.org/3.1/library/os.html)
+* [re](https://docs.python.org/3.1/library/re.html)
+* [sqlite3](https://docs.python.org/3.1/library/sqlite3.html)
+* [sys](https://docs.python.org/3.1/library/sys.html)
+* [time](https://docs.python.org/3.1/library/time.html)
+
+Once these modules are installed (suggest using `pip`) then the program can be run through the Python 3.x interpreter or built using `pyinstaller` or any other software.
