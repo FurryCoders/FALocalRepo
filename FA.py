@@ -1,6 +1,7 @@
 import sqlite3
 import re
 import sys
+import time
 import FA_db as fadb
 import FA_dl as fadl
 
@@ -77,11 +78,17 @@ try:
 
     if update:
         print('Update')
+        t = int(time.time())
+        fadb.info_up(DB, 'LASTUP', t)
         fadl.update(Session, DB, users, sections, speed, force)
+        t = int(time.time()) - t
+        fadb.info_up(DB, 'LASTUPT', t)
         if signal_flag:
             if signal.SIGINT in signal.sigpending():  sys.exit(130)
     else:
         print('Download', end='')
+        t = int(time.time())
+        fadb.info_up(DB, 'LASTDL', t)
         for u in users:
             print(f'\n->{u}', end='', flush=True)
             sections_u = sections
@@ -103,6 +110,8 @@ try:
                 elif d == 4:
                     fadb.usr_rep(DB, u, s, s+'!', 'FOLDERS')
                 if d == 5: sys.exit(130)
+        t = int(time.time()) - t
+        fadb.info_up(DB, 'LASTDLT', t)
 
     if signal_flag:
         signal.pthread_sigmask(signal.SIG_UNBLOCK, {signal.SIGINT})
