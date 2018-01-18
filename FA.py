@@ -68,23 +68,8 @@ try:
     print()
 
     DB = sqlite3.connect('FA.db')
-    DB.execute('''CREATE TABLE IF NOT EXISTS SUBMISSIONS
-        (ID INT UNIQUE PRIMARY KEY NOT NULL,
-        AUTHOR TEXT NOT NULL,
-        AUTHORURL TEXT NOT NULL,
-        TITLE TEXT,
-        UDATE CHAR(10) NOT NULL,
-        TAGS TEXT,
-        FILELINK TEXT,
-        FILENAME TEXT,
-        LOCATION TEXT NOT NULL);''')
-    DB.execute('''CREATE TABLE IF NOT EXISTS USERS
-        (NAME TEXT UNIQUE PRIMARY KEY NOT NULL,
-        FOLDERS CHAR(4) NOT NULL,
-        GALLERY TEXT,
-        SCRAPS TEXT,
-        FAVORITES TEXT,
-        EXTRAS TEXT);''')
+    fadb.mktable(DB, 'submissions')
+    fadb.mktable(DB, 'users')
 
     if signal_flag:
         signal.pthread_sigmask(signal.SIG_BLOCK, {signal.SIGINT})

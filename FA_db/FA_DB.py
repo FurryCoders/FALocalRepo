@@ -76,3 +76,24 @@ def sub_search(DB, terms):
 def sub_exists(DB, ID):
     exists = DB.execute(f'SELECT EXISTS(SELECT id FROM submissions WHERE id = "{ID}" LIMIT 1);')
     return exists.fetchall()[0][0]
+
+def mktable(DB, table):
+    if table == 'submissions':
+        DB.execute('''CREATE TABLE IF NOT EXISTS SUBMISSIONS
+            (ID INT UNIQUE PRIMARY KEY NOT NULL,
+            AUTHOR TEXT NOT NULL,
+            AUTHORURL TEXT NOT NULL,
+            TITLE TEXT,
+            UDATE CHAR(10) NOT NULL,
+            TAGS TEXT,
+            FILELINK TEXT,
+            FILENAME TEXT,
+            LOCATION TEXT NOT NULL);''')
+    elif table == 'users':
+        DB.execute('''CREATE TABLE IF NOT EXISTS USERS
+            (NAME TEXT UNIQUE PRIMARY KEY NOT NULL,
+            FOLDERS CHAR(4) NOT NULL,
+            GALLERY TEXT,
+            SCRAPS TEXT,
+            FAVORITES TEXT,
+            EXTRAS TEXT);''')
