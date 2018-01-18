@@ -70,6 +70,7 @@ try:
     DB = sqlite3.connect('FA.db')
     fadb.mktable(DB, 'submissions')
     fadb.mktable(DB, 'users')
+    fadb.mktable(DB, 'infos')
 
     if signal_flag:
         signal.pthread_sigmask(signal.SIG_BLOCK, {signal.SIGINT})
