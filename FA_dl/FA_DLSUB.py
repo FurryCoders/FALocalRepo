@@ -83,6 +83,12 @@ def get_file(link, folder, speed=1):
     if not os.path.isfile(folder+'/submission.temp'): return False
 
     ext = filetype.guess_extension(folder+'/submission.temp')
+    if ext == None:
+        ext = link.split('.')[-1]
+        if ext == link.split('/')[-1]: ext = None
+    elif ext == 'zip':
+        ext = link.split('.')[-1]
+        if ext == link.split('/')[-1]: ext = None
     os.rename(folder+'/submission.temp', folder+'/submission.'+str(ext))
 
     if ext:
