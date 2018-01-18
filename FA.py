@@ -84,7 +84,7 @@ try:
         fadl.update(Session, DB, users, sections, speed, force)
         t = int(time.time()) - t
         fadb.info_up(DB, 'LASTUPT', t)
-        fadb.info_up(DB, 'SUBN', table_n(DB, 'SUBMISSIONS'))
+        fadb.info_up(DB, 'SUBN', fadb.table_n(DB, 'SUBMISSIONS'))
         if signal_flag:
             if signal.SIGINT in signal.sigpending():  sys.exit(130)
     else:
@@ -112,8 +112,8 @@ try:
                         fadb.usr_up(DB, u, s, 'FOLDERS')
                 elif d == 4:
                     fadb.usr_rep(DB, u, s, s+'!', 'FOLDERS')
-                fadb.info_up(DB, 'USRN', table_n(DB, 'USERS'))
-                fadb.info_up(DB, 'SUBN', table_n(DB, 'SUBMISSIONS'))
+                fadb.info_up(DB, 'USRN', fadb.table_n(DB, 'USERS'))
+                fadb.info_up(DB, 'SUBN', fadb.table_n(DB, 'SUBMISSIONS'))
                 if d == 5: sys.exit(130)
         t = int(time.time()) - t
         fadb.info_up(DB, 'LASTDLT', t)
