@@ -85,9 +85,7 @@ To run and/or build the program you will need the following pypi modules:
 * [cfscrape](https://github.com/Anorov/cloudflare-scrape)
 * [beautifulsoup4](https://www.crummy.com/software/BeautifulSoup/)
 * [lxml](https://github.com/lxml/lxml/)
-
-The following modules are needed only on Unix for the time being:
-* [python-magic](http://github.com/ahupp/python-magic)
+* [filetype](https://github.com/h2non/filetype.py)
 
 The following modules are used but available by default:
 * [json](https://docs.python.org/3/library/json.html)
