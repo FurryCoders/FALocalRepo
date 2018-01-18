@@ -103,7 +103,8 @@ def get_file(link, folder, speed=1):
         mime = magic.from_file(folder+'/submission.temp', mime=True)
         mime = filetypes.get(mime, mime.split('/')[-1])
     else:
-        mime = link.split('.')[-1]
+        mime = link.split('.')[-1].lower()
+        if mime == link.lower(): mime = 'uknwn'
 
     if mime == 'inode/x-empty':
         os.remove(folder+'/submission.temp')
