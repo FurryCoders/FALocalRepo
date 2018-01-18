@@ -1,7 +1,8 @@
 import sqlite3
 import re
 import sys
-import FA_dldb as fadldb
+import FA_db as fadb
+import FA_dl as fadl
 
 if sys.platform not in ('win32', 'cygwin'):
     import signal
@@ -11,7 +12,7 @@ else:
 
 def session():
     print('Checking connection ... ', end='', flush=True)
-    if fadldb.ping('http://www.furaffinity.net'):
+    if fadl.ping('http://www.furaffinity.net'):
         print('Done')
     else:
         print('Failed')
@@ -19,14 +20,14 @@ def session():
 
     print('Creating session & adding cookies ... ', end='', flush=True)
     try:
-        Session = fadldb.session_make()
+        Session = fadl.session_make()
         print('Done')
     except FileNotFoundError:
         print('Failed')
         sys.exit(3)
 
     print('Checking cookies & bypassing cloudflare ... ', end='', flush=True)
-    if fadldb.check_cookies(Session):
+    if fadl.check_cookies(Session):
         print('Done')
     else:
         print('Failed')
@@ -90,7 +91,7 @@ try:
 
     if update:
         print('Update')
-        fadldb.update(Session, DB, users, sections, speed, force)
+        fadl.update(Session, DB, users, sections, speed, force)
         if signal_flag:
             if signal.SIGINT in signal.sigpending():  sys.exit(130)
     else:
@@ -98,23 +99,23 @@ try:
         for u in users:
             print(f'\n->{u}', end='', flush=True)
             sections_u = sections
-            if not fadldb.check_page(Session, f'user/{u}'):
+            if not fadl.check_page(Session, f'user/{u}'):
                 print(' - Failed', end='')
                 sections_u = re.sub('[^eE]', '', sections_u)
             print()
             if len(sections_u) == 0: continue
-            fadldb.ins_usr(DB, u)
+            fadb.ins_usr(DB, u)
             for s in sections_u:
-                d = fadldb.dl_usr(Session, u, s, DB, sync, speed, force)
+                d = fadl.dl_usr(Session, u, s, DB, sync, speed, force)
                 if d in (0,1,2,3,5):
                     if s == 'e':
-                        fadldb.usr_rep(DB, u, 'E', 'e', 'FOLDERS')
+                        fadb.usr_rep(DB, u, 'E', 'e', 'FOLDERS')
                     elif s == 'E':
-                        fadldb.usr_rep(DB, u, 'e', 'E', 'FOLDERS')
+                        fadb.usr_rep(DB, u, 'e', 'E', 'FOLDERS')
                     else:
-                        fadldb.usr_up(DB, u, s, 'FOLDERS')
+                        fadb.usr_up(DB, u, s, 'FOLDERS')
                 elif d == 4:
-                    fadldb.usr_rep(DB, u, s, s+'!', 'FOLDERS')
+                    fadb.usr_rep(DB, u, s, s+'!', 'FOLDERS')
                 if d == 5: sys.exit(130)
 
     if signal_flag:

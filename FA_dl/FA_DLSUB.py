@@ -2,7 +2,7 @@ import requests, bs4
 import re
 import os, sys
 import time
-from .FA_DB import sub_exists,sub_read, ins_sub
+from FA_db import sub_exists, sub_read, ins_sub
 
 if sys.platform not in ('win32', 'cygwin'):
     import magic

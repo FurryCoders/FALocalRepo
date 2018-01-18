@@ -2,7 +2,7 @@ import requests, cfscrape, json, bs4
 import os, sys
 import sqlite3
 from .FA_DLSUB import dl_sub, str_clean
-from .FA_DB import usr_src, usr_up, usr_rep
+from FA_db import usr_src, usr_up, usr_rep
 
 if sys.platform not in ('win32', 'cygwin'):
     import signal
