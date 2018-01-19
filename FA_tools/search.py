@@ -2,8 +2,6 @@ import sqlite3
 import re
 import time, os, sys
 
-if not os.path.isfile('FA.db'): sys.exit(1)
-
 def regexp(pattern, input):
     return bool(re.match(pattern, input, flags=re.IGNORECASE))
 
