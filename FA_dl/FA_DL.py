@@ -3,7 +3,7 @@ import os, sys
 import sqlite3
 from .FA_DLSUB import dl_sub, str_clean
 from FA_db import usr_src, usr_up, usr_rep
-from FA_tools import sigint_check
+from FA_tools import sigint_check, tiers
 
 section_full = {
     'g' : 'gallery',
@@ -19,14 +19,6 @@ section_db = {
     'e' : 'EXTRAS',
     'E' : 'EXTRAS'
     }
-
-def tiers(ID, t1=10000000, t2=1000000, t3=1000):
-    ID = int(ID)
-    tier1 = ID//t1
-    tier2 = (ID-(t1*tier1))//t2
-    tier3 = ((ID-(t1*tier1))-(t2*tier2))//t3
-
-    return f'{tier1}/{tier2}/{tier3:03d}'
 
 def ping(url):
     try:
@@ -55,6 +47,30 @@ def check_cookies(Session):
         return False
     else:
         return True
+
+def session():
+    print('Checking connection ... ', end='', flush=True)
+    if ping('http://www.furaffinity.net'):
+        print('Done')
+    else:
+        print('Failed')
+        return False
+
+    print('Creating session & adding cookies ... ', end='', flush=True)
+    try:
+        Session = session_make()
+        print('Done')
+    except FileNotFoundError:
+        print('Failed')
+        return False
+
+    print('Checking cookies & bypassing cloudflare ... ', end='', flush=True)
+    if check_cookies(Session):
+        print('Done')
+    else:
+        print('Failed')
+        return False
+    return Session
 
 def check_page(Session, url):
     page_r = Session.get('https://www.furaffinity.net/'+url)

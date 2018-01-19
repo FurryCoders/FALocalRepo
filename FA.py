@@ -6,30 +6,6 @@ import FA_db as fadb
 import FA_dl as fadl
 import FA_tools as fatl
 
-def session():
-    print('Checking connection ... ', end='', flush=True)
-    if fadl.ping('http://www.furaffinity.net'):
-        print('Done')
-    else:
-        print('Failed')
-        sys.exit(2)
-
-    print('Creating session & adding cookies ... ', end='', flush=True)
-    try:
-        Session = fadl.session_make()
-        print('Done')
-    except FileNotFoundError:
-        print('Failed')
-        sys.exit(3)
-
-    print('Checking cookies & bypassing cloudflare ... ', end='', flush=True)
-    if fadl.check_cookies(Session):
-        print('Done')
-    else:
-        print('Failed')
-        sys.exit(4)
-    return Session
-
 try:
     users = input('Insert username: ')
     users = users.lower()
@@ -65,7 +41,7 @@ fadb.mktable(DB, 'users')
 fadb.mktable(DB, 'infos')
 
 print()
-Session = session()
+Session = fadl.session()
 print()
 
 if fatl.sigint_check(): sys.exit(130)
