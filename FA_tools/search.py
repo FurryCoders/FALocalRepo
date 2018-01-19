@@ -6,7 +6,9 @@ def regexp(pattern, input):
     return bool(re.match(pattern, input, flags=re.IGNORECASE))
 
 def search(DB, user, titl, tags):
-    if user == '' and titl == '' and tags == '': sys.exit(2)
+    if user == '' and titl == '' and tags == '':
+        print('At least one field must be searched')
+        return False
 
     DB.create_function("REGEXP", 2, regexp)
 
@@ -41,3 +43,15 @@ def search(DB, user, titl, tags):
         print(f'{r[0][0:10]: <10} | {r[1]} {r[3]:0>10} | {r[2][0:cols]}')
 
     print(f'\n{i} results found in {t2-t1:.3f} seconds')
+
+def main(DB):
+    while True:
+        user = input('Author: ')
+        titl = input('Title: ')
+        tags = input('Tags: ')
+
+        if not search(DB, user, titl, tags):
+            print()
+            continue
+        else:
+            break
