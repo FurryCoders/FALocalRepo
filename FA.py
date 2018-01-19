@@ -59,17 +59,16 @@ except KeyboardInterrupt:
 
 fatl.sigint_block()
 
-print()
-Session = session()
-print()
-
-if fatl.sigint_check(): sys.exit(130)
-
 DB = sqlite3.connect('FA.db')
 fadb.mktable(DB, 'submissions')
 fadb.mktable(DB, 'users')
 fadb.mktable(DB, 'infos')
 
+print()
+Session = session()
+print()
+
+if fatl.sigint_check(): sys.exit(130)
 
 if update:
     print('Update')
