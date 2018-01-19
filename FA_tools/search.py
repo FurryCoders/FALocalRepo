@@ -5,10 +5,9 @@ import time, os, sys
 def regexp(pattern, input):
     return bool(re.match(pattern, input, flags=re.IGNORECASE))
 
-def search(user, titl, tags):
+def search(DB, user, titl, tags):
     if user == '' and titl == '' and tags == '': sys.exit(2)
 
-    DB = sqlite3.connect('FA.db')
     DB.create_function("REGEXP", 2, regexp)
 
     tags_a = re.sub('( )+', ' ', tags.strip())
