@@ -57,61 +57,59 @@ except KeyboardInterrupt:
     print('\033[2D  \033[2D', flush=True)
     sys.exit(0)
 
+fatl.sigint_block()
+
+print()
+Session = session()
 print()
 
-try:
-    Session = session()
-    print()
+if fatl.sigint_check(): sys.exit(130)
 
-    DB = sqlite3.connect('FA.db')
-    fadb.mktable(DB, 'submissions')
-    fadb.mktable(DB, 'users')
-    fadb.mktable(DB, 'infos')
+DB = sqlite3.connect('FA.db')
+fadb.mktable(DB, 'submissions')
+fadb.mktable(DB, 'users')
+fadb.mktable(DB, 'infos')
 
-    fatl.sigint_block()
 
-    if update:
-        print('Update')
-        t = int(time.time())
-        fadb.info_up(DB, 'LASTUP', t)
-        fadb.info_up(DB, 'LASTUPT', 0)
-        fadl.update(Session, DB, users, sections, speed, force)
-        t = int(time.time()) - t
-        fadb.info_up(DB, 'LASTUPT', t)
-        fadb.info_up(DB, 'SUBN', fadb.table_n(DB, 'SUBMISSIONS'))
-        if fatl.sigint_check(): sys.exit(130)
-    else:
-        print('Download', end='')
-        t = int(time.time())
-        fadb.info_up(DB, 'LASTDL', t)
-        fadb.info_up(DB, 'LASTDLT', 0)
-        for u in users:
-            print(f'\n->{u}', end='', flush=True)
-            sections_u = sections
-            if not fadl.check_page(Session, f'user/{u}'):
-                print(' - Failed', end='')
-                sections_u = re.sub('[^eE]', '', sections_u)
-            print()
-            if len(sections_u) == 0: continue
-            fadb.ins_usr(DB, u)
-            for s in sections_u:
-                d = fadl.dl_usr(Session, u, s, DB, sync, speed, force)
-                if d in (0,1,2,3,5):
-                    if s == 'e':
-                        fadb.usr_rep(DB, u, 'E', 'e', 'FOLDERS')
-                    elif s == 'E':
-                        fadb.usr_rep(DB, u, 'e', 'E', 'FOLDERS')
-                    else:
-                        fadb.usr_up(DB, u, s, 'FOLDERS')
-                elif d == 4:
-                    fadb.usr_rep(DB, u, s, s+'!', 'FOLDERS')
-                fadb.info_up(DB, 'USRN', fadb.table_n(DB, 'USERS'))
-                fadb.info_up(DB, 'SUBN', fadb.table_n(DB, 'SUBMISSIONS'))
-                if d == 5: sys.exit(130)
-        t = int(time.time()) - t
-        fadb.info_up(DB, 'LASTDLT', t)
+if update:
+    print('Update')
+    t = int(time.time())
+    fadb.info_up(DB, 'LASTUP', t)
+    fadb.info_up(DB, 'LASTUPT', 0)
+    fadl.update(Session, DB, users, sections, speed, force)
+    t = int(time.time()) - t
+    fadb.info_up(DB, 'LASTUPT', t)
+    fadb.info_up(DB, 'SUBN', fadb.table_n(DB, 'SUBMISSIONS'))
+    if fatl.sigint_check(): sys.exit(130)
+else:
+    print('Download', end='')
+    t = int(time.time())
+    fadb.info_up(DB, 'LASTDL', t)
+    fadb.info_up(DB, 'LASTDLT', 0)
+    for u in users:
+        print(f'\n->{u}', end='', flush=True)
+        sections_u = sections
+        if not fadl.check_page(Session, f'user/{u}'):
+            print(' - Failed', end='')
+            sections_u = re.sub('[^eE]', '', sections_u)
+        print()
+        if len(sections_u) == 0: continue
+        fadb.ins_usr(DB, u)
+        for s in sections_u:
+            d = fadl.dl_usr(Session, u, s, DB, sync, speed, force)
+            if d in (0,1,2,3,5):
+                if s == 'e':
+                    fadb.usr_rep(DB, u, 'E', 'e', 'FOLDERS')
+                elif s == 'E':
+                    fadb.usr_rep(DB, u, 'e', 'E', 'FOLDERS')
+                else:
+                    fadb.usr_up(DB, u, s, 'FOLDERS')
+            elif d == 4:
+                fadb.usr_rep(DB, u, s, s+'!', 'FOLDERS')
+            fadb.info_up(DB, 'USRN', fadb.table_n(DB, 'USERS'))
+            fadb.info_up(DB, 'SUBN', fadb.table_n(DB, 'SUBMISSIONS'))
+            if d == 5: sys.exit(130)
+    t = int(time.time()) - t
+    fadb.info_up(DB, 'LASTDLT', t)
 
-    fatl.sigint_ublock()
-except KeyboardInterrupt:
-    print('\033[2D  \033[2D', flush=True)
-    sys.exit(0)
+fatl.sigint_ublock()
