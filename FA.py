@@ -4,12 +4,7 @@ import sys
 import time
 import FA_db as fadb
 import FA_dl as fadl
-
-if sys.platform not in ('win32', 'cygwin'):
-    import signal
-    signal_flag = True
-else:
-    signal_flag = False
+import FA_tools as fatl
 
 def session():
     print('Checking connection ... ', end='', flush=True)
@@ -73,8 +68,7 @@ try:
     fadb.mktable(DB, 'users')
     fadb.mktable(DB, 'infos')
 
-    if signal_flag:
-        signal.pthread_sigmask(signal.SIG_BLOCK, {signal.SIGINT})
+    fatl.sigint_block()
 
     if update:
         print('Update')
@@ -85,8 +79,7 @@ try:
         t = int(time.time()) - t
         fadb.info_up(DB, 'LASTUPT', t)
         fadb.info_up(DB, 'SUBN', fadb.table_n(DB, 'SUBMISSIONS'))
-        if signal_flag:
-            if signal.SIGINT in signal.sigpending():  sys.exit(130)
+        if fatl.sigint_check(): sys.exit(130)
     else:
         print('Download', end='')
         t = int(time.time())
@@ -118,8 +111,7 @@ try:
         t = int(time.time()) - t
         fadb.info_up(DB, 'LASTDLT', t)
 
-    if signal_flag:
-        signal.pthread_sigmask(signal.SIG_UNBLOCK, {signal.SIGINT})
+    fatl.sigint_ublock()
 except KeyboardInterrupt:
     print('\033[2D  \033[2D', flush=True)
     sys.exit(0)
