@@ -74,7 +74,6 @@ def dberrors(DB):
                 if sub_db[3] == None and None not in sub_db[0:3]+sub_db[4:]:
                     DB.execute(f'UPDATE submissions SET title = "" WHERE id = {int(sub)}')
                     DB.commit()
-                    continue
                 if not check_page(Session, 'view/'+sub):
                     print(' - Page Error')
                     continue
