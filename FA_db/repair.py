@@ -21,10 +21,12 @@ def find_errors(DB):
         err = [s[0]]
         if None in s:
             err.append('n')
-        if '' in (s[1], s[2], s[4], s[6], s[8]):
+        if '' in (s[1], s[2], s[4], s[8]):
             err.append('e')
-        if s[8] != tiers(s[0])+f'/{s[0]:0>10}':
+        if s[7] != '0' and s[6] == '':
             err.append('l')
+        if s[8] != tiers(s[0])+f'/{s[0]:0>10}':
+            err.append('f')
         if len(err) > 1:
             errs_vl.append(err)
 
