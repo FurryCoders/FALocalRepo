@@ -1,9 +1,10 @@
 import requests, cfscrape, json, bs4
-import os, sys
+import os, sys, time
+import re
 import sqlite3
-from .FA_DLSUB import dl_sub, str_clean
-from FA_db import usr_src, usr_up, usr_rep
 from FA_tools import sigint_check, tiers
+import FA_db as fadb
+from .FA_DLSUB import dl_sub, str_clean
 
 section_full = {
     'g' : 'gallery',
@@ -133,7 +134,7 @@ def dl_usr(Session, user, section, DB, sync=False, speed=1, force=0):
             print(f'--->{page_i:03d}/{sub_i:02d}) {ID:0>10} - ', end='', flush=True)
             folder = f'FA.files/{tiers(ID)}/{ID:0>10}'
 
-            if usr_src(DB, user, ID.zfill(10), section_db[section]):
+            if fadb.usr_src(DB, user, ID.zfill(10), section_db[section]):
                 cols = os.get_terminal_size()[0] - 38
                 if cols < 0: cols = 0
                 titl = str_clean(sub.find_all('a')[1].string)
@@ -150,13 +151,13 @@ def dl_usr(Session, user, section, DB, sync=False, speed=1, force=0):
             s_ret = dl_sub(Session, ID, folder, DB, False, True, speed)
             if s_ret == 0:
                 print("\033[5D | Downloaded")
-                usr_up(DB, user, ID.zfill(10), section_db[section])
+                fadb.usr_up(DB, user, ID.zfill(10), section_db[section])
             elif s_ret == 1:
                 print("\033[5D | File Error")
-                usr_up(DB, user, ID.zfill(10), section_db[section])
+                fadb.usr_up(DB, user, ID.zfill(10), section_db[section])
             elif s_ret == 2:
                 print("\033[5D | Repository")
-                usr_up(DB, user, ID.zfill(10), section_db[section])
+                fadb.usr_up(DB, user, ID.zfill(10), section_db[section])
             elif s_ret == 3:
                 print("\033[5D | Page Error")
 
@@ -183,7 +184,7 @@ def update(Session, DB, users=[], sections=[], speed=2, force=0):
             elif d == 4:
                 print('\033[1A\033[2K', end='', flush=True)
                 print(f'-->{section_full[s]} DISABLED')
-                usr_rep(DB, u[0], s, s+'!', 'FOLDERS')
+                fadb.usr_rep(DB, u[0], s, s+'!', 'FOLDERS')
                 download_u = True
             if d == 5: return
             if sigint_check(): return
@@ -191,3 +192,81 @@ def update(Session, DB, users=[], sections=[], speed=2, force=0):
             if force not in (1,2): print('\033[1A\033[2K', end='', flush=True)
         else: download = True
     if not download: print("Nothing new to download")
+
+
+def download(DB):
+    while True:
+        users = input('Insert username: ')
+        users = users.lower()
+        users = re.sub('([^a-zA-Z0-9\-., ])', '', users)
+        users = re.sub('( )+', ',', users.strip())
+        users = users.split(',')
+        users = [u for u in users if u != '']
+
+        sections = input('Insert sections: ')
+        sections = re.sub('[^gsfeE]', '', sections)
+
+        speed = 1 ; upd = False
+        sync = False ; force = 0
+        for o in input('Insert options: '):
+            if o == 'Q': speed = 2
+            elif o == 'S': speed = 0
+            elif o == 'U': upd = True
+            elif o == 'Y': sync = True
+            elif o == 'F': force = 1
+            elif o == 'A': force = 2
+        if force != 0: speed = 1
+
+        if upd or (len(users) > 0 and len(sections) > 0):
+            break
+        else:
+            print()
+
+    print()
+    Session = session()
+    print()
+
+    if not Session:
+        print('Session error')
+        return
+
+    if upd:
+        print('Update')
+        t = int(time.time())
+        fadb.info_up(DB, 'LASTUP', t)
+        fadb.info_up(DB, 'LASTUPT', 0)
+        update(Session, DB, users, sections, speed, force)
+        t = int(time.time()) - t
+        fadb.info_up(DB, 'LASTUPT', t)
+        fadb.info_up(DB, 'SUBN', fadb.table_n(DB, 'SUBMISSIONS'))
+        if sigint_check(): sys.exit(130)
+    else:
+        print('Download', end='')
+        t = int(time.time())
+        fadb.info_up(DB, 'LASTDL', t)
+        fadb.info_up(DB, 'LASTDLT', 0)
+        for u in users:
+            print(f'\n->{u}', end='', flush=True)
+            sections_u = sections
+            if not check_page(Session, f'user/{u}'):
+                print(' - Failed', end='')
+                sections_u = re.sub('[^eE]', '', sections_u)
+            print()
+            if len(sections_u) == 0: continue
+            fadb.ins_usr(DB, u)
+            for s in sections_u:
+                d = dl_usr(Session, u, s, DB, sync, speed, force)
+                if d in (0,1,2,3,5):
+                    if s == 'e':
+                        fadb.usr_rep(DB, u, 'E', 'e', 'FOLDERS')
+                    elif s == 'E':
+                        fadb.usr_rep(DB, u, 'e', 'E', 'FOLDERS')
+                    else:
+                        fadb.usr_up(DB, u, s, 'FOLDERS')
+                elif d == 4:
+                    fadb.usr_rep(DB, u, s, s+'!', 'FOLDERS')
+                fadb.info_up(DB, 'USRN', fadb.table_n(DB, 'USERS'))
+                fadb.info_up(DB, 'SUBN', fadb.table_n(DB, 'SUBMISSIONS'))
+                if d == 5: sys.exit(130)
+        t = int(time.time()) - t
+        fadb.info_up(DB, 'LASTDLT', t)
