@@ -5,22 +5,24 @@ def ins_usr(DB, user):
         DB.execute(f'''INSERT INTO USERS
             (NAME,FOLDERS,GALLERY,SCRAPS,FAVORITES,EXTRAS)
             VALUES ("{user}", "", "", "", "", "")''')
-        DB.commit()
     except sqlite3.IntegrityError:
         pass
     except:
         raise
+    finally:
+        DB.commit()
 
 def ins_sub(DB, infos):
     try:
         DB.execute(f'''INSERT INTO SUBMISSIONS
             (ID,AUTHOR,AUTHORURL,TITLE,UDATE,TAGS,FILELINK,FILENAME,LOCATION)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)''', infos)
-        DB.commit()
     except sqlite3.IntegrityError:
         pass
     except:
         raise
+    finally:
+        DB.commit()
 
 def usr_up(DB, user, to_add, column):
     col = DB.execute(f"SELECT {column} FROM users WHERE name = '{user}'")
