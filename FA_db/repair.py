@@ -71,13 +71,14 @@ def dberrors(DB):
             return
 
         if len(errs_vl):
+            print('Fixing field values errors', end='')
             i, l, L = 0, len(str(len(errs_vl))), len(errs_vl)
             errs_fl_mv = 0
             for sub in errs_vl:
                 if sigint_check(): return
                 ID = sub[0]
                 i += 1
-                print(f'\rFixing field values errors ... {i:0>{l}}/{L}', end='', flush=True)
+                print(f'\n{i:0>{l}}/{L} - {ID:0>10}', end='', flush=True)
                 if sub[3] == None: sub[3] = ''
                 if sub[5] == None: sub[5] = ''
                 if check_values(sub):
@@ -89,29 +90,28 @@ def dberrors(DB):
                         errs_fl_mv += 1
                     continue
                 if not check_page(Session, 'view/'+str(ID)):
-                    print('\r'+' '*(31+l+1+l)+f'{ID} - Page Error')
+                    print(' - Page Error', end='', flush=True)
                     continue
                 DB.execute(f'DELETE FROM submissions WHERE id = {ID}')
                 DB.commit()
                 dl_sub(Session, str(ID), f'FA.files/{tiers(ID)}/{ID:0>10}', DB, True, False, 2)
-            print('\r'+' '*(31+l+1+l), end='\r', flush=True)
-            print('Fixing field values errors ... Done')
+            print()
             if errs_fl_mv:
                 print(f'{errs_fl_mv} new submission{"s"*bool(len(errs_fl_mv) != 1)} with files missing')
 
         if len(errs_fl):
+            print('Fixing missing files')
             i, l, L = 0, len(str(len(errs_fl))), len(errs_fl)
             for sub in errs_fl:
                 if sigint_check(): return
                 ID = sub[0]
                 i += 1
-                print(f'\rFixing missing files ... {i:0>{l}}/{L}', end='', flush=True)
+                print(f'\n{i:0>{l}}/{L} - {ID:0>10} {sub[8]}', end='', flush=True)
                 if not check_page(Session, 'view/'+str(ID)):
-                    print('\r'+' '*(31+l+1+l)+f'{ID} - Page Error')
+                    print(' - Page Error', end='', flush=True)
                     continue
                 dl_sub(Session, str(ID), f'FA.files/{sub[8]}', DB, True, False, 2)
-            print('\r'+' '*(31+l+1+l), end='\r', flush=True)
-            print('Fixing missing files ... Done')
+            print()
 
         print()
 
