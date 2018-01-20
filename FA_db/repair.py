@@ -71,9 +71,9 @@ def dberrors(DB):
                 i += 1
                 print(f'{i:0>{l}}/{len(errs_vl)} - {sub:0>10}\r', end='', flush=True)
                 if not check_page(Session, 'view/'+sub): continue
-                DB.execute(f'DELETE FROM submissions WHERE id = {sub[0]}')
+                DB.execute(f'DELETE FROM submissions WHERE id = {int(sub)}')
                 DB.commit()
-                dl_sub(Session, sub, f'FA.files/{tiers(sub[0])}/{sub[0]:0>10}', DB, True, False, 2)
+                dl_sub(Session, sub, f'FA.files/{tiers(sub)}/{sub:0>10}', DB, True, False, 2)
             print(' '*(l+l+1+3+10), end='\r', flush=True)
 
         if len(errs_fl):
@@ -82,11 +82,12 @@ def dberrors(DB):
             for sub in errs_fl:
                 if sigint_check(): return
                 sub = str(sub)
+                loc = DB.execute(f'SELECT location FROM submissions WHERE id = {int(sub)}').fetchall()[0][0]
                 i += 1
                 print(f'{i:0>{l}}/{len(errs_fl)} - {sub:0>10}\r', end='', flush=True)
                 if not check_page(Session, 'view/'+sub): continue
                 if int(sub) in [s[0] for s in errs_vl]: continue
-                dl_sub(Session, sub, f'FA.files/{tiers(sub[0])}/{sub[0]:0>10}', DB, True, False, 2)
+                dl_sub(Session, sub, f'FA.files/{loc}', DB, True, False, 2)
             print(' '*(l+l+1+3+10), end='\r', flush=True)
 
         print()
