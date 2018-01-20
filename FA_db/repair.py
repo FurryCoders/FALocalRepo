@@ -51,4 +51,32 @@ def dberrors(DB):
     print(f'There are {len(errs_id)} id errors')
     print(f'There are {len(errs_vl)} field value errors')
     print(f'There are {len(errs_fl)} files errors')
-    
+
+    print()
+    Session = session()
+    print()
+
+    if not Session:
+        print('Session error')
+        return
+
+    if len(errs_vl):
+        print('Fixing field values errors')
+        i, l = 0, len(str(len(errs_vl)))
+        for sub in errs_vl:
+            sub = str(sub[0])
+            i += 1
+            print(f'\r{i:0>{l}}/{len(errs_vl)} - {sub:0>10} ', end='', flush=True)
+            DB.execute(f'DELETE FROM submissions WHERE id = {sub[0]}')
+            DB.commit()
+            dl_sub(Session, sub, f'FA.files/{tiers(sub[0])}/{sub[0]:0>10}', DB, True, False, 2)
+        print(' '*(l+l+1+3+10), end='\r', flush=True)
+
+    # if len(errs_fl):
+    #     print('Fixing missing files')
+    #     i, l = 0, len(str(len(errs_fl)))
+    #     for sub in errs_fl:
+    #         i += 1
+    #         print(f'\r{i:0>{l}}/{len(errs_fl)} - {sub:0>10} ', end='', flush=True)
+    #         dl_sub(Session, str(sub), f'FA.files/{tiers(sub[0])}/{sub[0]:0>10}', DB, True, False, 2)
+    #     print(' '*(l+l+1+3+10), end='\r', flush=True)
