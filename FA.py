@@ -63,5 +63,3 @@ fadb.mktable(DB, 'users')
 fadb.mktable(DB, 'infos')
 
 menu(DB)
-
-fatl.sigint_ublock()
