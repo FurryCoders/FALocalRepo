@@ -34,9 +34,9 @@ This menu allows to download a user gallery, scraps, favorites, extras or to upd
         * U - Update<br>
         Reads usernames from the database and downloads new submissions in the respective sections. This option can be used without specifying users or sections, if either is specified then the update will be limited to those user/s and/or section/s.
         * F - Force<br>
-        Prevents update and sync from stopping download at the first already present submission. Download stops at the first downloaded submission from page 3 included
+        Prevents update and sync from stopping the download at the first already present submission. Download stops at the first downloaded submission from page 3 included
         * A - All<br>
-        Like 'F' but it will prevent interrupting download for the whole section (this means **ALL** pages from each user will be checked, only use for a limited ammount of users)
+        Like 'F' but it will prevent interrupting the download for the whole section (this means **ALL** pages from each user will be checked, only use for a limited ammount of users)
 
     4. After inserting the necessary usernames/sections/options (and making sure their combination is valid) the program will:
         1. Check connection to FA website
@@ -49,7 +49,7 @@ This menu allows to download a user gallery, scraps, favorites, extras or to upd
 
 2. `Search`<br>
 This menu allows to search in the database using one or more among author, title and tags.<br>
-All search fields support regex, that means that for example to find 'dragon' you can either use 'dragon' or a section of it like 'dra', or something like `dr.\*n` (match 'dr' then any number '\*' of characters '.' followed by 'n'). More informations on regex syntax on [Wikipedia](https://en.wikipedia.org/wiki/Regular_expression) while a more complete reference can be found on [www.regular-expressions.info](https://www.regular-expressions.info/refquick.html). Even though regex is support it is not necessary, without regex syntax the search function will still match any field that contains the text inserted.
+All search fields support regex, that means that for example to find 'dragon' you can either use 'dragon' or a section of it like 'dra', or something like `dr.\*n` (match 'dr' then any number '\*' of characters '.' followed by 'n'). More informations on regex syntax on [Wikipedia](https://en.wikipedia.org/wiki/Regular_expression) while a more complete reference can be found on [www.regular-expressions.info](https://www.regular-expressions.info/refquick.html). Even though regex is supported it is not necessary, without regex syntax the search function will still match any field that contains the text inserted.
 
     1. `Author`<br>
     Author name is matched with regex support
