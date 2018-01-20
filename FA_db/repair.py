@@ -75,15 +75,19 @@ def dberrors(DB):
                 dl_sub(Session, sub, f'FA.files/{tiers(sub[0])}/{sub[0]:0>10}', DB, True, False, 2)
             print(' '*(l+l+1+3+10), end='\r', flush=True)
 
-        # if len(errs_fl):
-        #     print('Fixing missing files')
-        #     i, l = 0, len(str(len(errs_fl)))
-        #     for sub in errs_fl:
-        #         i += 1
-        #         print(f'{i:0>{l}}/{len(errs_fl)} - {sub:0>10}\r', end='', flush=True)
-        #         dl_sub(Session, str(sub), f'FA.files/{tiers(sub[0])}/{sub[0]:0>10}', DB, True, False, 2)
-        #     print(' '*(l+l+1+3+10), end='\r', flush=True)
+        if len(errs_fl):
+            print('Fixing missing files')
+            i, l = 0, len(str(len(errs_fl)))
+            for sub in errs_fl:
+                i += 1
+                print(f'{i:0>{l}}/{len(errs_fl)} - {sub:0>10}\r', end='', flush=True)
+                if not check_page(Session, 'view/'+sub): continue
+                if int(sub) in [s[0] for s in errs_vl]: continue
+                dl_sub(Session, str(sub), f'FA.files/{tiers(sub[0])}/{sub[0]:0>10}', DB, True, False, 2)
+            print(' '*(l+l+1+3+10), end='\r', flush=True)
 
     print('Optimizing database ... ', end='', flush=True)
-    DB.execute("VACUUM") ; print('Done')
-    print('All done')
+    DB.commit()
+    DB.execute("VACUUM")
+    print('Done')
+    print('\nAll done')
