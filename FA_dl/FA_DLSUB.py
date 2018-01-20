@@ -36,6 +36,7 @@ def get_info(page):
 
     title = page.find('h2', 'submission-title-header')
     title = title.string
+    if title == None: title = ''
     data.append(title)
 
     date_r = page.find('meta', {"name":"twitter:data1"})
