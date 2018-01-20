@@ -1,7 +1,7 @@
 import sqlite3
 import os
 import re
-from FA_dl import session, dl_usr, dl_sub
+from FA_dl import session, dl_usr, dl_sub, check_page
 from FA_tools import tiers
 
 def find_errors(DB):
@@ -66,7 +66,8 @@ def dberrors(DB):
         for sub in errs_vl:
             sub = str(sub[0])
             i += 1
-            print(f'\r{i:0>{l}}/{len(errs_vl)} - {sub:0>10} ', end='', flush=True)
+            print(f'{i:0>{l}}/{len(errs_vl)} - {sub:0>10}\r', end='', flush=True)
+            if not check_page(Session, 'view/'+sub): continue
             DB.execute(f'DELETE FROM submissions WHERE id = {sub[0]}')
             DB.commit()
             dl_sub(Session, sub, f'FA.files/{tiers(sub[0])}/{sub[0]:0>10}', DB, True, False, 2)
@@ -77,6 +78,6 @@ def dberrors(DB):
     #     i, l = 0, len(str(len(errs_fl)))
     #     for sub in errs_fl:
     #         i += 1
-    #         print(f'\r{i:0>{l}}/{len(errs_fl)} - {sub:0>10} ', end='', flush=True)
+    #         print(f'{i:0>{l}}/{len(errs_fl)} - {sub:0>10}\r', end='', flush=True)
     #         dl_sub(Session, str(sub), f'FA.files/{tiers(sub[0])}/{sub[0]:0>10}', DB, True, False, 2)
     #     print(' '*(l+l+1+3+10), end='\r', flush=True)
