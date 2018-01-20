@@ -69,7 +69,7 @@ def dberrors(DB):
                 if sigint_check(): return
                 sub = str(sub[0])
                 i += 1
-                print(f'{i:0>{l}}/{len(errs_vl)} - {sub:0>10}\r', end='', flush=True)
+                print(f'\r{i:0>{l}}/{len(errs_vl)} - {sub:0>10}', end='', flush=True)
                 sub_db = DB.execute(f'SELECT * FROM submissions WHERE id = {int(sub)}').fetchall()[0]
                 if sub_db[3] == None and None not in sub_db[0:3]+sub_db[4:]:
                     DB.execute(f'UPDATE submissions SET title = "" WHERE id = {int(sub)}')
@@ -79,6 +79,7 @@ def dberrors(DB):
                 DB.execute(f'DELETE FROM submissions WHERE id = {int(sub)}')
                 DB.commit()
                 dl_sub(Session, sub, f'FA.files/{tiers(sub)}/{sub:0>10}', DB, True, False, 2)
+            print('\r')
             print(' '*(l+l+1+3+10), end='\r', flush=True)
 
         if len(errs_fl):
