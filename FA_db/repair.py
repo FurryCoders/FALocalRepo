@@ -70,6 +70,11 @@ def dberrors(DB):
                 sub = str(sub[0])
                 i += 1
                 print(f'{i:0>{l}}/{len(errs_vl)} - {sub:0>10}\r', end='', flush=True)
+                sub_db = DB.execute(f'SELECT * FROM submissions WHERE id = {int(sub)}').fetchall()[0]
+                if sub_db[3] == None and None not in sub_db[0:3]+sub_db[4:]:
+                    DB.execute(f'UPDATE submissions SET title = "" WHERE id = {int(sub)}')
+                    DB.commit()
+                    continue
                 if not check_page(Session, 'view/'+sub): continue
                 DB.execute(f'DELETE FROM submissions WHERE id = {int(sub)}')
                 DB.commit()
