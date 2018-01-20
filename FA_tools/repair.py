@@ -26,7 +26,6 @@ def dberrors(DB):
             err.append('l')
         if len(err) > 1:
             errs_vl.append(err)
-            continue
 
         loc = 'FA.files/'+s[8]
         if not os.path.isdir(loc):
