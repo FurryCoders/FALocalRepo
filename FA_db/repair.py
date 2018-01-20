@@ -38,7 +38,7 @@ def find_errors(DB):
         if not os.path.isfile(loc+'/description.html'):
             err_fls.append(s[0])
             continue
-        if s[7] != 0 and not os.path.isfile(loc+f'/{s[7]}'):
+        if s[7] != '0' and not os.path.isfile(loc+f'/{s[7]}'):
             errs_fl.append(s[0])
             continue
 
