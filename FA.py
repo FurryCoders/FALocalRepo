@@ -10,6 +10,7 @@ def menu(DB):
     menu = []
     menu.append(f'{len(menu)+1}) Download & Update')
     menu.append(f'{len(menu)+1}) Search')
+    menu.append(f'{len(menu)+1}) Repair database')
     menu.append(f'{len(menu)+1}/ESC) Exit')
 
     while True:
@@ -40,6 +41,12 @@ def menu(DB):
             print('-'*20)
             print()
             fatl.db_search(DB)
+        elif o == '3':
+            print('-'*20)
+            print('Repair database')
+            print('-'*20)
+            print()
+            fadb.dberrors(DB)
         elif o in (str(len(menu)), 'ESC'):
             return
 
