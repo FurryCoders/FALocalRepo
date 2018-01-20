@@ -40,6 +40,7 @@ def download(DB):
     print()
 
     if not Session:
+        print('Session error')
         return
 
     if update:
