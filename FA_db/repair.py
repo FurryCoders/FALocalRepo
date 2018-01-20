@@ -89,12 +89,12 @@ def dberrors(DB):
                         errs_fl_mv += 1
                     continue
                 if not check_page(Session, 'view/'+str(ID)):
-                    print(' - Page Error')
+                    print('\r'+' '*(31+l+1+l)+f'{ID} - Page Error')
                     continue
                 DB.execute(f'DELETE FROM submissions WHERE id = {ID}')
                 DB.commit()
                 dl_sub(Session, str(ID), f'FA.files/{tiers(ID)}/{ID:0>10}', DB, True, False, 2)
-            print('\r', end=' '*(l+l+1+3+10)+'\r', flush=True)
+            print('\r'+' '*(31+l+1+l), end='\r', flush=True)
             print('Fixing field values errors ... Done')
             if errs_fl_mv:
                 print(f'{errs_fl_mv} new submission{"s"*bool(len(errs_fl_mv) != 1)} with files missing')
@@ -107,10 +107,10 @@ def dberrors(DB):
                 i += 1
                 print(f'\rFixing missing files ... {i:0>{l}}/{L}', end='', flush=True)
                 if not check_page(Session, 'view/'+str(ID)):
-                    print(' - Page Error')
+                    print('\r'+' '*(31+l+1+l)+f'{ID} - Page Error')
                     continue
                 dl_sub(Session, str(ID), f'FA.files/{sub[8]}', DB, True, False, 2)
-            print('\r', end=' '*(l+l+1+3+10)+'\r', flush=True)
+            print('\r'+' '*(31+l+1+l), end='\r', flush=True)
             print('Fixing missing files ... Done')
 
         print()
