@@ -1,9 +1,10 @@
 import sqlite3
 import os
 import re
-from .tools import tiers
+from FA_dl import session, dl_usr, dl_sub
+from FA_tools import tiers
 
-def dberrors(DB):
+def find_errors(DB):
     subs = DB.execute('SELECT * FROM submissions ORDER BY id ASC')
 
     subs = [[si for si in s] for s in subs.fetchall()]
@@ -42,3 +43,12 @@ def dberrors(DB):
             continue
 
     return errs_id, errs_vl, errs_fl
+
+def dberrors(DB):
+    print()
+    errs_id, errs_vl, errs_fl = find_errors(DB)
+
+    print(f'There are {len(errs_id)} id errors')
+    print(f'There are {len(errs_vl)} field value errors')
+    print(f'There are {len(errs_fl)} files errors')
+    
