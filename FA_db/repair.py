@@ -2,7 +2,7 @@ import sqlite3
 import os
 import re
 from FA_dl import session, dl_usr, dl_sub, check_page
-from FA_tools import tiers
+from FA_tools import tiers, sigint_check
 
 def find_errors(DB):
     subs = DB.execute('SELECT * FROM submissions ORDER BY id ASC')
@@ -66,6 +66,7 @@ def dberrors(DB):
             print('Fixing field values errors')
             i, l = 0, len(str(len(errs_vl)))
             for sub in errs_vl:
+                if sigint_check(): break
                 sub = str(sub[0])
                 i += 1
                 print(f'{i:0>{l}}/{len(errs_vl)} - {sub:0>10}\r', end='', flush=True)
@@ -79,6 +80,7 @@ def dberrors(DB):
             print('Fixing missing files')
             i, l = 0, len(str(len(errs_fl)))
             for sub in errs_fl:
+                if sigint_check(): break
                 i += 1
                 print(f'{i:0>{l}}/{len(errs_fl)} - {sub:0>10}\r', end='', flush=True)
                 if not check_page(Session, 'view/'+sub): continue
