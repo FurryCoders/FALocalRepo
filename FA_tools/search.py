@@ -25,11 +25,11 @@ def search(DB, user, titl, tags):
         elif t in tags_y:
             tags_r += f'(?:.)*{t}'
 
-    terms = ('%'+user+'%', '%'+titl+'%', tags_r)
+    terms = ('(?:.)*'+user+'(?:.)*', '(?:.)*'+titl+'(?:.)*', tags_r)
     t1 = time.time()
     results = DB.execute('''SELECT author, udate, title, id FROM submissions
-        WHERE authorurl LIKE ? AND
-        title LIKE ? AND
+        WHERE authorurl REGEXP ? AND
+        title REGEXP ? AND
         tags REGEXP ?
         ORDER BY authorurl ASC, id ASC''', terms)
     t2 = time.time()
