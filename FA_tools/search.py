@@ -44,11 +44,15 @@ def search(DB, user, titl, tags):
 
     print(f'\n{i} results found in {t2-t1:.3f} seconds')
 
+    return True
+
 def main(DB):
     while True:
         user = input('Author: ')
         titl = input('Title: ')
         tags = input('Tags: ')
+
+        print()
 
         if not search(DB, user, titl, tags):
             print()
