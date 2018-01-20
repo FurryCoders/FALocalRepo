@@ -52,9 +52,9 @@ def dberrors(DB):
     print(f'There are {len(errs_id)} id errors')
     print(f'There are {len(errs_vl)} field value errors')
     print(f'There are {len(errs_fl)} files errors')
+    print()
 
     if len(errs_id) or len(errs_vl) or len(errs_fl):
-        print()
         Session = session()
         print()
 
@@ -85,6 +85,8 @@ def dberrors(DB):
                 if int(sub) in [s[0] for s in errs_vl]: continue
                 dl_sub(Session, str(sub), f'FA.files/{tiers(sub[0])}/{sub[0]:0>10}', DB, True, False, 2)
             print(' '*(l+l+1+3+10), end='\r', flush=True)
+
+        print()
 
     print('Optimizing database ... ', end='', flush=True)
     DB.commit()
