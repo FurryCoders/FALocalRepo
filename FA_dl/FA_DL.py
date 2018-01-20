@@ -147,7 +147,7 @@ def dl_usr(Session, user, section, DB, sync=False, speed=1, force=0):
 
             if sigint_check(): return 5
 
-            s_ret = dl_sub(Session, ID, folder, DB, True, True, speed)
+            s_ret = dl_sub(Session, ID, folder, DB, False, True, speed)
             if s_ret == 0:
                 print("\033[5D | Downloaded")
                 usr_up(DB, user, ID.zfill(10), section_db[section])

@@ -117,17 +117,10 @@ def dl_sub(Session, ID, folder, DB, quiet=False, check=False, speed=1):
     link = get_link(page)
     desc = get_desc(page)
 
-    if quiet:
+    if not quiet:
         cols = os.get_terminal_size()[0] - 38
         if cols < 0: cols = 0
         print(f'{str_clean(data[1])[0:cols]} ... ', end='', flush=True)
-    else:
-        print(f'->Author: {str_clean(data[0])}')
-        print(f'->Title: {str_clean(data[1])}')
-        print(f'->Upload date: {str_clean(data[2])}')
-        print(f'->Keywords: {str_clean(data[3])}')
-        print(f'->ID: {str_clean(data[4])}')
-        print(f'->File: {str_clean(link.split("/")[-1])}')
 
     os.makedirs(folder, exist_ok=True)
 
