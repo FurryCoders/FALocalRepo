@@ -82,10 +82,11 @@ def dberrors(DB):
                 DB.execute(f'DELETE FROM submissions WHERE id = {int(sub)}')
                 DB.commit()
                 dl_sub(Session, sub, f'FA.files/{tiers(sub)}/{sub:0>10}', DB, True, False, 2)
-            print('\r', end=' '*(l+l+1+3+10), flush=True)
+            print('\r', end=' '*(l+l+1+3+10)+'\r', flush=True)
 
         if len(errs_fl):
             print('Fixing missing files')
+            return
             i, l = 0, len(str(len(errs_fl)))
             for sub in errs_fl:
                 if sigint_check(): return
@@ -99,7 +100,7 @@ def dberrors(DB):
                     continue
                 loc = DB.execute(f'SELECT location FROM submissions WHERE id = {int(sub)}').fetchall()[0][0]
                 dl_sub(Session, sub, f'FA.files/{loc}', DB, True, False, 2)
-            print('\r', end=' '*(l+l+1+3+10), flush=True)
+            print('\r', end=' '*(l+l+1+3+10)+'\r', flush=True)
 
         print()
 
