@@ -96,7 +96,8 @@ def dberrors(DB):
                 dl_sub(Session, str(ID), f'FA.files/{tiers(ID)}/{ID:0>10}', DB, True, False, 2)
             print('\r', end=' '*(l+l+1+3+10)+'\r', flush=True)
             print('Fixing field values errors ... Done')
-            if errs_fl_mv: print(f'{errs_fl_mv} new submission{"s"*bool(len(errs_fl_mv) != 1)} with files missing')
+            if errs_fl_mv:
+                print(f'{errs_fl_mv} new submission{"s"*bool(len(errs_fl_mv) != 1)} with files missing')
 
         if len(errs_fl):
             i, l, L = 0, len(str(len(errs_fl))), len(errs_fl)
