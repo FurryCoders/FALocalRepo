@@ -61,6 +61,29 @@ All search fields support regex, that means that for example to find 'dragon' yo
     Tags are matched using regex as well, but with added support for negative matches. For example to search all submissions whose tags contain 'forest' but not 'autumn' you would type 'forest !autumn'. This is done surrounding tags to be included with `(?:.)*` and the tags to be excluded are enclosed in `(?!((?:.)*`tag`))`.<br>
     All regex syntax used under the hood is handled automatically and there is no need to use it though it is still supported, so for example you can include tags with `(forest|foliage)` ('forest' of 'foliage') and exclude them too: `!(autumn|winter)` (exlude 'autumn' and 'winter'). However using regex in tags is not recommended unless you know how to use it properly as it can lead to missing results: the tags are saved in alphanumerical order in the database and while the program orders the user-inserted tags (both the ones to include and the ones to exclude) before searching for them it cannot order them if regex is not used correctly. For example a search for `forest.*\W.*autumn` will not yield any results because 'autumn' never follows 'forest' in the database and the program cannot separate the two since it's a single string.
 
+3. `Repair database`<br>
+Selecting this entry will start the automatic database repair functions. These are divided into three steps:
+    1. `Database analysis`<br>
+    The program will analyze all submissions entries in the database for three different types of errors:
+        1. `ID`<br>
+        Missing IDs will be flagged
+        2. `Fields`<br>
+        If the id passes the check then the other fields in the submission entry will be searched for misplaced empty strings, incorrect value types, wrongly encoded location
+        3. `Files`<br>
+        If the previous checks have passed then the program will check that all submission files are present
+
+    2. `Database repair`<br>
+    If errors where found then the program will try to fix them accordingly:
+      1. `ID`<br>
+      This error type doesn't have a fix yet as there is no clear way to identify the submission on FA. However the program cannot create this type of error.
+      2. `Fields`<br>
+      The program will try and fix the errors in-place, replacing NULL values with empty strings. If the automatic fixes are successful then the submission will be checked for missing files, if any is missing then the submission will be passed to the next step. However if the automatic fixes do not work then the corrupted entry will be erased from the database,the files (if any present) deleted and the submission downloaded again, thus also fixing eventual missing files.
+      3. `Files`<br>
+      The program will simply erase the submission folder to remove any stray file (if any is present) and then download them again
+
+    3. `Optimizing`<br>
+    After all errors (if any are found) are fixed then the program will use the sqlite `VACUUM` function to optimize the database and clean it up
+
 If you run the program on Unix systems then you can use CTRL-C to safely interrupt the program. It will complete the submission download in progress and exit at the first safe point, this works in all parts of the program, download, sync and update.<br>
 If you run the program on Windows systems however safe exit will **NOT** work. This is caused byt the completely different way in which Windows handles signals, specifically SIGINT, interrupt signal sent by CTRL-C and used by this program. The functions are built to be realtively safe in how they handles database updates and downloads but it is suggested not to interrupt any operation to avoid errors.
 
