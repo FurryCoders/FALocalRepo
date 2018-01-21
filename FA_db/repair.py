@@ -70,6 +70,11 @@ def dberrors(DB):
             print('Session error')
             return
 
+        if len(errs_id):
+            print('ID errors')
+            for err in errs_id:
+                print(err[0:5]+err[6:9])
+
         if len(errs_vl):
             print('Fixing field values errors', end='')
             i, l, L = 0, len(str(len(errs_vl))), len(errs_vl)
