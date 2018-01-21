@@ -110,7 +110,9 @@ def dberrors(DB):
                 if not check_page(Session, 'view/'+str(ID)):
                     print(' - Page Error', end='', flush=True)
                     continue
-                sub_f = glob.glob(f'FA.files/{sub[8]}/*')
+                sub_f = glob.glob(f'FA.files/{sub[8]}/info.txt')
+                sub_f += glob.glob(f'FA.files/{sub[8]}/description.html')
+                sub_f += glob.glob(f'FA.files/{sub[8]}/submission*')
                 for f in sub_f:
                     os.remove(f)
                 DB.execute(f'DELETE FROM submissions WHERE id = {ID}')
