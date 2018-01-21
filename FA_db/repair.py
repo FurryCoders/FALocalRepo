@@ -1,5 +1,5 @@
 import sqlite3
-import os
+import os, glob
 import re
 from FA_dl import session, dl_usr, dl_sub, check_page
 from FA_tools import tiers, sigint_check
@@ -100,7 +100,7 @@ def dberrors(DB):
                 print(f'{errs_fl_mv} new submission{"s"*bool(len(errs_fl_mv) != 1)} with files missing')
 
         if len(errs_fl):
-            print('Fixing missing files')
+            print('Fixing missing files', end='')
             i, l, L = 0, len(str(len(errs_fl))), len(errs_fl)
             for sub in errs_fl:
                 if sigint_check(): return
@@ -110,6 +110,11 @@ def dberrors(DB):
                 if not check_page(Session, 'view/'+str(ID)):
                     print(' - Page Error', end='', flush=True)
                     continue
+                sub_f = glob.glob(f'FA.files/{sub[8]}/*')
+                for f in sub_f:
+                    os.remove(f)
+                DB.execute(f'DELETE FROM submissions WHERE id = {ID}')
+                DB.commit()
                 dl_sub(Session, str(ID), f'FA.files/{sub[8]}', DB, True, False, 2)
             print()
 
