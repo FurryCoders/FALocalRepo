@@ -92,6 +92,12 @@ def dberrors(DB):
                 if not check_page(Session, 'view/'+str(ID)):
                     print(' - Page Error', end='', flush=True)
                     continue
+                if sub[8] == tiers(ID)+f'{ID:0>10}':
+                    sub_f = glob.glob(f'FA.files/{sub[8]}/info.txt')
+                    sub_f += glob.glob(f'FA.files/{sub[8]}/description.html')
+                    sub_f += glob.glob(f'FA.files/{sub[8]}/submission*')
+                    for f in sub_f:
+                        os.remove(f)
                 DB.execute(f'DELETE FROM submissions WHERE id = {ID}')
                 DB.commit()
                 dl_sub(Session, str(ID), f'FA.files/{tiers(ID)}/{ID:0>10}', DB, True, False, 2)
