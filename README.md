@@ -49,7 +49,7 @@ This menu allows to download a user gallery, scraps, favorites, extras or to upd
 
 2. `Search`<br>
 This menu allows to search in the database using one or more among author, title and tags.<br>
-All search fields support regex, that means that for example to find 'dragon' you can either use 'dragon' or a section of it like 'dra', or something like `dr.\*n` (match 'dr' then any number '\*' of characters '.' followed by 'n'). More informations on regex syntax on [Wikipedia](https://en.wikipedia.org/wiki/Regular_expression) while a more complete reference can be found on [www.regular-expressions.info](https://www.regular-expressions.info/refquick.html). Even though regex is supported it is not necessary, without regex syntax the search function will still match any field that contains the text inserted.
+All search fields support regex, that means that for example to find 'dragon' you can either use 'dragon' or a section of it like 'dra', or something like `dr.*n` (match 'dr' then any number `*` of characters `.` followed by 'n'). More informations on regex syntax on [Wikipedia](https://en.wikipedia.org/wiki/Regular_expression) while a more complete reference can be found on [www.regular-expressions.info](https://www.regular-expressions.info/refquick.html). Even though regex is supported it is not necessary, without regex syntax the search function will still match any field that contains the text inserted.
 
     1. `Author`<br>
     Author name is matched with regex support
