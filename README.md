@@ -74,12 +74,12 @@ Selecting this entry will start the automatic database repair functions. These a
 
     2. `Database repair`<br>
     If errors where found then the program will try to fix them accordingly:
-      1. `ID`<br>
-      This error type doesn't have a fix yet as there is no clear way to identify the submission on FA. However the program cannot create this type of error.
-      2. `Fields`<br>
-      The program will try and fix the errors in-place, replacing NULL values with empty strings. If the automatic fixes are successful then the submission will be checked for missing files, if any is missing then the submission will be passed to the next step. However if the automatic fixes do not work then the corrupted entry will be erased from the database,the files (if any present) deleted and the submission downloaded again, thus also fixing eventual missing files.
-      3. `Files`<br>
-      The program will simply erase the submission folder to remove any stray file (if any is present) and then download them again
+        1. `ID`<br>
+        This error type doesn't have a fix yet as there is no clear way to identify the submission on FA. However the program cannot create this type of error.
+        2. `Fields`<br>
+        The program will try and fix the errors in-place, replacing NULL values with empty strings. If the automatic fixes are successful then the submission will be checked for missing files, if any is missing then the submission will be passed to the next step. However if the automatic fixes do not work then the corrupted entry will be erased from the database,the files (if any present) deleted and the submission downloaded again, thus also fixing eventual missing files.
+        3. `Files`<br>
+        The program will simply erase the submission folder to remove any stray file (if any is present) and then download them again
 
     3. `Optimizing`<br>
     After all errors (if any are found) are fixed then the program will use the sqlite `VACUUM` function to optimize the database and clean it up
