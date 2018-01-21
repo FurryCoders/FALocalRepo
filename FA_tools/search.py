@@ -31,7 +31,7 @@ def search(DB, user, titl, tags):
         WHERE authorurl REGEXP ? AND
         title REGEXP ? AND
         tags REGEXP ?
-        ORDER BY authorurl ASC, id ASC''', terms)
+        ORDER BY authorurl ASC, id DESC''', terms)
     t2 = time.time()
 
     print('{: ^10} | {: ^10} {: ^10} | {}'.format('AUTHOR', 'DATE', 'ID', 'TITLE'))
