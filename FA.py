@@ -48,7 +48,7 @@ def menu(DB):
             print('Repair database')
             print('-'*20)
             print()
-            fadb.dberrors(DB)
+            Session = fadb.dberrors(Session, DB)
         elif o in (str(len(menu)), 'ESC'):
             return
 

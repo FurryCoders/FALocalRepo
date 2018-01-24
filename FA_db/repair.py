@@ -52,7 +52,7 @@ def find_errors(DB):
 
     return errs_id, errs_vl, errs_fl
 
-def dberrors(DB):
+def dberrors(Session, DB):
     print('Analyzing database for errors ... ', end='', flush=True)
     errs_id, errs_vl, errs_fl = find_errors(DB)
     print('Done')
@@ -68,7 +68,7 @@ def dberrors(DB):
 
         if not Session:
             print('Session error')
-            return
+            errs_id = errs_vl = errs_fl = ''
 
         if len(errs_id):
             print('ID errors')
@@ -80,7 +80,7 @@ def dberrors(DB):
             i, l, L = 0, len(str(len(errs_vl))), len(errs_vl)
             errs_fl_mv = 0
             for sub in errs_vl:
-                if sigint_check(): return
+                if sigint_check(): return Session
                 ID = sub[0]
                 i += 1
                 print(f'\n{i:0>{l}}/{L} - {ID:0>10}', end='', flush=True)
@@ -114,7 +114,7 @@ def dberrors(DB):
             print('Fixing missing files', end='')
             i, l, L = 0, len(str(len(errs_fl))), len(errs_fl)
             for sub in errs_fl:
-                if sigint_check(): return
+                if sigint_check(): return Session
                 ID = sub[0]
                 i += 1
                 print(f'\n{i:0>{l}}/{L} - {ID:0>10} {sub[8]}', end='', flush=True)
@@ -137,3 +137,5 @@ def dberrors(DB):
     DB.execute("VACUUM")
     print('Done')
     print('\nAll done')
+
+    return Session
