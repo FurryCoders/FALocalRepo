@@ -49,7 +49,7 @@ def check_cookies(Session):
     else:
         return True
 
-def session():
+def session(Session=None):
     print('Checking connection ... ', end='', flush=True)
     if ping('http://www.furaffinity.net'):
         print('Done')
@@ -57,20 +57,22 @@ def session():
         print('Failed')
         return False
 
-    print('Creating session & adding cookies ... ', end='', flush=True)
-    try:
-        Session = session_make()
-        print('Done')
-    except FileNotFoundError:
-        print('Failed')
-        return False
+    if not Session:
+        print('Creating session & adding cookies ... ', end='', flush=True)
+        try:
+            Session = session_make()
+            print('Done')
+        except FileNotFoundError:
+            print('Failed')
+            return False
 
-    print('Checking cookies & bypassing cloudflare ... ', end='', flush=True)
-    if check_cookies(Session):
-        print('Done')
-    else:
-        print('Failed')
-        return False
+        print('Checking cookies & bypassing cloudflare ... ', end='', flush=True)
+        if check_cookies(Session):
+            print('Done')
+        else:
+            print('Failed')
+            return False
+
     return Session
 
 def check_page(Session, url):
@@ -194,7 +196,7 @@ def update(Session, DB, users=[], sections=[], speed=2, force=0):
     if not download: print("Nothing new to download")
 
 
-def download(DB):
+def download(Session, DB):
     while True:
         users = input('Insert username: ')
         users = users.lower()
@@ -223,12 +225,12 @@ def download(DB):
             print()
 
     print()
-    Session = session()
+    Session = session(Session)
     print()
 
     if not Session:
         print('Session error')
-        return
+        return None
 
     if upd:
         print('Update')
@@ -239,7 +241,7 @@ def download(DB):
         t = int(time.time()) - t
         fadb.info_up(DB, 'LASTUPT', t)
         fadb.info_up(DB, 'SUBN', fadb.table_n(DB, 'SUBMISSIONS'))
-        if sigint_check(): sys.exit(130)
+        if sigint_check(): return Session
     else:
         print('Download', end='')
         t = int(time.time())
@@ -267,6 +269,8 @@ def download(DB):
                     fadb.usr_rep(DB, u, s, s+'!', 'FOLDERS')
                 fadb.info_up(DB, 'USRN', fadb.table_n(DB, 'USERS'))
                 fadb.info_up(DB, 'SUBN', fadb.table_n(DB, 'SUBMISSIONS'))
-                if d == 5: sys.exit(130)
+                if d == 5: return Session
         t = int(time.time()) - t
         fadb.info_up(DB, 'LASTDLT', t)
+
+    return Session

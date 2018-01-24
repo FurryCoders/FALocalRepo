@@ -13,6 +13,8 @@ def menu(DB):
     menu.append(f'{len(menu)+1}) Repair database')
     menu.append(f'{len(menu)+1}/ESC) Exit')
 
+    Session = None
+
     while True:
         print('-'*20)
         print('Main Menu')
@@ -34,7 +36,7 @@ def menu(DB):
             print('Download & Update')
             print('-'*20)
             print()
-            fadl.download(DB)
+            Session = fadl.download(Session, DB)
         elif o == '2':
             print('-'*20)
             print('Search')
