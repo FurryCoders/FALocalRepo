@@ -52,7 +52,7 @@ def find_errors(DB):
 
     return errs_id, errs_vl, errs_fl
 
-def dberrors(Session, DB):
+def repair(Session, DB):
     print('Analyzing database for errors ... ', end='', flush=True)
     errs_id, errs_vl, errs_fl = find_errors(DB)
     print('Done')

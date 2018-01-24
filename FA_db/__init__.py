@@ -1,2 +1,2 @@
 from .FA_DB import *
-from .repair import dberrors
+from .repair import repair
