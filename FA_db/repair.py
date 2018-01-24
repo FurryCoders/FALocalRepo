@@ -39,6 +39,8 @@ def find_errors(DB):
     re_id = re.compile('^(|0+)$')
 
     for s in subs:
+        if sigint_check(): break
+        
         if re_id.match(str(s[0])):
             errs_id.append(s)
             continue
