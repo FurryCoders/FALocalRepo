@@ -142,8 +142,8 @@ def dl_usr(Session, user, section, DB, sync=False, speed=1, force=0):
                 titl = str_clean(sub.find_all('a')[1].string)
                 print(f'{titl[0:cols]} | Repository')
                 if sync:
-                    if force == 1 and page_i <= 2: continue
-                    if force == 2: continue
+                    if force > 0 and page_i <= force: continue
+                    if force == -1: continue
                     if sub_i+page_i == 2: return 3
                     else: return 2
                 continue
@@ -210,13 +210,15 @@ def download(Session, DB):
 
         speed = 1 ; upd = False
         sync = False ; force = 0
-        for o in input('Insert options: '):
-            if o == 'Q': speed = 2
-            elif o == 'S': speed = 0
-            elif o == 'U': upd = True
-            elif o == 'Y': sync = True
-            elif o == 'F': force = 1
-            elif o == 'A': force = 2
+        options = input('Insert options: ')
+        if 'quick' in options: speed = 2
+        if 'slow' in options: speed = 0
+        if 'update' in options: upd = True
+        if 'sync' in options: sync = True
+        if 'all' in options: force = -1
+        if re.search('force[0-9]+', options):
+            force = re.search('force[0-9]+', options).group(0).lstrip('force')
+            force = int(force)
         if force != 0: speed = 1
 
         if upd or (len(users) > 0 and len(sections) > 0):
