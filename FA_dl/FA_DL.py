@@ -152,16 +152,16 @@ def dl_usr(Session, user, section, DB, sync=False, speed=1, force=0):
 
             s_ret = dl_sub(Session, ID, folder, DB, False, True, speed)
             if s_ret == 0:
-                print("\033[5D | Downloaded")
+                print("\b"*5+" | Downloaded")
                 fadb.usr_up(DB, user, ID.zfill(10), section_db[section])
             elif s_ret == 1:
-                print("\033[5D | File Error")
+                print("\b"*5+" | File Error")
                 fadb.usr_up(DB, user, ID.zfill(10), section_db[section])
             elif s_ret == 2:
-                print("\033[5D | Repository")
+                print("\b"*5+" | Repository")
                 fadb.usr_up(DB, user, ID.zfill(10), section_db[section])
             elif s_ret == 3:
-                print("\033[5D | Page Error")
+                print("\b"*5+" | Page Error")
 
             if sigint_check(): return 5
 
