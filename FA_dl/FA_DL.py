@@ -210,6 +210,7 @@ def download(Session, DB):
 
         speed = 1 ; upd = False
         sync = False ; force = 0
+        quit = False
         options = input('Insert options: ')
         if 'quick' in options: speed = 2
         if 'slow' in options: speed = 0
@@ -219,6 +220,7 @@ def download(Session, DB):
         if re.search('force[0-9]+', options):
             force = re.search('force[0-9]+', options).group(0).lstrip('force')
             force = int(force)
+        if 'quit' in options: quit = True
         if force != 0: speed = 1
 
         if upd or (len(users) > 0 and len(sections) > 0):
@@ -243,7 +245,6 @@ def download(Session, DB):
         t = int(time.time()) - t
         fadb.info_up(DB, 'LASTUPT', t)
         fadb.info_up(DB, 'SUBN', fadb.table_n(DB, 'SUBMISSIONS'))
-        if sigint_check(): return Session
     else:
         print('Download', end='')
         t = int(time.time())
@@ -271,8 +272,10 @@ def download(Session, DB):
                     fadb.usr_rep(DB, u, s, s+'!', 'FOLDERS')
                 fadb.info_up(DB, 'USRN', fadb.table_n(DB, 'USERS'))
                 fadb.info_up(DB, 'SUBN', fadb.table_n(DB, 'SUBMISSIONS'))
-                if d == 5: return Session
+                if d == 5: break
+            if d == 5: break
         t = int(time.time()) - t
         fadb.info_up(DB, 'LASTDLT', t)
 
+    if quit: sys.exit(0)
     return Session

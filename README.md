@@ -37,6 +37,8 @@ This menu allows to download a user gallery, scraps, favorites, extras or to upd
         Prevents update and sync from stopping the download at the first already present submission. Download stops at the first downloaded submission from page N+1. Example: 'force4' will download the first 4 pages with no interruption and will allow the download to stop from page 5
         * all<br>
         Like 'force' but it will prevent interrupting the download for the whole section (this means **ALL** pages from each user will be checked, only use for a limited ammount of users)
+        * quit<br>
+        Quits the program when the current operation is completed
 
         Note: options can be inserted with or without spaces between them
 
