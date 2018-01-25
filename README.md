@@ -29,14 +29,16 @@ This menu allows to download a user gallery, scraps, favorites, extras or to upd
 
     3. `Options: `<br>
     Last field is reserved for options. These can be:
-        * Y - Sync<br>
+        * sync<br>
         Stops download when a submission already present in the user database entry is encountered
-        * U - Update<br>
+        * update<br>
         Reads usernames from the database and downloads new submissions in the respective sections. This option can be used without specifying users or sections, if either is specified then the update will be limited to those user/s and/or section/s.
-        * F - Force<br>
-        Prevents update and sync from stopping the download at the first already present submission. Download stops at the first downloaded submission from page 3 included
-        * A - All<br>
-        Like 'F' but it will prevent interrupting the download for the whole section (this means **ALL** pages from each user will be checked, only use for a limited ammount of users)
+        * forceN<br>
+        Prevents update and sync from stopping the download at the first already present submission. Download stops at the first downloaded submission from page N+1. Example: 'force4' will download the first 4 pages with no interruption and will allow the download to stop from page 5
+        * all<br>
+        Like 'force' but it will prevent interrupting the download for the whole section (this means **ALL** pages from each user will be checked, only use for a limited ammount of users)
+        
+    Note: options can be inserted with or without spaces between them
 
     4. After inserting the necessary usernames/sections/options (and making sure their combination is valid) the program will:
         1. Check connection to FA website
