@@ -2,6 +2,7 @@ import requests, cfscrape, json, bs4
 import os, sys, time
 import re
 import sqlite3
+import readkeys
 from FA_tools import sigint_check, tiers
 import FA_db as fadb
 from .FA_DLSUB import dl_sub, str_clean
@@ -198,9 +199,12 @@ def update(Session, DB, users=[], sections=[], speed=2, force=0):
 
 def download(Session, DB):
     while True:
-        users = input('Insert username: ').lower()
-        sections = input('Insert sections: ')
-        options = input('Insert options: ').lower()
+        try:
+            users = readkeys.input('Insert username: ').lower()
+            sections = readkeys.input('Insert sections: ')
+            options = readkeys.input('Insert options: ').lower()
+        except:
+            return
 
         users = re.sub('([^a-zA-Z0-9\-., ])', '', users)
         users = re.sub('( )+', ',', users.strip())
