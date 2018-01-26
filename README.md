@@ -13,7 +13,7 @@ When the program starts a simple menu will appear, type the indicated number or 
 This menu allows to download a user gallery, scraps, favorites, extras or to update specific users and/or sections for the database.
 
     1. `Username: `<br>
-    First field is reserved for users. To download or sync a specific user/s insert the username/s (url or userpage name are both valid)
+    First field is reserved for users. To download or sync a specific user/s insert the username/s (url or userpage name are both valid). Usernames can be separated with spaces or commas
 
     2. `Sections: `<br>
     Second field is reserved for sections. These can be:
