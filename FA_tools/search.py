@@ -1,6 +1,7 @@
 import sqlite3
 import re
 import time, os, sys
+import readkeys
 
 def regexp(pattern, input):
     return bool(re.match(pattern, input, flags=re.IGNORECASE))
@@ -48,9 +49,12 @@ def search(DB, user, titl, tags):
 
 def main(DB):
     while True:
-        user = input('Author: ')
-        titl = input('Title: ')
-        tags = input('Tags: ')
+        try:
+            user = readkeys.input('Author: ')
+            titl = readkeys.input('Title: ')
+            tags = readkeys.input('Tags: ')
+        except:
+            return
 
         print()
 
