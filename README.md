@@ -2,6 +2,7 @@
 Pure Python program to download any user's gallery/scraps/favorites and more from FurAffinity forum in an easily handled database.
 
 **Warning**: A cookie file named FA.cookies in json format is needed.<br>
+**Warning**: You need to set the the theme to 'beta' on FurAffinity
 **Warning**: On windows safe exit does NOT work
 
 ## Usage
@@ -25,7 +26,7 @@ This menu allows to download a user gallery, scraps, favorites, extras or to upd
         * E - Extras full<br>
         Like partial but also searches for 'username' in the descriptions
 
-        Sections can be omitted if 'Update' option is used
+        Sections can be omitted if 'update' option is used
 
     3. `Options: `<br>
     Last field is reserved for options. These can be:
@@ -36,7 +37,7 @@ This menu allows to download a user gallery, scraps, favorites, extras or to upd
         * forceN<br>
         Prevents update and sync from stopping the download at the first already present submission. Download stops at the first downloaded submission from page N+1. Example: 'force4' will download the first 4 pages with no interruption and will allow the download to stop from page 5
         * all<br>
-        Like 'force' but it will prevent interrupting the download for the whole section (this means **ALL** pages from each user will be checked, only use for a limited ammount of users)
+        Like 'force' but it will prevent interrupting the download for the whole section (this means **ALL** pages from each user will be checked, only use for a limited amount of users)
         * quit<br>
         Quits the program when the current operation is completed
 
@@ -63,7 +64,7 @@ All search fields support regex, that means that for example to find 'dragon' yo
 
     3. `Tags`<br>
     Tags are matched using regex as well, but with added support for negative matches. For example to search all submissions whose tags contain 'forest' but not 'autumn' you would type 'forest !autumn'. This is done surrounding tags to be included with `(?:.)*` and the tags to be excluded are enclosed in `(?!((?:.)*`tag`))`.<br>
-    All regex syntax used under the hood is handled automatically and there is no need to use it though it is still supported, so for example you can include tags with `(forest|foliage)` ('forest' of 'foliage') and exclude them too: `!(autumn|winter)` (exlude 'autumn' and 'winter'). However using regex in tags is not recommended unless you know how to use it properly as it can lead to missing results: the tags are saved in alphanumerical order in the database and while the program orders the user-inserted tags (both the ones to include and the ones to exclude) before searching for them it cannot order them if regex is not used correctly. For example a search for `forest.*\W.*autumn` will not yield any results because 'autumn' never follows 'forest' in the database and the program cannot separate the two since it's a single string.
+    All regex syntax used under the hood is handled automatically and there is no need to use it though it is still supported, so for example you can include tags with `(forest|foliage)` ('forest' of 'foliage') and exclude them too: `!(autumn|winter)` (exclude 'autumn' and 'winter'). However using regex in tags is not recommended unless you know how to use it properly as it can lead to missing results: the tags are saved in alphanumerical order in the database and while the program orders the user-inserted tags (both the ones to include and the ones to exclude) before searching for them it cannot order them if regex is not used correctly. For example a search for `forest.*\W.*autumn` will not yield any results because 'autumn' never follows 'forest' in the database and the program cannot separate the two since it's a single string.
 
 3. `Repair database`<br>
 Selecting this entry will start the automatic database repair functions. These are divided into three steps:
@@ -89,7 +90,7 @@ Selecting this entry will start the automatic database repair functions. These a
     After all errors (if any are found) are fixed then the program will use the sqlite `VACUUM` function to optimize the database and clean it up
 
 If you run the program on Unix systems then you can use CTRL-C to safely interrupt the program. It will complete the submission download in progress and exit at the first safe point, this works in all parts of the program, download, sync and update.<br>
-If you run the program on Windows systems however safe exit will **NOT** work. This is caused byt the completely different way in which Windows handles signals, specifically SIGINT, interrupt signal sent by CTRL-C and used by this program. The functions are built to be realtively safe in how they handles database updates and downloads but it is suggested not to interrupt any operation to avoid errors.
+If you run the program on Windows systems however safe exit will **NOT** work. This is caused by the the completely different way in which Windows handles signals, specifically SIGINT, interrupt signal sent by CTRL-C and used by this program. The functions are built to be relatively safe in how they handles database updates and downloads but it is suggested not to interrupt any operation to avoid errors.
 
 ## Cookies
 The program needs to use cookies from a login session to successfully connect to FA. These cookies need to be in json format and can be easily extracted from Firefox/Chrome/Opera/Vivaldi/etc... using extensions or  manually. The value must be written in a file named FA.cookies<br>
