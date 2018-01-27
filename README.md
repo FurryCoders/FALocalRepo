@@ -5,6 +5,8 @@ Pure Python program to download any user's gallery/scraps/favorites and more fro
 **Warning**: You need to set the the theme to 'beta' on FurAffinity
 **Warning**: On windows safe exit does NOT work
 
+All commits before the 27th of January 2018 show as unverified because I accidentally revoked my old gpg key before adding a new one. They have all been added by me and can vouch for their authenticity.
+
 ## Usage
 Use the provided binaries or build your own (build instructions at the end)
 
