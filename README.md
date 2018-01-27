@@ -2,7 +2,7 @@
 Pure Python program to download any user's gallery/scraps/favorites and more from FurAffinity forum in an easily handled database.
 
 **Warning**: A cookie file named FA.cookies in json format is needed.<br>
-**Warning**: You need to set the the theme to 'beta' on FurAffinity
+**Warning**: You need to set the the theme to 'beta' on FurAffinity<br>
 **Warning**: On windows safe exit does NOT work
 
 All commits before the 27th of January 2018 show as unverified because I accidentally revoked my old gpg key before adding a new one. They have all been added by me and can vouch for their authenticity.
