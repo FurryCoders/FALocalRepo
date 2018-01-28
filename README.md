@@ -5,8 +5,6 @@ Pure Python program to download any user's gallery/scraps/favorites and more fro
 **Warning**: You need to set the the theme to 'beta' on FurAffinity<br>
 **Warning**: On windows safe exit does NOT work
 
-All commits before the 27th of January 2018 show as unverified because I accidentally revoked my old gpg key before adding a new one. They have all been added by me and can vouch for their authenticity.
-
 ## Usage
 Use the provided binaries or build your own (build instructions at the end)
 
@@ -150,3 +148,7 @@ The following modules are used but available by default:
 * [time](https://docs.python.org/3.1/library/time.html)
 
 Once these modules are installed (suggest using `pip`) then the program can be run through the Python 3.x interpreter or built using `pyinstaller` or any other software.
+
+## Appendix
+### Unverified commits
+All commits before the 27th of January 2018 show as unverified because I accidentally revoked my old gpg key before adding a new one. They have all been added by me and can vouch for their authenticity.
