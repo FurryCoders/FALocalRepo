@@ -52,6 +52,10 @@ def get_info(page):
     keyw.sort(key = str.lower)
     data.append(" ".join(keyw))
 
+    rating = page.find('meta', {"name":"twitter:data2"})
+    rating = rating.get('content').lower()
+    data.append(rating)
+
     return data
 
 def get_link(page):
