@@ -114,7 +114,7 @@ def dl_sub(Session, ID, folder, DB, quiet=False, check=False, speed=1):
 
     page = get_page(Session, ID)
     if page == None: return 3
-    data = get_info(page) ; data.append(ID)
+    data = get_info(page)
     link = get_link(page)
     desc = get_desc(page)
 
@@ -135,10 +135,10 @@ def dl_sub(Session, ID, folder, DB, quiet=False, check=False, speed=1):
         f.write(f'Title: {data[1]}\n')
         f.write(f'Upload date: {data[2]}\n')
         f.write(f'Keywords: {data[3]}\n')
-        f.write(f'ID: {data[4]}\n')
+        f.write(f'ID: {ID}\n')
         f.write(f'File: {link}\n')
 
-    sub_info = (data[4], data[0], data[0].lower().replace('_', ''), data[1], data[2], data[3], link, subf, folder.split('/',1)[-1])
+    sub_info = (ID, data[0], data[0].lower().replace('_', ''), data[1], data[2], data[3], link, subf, folder.split('/',1)[-1])
     ins_sub(DB, sub_info)
 
     if subf == False:
