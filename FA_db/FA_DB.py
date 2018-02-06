@@ -15,8 +15,8 @@ def ins_usr(DB, user):
 def ins_sub(DB, infos):
     try:
         DB.execute(f'''INSERT INTO SUBMISSIONS
-            (ID,AUTHOR,AUTHORURL,TITLE,UDATE,TAGS,CATEGORY,SPECIES,GENDER,RATING,FILELINK,FILENAME,LOCATION)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)''', infos)
+            (ID,AUTHOR,AUTHORURL,TITLE,UDATE,TAGS,CATEGORY,SPECIES,GENDER,RATING,FILELINK,FILENAME,LOCATION, SERVER)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)''', infos)
     except sqlite3.IntegrityError:
         pass
     except:
@@ -106,7 +106,8 @@ def mktable(DB, table):
             RATING TEXT,
             FILELINK TEXT,
             FILENAME TEXT,
-            LOCATION TEXT NOT NULL);''')
+            LOCATION TEXT NOT NULL,
+            SERVER INT);''')
     elif table == 'users':
         DB.execute('''CREATE TABLE IF NOT EXISTS USERS
             (NAME TEXT UNIQUE PRIMARY KEY NOT NULL,
