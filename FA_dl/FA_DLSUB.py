@@ -52,6 +52,13 @@ def get_info(page):
     keyw.sort(key = str.lower)
     data.append(" ".join(keyw))
 
+    extras = [str(e) for e in page.find('div', 'sidebar-section-no-bottom').find_all('div')]
+    extras = [e.rstrip('</div>') for e in extras]
+    extras = [re.sub('.*> ', '', e) for e in extras]
+    # [category, species, gender]
+
+    data += extras
+
     rating = page.find('meta', {"name":"twitter:data2"})
     rating = rating.get('content').lower()
     data.append(rating)
