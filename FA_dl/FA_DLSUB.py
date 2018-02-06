@@ -54,7 +54,7 @@ def get_info(page):
 
     extras = [str(e) for e in page.find('div', 'sidebar-section-no-bottom').find_all('div')]
     extras = [e.rstrip('</div>') for e in extras]
-    extras = [re.sub('.*> ', '', e) for e in extras]
+    extras = [re.sub('.*> ', '', e).replace('&gt;', '>') for e in extras]
     # [category, species, gender]
 
     data += extras
