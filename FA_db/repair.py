@@ -7,17 +7,19 @@ from FA_tools import tiers, sigint_check
 def check_values(sub):
     if None in sub:
         return False
-    elif '' in (sub[1], sub[2], sub[4], sub[8]):
+    elif '' in (sub[1], sub[2], sub[4], sub[12]):
         return False
-    elif sub[7] != '0' and sub[6] == '':
+    elif '' in (sub[6], sub[7], sub[8], sub[9]):
         return False
-    elif sub[8] != tiers(sub[0])+f'/{sub[0]:0>10}':
+    elif sub[11] != '0' and sub[10] == '':
+        return False
+    elif sub[12] != tiers(sub[0])+f'/{sub[0]:0>10}':
         return False
 
     return True
 
 def check_files(sub):
-    loc = 'FA.files/'+sub[8]
+    loc = 'FA.files/'+sub[12]
     if not os.path.isdir(loc):
         return False
     elif not os.path.isfile(loc+'/info.txt'):
@@ -33,14 +35,14 @@ def find_errors(DB):
     subs = DB.execute('SELECT * FROM submissions ORDER BY id ASC')
 
     subs = [[si for si in s] for s in subs.fetchall()]
-    errs_vl = []
     errs_id = []
+    errs_vl = []
     errs_fl = []
     re_id = re.compile('^(|0+)$')
 
     for s in subs:
         if sigint_check(): break
-        
+
         if re_id.match(str(s[0])):
             errs_id.append(s)
             continue
@@ -75,7 +77,7 @@ def repair(Session, DB):
         if len(errs_id):
             print('ID errors')
             for err in errs_id:
-                print(err[0:5]+err[6:9])
+                print(err[0:4])
 
         if len(errs_vl):
             print('Fixing field values errors', end='')
@@ -92,14 +94,19 @@ def repair(Session, DB):
                     DB.execute(f'UPDATE submissions SET title = "{sub[3]}" WHERE id = {ID}')
                     DB.execute(f'UPDATE submissions SET tags = "{sub[5]}" WHERE id = {ID}')
                     DB.commit()
-                    if not check_files(sub):
+                    if not check_files(sub) and sub[13]:
                         errs_fl.append(sub)
                         errs_fl_mv += 1
                     continue
-                if not check_page(Session, 'view/'+str(ID)):
+                if not sub[13]:
                     print(' - Page Error', end='', flush=True)
                     continue
-                if sub[8] == tiers(ID)+f'{ID:0>10}':
+                if not check_page(Session, 'view/'+str(ID)):
+                    print(' - Page Error', end='', flush=True)
+                    DB.execute(f'UPDATE submissions SET server = 0 WHERE id = {ID}')
+                    DB.commit()
+                    continue
+                if sub[12] == tiers(ID)+f'{ID:0>10}':
                     sub_f = glob.glob(f'FA.files/{sub[8]}/info.txt')
                     sub_f += glob.glob(f'FA.files/{sub[8]}/description.html')
                     sub_f += glob.glob(f'FA.files/{sub[8]}/submission*')
@@ -120,17 +127,22 @@ def repair(Session, DB):
                 ID = sub[0]
                 i += 1
                 print(f'\n{i:0>{l}}/{L} - {ID:0>10} {sub[8]}', end='', flush=True)
-                if not check_page(Session, 'view/'+str(ID)):
+                if not sub[13]:
                     print(' - Page Error', end='', flush=True)
                     continue
-                sub_f = glob.glob(f'FA.files/{sub[8]}/info.txt')
-                sub_f += glob.glob(f'FA.files/{sub[8]}/description.html')
-                sub_f += glob.glob(f'FA.files/{sub[8]}/submission*')
+                if not check_page(Session, 'view/'+str(ID)):
+                    print(' - Page Error', end='', flush=True)
+                    DB.execute(f'UPDATE submissions SET server = 0 WHERE id = {ID}')
+                    DB.commit()
+                    continue
+                sub_f = glob.glob(f'FA.files/{sub[12]}/info.txt')
+                sub_f += glob.glob(f'FA.files/{sub[12]}/description.html')
+                sub_f += glob.glob(f'FA.files/{sub[12]}/submission*')
                 for f in sub_f:
                     os.remove(f)
                 DB.execute(f'DELETE FROM submissions WHERE id = {ID}')
                 DB.commit()
-                dl_sub(Session, str(ID), f'FA.files/{sub[8]}', DB, True, False, 2)
+                dl_sub(Session, str(ID), f'FA.files/{sub[12]}', DB, True, False, 2)
             print()
 
         print()
