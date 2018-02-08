@@ -115,13 +115,13 @@ def str_clean(string):
 
 
 def dl_sub(Session, ID, folder, DB, quiet=False, check=False, speed=1):
-    if check:
-        if sub_exists(DB, ID):
+    if check and sub_exists(DB, ID):
+        if not quiet:
             cols = os.get_terminal_size()[0] - 38
             if cols < 0: cols = 0
             titl = str_clean(sub_read(DB, ID, "title"))
             print(f'{titl[0:cols]} ... ', end='', flush=True)
-            return 2
+        return 2
 
     page = get_page(Session, ID)
     if page == None: return 3
