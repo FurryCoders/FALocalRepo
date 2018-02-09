@@ -163,6 +163,6 @@ def db_update_v1v2():
     db_new.close()
 
     print('Backing up old database and renaming new one ... ', end='', flush=True)
-    os.rename('FA.db', 'FA.old.db')
+    os.rename('FA.db', 'FA.v1.db')
     os.rename('FA.temp.db', 'FA.db')
     print('Done')
