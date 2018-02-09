@@ -38,7 +38,7 @@ def db_update_v1v2():
 
     print('Copying INFOS data ... ', end='', flush=True)
     db_old.execute("CREATE TABLE IF NOT EXISTS db_new.INFOS AS SELECT * FROM main.INFOS")
-
+    DB.execute('INSERT INTO INFOS (FIELD, VALUE) VALUES ("VERSION", "2.0")')
     db_old.commit()
     print('Done')
 
