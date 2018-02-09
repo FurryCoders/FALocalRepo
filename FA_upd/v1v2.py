@@ -1,11 +1,13 @@
 import sqlite3
 import sys, os
-from FA_dl import dl_sub
+import bs4
+import re
+from FA_dl import session
 from FA_tools import tiers
 from readkeys import getkey
 
 def dl_values(Session, ID):
-    url = 'https://www.furaffinity.net/view/'+ID
+    url = f'https://www.furaffinity.net/view/{ID}'
     page = Session.get(url)
     page = bs4.BeautifulSoup(page.text, 'lxml')
 
@@ -29,8 +31,8 @@ def dl_values(Session, ID):
 
 def db_update_v1v2():
     print('Creating temporary database ... ', end='', flush=True)
+    if os.path.isfile('FA.temp.db'): os.remove('FA.temp.db')
     db_new = sqlite3.connect('FA.temp.db')
-    db_new.close()
     print('Done')
 
     db_old = sqlite3.connect('FA.db')
@@ -38,8 +40,9 @@ def db_update_v1v2():
 
     print('Copying INFOS data ... ', end='', flush=True)
     db_old.execute("CREATE TABLE IF NOT EXISTS db_new.INFOS AS SELECT * FROM main.INFOS")
-    DB.execute('INSERT INTO INFOS (FIELD, VALUE) VALUES ("VERSION", "2.0")')
+    db_new.execute('INSERT INTO INFOS (FIELD, VALUE) VALUES ("VERSION", "2.0")')
     db_old.commit()
+    db_new.commit()
     print('Done')
 
     print('Copying USERS data ... ', end='', flush=True)
@@ -94,8 +97,8 @@ def db_update_v1v2():
 
     print('Creating download session:')
     Session = session()
+    dl = bool(Session)
     if not Session:
-        dl = False
         print('Failed to create session')
         print('\nWithout connection to the forum the new fields will be saved with default values.')
         print('Do you want to continue? ', end='', flush=True)
@@ -121,6 +124,7 @@ def db_update_v1v2():
                 s[9] = values[3]
                 subs_new.append(s)
             print('\b \b'+'\b \b'*(len(str(N))*2), end='', flush=True)
+        print('Done')
 
     N = len(subs_new)
     Ni = 0
