@@ -39,6 +39,7 @@ def db_update_v1v2():
     print(c)
     if c == 'n': sys.exit(0)
 
+    print()
     print('Creating temporary database ... ', end='', flush=True)
     if os.path.isfile('FA.temp.db'): os.remove('FA.temp.db')
     db_new = sqlite3.connect('FA.temp.db')
