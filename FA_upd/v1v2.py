@@ -30,6 +30,15 @@ def dl_values(Session, ID):
     return data
 
 def db_update_v1v2():
+    print('The database need to be updated to version 2.0')
+    print('This procedure is required to continue using the program')
+    print('This procedure cannot be interrupted, do you want to continue? ', end='', flush=True)
+    c = ''
+    while c not in ('y','n'):
+        c = getkey().lower()
+    print(c)
+    if c == 'n': sys.exit(0)
+
     print('Creating temporary database ... ', end='', flush=True)
     if os.path.isfile('FA.temp.db'): os.remove('FA.temp.db')
     db_new = sqlite3.connect('FA.temp.db')
@@ -105,6 +114,7 @@ def db_update_v1v2():
         c = ''
         while c not in ('y','n'):
             c = getkey().lower()
+        print(c)
         if c == 'n':
             db_old.close()
             db_new.close()
