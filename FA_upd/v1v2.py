@@ -36,6 +36,9 @@ def db_update_v1v2():
     c = ''
     while c not in ('y','n'):
         c = getkey().lower()
+        if c in ('\x03', '\x04'):
+            print('n')
+            sys.exit(130)
     print(c)
     if c == 'n': sys.exit(0)
 
