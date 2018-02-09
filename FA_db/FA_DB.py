@@ -1,20 +1,20 @@
 import sqlite3
 
 # Entries guide
-# 0 ID
-# 1 AUTHOR
-# 2 AUTHORURL
-# 3 TITLE
-# 4 UDATE
-# 5 TAGS
-# 6 CATEGORY
-# 7 SPECIES
-# 8 GENDER
-# 9 RATING
-# 10 FILELINK
-# 11 FILENAME
-# 12 LOCATION
-# 13 SERVER
+# 0 ID          the submission id
+# 1 AUTHOR      the author as written by the user (with underscores and capital letters)
+# 2 AUTHORURL   the author for search and downloads (no underscores and lowercase)
+# 3 TITLE       the title as posted with the submission
+# 4 UDATE       upload date in YYYY-MM-DD format (no need for HH:MM as the id already orders submissions)
+# 5 TAGS        tags sorted by alphanumeric order
+# 6 CATEGORY    submission category
+# 7 SPECIES     submission species
+# 8 GENDER      submission gender
+# 9 RATING      submission rating
+# 10 FILELINK   link to submission file
+# 11 FILENAME   the filename of the submission (0 if absent and 'submission' + the extension otherwise)
+# 12 LOCATION   the location of the submission inside the files folder
+# 13 SERVER     1 if the submission is available on FA, 0 if it was disabled, deleted, etc...
 
 def ins_usr(DB, user):
     try:
