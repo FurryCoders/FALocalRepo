@@ -105,7 +105,11 @@ def db_update_v1v2():
         c = ''
         while c not in ('y','n'):
             c = getkey().lower()
-        if c == 'n': sys.exit(0)
+        if c == 'n':
+            db_old.close()
+            db_new.close()
+            os.remove('FA.temp.db')
+            sys.exit(0)
 
     if dl:
         subs_new_dl = subs_new
