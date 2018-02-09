@@ -105,7 +105,7 @@ ENV/
 
 # repo
 FA.files
-FA.*.db
+FA.*db
 
 # readkeys module
 readkeys/
