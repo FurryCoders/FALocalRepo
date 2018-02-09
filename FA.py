@@ -5,6 +5,7 @@ import readkeys
 import FA_db as fadb
 import FA_dl as fadl
 import FA_tools as fatl
+import FA_upd as faup
 
 def menu(DB):
     menu = []
@@ -58,6 +59,8 @@ def menu(DB):
 
 
 fatl.sigint_block()
+
+faup.db_update()
 
 DB = sqlite3.connect('FA.db')
 fadb.mktable(DB, 'submissions')
