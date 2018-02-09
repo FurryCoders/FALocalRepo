@@ -27,7 +27,7 @@ def dl_values(Session, ID):
 
     return data
 
-def db_update(DB):
+def db_update_v1v2():
     print('Creating temporary database ... ', end='', flush=True)
     db_new = sqlite3.connect('FA.temp.db')
     db_new.close()
@@ -38,7 +38,7 @@ def db_update(DB):
 
     print('Copying INFOS data ... ', end='', flush=True)
     db_old.execute("CREATE TABLE IF NOT EXISTS db_new.INFOS AS SELECT * FROM main.INFOS")
-    
+
     db_old.commit()
     print('Done')
 
