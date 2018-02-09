@@ -1,5 +1,5 @@
 import sqlite3
-import sys
+import sys, os
 from FA_dl import dl_sub
 from FA_tools import tiers
 from readkeys import getkey
@@ -137,3 +137,8 @@ def db_update_v1v2():
         print('\b \b'+'\b \b'*(len(str(N))*2), end='', flush=True)
     db_new.commit()
     print('Done')
+
+    db_new.close()
+
+    os.rename('FA.db', 'FA.old.db')
+    os.rename('FA.temp.db', 'FA.db')
