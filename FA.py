@@ -5,7 +5,7 @@ import readkeys
 import FA_db as fadb
 import FA_dl as fadl
 import FA_tools as fatl
-import FA_upd as faup
+import FA_up as faup
 
 def menu(DB):
     menu = []
