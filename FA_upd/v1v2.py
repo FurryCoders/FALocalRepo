@@ -29,8 +29,8 @@ def dl_values(Session, ID):
 
     return data
 
-def db_update_v1v2():
-    print('The database need to be updated to version 2.0')
+def db_upgrade_v1v2():
+    print('The database need to be upgraded to version 2.0')
     print('This procedure is required to continue using the program')
     print('This procedure cannot be interrupted, do you want to continue? ', end='', flush=True)
     c = ''

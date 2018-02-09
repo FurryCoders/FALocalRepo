@@ -1,7 +1,7 @@
 import sqlite3
-from .v1v2 import db_update_v1v2
+from .v1v2 import db_upgrade_v1v2
 
-def db_update_main():
+def db_upgrade_main():
     while True:
         db = sqlite3.connect('FA.db')
 
@@ -17,19 +17,19 @@ def db_update_main():
         infos_f = [f[0] for f in infos_f]
         infos_v = [v[0] for v in infos_v]
 
-        db_update = False
+        db_upgrade = False
 
         if 'VERSION' not in infos_f:
-            db_update = db_update_v1v2
+            db_upgrade = db_upgrade_v1v2
         else:
             version = infos_v[infos_f.index('VERSION')]
 
-        if db_update:
+        if db_upgrade:
             print('-'*20)
-            print('Database version update')
+            print('Database version upgrade')
             print('-'*20)
             print()
-            db_update()
+            db_upgrade()
             print()
         else:
             break

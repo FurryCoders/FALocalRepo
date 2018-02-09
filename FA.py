@@ -60,7 +60,7 @@ def menu(DB):
 
 fatl.sigint_block()
 
-faup.db_update()
+faup.db_upgrade()
 
 DB = sqlite3.connect('FA.db')
 fadb.mktable(DB, 'submissions')
