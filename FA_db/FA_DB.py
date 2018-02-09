@@ -1,5 +1,21 @@
 import sqlite3
 
+# Entries guide
+# 0 ID
+# 1 AUTHOR
+# 2 AUTHORURL
+# 3 TITLE
+# 4 UDATE
+# 5 TAGS
+# 6 CATEGORY
+# 7 SPECIES
+# 8 GENDER
+# 9 RATING
+# 10 FILELINK
+# 11 FILENAME
+# 12 LOCATION
+# 13 SERVER
+
 def ins_usr(DB, user):
     try:
         DB.execute(f'''INSERT INTO USERS
