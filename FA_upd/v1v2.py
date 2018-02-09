@@ -108,12 +108,11 @@ def db_upgrade_v1v2():
         subs_new.append(s_new)
     print('Done')
 
-    print('Creating download session:')
+    print()
     Session = session()
     dl = bool(Session)
     if not Session:
-        print('Failed to create session')
-        print('\nWithout connection to the forum the new fields will be saved with default values.')
+        print('Without connection to the forum the new fields will be saved with default values.')
         print('Do you want to continue? ', end='', flush=True)
         c = ''
         while c not in ('y','n'):
@@ -124,6 +123,7 @@ def db_upgrade_v1v2():
             db_new.close()
             os.remove('FA.temp.db')
             sys.exit(0)
+    print()
 
     if dl:
         subs_new_dl = subs_new
