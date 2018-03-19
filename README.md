@@ -5,6 +5,11 @@ Pure Python program to download any user's gallery/scraps/favorites and more fro
 **Warning**: You need to set the the theme to 'beta' on FurAffinity<br>
 **Warning**: On windows safe exit does NOT work
 
+## Introduction
+This program was born with the desire to provide a relatively easy-to-use method for FA users to download submissions that they care about from the forum. At the moment its a little more than a text interface in a terminal window with only basic search functionality, a GUI will be hopefully added in the near future.
+
+When a submission is downloaded all its informations (except for the comments) are downloaded into a database located in the same folder the program is launched in. The file (artwork, story, audio, etc...) and the description are instead saved in separate files inside a folder named 'FA.files' which contains all submissions in a tiered structure based on their ID (e.g submission '3704554' will be saved in the folder 'FA.files/0/3/704/0003704554'). A backup informations txt is also saved with the description and file, it contains the basic informations and is there for safety (in case the database is accidentally deleted). For a guide on the database structure see `Database` below.
+
 ## Usage
 Use the provided binaries or build your own (build instructions at the end)
 
@@ -91,6 +96,43 @@ Selecting this entry will start the automatic database repair functions. These a
 
 If you run the program on Unix systems then you can use CTRL-C to safely interrupt the program. It will complete the submission download in progress and exit at the first safe point, this works in all parts of the program, download, sync and update.<br>
 If you run the program on Windows systems however safe exit will **NOT** work. This is caused by the the completely different way in which Windows handles signals, specifically SIGINT, interrupt signal sent by CTRL-C and used by this program. The functions are built to be relatively safe in how they handles database updates and downloads but it is suggested not to interrupt any operation to avoid errors.
+
+## Database
+The database (named 'FA.db') contains three tables:
+1. `INFOS`<br>
+This table contains general informations about the database, some of which are not in use at the moment. There is an entry for the database version (see 'Upgrading from earlier versions' below), one for the custom name of the database (not implemented yet), one for the number of users, one for the number of submissions, one specifying the time the last updates and downloads where started and how long they took.
+
+2. `USERS`<br>
+The USERS table contains a list of all the users that have been download with the program. Each entry contains the following:
+    * `NAME`<br>
+    The url username of the user (no caps and no underscores)
+    * `FOLDERS`<br>
+    The sections downloaded for that specific user (for a guide on what each section means see `Usage`&rarr;`Sections`). A '!' beside a section means that the user was disabled, it is used as a flag for the program.
+    * `GALLERY`, `SCRAPS`, `FAVORITES`, `EXTRAS`<br>
+    These contain a list of the submissions IDs downloaded for each section
+
+3. `SUBMISSIONS`<br>
+The last table is a list of all the single submissions downloaded by the program. Each entry has 14 different values:
+    * `ID`<br>
+    The id of the submission
+    * `AUTHOR`, `AUTHORURL`<br>
+    The author username in normal format and url format (e.g. 'Flying_Tiger' and 'flyingtiger')
+    * `TITLE`<br>
+    The title
+    * `UDATE`<br>
+    Upload date
+    * `TAGS`<br>
+    The submission's keywords sorted alphanumerically
+    * `CATEGORY`, `SPECIES`, `GENDER`, `RATING`<br>
+    The category, species, gender and rating as listed on the submission's page on the forum
+    * `FILELINK`, `FILENAME`<br>
+    The link to the submission file on the forum and the name of the downloaded file (all files are named 'submission' + their proper extension) (an empty or 0 value means the file has an error on the forum and has not been downloaded)
+    * `LOCATION`<br>
+    The location in the current folder of the submission's file, description and backup informations file.
+    * `SERVER`<br>
+    This last field is defaulted to 1 and only updated to 0 if the program checks the submission on the forum and finds it missing (because the uploaded has either disabled or deleted it)
+
+The database is built using sqlite so it can easily opened and searched with a vast number of third-party programs. A good one is 'DB Browser for SQLite' (http://sqlitebrowser.org/) which is open source, cross-platform and has a project page here on GitHub.
 
 ## Upgrading from earlier versions
 When the program is started it will check the database for its version. If the database version is lower than the program then it will update it depending on the difference between the two.
