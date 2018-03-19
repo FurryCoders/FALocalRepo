@@ -164,15 +164,15 @@ def dl_gs(Session, user, section, DB, sync=False, speed=1, force=0):
 def dl_e(Session, user, section, DB, sync=False, speed=1, force=0):
     url = 'https://www.furaffinity.net/'
     if section == 'e':
-        url += 'search/?q=( ":icon{0}:" | ":{0}icon:" ) ! ( @lower {0} )&order-by=date&page='.format(user)
+        url += 'search/?q=( ":icon{0}:" | ":{0}icon:" ) ! ( @lower {0} )&order-by=date'.format(user)
     elif section == 'E':
-        url += 'search/?q=( ":icon{0}:" | ":{0}icon:" | "{0}" ) ! ( @lower {0} )&order-by=date&page='.format(user)
+        url += 'search/?q=( ":icon{0}:" | ":{0}icon:" | "{0}" ) ! ( @lower {0} )&order-by=date'.format(user)
 
     page_i = 1
     while True:
         if sigint_check(): return 5
 
-        page_r = Session.get(url+str(page_i))
+        page_r = Session.get(f'{url}&page={page_i}')
         page_p = bs4.BeautifulSoup(page_r.text, 'lxml')
         page_p = page_p.find('section', id="gallery-search-results")
 
@@ -238,7 +238,6 @@ def dl_f(Session, user, section, DB, sync=False, speed=1, force=0):
         else:
             return 0
 
-
 def dl_usr(Session, user, section, DB, sync=False, speed=1, force=0):
     print(f'-->{section_full[section]}')
 
@@ -250,6 +249,7 @@ def dl_usr(Session, user, section, DB, sync=False, speed=1, force=0):
         dl_ret = dl_f(Session, user, section, DB, sync, speed, force)
 
     return dl_ret
+
 
 def update(Session, DB, users=[], sections=[], speed=2, force=0):
     users_db = DB.execute("SELECT name, folders FROM users ORDER BY name ASC")
