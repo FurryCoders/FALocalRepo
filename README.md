@@ -92,6 +92,15 @@ Selecting this entry will start the automatic database repair functions. These a
 If you run the program on Unix systems then you can use CTRL-C to safely interrupt the program. It will complete the submission download in progress and exit at the first safe point, this works in all parts of the program, download, sync and update.<br>
 If you run the program on Windows systems however safe exit will **NOT** work. This is caused by the the completely different way in which Windows handles signals, specifically SIGINT, interrupt signal sent by CTRL-C and used by this program. The functions are built to be relatively safe in how they handles database updates and downloads but it is suggested not to interrupt any operation to avoid errors.
 
+## Upgrading from earlier versions
+When the program is started it will check the database for its version. If the database version is lower than the program then it will update it depending on the difference between the two.
+* `0.x` or `1.x` &rarr; `2.x`<br>
+New informations handled by version 2 and onward will be downloaded and added to the database, these include submission category, rating, gender and species. Depending on the size of the database to be updated this process may take a long time.
+
+At each update step the program will save a backup copy of the database.
+
+**Warning**: The update cannot be skipped, to keep using a specific version of the database you need to download the release relative to that version
+
 ## Cookies
 The program needs to use cookies from a login session to successfully connect to FA. These cookies need to be in json format and can be easily extracted from Firefox/Chrome/Opera/Vivaldi/etc... using extensions or  manually. The value must be written in a file named FA.cookies<br>
 What follows is an example cookie (not working).
