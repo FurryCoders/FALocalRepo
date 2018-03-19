@@ -86,37 +86,62 @@ def check_page(Session, url):
 
     return True
 
-def dl_url(section, usr):
-    url ='https://www.furaffinity.net/'
-    if section in ('g', 's', 'f'):
-        url += '{}/{}/'.format(section_full[section], usr)
-    elif section == 'e':
-        url += 'search/?q=( ":icon{0}:" | ":{0}icon:" ) ! ( @lower {0} )&order-by=date&page='.format(usr)
-    elif section == 'E':
-        url += 'search/?q=( ":icon{0}:" | ":{0}icon:" | "{0}" ) ! ( @lower {0} )&order-by=date&page='.format(usr)
 
-    return url
+def dl_page(Session, user, section, DB, page_i, page_p, sync=False, speed=1, force=0):
+    sub_i = 0
+    for sub in page_p.findAll('figure'):
+        if sigint_check(): return 5
 
-def dl_usr(Session, user, section, DB, sync=False, speed=1, force=0):
-    url = dl_url(section, user)
-    print(f'-->{section_full[section]}')
+        sub_i += 1
+        ID = sub.get('id')[4:]
+        print(f'--->{page_i:03d}/{sub_i:02d}) {ID:0>10} - ', end='', flush=True)
+        folder = f'FA.files/{tiers(ID)}/{ID:0>10}'
+
+        if fadb.usr_src(DB, user, ID.zfill(10), section_db[section]):
+            cols = os.get_terminal_size()[0] - 38
+            if cols < 0: cols = 0
+            titl = str_clean(sub.find_all('a')[1].string)
+            print(f'{titl[0:cols]} | Repository')
+            if sync:
+                if force > 0 and page_i <= force: continue
+                if force == -1: continue
+                if sub_i+page_i == 2: return 3
+                else: return 2
+            continue
+
+        if sigint_check(): return 5
+
+        s_ret = dl_sub(Session, ID, folder, DB, False, True, speed)
+        if s_ret == 0:
+            print("\b"*5+" | Downloaded")
+            fadb.usr_up(DB, user, ID.zfill(10), section_db[section])
+        elif s_ret == 1:
+            print("\b"*5+" | File Error")
+            fadb.usr_up(DB, user, ID.zfill(10), section_db[section])
+        elif s_ret == 2:
+            print("\b"*5+" | Repository")
+            fadb.usr_up(DB, user, ID.zfill(10), section_db[section])
+        elif s_ret == 3:
+            print("\b"*5+" | Page Error")
+
+        if sigint_check(): return 5
+
+    return 0
+
+def dl_gs(Session, user, section, DB, sync=False, speed=1, force=0):
+    url = 'https://www.furaffinity.net/'
+    url += f'{section_full[section]}/{user}/'
 
     page_i = 1
     while True:
+        if sigint_check(): return 5
+
         page_r = Session.get(url+str(page_i))
         page_p = bs4.BeautifulSoup(page_r.text, 'lxml')
-        if section in ('e', 'E'):
-            page_p = page_p.find('section', id="gallery-search-results")
-        elif section == 'f':
-            page_p = page_p.find('section', id="gallery-favorites")
-        else:
-            page_p = page_p.find('section', id="gallery-gallery")
+        page_p = page_p.find('section', id="gallery-gallery")
 
         if page_p == None:
-            if section in ('e','E'):
-                print("--->No submissions to download")
-                return 1
-            elif page_i == 1:
+            if page_i == 1:
                 return 4
             else:
                 return 0
@@ -128,45 +153,103 @@ def dl_usr(Session, user, section, DB, sync=False, speed=1, force=0):
             else:
                 return 0
 
-        sub_i = 0
-        for sub in page_p.findAll('figure'):
-            if sigint_check(): return 5
+        if sigint_check(): return 5
 
-            sub_i += 1
-            ID = sub.get('id')[4:]
-            print(f'--->{page_i:03d}/{sub_i:02d}) {ID:0>10} - ', end='', flush=True)
-            folder = f'FA.files/{tiers(ID)}/{ID:0>10}'
+        page_ret = dl_page(Session, user, section, DB, page_i, page_p, sync, speed, force)
 
-            if fadb.usr_src(DB, user, ID.zfill(10), section_db[section]):
-                cols = os.get_terminal_size()[0] - 38
-                if cols < 0: cols = 0
-                titl = str_clean(sub.find_all('a')[1].string)
-                print(f'{titl[0:cols]} | Repository')
-                if sync:
-                    if force > 0 and page_i <= force: continue
-                    if force == -1: continue
-                    if sub_i+page_i == 2: return 3
-                    else: return 2
-                continue
+        if page_ret != 0: return page_ret
 
-            if sigint_check(): return 5
+        if sigint_check(): return 5
 
-            s_ret = dl_sub(Session, ID, folder, DB, False, True, speed)
-            if s_ret == 0:
-                print("\b"*5+" | Downloaded")
-                fadb.usr_up(DB, user, ID.zfill(10), section_db[section])
-            elif s_ret == 1:
-                print("\b"*5+" | File Error")
-                fadb.usr_up(DB, user, ID.zfill(10), section_db[section])
-            elif s_ret == 2:
-                print("\b"*5+" | Repository")
-                fadb.usr_up(DB, user, ID.zfill(10), section_db[section])
-            elif s_ret == 3:
-                print("\b"*5+" | Page Error")
+def dl_e(Session, user, section, DB, sync=False, speed=1, force=0):
+    url = 'https://www.furaffinity.net/'
+    if section == 'e':
+        url += 'search/?q=( ":icon{0}:" | ":{0}icon:" ) ! ( @lower {0} )&order-by=date&page='.format(user)
+    elif section == 'E':
+        url += 'search/?q=( ":icon{0}:" | ":{0}icon:" | "{0}" ) ! ( @lower {0} )&order-by=date&page='.format(user)
 
-            if sigint_check(): return 5
+    page_i = 1
+    while True:
+        if sigint_check(): return 5
 
-        page_i += 1
+        page_r = Session.get(url+str(page_i))
+        page_p = bs4.BeautifulSoup(page_r.text, 'lxml')
+        page_p = page_p.find('section', id="gallery-search-results")
+
+        if page_p == None:
+            if page_i == 1:
+                return 1
+            else:
+                return 0
+
+        if page_p.find('figure') is None:
+            if page_i == 1:
+                print("--->No submissions to download")
+                return 1
+            else:
+                return 0
+
+        if sigint_check(): return 5
+
+        page_ret = dl_page(Session, user, section, DB, page_i, page_p, sync, speed, force)
+
+        if page_ret != 0: return page_ret
+
+        if sigint_check(): return 5
+
+def dl_f(Session, user, section, DB, sync=False, speed=1, force=0):
+    url = f'https://www.furaffinity.net/favorites/{user}'
+
+    page_i = 1
+    url_i = ''
+    while True:
+        if sigint_check(): return 5
+
+        page_r = Session.get(url+url_i)
+        page_p = bs4.BeautifulSoup(page_r.text, 'lxml')
+        url_i = page_p.find('a', {"class": "button mobile-button right"})
+        page_p = page_p.find('section', id="gallery-favorites")
+
+        if page_p == None:
+            if page_i == 1:
+                return 4
+            else:
+                return 0
+
+        if page_p.find('figure') is None:
+            if page_i == 1:
+                print("--->No submissions to download")
+                return 1
+            else:
+                return 0
+
+        if sigint_check(): return 5
+
+        page_ret = dl_page(Session, user, section, DB, page_i, page_p, sync, speed, force)
+
+        if page_ret != 0: return page_ret
+
+        if sigint_check(): return 5
+
+        if url_i:
+            url_i = url_i['href']
+            url_i = url_i.split(user)[-1]
+            page_i += 1
+        else:
+            return 0
+
+
+def dl_usr(Session, user, section, DB, sync=False, speed=1, force=0):
+    print(f'-->{section_full[section]}')
+
+    if section in ('g', 's'):
+        dl_ret = dl_gs(Session, user, section, DB, sync, speed, force)
+    elif section in ('e', 'E'):
+        dl_ret = dl_e(Session, user, section, DB, sync, speed, force)
+    elif section in ('f'):
+        dl_ret = dl_f(Session, user, section, DB, sync, speed, force)
+
+    return dl_ret
 
 def update(Session, DB, users=[], sections=[], speed=2, force=0):
     users_db = DB.execute("SELECT name, folders FROM users ORDER BY name ASC")
