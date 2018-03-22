@@ -51,7 +51,7 @@ def sub_up(DB, ID, new_value, column):
     cols = []
     for i in range(0, len(column)):
         col = DB.execute(f"SELECT {column[i]} FROM submissions WHERE id = '{ID}'")
-        cols += col.fetchall()
+        cols.append(col.fetchall())
     if any(len(col) == 0 for col in cols):
         return False
 
