@@ -40,6 +40,17 @@ def ins_sub(DB, infos):
     finally:
         DB.commit()
 
+def sub_up(DB, ID, new_value, column):
+    col = DB.execute(f"SELECT {column} FROM submissions WHERE id = '{ID}'")
+    col = col.fetchall()
+    if len(col) == 0:
+        return False
+    col = col[0][0]
+    if col == new_value:
+        return True
+    DB.execute(f"UPDATE submissions SET {column} = '{new_value}' WHERE id = '{ID}'")
+    DB.commit()
+
 def usr_up(DB, user, to_add, column):
     col = DB.execute(f"SELECT {column} FROM users WHERE name = '{user}'")
     col = col.fetchall()[0]
