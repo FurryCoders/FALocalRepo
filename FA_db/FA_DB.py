@@ -41,15 +41,26 @@ def ins_sub(DB, infos):
         DB.commit()
 
 def sub_up(DB, ID, new_value, column):
-    col = DB.execute(f"SELECT {column} FROM submissions WHERE id = '{ID}'")
-    col = col.fetchall()
-    if len(col) == 0:
+    if type(new_value) != list:
+        new_value = [new_value]
+    if type(column) != list:
+        column = [column]
+    if len(new_value) != len(column):
         return False
-    col = col[0][0]
-    if col == new_value:
-        return True
-    DB.execute(f"UPDATE submissions SET {column} = '{new_value}' WHERE id = '{ID}'")
+
+    cols = []
+    for i in range(0, len(column)):
+        col = DB.execute(f"SELECT {column[i]} FROM submissions WHERE id = '{ID}'")
+        cols += col.fetchall()
+    if any(len(col) == 0 for col in cols):
+        return False
+
+    cols = [col[0][0] for col in cols]
+    for i in range(0, len(new_value)):
+        DB.execute(f"UPDATE submissions SET {column[i]} = '{new_value[i]}' WHERE id = '{ID}'")
     DB.commit()
+
+    return True
 
 def usr_up(DB, user, to_add, column):
     col = DB.execute(f"SELECT {column} FROM users WHERE name = '{user}'")
