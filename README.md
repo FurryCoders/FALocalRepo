@@ -11,7 +11,7 @@ This program was born with the desire to provide a relatively easy-to-use method
 When a submission is downloaded all its informations (except for the comments) are downloaded into a database located in the same folder the program is launched in. The file (artwork, story, audio, etc...) and the description are instead saved in separate files inside a folder named 'FA.files' which contains all submissions in a tiered structure based on their ID (e.g submission '3704554' will be saved in the folder 'FA.files/0/3/704/0003704554'). A backup informations txt is also saved with the description and file, it contains the basic informations and is there for safety (in case the database is accidentally deleted). For a guide on the database structure see `Database` below.
 
 ## Usage
-Use the provided binaries or build your own (build instructions at the end)
+Use the provided binaries or build your own (build instructions at the end).
 
 When the program starts a simple menu will appear, type the indicated number or key to select an option, there is no need to press ENTER.
 
@@ -19,7 +19,7 @@ When the program starts a simple menu will appear, type the indicated number or 
 This menu allows to download a user gallery, scraps, favorites, extras or to update specific users and/or sections for the database.
 
     1. `Username: `<br>
-    First field is reserved for users. To download or sync a specific user/s insert the username/s (url or userpage name are both valid). Usernames can be separated with spaces or commas
+    First field is reserved for users. To download or sync a specific user/s insert the username/s (url or userpage name are both valid). Usernames can be separated with spaces or commas.
 
     2. `Sections: `<br>
     Second field is reserved for sections. These can be:
@@ -27,26 +27,26 @@ This menu allows to download a user gallery, scraps, favorites, extras or to upd
         * s - Scraps
         * f - Favorites
         * e - Extras partial<br>
-        Searches submissions that contain ':iconusername:' OR ':usernameicon:' in the description AND NOT from username gallery/scraps
+        Searches submissions that contain ':iconusername:' OR ':usernameicon:' in the description AND NOT from username gallery/scraps.
         * E - Extras full<br>
-        Like partial but also searches for 'username' in the descriptions
+        Like partial but also searches for 'username' in the descriptions.
 
-        Sections can be omitted if 'update' option is used
+        Sections can be omitted if 'update' option is used.
 
     3. `Options: `<br>
     Last field is reserved for options. These can be:
         * sync<br>
-        Stops download when a submission already present in the user database entry is encountered
+        Stops download when a submission already present in the user database entry is encountered.
         * update<br>
         Reads usernames from the database and downloads new submissions in the respective sections. This option can be used without specifying users or sections, if either is specified then the update will be limited to those user/s and/or section/s.
         * forceN<br>
-        Prevents update and sync from stopping the download at the first already present submission. Download stops at the first downloaded submission from page N+1. Example: 'force4' will download the first 4 pages with no interruption and will allow the download to stop from page 5
+        Prevents update and sync from stopping the download at the first already present submission. Download stops at the first downloaded submission from page N+1. Example: 'force4' will download the first 4 pages with no interruption and will allow the download to stop from page 5.
         * all<br>
-        Like 'force' but it will prevent interrupting the download for the whole section (this means **ALL** pages from each user will be checked, only use for a limited amount of users)
+        Like 'force' but it will prevent interrupting the download for the whole section (this means **ALL** pages from each user will be checked, only use for a limited amount of users).
         * quit<br>
-        Quits the program when the current operation is completed
+        Quits the program when the current operation is completed.
 
-        Note: options can be inserted with or without spaces between them
+        Note: options can be inserted with or without spaces between them.
 
     4. After inserting the necessary usernames/sections/options (and making sure their combination is valid) the program will:
         1. Check connection to FA website
@@ -62,10 +62,10 @@ This menu allows to search in the database using one or more among author, title
 All search fields support regex, that means that for example to find 'dragon' you can either use 'dragon' or a section of it like 'dra', or something like `dr.*n` (match 'dr' then any number `*` of characters `.` followed by 'n'). More informations on regex syntax on [Wikipedia](https://en.wikipedia.org/wiki/Regular_expression) while a more complete reference can be found on [www.regular-expressions.info](https://www.regular-expressions.info/refquick.html). Even though regex is supported it is not necessary, without regex syntax the search function will still match any field that contains the text inserted.
 
     1. `Author`<br>
-    Author name is matched with regex support
+    Author name is matched with regex support.
 
     2. `Title`<br>
-    Title is matched using regex, like the title
+    Title is matched using regex, like the title.
 
     3. `Tags`<br>
     Tags are matched using regex as well, but with added support for negative matches. For example to search all submissions whose tags contain 'forest' but not 'autumn' you would type 'forest !autumn'. This is done surrounding tags to be included with `(?:.)*` and the tags to be excluded are enclosed in `(?!((?:.)*`tag`))`.<br>
@@ -76,11 +76,11 @@ Selecting this entry will start the automatic database repair functions. These a
     1. `Database analysis`<br>
     The program will analyze all submissions entries in the database for three different types of errors:
         1. `ID`<br>
-        Missing IDs will be flagged
+        Missing IDs will be flagged.
         2. `Fields`<br>
-        If the id passes the check then the other fields in the submission entry will be searched for misplaced empty strings, incorrect value types, wrongly encoded location
+        If the id passes the check then the other fields in the submission entry will be searched for misplaced empty strings, incorrect value types and incorrect location.
         3. `Files`<br>
-        If the previous checks have passed then the program will check that all submission files are present
+        If the previous checks have passed then the program will check that all submission files are present.
 
     2. `Database repair`<br>
     If errors where found then the program will try to fix them accordingly:
@@ -89,10 +89,10 @@ Selecting this entry will start the automatic database repair functions. These a
         2. `Fields`<br>
         The program will try and fix the errors in-place, replacing NULL values with empty strings. If the automatic fixes are successful then the submission will be checked for missing files, if any is missing then the submission will be passed to the next step. However if the automatic fixes do not work then the corrupted entry will be erased from the database, the files (if any present) deleted and the submission downloaded again, thus also fixing eventual missing files.
         3. `Files`<br>
-        The program will simply erase the submission folder to remove any stray file (if any is present) and then download them again
+        The program will simply erase the submission folder to remove any stray file (if any is present) and then download them again.
 
     3. `Optimizing`<br>
-    After all errors (if any are found) are fixed then the program will use the sqlite `VACUUM` function to optimize the database and clean it up
+    After all errors (if any are found) are fixed then the program will use the sqlite `VACUUM` function to optimize the database and clean it up.
 
 If you run the program on Unix systems then you can use CTRL-C to safely interrupt the program. It will complete the submission download in progress and exit at the first safe point, this works in all parts of the program, download, sync and update.<br>
 If you run the program on Windows systems however safe exit will **NOT** work. This is caused by the the completely different way in which Windows handles signals, specifically SIGINT, interrupt signal sent by CTRL-C and used by this program. The functions are built to be relatively safe in how they handles database updates and downloads but it is suggested not to interrupt any operation to avoid errors.
@@ -105,11 +105,14 @@ This table contains general informations about the database, some of which are n
 2. `USERS`<br>
 The USERS table contains a list of all the users that have been download with the program. Each entry contains the following:
     * `NAME`<br>
-    The url username of the user (no caps and no underscores)
+    The url username of the user (no caps and no underscores).
     * `FOLDERS`<br>
-    The sections downloaded for that specific user (for a guide on what each section means see `Usage`&rarr;`Sections`). A '!' beside a section means that the user was disabled, it is used as a flag for the program.
+    The sections downloaded for that specific user. A '!' beside a section means that the user was disabled, it is used as a flag for the program.*&#42;*
     * `GALLERY`, `SCRAPS`, `FAVORITES`, `EXTRAS`<br>
-    These contain a list of the submissions IDs downloaded for each section
+    These contain a list of the submissions IDs downloaded for each section.*&#42;*
+
+    *&#42; For a guide on what each section means see `Usage`&rarr;`Sections`*
+
 
 3. `SUBMISSIONS`<br>
 The last table is a list of all the single submissions downloaded by the program. Each entry has 14 different values:
