@@ -6,10 +6,18 @@ import readkeys
 def regexp(pattern, input):
     return bool(re.match(pattern, input, flags=re.IGNORECASE))
 
-def search(DB, user, titl, tags):
-    if user == '' and titl == '' and tags == '':
+def search(DB, fields):
+    if all(len(f) == 0 for f in fields):
         print('At least one field must be searched')
         return False
+
+    user = fields[0]
+    titl = fields[1]
+    tags = fields[2]
+    catg = fields[3]
+    spec = fields[4]
+    gend = fields[5]
+    rate = fields[6]
 
     DB.create_function("REGEXP", 2, regexp)
 
@@ -26,39 +34,55 @@ def search(DB, user, titl, tags):
         elif t in tags_y:
             tags_r += f'(?:.)*{t}'
 
-    terms = ('(?:.)*'+user+'(?:.)*', '(?:.)*'+titl+'(?:.)*', tags_r)
+    terms = ('(?:.)*'+user+'(?:.)*', '(?:.)*'+titl+'(?:.)*', tags_r,\
+    '(?:.)*'+catg+'(?:.)*', '(?:.)*'+spec+'(?:.)*', '(?:.)*'+gend+'(?:.)*', '(?:.)*'+rate+'(?:.)*')
     t1 = time.time()
     results = DB.execute('''SELECT author, udate, title, id FROM submissions
         WHERE authorurl REGEXP ? AND
         title REGEXP ? AND
-        tags REGEXP ?
+        tags REGEXP ? AND
+        category REGEXP ? AND
+        species REGEXP ? AND
+        gender REGEXP ? AND
+        rating REGEXP ?
         ORDER BY authorurl ASC, id DESC''', terms)
     t2 = time.time()
 
-    print('{: ^10} | {: ^10} {: ^10} | {}'.format('AUTHOR', 'DATE', 'ID', 'TITLE'))
-    print('-'*44)
-    i = 0
+    cols = os.get_terminal_size()[0] - 35
+    if cols < 0: cols = 0
+    print('{: ^10} | {: ^8} {: ^10} | {}'.format('AUTHOR', 'DATE', 'ID', 'TITLE'[0:cols]))
+    print(('-'*35)+'-------'[0:cols])
     for r in results:
-        i += 1
-        cols = os.get_terminal_size()[0] - 37
-        print(f'{r[0][0:10]: <10} | {r[1]} {r[3]:0>10} | {r[2][0:cols]}')
+        print(f'{r[0][0:10]: <10} | {r[1][2:]} {r[3]:0>10} | {r[2][0:cols]}')
 
-    print(f'\n{i} results found in {t2-t1:.3f} seconds')
+    print(f'\n{len(results.fetchall())} results found in {t2-t1:.3f} seconds')
 
     return True
 
 def main(DB):
     while True:
+        fields = []
+        # Author
+        # Title
+        # Tags
+        # Category
+        # Species
+        # Gender
+        # Rating
         try:
-            user = readkeys.input('Author: ')
-            titl = readkeys.input('Title: ')
-            tags = readkeys.input('Tags: ')
+            fields += [readkeys.input('Author: ')]
+            fields += [readkeys.input('Title: ')]
+            fields += [readkeys.input('Tags: ')]
+            fields += [readkeys.input('Category: ')]
+            fields += [readkeys.input('Species: ')]
+            fields += [readkeys.input('Gender: ')]
+            fields += [readkeys.input('Rating: ')]
         except:
             return
 
         print()
 
-        if not search(DB, user, titl, tags):
+        if not search(DB, fields):
             print()
             continue
         else:
