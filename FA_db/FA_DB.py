@@ -28,40 +28,6 @@ def usr_ins(DB, user):
     finally:
         DB.commit()
 
-def sub_ins(DB, infos):
-    try:
-        DB.execute(f'''INSERT INTO SUBMISSIONS
-            (ID,AUTHOR,AUTHORURL,TITLE,UDATE,TAGS,CATEGORY,SPECIES,GENDER,RATING,FILELINK,FILENAME,LOCATION, SERVER)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)''', infos)
-    except sqlite3.IntegrityError:
-        pass
-    except:
-        raise
-    finally:
-        DB.commit()
-
-def sub_up(DB, ID, new_value, column):
-    if type(new_value) != list:
-        new_value = [new_value]
-    if type(column) != list:
-        column = [column]
-    if len(new_value) != len(column):
-        return False
-
-    cols = []
-    for i in range(0, len(column)):
-        col = DB.execute(f"SELECT {column[i]} FROM submissions WHERE id = '{ID}'")
-        cols.append(col.fetchall())
-    if any(len(col) == 0 for col in cols):
-        return False
-
-    cols = [col[0][0] for col in cols]
-    for i in range(0, len(new_value)):
-        DB.execute(f"UPDATE submissions SET {column[i]} = '{new_value[i]}' WHERE id = '{ID}'")
-    DB.commit()
-
-    return True
-
 def usr_up(DB, user, to_add, column):
     col = DB.execute(f"SELECT {column} FROM users WHERE name = '{user}'")
     col = col.fetchall()[0]
@@ -99,6 +65,40 @@ def usr_src(DB, user, find, column):
     col = "".join(col).split(',')
     if find in col: return True
     else: return False
+
+def sub_ins(DB, infos):
+    try:
+        DB.execute(f'''INSERT INTO SUBMISSIONS
+            (ID,AUTHOR,AUTHORURL,TITLE,UDATE,TAGS,CATEGORY,SPECIES,GENDER,RATING,FILELINK,FILENAME,LOCATION, SERVER)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)''', infos)
+    except sqlite3.IntegrityError:
+        pass
+    except:
+        raise
+    finally:
+        DB.commit()
+
+def sub_up(DB, ID, new_value, column):
+    if type(new_value) != list:
+        new_value = [new_value]
+    if type(column) != list:
+        column = [column]
+    if len(new_value) != len(column):
+        return False
+
+    cols = []
+    for i in range(0, len(column)):
+        col = DB.execute(f"SELECT {column[i]} FROM submissions WHERE id = '{ID}'")
+        cols.append(col.fetchall())
+    if any(len(col) == 0 for col in cols):
+        return False
+
+    cols = [col[0][0] for col in cols]
+    for i in range(0, len(new_value)):
+        DB.execute(f"UPDATE submissions SET {column[i]} = '{new_value[i]}' WHERE id = '{ID}'")
+    DB.commit()
+
+    return True
 
 def sub_read(DB, ID, column):
     col = DB.execute(f"SELECT {column} FROM submissions WHERE id = '{ID}'")
