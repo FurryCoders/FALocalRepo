@@ -16,7 +16,7 @@ import sqlite3
 # 12 LOCATION   the location of the submission inside the files folder
 # 13 SERVER     1 if the submission is available on FA, 0 if it was disabled, deleted, etc...
 
-def ins_usr(DB, user):
+def usr_ins(DB, user):
     try:
         DB.execute(f'''INSERT INTO USERS
             (NAME,FOLDERS,GALLERY,SCRAPS,FAVORITES,EXTRAS)
@@ -28,7 +28,7 @@ def ins_usr(DB, user):
     finally:
         DB.commit()
 
-def ins_sub(DB, infos):
+def sub_ins(DB, infos):
     try:
         DB.execute(f'''INSERT INTO SUBMISSIONS
             (ID,AUTHOR,AUTHORURL,TITLE,UDATE,TAGS,CATEGORY,SPECIES,GENDER,RATING,FILELINK,FILENAME,LOCATION, SERVER)

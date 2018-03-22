@@ -3,7 +3,7 @@ import re
 import os, sys
 import time
 import filetype
-from FA_db import sub_exists, sub_read, ins_sub
+from FA_db import sub_exists, sub_read, sub_ins
 
 months = {
     'January' : '01',
@@ -150,7 +150,7 @@ def dl_sub(Session, ID, folder, DB, quiet=False, check=False, speed=1):
         f.write(f'File: {link}\n')
 
     sub_info = (ID, data[0], data[0].lower().replace('_', ''), data[1], data[2], data[3], data[4], data[5], data[6], data[7], link, subf, folder.split('/',1)[-1], 1)
-    ins_sub(DB, sub_info)
+    sub_ins(DB, sub_info)
 
     if subf == False:
         return 1

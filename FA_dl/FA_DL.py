@@ -346,7 +346,7 @@ def download(Session, DB):
                 sections_u = re.sub('[^eE]', '', sections_u)
             print()
             if len(sections_u) == 0: continue
-            fadb.ins_usr(DB, u)
+            fadb.usr_ins(DB, u)
             for s in sections_u:
                 d = dl_usr(Session, u, s, DB, sync, speed, force)
                 if d in (0,1,2,3,5):
