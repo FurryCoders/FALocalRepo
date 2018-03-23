@@ -149,7 +149,7 @@ The last table is a list of all the single submissions downloaded by the program
     * `SERVER`<br>
     This last field is defaulted to 1 and only updated to 0 if the program checks the submission on the forum and finds it missing (because the uploaded has either disabled or deleted it)
 
-The database is built using sqlite so it can easily opened and searched with a vast number of third-party programs. A good one is 'DB Browser for SQLite' (http://sqlitebrowser.org/) which is open source, cross-platform and has a project page here on GitHub.
+The database is built using sqlite so it can be easily opened and searched with a vast number of third-party programs. A good one is 'DB Browser for SQLite' (http://sqlitebrowser.org/) which is open source, cross-platform and has a project page here on GitHub.
 
 ## Upgrading from earlier versions
 When the program is started it will check the database for its version. If the database version is lower than the program then it will update it depending on the difference between the two.
