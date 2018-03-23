@@ -48,6 +48,7 @@ def search(DB, fields):
         ORDER BY authorurl ASC, id DESC''', terms)
     t2 = time.time()
 
+    results = [[ri for ri in r] for r in results.fetchall()]
     cols = os.get_terminal_size()[0] - 35
     if cols < 0: cols = 0
     print('{: ^10} | {: ^8} {: ^10} | {}'.format('AUTHOR', 'DATE', 'ID', 'TITLE'[0:cols]))
@@ -55,7 +56,7 @@ def search(DB, fields):
     for r in results:
         print(f'{r[0][0:10]: <10} | {r[1][2:]} {r[3]:0>10} | {r[2][0:cols]}')
 
-    print(f'\n{len(results.fetchall())} results found in {t2-t1:.3f} seconds')
+    print(f'\n{len(results)} results found in {t2-t1:.3f} seconds')
 
     return True
 
@@ -75,8 +76,8 @@ def main(DB):
             fields += [readkeys.input('Tags: ')]
             fields += [readkeys.input('Category: ')]
             fields += [readkeys.input('Species: ')]
-            fields += [readkeys.input('Gender: ')]
-            fields += [readkeys.input('Rating: ')]
+            fields += [readkeys.input('Gender: ').lower()]
+            fields += [readkeys.input('Rating: ').lower()]
         except:
             return
 
