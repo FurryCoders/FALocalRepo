@@ -132,10 +132,11 @@ def dl_gs(Session, user, section, DB, sync=False, speed=1, force=0):
     url = 'https://www.furaffinity.net/'
     url += f'{section_full[section]}/{user}/'
 
-    page_i = 1
+    page_i = 0
     while True:
         if sigint_check(): return 5
 
+        page_i += 1
         page_r = Session.get(url+str(page_i))
         page_p = bs4.BeautifulSoup(page_r.text, 'lxml')
         page_p = page_p.find('section', id="gallery-gallery")
@@ -168,10 +169,11 @@ def dl_e(Session, user, section, DB, sync=False, speed=1, force=0):
     elif section == 'E':
         url += 'search/?q=( ":icon{0}:" | ":{0}icon:" | "{0}" ) ! ( @lower {0} )&order-by=date'.format(user)
 
-    page_i = 1
+    page_i = 0
     while True:
         if sigint_check(): return 5
 
+        page_i += 1
         page_r = Session.get(f'{url}&page={page_i}')
         page_p = bs4.BeautifulSoup(page_r.text, 'lxml')
         page_p = page_p.find('section', id="gallery-search-results")
@@ -207,7 +209,7 @@ def dl_f(Session, user, section, DB, sync=False, speed=1, force=0):
 
         page_r = Session.get(url+url_i)
         page_p = bs4.BeautifulSoup(page_r.text, 'lxml')
-        url_i = page_p.find('a', {"class": "button mobile-button right"})
+        page_next = page_p.find('a', {"class": "button mobile-button right"})
         page_p = page_p.find('section', id="gallery-favorites")
 
         if page_p == None:
@@ -231,9 +233,9 @@ def dl_f(Session, user, section, DB, sync=False, speed=1, force=0):
 
         if sigint_check(): return 5
 
-        if url_i:
-            url_i = url_i['href']
-            url_i = url_i.split(user)[-1]
+        if page_next:
+            page_next = page_next['href']
+            page_next = page_next.split(user)[-1]
             page_i += 1
         else:
             return 0
