@@ -174,29 +174,38 @@ def db_upgrade_v1v2():
     N = len(subs_new)
     Nl = int(log10(N)+1)
     Ni = 0
+    missing = 0
     fields = ['CATEGORY','SPECIES','GENDER','RATING']
     print('Getting new values from FA ... ', end='', flush=True)
     for s in subs_new:
         Ni += 1
         print(f'{Ni:0>{Nl}}/{N}', end='', flush=True)
         if s[6] != 'NULL':
+            print('\b \b'+'\b \b'*(Nl*2), end='', flush=True)
             continue
         values = dl_values(Session, s[0])
         if not values:
             values = ['All > All', 'Unspecified / Any', 'Any', 'general']
             sub_up(db_new, s[0], values+[0], fields+['SERVER'])
+            missing += 1
         else:
             sub_up(db_new, s[0], values, fields)
         if sigint_check():
-            print(' Interrupt!')
+            print(' Interrupt')
             print('Update interrupted, it may be resumed later')
+            if missing > 0:
+                print(f'Found {missing} submission/s no longer present on the website')
             print('Closing program')
             sys.exit(0)
-        print('\b \b'+'\b \b'*(len(str(N))*2), end='', flush=True)
+        print('\b \b'+'\b \b'*(Nl*2), end='', flush=True)
     print('Done')
+
+    if missing > 0:
+        print(f'Found {missing} submission/s no longer present on the website')
 
     db_new.close()
 
+    print()
     print('Backing up old database and renaming new one ... ', end='', flush=True)
     os.rename('FA.db', 'FA.v1.db')
     os.rename('FA.v1v2.db', 'FA.db')
