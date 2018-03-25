@@ -260,6 +260,8 @@ def dl_usr(Session, user, section, DB, sync=False, speed=1, force=0, quiet=False
 
 
 def update(Session, DB, users=[], sections=[], speed=2, force=0):
+    if sigint_check(): return
+
     print('Update')
     print('USR PAGE SECT. |     ID     | TITLE -> RESULT')
     print('-'*47)
@@ -271,20 +273,20 @@ def update(Session, DB, users=[], sections=[], speed=2, force=0):
     flag_download = False
 
     for u in users_db:
+        if sigint_check(): break
         flag_download_u = False
-        # print('-'*47, end='')
 
         if users and u[0] not in users:
-            # print('\r'+' '*47+'\r', end='')
             continue
 
         if sections and not any(s[0] in sections for s in u[1].split(',')):
-            # print('\r'+' '*47+'\r', end='')
             continue
 
-        # print()
-
         for s in u[1].split(','):
+            if sigint_check():
+                dl_ret = 5
+                break
+
             if s[-1] == '!' and s[0] not in sections:
                 continue
             print(f'{u[0][0:12]: ^12} {s}\r', end='', flush=True)
@@ -299,6 +301,7 @@ def update(Session, DB, users=[], sections=[], speed=2, force=0):
                 dl_ret = 5
                 break
 
+        if sigint_check(): break
         if dl_ret == 5:
             break
 
@@ -313,10 +316,13 @@ def update(Session, DB, users=[], sections=[], speed=2, force=0):
     fadb.info_up(DB, 'SUBN', fadb.table_n(DB, 'SUBMISSIONS'))
 
 def download(Session, DB, users, sections, sync, speed, force):
+    if sigint_check(): return
+
     usr_sec = [[u, sections] for u in users]
     print('Checking users:')
     i = -1
     while True:
+        if sigint_check(): return
         i += 1
         if i == len(usr_sec): break
         print(f'  {usr_sec[i][0]} ... ', end='', flush=True)
@@ -330,6 +336,8 @@ def download(Session, DB, users, sections, sync, speed, force):
             i -= 1
             continue
         fadb.usr_ins(DB, usr_sec[i][0])
+
+    if sigint_check(): return
 
     if len(usr_sec) == 0:
         print('\nNothing to download')
@@ -410,6 +418,8 @@ def download_main(Session, DB):
     if not Session:
         print('Session error')
         return None
+
+    if sigint_check(): return Session
 
     if upd:
         update(Session, DB, users, sections, speed, force)
