@@ -313,7 +313,6 @@ def update(Session, DB, users=[], sections=[], speed=2, force=0):
 
     t = int(time.time()) - t
     fadb.info_up(DB, 'LASTUPT', t)
-    fadb.info_up(DB, 'SUBN', fadb.table_n(DB, 'SUBMISSIONS'))
 
 def download(Session, DB, users, sections, sync, speed, force):
     if sigint_check(): return
@@ -355,27 +354,28 @@ def download(Session, DB, users, sections, sync, speed, force):
         print('-'*47)
         for i in range(0, len(usr[1])):
             sec = usr[1][i]
-            d = dl_usr(Session, usr[0], sec, DB, sync, speed, force)
-            if d in (0,1,2,3,5):
+            dl_ret = dl_usr(Session, usr[0], sec, DB, sync, speed, force)
+            if dl_ret in (0,1,2,3,5):
                 if sec == 'e':
                     fadb.usr_rep(DB, usr[0], 'E', 'e', 'FOLDERS')
                 elif sec == 'E':
                     fadb.usr_rep(DB, usr[0], 'e', 'E', 'FOLDERS')
                 else:
                     fadb.usr_up(DB, usr[0], sec, 'FOLDERS')
-            elif d == 4:
+            elif dl_ret == 4:
                 fadb.usr_rep(DB, usr[0], sec, sec+'!', 'FOLDERS')
-            if d == 5:
+            if dl_ret == 5:
                 break
             if i < len(usr[1])-1:
                 print('-'*29)
-        if d == 5:
+        if fadb.usr_isempty(DB, usr[0]):
+            fadb.usr_rm(DB, usr[0])
+            print(f'{usr[0][0:14]: ^14} | No downloads, user deleted')
+        if dl_ret == 5:
             break
 
     t = int(time.time()) - t
     fadb.info_up(DB, 'LASTDLT', t)
-    fadb.info_up(DB, 'USRN', fadb.table_n(DB, 'USERS'))
-    fadb.info_up(DB, 'SUBN', fadb.table_n(DB, 'SUBMISSIONS'))
 
 def download_main(Session, DB):
     while True:
@@ -427,6 +427,8 @@ def download_main(Session, DB):
         update(Session, DB, users, sections, speed, force)
     else:
         download(Session, DB, users, sections, sync, speed, force)
+    fadb.info_up(DB, 'USRN', fadb.table_n(DB, 'USERS'))
+    fadb.info_up(DB, 'SUBN', fadb.table_n(DB, 'SUBMISSIONS'))
 
     if quit: sys.exit(0)
     return Session
