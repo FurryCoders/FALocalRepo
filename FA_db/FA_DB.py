@@ -11,10 +11,10 @@ import sqlite3
 # 7 SPECIES     submission species
 # 8 GENDER      submission gender
 # 9 RATING      submission rating
-# 10 FILELINK   link to submission file
-# 11 FILENAME   the filename of the submission (0 if absent and 'submission' + the extension otherwise)
-# 12 LOCATION   the location of the submission inside the files folder
-# 13 SERVER     1 if the submission is available on FA, 0 if it was disabled, deleted, etc...
+# 10 (6 v1) FILELINK   link to submission file
+# 11 (7 v1) FILENAME   the filename of the submission (0 if absent and 'submission' + the extension otherwise)
+# 12 (8 v1) LOCATION   the location of the submission inside the files folder
+# 13 (9 v1) SERVER     1 if the submission is available on FA, 0 if it was disabled, deleted, etc...
 
 def usr_ins(DB, user):
     try:
