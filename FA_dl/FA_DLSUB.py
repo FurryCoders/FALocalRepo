@@ -3,6 +3,7 @@ import re
 import os, sys
 import time
 import filetype
+import codecs
 from FA_db import sub_exists, sub_read, sub_ins
 
 months = {
@@ -138,7 +139,7 @@ def dl_sub(Session, ID, folder, DB, quiet=False, check=False, speed=1):
 
     subf = get_file(link, folder, speed)
 
-    with open(folder+'/description.html', 'w') as f:
+    with codecs.open(folder+'/description.html', encoding='utf-8', mode='w') as f:
         f.write(desc)
 
     with open(folder+'/info.txt', 'w') as f:
