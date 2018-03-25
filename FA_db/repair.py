@@ -26,7 +26,7 @@ def check_files(sub):
         return False
     elif not os.path.isfile(loc+'/description.html'):
         return False
-    elif sub[7] != '0' and not os.path.isfile(loc+f'/{sub[7]}'):
+    elif sub[11] != '0' and not os.path.isfile(loc+f'/{sub[11]}'):
         return False
 
     return True
@@ -107,10 +107,7 @@ def repair(Session, DB):
                     DB.commit()
                     continue
                 if sub[12] == tiers(ID)+f'{ID:0>10}':
-                    sub_f = glob.glob(f'FA.files/{sub[8]}/info.txt')
-                    sub_f += glob.glob(f'FA.files/{sub[8]}/description.html')
-                    sub_f += glob.glob(f'FA.files/{sub[8]}/submission*')
-                    for f in sub_f:
+                    for f in glob.glob(f'FA.files/{sub[12]}/*'):
                         os.remove(f)
                 DB.execute(f'DELETE FROM submissions WHERE id = {ID}')
                 DB.commit()
@@ -126,7 +123,7 @@ def repair(Session, DB):
                 if sigint_check(): return Session
                 ID = sub[0]
                 i += 1
-                print(f'\n{i:0>{l}}/{L} - {ID:0>10} {sub[8]}', end='', flush=True)
+                print(f'\n{i:0>{l}}/{L} - {ID:0>10} {sub[12]}', end='', flush=True)
                 if not sub[13]:
                     print(' - Page Error', end='', flush=True)
                     continue
@@ -135,10 +132,7 @@ def repair(Session, DB):
                     DB.execute(f'UPDATE submissions SET server = 0 WHERE id = {ID}')
                     DB.commit()
                     continue
-                sub_f = glob.glob(f'FA.files/{sub[12]}/info.txt')
-                sub_f += glob.glob(f'FA.files/{sub[12]}/description.html')
-                sub_f += glob.glob(f'FA.files/{sub[12]}/submission*')
-                for f in sub_f:
+                for f in glob.glob(f'FA.files/{sub[12]}/*'):
                     os.remove(f)
                 DB.execute(f'DELETE FROM submissions WHERE id = {ID}')
                 DB.commit()
