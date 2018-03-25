@@ -28,6 +28,14 @@ def usr_ins(DB, user):
     finally:
         DB.commit()
 
+def usr_rm(DB, user):
+    try:
+        DB.execute(f'DELETE FROM users WHERE name = "{user}"')
+    except:
+        pass
+    finally:
+        DB.commit()
+
 def usr_up(DB, user, to_add, column):
     col = DB.execute(f"SELECT {column} FROM users WHERE name = '{user}'")
     col = col.fetchall()[0]
@@ -65,6 +73,17 @@ def usr_src(DB, user, find, column):
     col = "".join(col).split(',')
     if find in col: return True
     else: return False
+
+def usr_isempty(DB, user):
+    for col in ('GALLERY', 'SCRAPS', 'FAVORITES', 'EXTRAS'):
+        col = DB.execute(f"SELECT {col} FROM users WHERE name = '{user}'")
+        col = col.fetchall()
+        if len(col) == 0:
+            return True
+        col = col[0][0]
+        if col:
+            return False
+    return True
 
 def sub_ins(DB, infos):
     try:
