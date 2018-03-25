@@ -339,10 +339,12 @@ def download(Session, DB, users, sections, sync, speed, force):
 
     if sigint_check(): return
 
+    print()
+
     if len(usr_sec) == 0:
-        print('\nNothing to download')
+        print('Nothing to download')
         return
-    print('\nDownload')
+    print('Download')
     print('USR PAGE SECT. |     ID     | TITLE -> RESULT')
 
     t = int(time.time())
