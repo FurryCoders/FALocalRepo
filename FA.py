@@ -37,7 +37,7 @@ def menu(DB):
             print('Download & Update')
             print('-'*20)
             print()
-            Session = fadl.download(Session, DB)
+            Session = fadl.download_main(Session, DB)
         elif o == '2':
             print('-'*20)
             print('Search')
