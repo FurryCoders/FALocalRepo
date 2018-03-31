@@ -130,6 +130,7 @@ def temp_import():
 
     print('Done')
 
+    db_old.close()
     db_new.close()
     return subs_new
 
@@ -163,7 +164,6 @@ def db_upgrade_v1v2():
         print('Impossible to connect to the forum, update interrupted')
         print('Please check cookies and status of FA website')
         print('Cleaning up temporary files ... ', end='', flush=True)
-        db_old.close()
         db_new.close()
         os.remove('FA.v1v2.db')
         print('Done')
