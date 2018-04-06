@@ -183,7 +183,21 @@ def db_upgrade_v1v2():
         if s[6] != 'NULL':
             print('\b \b'+'\b \b'*(Nl*2), end='', flush=True)
             continue
-        values = dl_values(Session, s[0])
+        try:
+            values = dl_values(Session, s[0])
+        except:
+            print(' Error encountered')
+            print('The connection with the forum has encountered an unknown error')
+            with open('FA.v1v2.error.txt', 'w') as f:
+                err = sys.exc_info()
+                for e in err:
+                    f.write(repr(e)+'\n')
+            print('Informations on the error have been written to FA.v1v2.error.txt')
+            print('Update interrupted, it may be resumed later')
+            if missing > 0:
+                print(f'Found {missing} submission/s no longer present on the website')
+            print('Closing program')
+            sys.exit(0)
         if not values:
             values = ['All > All', 'Unspecified / Any', 'Any', 'general']
             sub_up(db_new, s[0], values+[0], fields+['SERVER'])
