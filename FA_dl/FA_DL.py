@@ -208,11 +208,12 @@ def dl_e(Session, user, section, DB, sync=False, speed=1, force=0, quiet=False):
 def dl_f(Session, user, section, DB, sync=False, speed=1, force=0, quiet=False):
     url = f'https://www.furaffinity.net/favorites/{user}'
 
-    page_i = 1
+    page_i = 0
     url_i = ''
     while True:
         if sigint_check(): return 5
 
+        page_i += 1
         page_r = Session.get(url+url_i)
         page_p = bs4.BeautifulSoup(page_r.text, 'lxml')
         page_next = page_p.find('a', {"class": "button mobile-button right"})
