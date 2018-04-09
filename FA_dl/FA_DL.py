@@ -287,7 +287,9 @@ def update(Session, DB, users=[], sections=[], speed=2, force=0):
             if sigint_check():
                 dl_ret = 5
                 break
-
+            if s not in sections:
+                continue
+                
             if s[-1] == '!' and s[0] not in sections:
                 continue
             print(f'{u[0][0:12]: ^12} {s}\r', end='', flush=True)
