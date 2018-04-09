@@ -281,6 +281,7 @@ def update(Session, DB, users=[], sections=[], speed=2, force=0):
             continue
 
         for s in u[1].split(','):
+            dl_ret = 0
             if sigint_check():
                 dl_ret = 5
                 break
