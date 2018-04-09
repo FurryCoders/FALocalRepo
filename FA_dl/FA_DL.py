@@ -280,16 +280,13 @@ def update(Session, DB, users=[], sections=[], speed=2, force=0):
         if users and u[0] not in users:
             continue
 
-        if sections and not any(s[0] in sections for s in u[1].split(',')):
-            continue
-
         for s in u[1].split(','):
             if sigint_check():
                 dl_ret = 5
                 break
-            if s not in sections:
+            if len(sections) and s not in sections:
                 continue
-                
+
             if s[-1] == '!' and s[0] not in sections:
                 continue
             print(f'{u[0][0:12]: ^12} {s}\r', end='', flush=True)
@@ -395,6 +392,7 @@ def download_main(Session, DB):
         users = [u for u in users if u != '']
 
         sections = re.sub('[^gsfeE]', '', sections)
+        sections = list(sections)
 
         speed = 1 ; upd = False
         sync = False ; force = 0
