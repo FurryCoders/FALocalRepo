@@ -318,7 +318,7 @@ def update(Session, DB, users=[], sections=[], speed=2, force=0):
 def download(Session, DB, users, sections, sync, speed, force):
     if sigint_check(): return
 
-    usr_sec = [[u, sections] for u in users]
+    usr_sec = [[u, "".join(sections)] for u in users]
     print('Checking users:')
     i = -1
     while True:
@@ -328,7 +328,7 @@ def download(Session, DB, users, sections, sync, speed, force):
         print(f'  {usr_sec[i][0]} ... ', end='', flush=True)
         if not check_page(Session, f'user/{usr_sec[i][0]}'):
             print('Not found')
-            usr_sec[i][1] = re.sub('[^eE]', '', sections)
+            usr_sec[i][1] = re.sub('[^eE]', '', usr_sec[i][1])
         else:
             print('Found')
         if len(usr_sec[i][1]) == 0:
