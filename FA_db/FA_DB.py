@@ -28,9 +28,12 @@ def usr_ins(DB, user):
     finally:
         DB.commit()
 
-def usr_rm(DB, user):
+def usr_rm(DB, user, isempty=False):
     try:
-        DB.execute(f'DELETE FROM users WHERE name = "{user}"')
+        if isempty:
+            DB.execute(f'DELETE FROM users WHERE name = "{user}" AND folders = "" AND gallery = "" AND scraps = "" AND favorites = "" AND extras = ""')
+        else:
+            DB.execute(f'DELETE FROM users WHERE name = "{user}"')
     except:
         pass
     finally:
