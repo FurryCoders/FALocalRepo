@@ -17,6 +17,9 @@ import sqlite3
 # 13 (9 v1) SERVER     1 if the submission is available on FA, 0 if it was disabled, deleted, etc...
 
 def usr_ins(DB, user):
+    exists = DB.execute(f'SELECT EXISTS(SELECT name FROM users WHERE name = "{user}" LIMIT 1);')
+    if exists.fetchall()[0][0]:
+        return
     try:
         DB.execute(f'''INSERT INTO USERS
             (NAME,FOLDERS,GALLERY,SCRAPS,FAVORITES,EXTRAS)
