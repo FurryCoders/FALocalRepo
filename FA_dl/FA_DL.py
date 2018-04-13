@@ -117,15 +117,15 @@ def dl_page(Session, user, section, DB, page_i, page_p, sync=False, speed=1, for
         s_ret = dl_sub(Session, ID, folder, DB, False, True, speed)
         if s_ret == 0:
             print("\b"*5+" -> Downloaded")
-            fadb.usr_up(DB, user, ID.zfill(10), section_db[section])
         elif s_ret == 1:
             print("\b"*5+" -> File Error")
-            fadb.usr_up(DB, user, ID.zfill(10), section_db[section])
         elif s_ret == 2:
             print("\b"*5+" -> Repository")
-            fadb.usr_up(DB, user, ID.zfill(10), section_db[section])
         elif s_ret == 3:
             print("\b"*5+" -> Page Error")
+
+        if s_ret != 3:
+            fadb.usr_up(DB, user, ID.zfill(10), section_db[section])
 
         if sigint_check(): return 5
 
@@ -257,6 +257,14 @@ def dl_usr(Session, user, section, DB, sync=False, speed=1, force=0, quiet=False
     elif section in ('f'):
         dl_ret = dl_f(Session, user, section, DB, sync, speed, force, quiet)
 
+    if dl_ret not in (1, 4):
+        if section == 'e':
+            fadb.usr_rep(DB, user, 'E', 'e', 'FOLDERS')
+        elif section == 'E':
+            fadb.usr_rep(DB, user, 'e', 'E', 'FOLDERS')
+        else:
+            fadb.usr_up(DB, user, section, 'FOLDERS')
+
     return dl_ret
 
 
@@ -287,9 +295,9 @@ def update(Session, DB, users=[], sections=[], speed=2, force=0):
                 break
             if len(sections) and s not in sections:
                 continue
-
             if s[-1] == '!' and s[0] not in sections:
                 continue
+
             print(f'{u[0][0:12]: ^12} {s}\r', end='', flush=True)
 
             dl_ret = dl_usr(Session, u[0], s, DB, True, speed, force, quiet=True)
