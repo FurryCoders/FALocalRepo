@@ -41,9 +41,12 @@ def usr_rm(DB, user, isempty=False):
 
 def usr_up(DB, user, to_add, column):
     col = DB.execute(f"SELECT {column} FROM users WHERE name = '{user}'")
-    col = col.fetchall()[0]
-    col = "".join(col).split(',')
-    if to_add in col: return 1
+    col = col.fetchall()
+    if not len(col):
+        raise sqlite3.IntegrityError
+    col = col[0][0].split(',')
+    if to_add in col:
+        return 1
     if col[0] == '':
         col = [to_add]
     else:
@@ -55,8 +58,10 @@ def usr_up(DB, user, to_add, column):
 
 def usr_rep(DB, user, find, replace, column):
     col = DB.execute(f"SELECT {column} FROM users WHERE name = '{user}'")
-    col = col.fetchall()[0]
-    col = "".join(col).split(',')
+    col = col.fetchall()
+    if not len(col):
+        raise sqlite3.IntegrityError
+    col = col[0][0].split(',')
     if replace in col:
         return 1
     elif col[0] == '':
