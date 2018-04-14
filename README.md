@@ -10,6 +10,13 @@ This program was born with the desire to provide a relatively easy-to-use method
 
 When a submission is downloaded all its informations (except for the comments) are downloaded into a database located in the same folder the program is launched in. The file (artwork, story, audio, etc...) and the description are instead saved in separate files inside a folder named 'FA.files' which contains all submissions in a tiered structure based on their ID (e.g submission '3704554' will be saved in the folder 'FA.files/0/3/704/0003704554'). A backup informations txt is also saved with the description and file, it contains the basic informations and is there for safety (in case the database is accidentally deleted). For a guide on the database structure see `Database` below.
 
+## Contents
+1. [Usage](#Usage)
+2. [Database](#Database)
+3. [Upgrade](#Upgrading from earlier versions)
+4. [Cookies](#Cookies)
+5. [Build instructions](#Build Instructions)
+
 ## Usage
 Use the provided binaries or build your own (build instructions at the end).
 
@@ -96,6 +103,20 @@ Selecting this entry will start the automatic database repair functions. These a
         3. `Files`<br>
         If the previous checks have passed then the program will check that all submission files are present.
 
+    Users database will also be checked for errors:
+        1. `Empty users`<br>
+        Users with no folders and no submissions saved.
+        3. `Repeating users`<br>
+        User with multiple entries.
+        4. `Names`<br>
+        Usernames with capital letters or underscores.
+        5. `No folders`<br>
+        Users whose folders entry is empty or missing sections with saved submissions (See `Database`&rarr;`USERS`&rarr;`FOLDERS`).
+        6. `Empty sections`<br>
+        Users with folders but no submissions saved (e.g. `FOLDERS` contains `s` but the `SCRAPS` column is empty)
+
+    Analysis of submissions and/or users database can be skipped with CTRL-C on Unix systems
+
     2. `Database repair`<br>
     If errors where found then the program will try to fix them accordingly:
         1. `ID`<br>
@@ -104,6 +125,17 @@ Selecting this entry will start the automatic database repair functions. These a
         The program will try and fix the errors in-place, replacing NULL values with empty strings. If the automatic fixes are successful then the submission will be checked for missing files, if any is missing then the submission will be passed to the next step. However if the automatic fixes do not work then the corrupted entry will be erased from the database, the files (if any present) deleted and the submission downloaded again, thus also fixing eventual missing files.
         3. `Files`<br>
         The program will simply erase the submission folder to remove any stray file (if any is present) and then download them again.
+
+        4. `Empty users`<br>
+        Empty user entries will be deleted
+        5. `Repeating users`<br>
+        Multiple entries of the same user will all be merged, the copies deleted and a new entry created. This new entry will be checked for incorrect `FOLDERS` and empty sections.
+        6. `Names`<br>
+        Usernames will be updated to remove capital letters and underscores.
+        7. `No folders`<br>
+        Users whose `FOLDERS` column is missing sections containing submissions will be updated with said sections (e.g. user 'tiger' has submissions saved in the `GALLERY` and `FAVORITES` sections but the `FOLDERS` column only contains 'g' so 'g' will be added to `FOLDERS`).
+        8. `Empty sections`<br>
+        If a user's `FOLDERS` contains one or more sections empty of submissions (e.g. user 'mouse' has 'g' in their `FOLDERS` but the `GALLERY` column is empty) these will be redownloaded from FA (submissions already present in the database won't be downloaded again but simply added to the user's database entry).
 
     3. `Optimizing`<br>
     After all errors (if any are found) are fixed then the program will use the sqlite `VACUUM` function to optimize the database and clean it up.
@@ -193,7 +225,7 @@ The following cookie names are needed in order to successfully connect:
 * s
 * \_adb
 
-## Build & Run without binaries
+## Build Instructions
 This program is coded with Python 3.x in mind, Python 2.x will **NOT** work.
 
 To run and/or build the program you will need the following pypi modules:
