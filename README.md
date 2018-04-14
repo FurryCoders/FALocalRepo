@@ -11,11 +11,11 @@ This program was born with the desire to provide a relatively easy-to-use method
 When a submission is downloaded all its informations (except for the comments) are downloaded into a database located in the same folder the program is launched in. The file (artwork, story, audio, etc...) and the description are instead saved in separate files inside a folder named 'FA.files' which contains all submissions in a tiered structure based on their ID (e.g submission '3704554' will be saved in the folder 'FA.files/0/3/704/0003704554'). A backup informations txt is also saved with the description and file, it contains the basic informations and is there for safety (in case the database is accidentally deleted). For a guide on the database structure see `Database` below.
 
 ## Contents
-1. [Usage](#Usage)
-2. [Database](#Database)
-3. [Upgrade](#Upgrading from earlier versions)
-4. [Cookies](#Cookies)
-5. [Build instructions](#Build Instructions)
+1. [Usage](#usage)
+2. [Database](#database)
+3. [Upgrade](#upgrading-from-earlier-versions)
+4. [Cookies](#cookies)
+5. [Build instructions](#build-instructions)
 
 ## Usage
 Use the provided binaries or build your own (build instructions at the end).
