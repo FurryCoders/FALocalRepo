@@ -401,7 +401,7 @@ def download_main(Session, DB):
         users = re.sub('([^a-zA-Z0-9\-., ])', '', users)
         users = re.sub('( )+', ',', users.strip())
         users = users.split(',')
-        users = [users[i] for i in range(0, len(users)) if not any(users[j] == users[i] for j in range(0, i))]
+        users = [users[i] for i in range(0, len(users)) if not any(users[j] == users[i] for j in range(0, i)) and users[i] != '']
 
         sections = re.sub('[^gsfeE]', '', sections)
         sections = list(sections)
