@@ -116,7 +116,7 @@ def find_errors_usr(DB):
     i = 0
     while i < len(usrs):
         u = usrs[i]
-        if u[0].lower() != u[0]:
+        if u[0].lower() != u[0] or '_' in u[0]:
             errs_names.append(u)
             usrs = usrs[0:i] + usrs[i+1:]
             i -= 1
@@ -284,7 +284,7 @@ def repair(Session, DB):
             print('Capitalized usernames')
             for u in errs_names:
                 print(f' {u[0]}')
-                usr_rep(DB, u[0], u[0], u[0].lower(), 'NAME')
+                usr_rep(DB, u[0], u[0], u[0].lower().replace('_',''), 'NAME')
                 if not check_folder(u):
                     errs_foldr.append(u)
             print()
