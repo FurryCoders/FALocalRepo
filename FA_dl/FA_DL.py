@@ -250,6 +250,7 @@ def dl_f(Session, user, section, DB, sync=False, speed=1, force=0, quiet=False):
             return 0
 
 def dl_usr(Session, user, section, DB, sync=False, speed=1, force=0, quiet=False):
+    print(f'{user[0:12]: ^12} {section}\r', end='', flush=True)
     if section in ('g', 's'):
         dl_ret = dl_gs(Session, user, section, DB, sync, speed, force, quiet)
     elif section in ('e', 'E'):
@@ -301,6 +302,8 @@ def update(Session, DB, users=[], sections=[], speed=2, force=0):
             print(f'{u[0][0:12]: ^12} {s}\r', end='', flush=True)
 
             dl_ret = dl_usr(Session, u[0], s, DB, True, speed, force, quiet=True)
+            if dl_ret == 3:
+                print('\b \b'*os.get_terminal_size()[0], end='', flush=True)
             if dl_ret in (0,2,4):
                 flag_download_u = True
             if dl_ret == 4:
