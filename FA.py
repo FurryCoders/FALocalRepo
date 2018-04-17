@@ -1,6 +1,5 @@
 import sqlite3
 import sys
-import time
 import readkeys
 import FA_db as fadb
 import FA_dl as fadl
