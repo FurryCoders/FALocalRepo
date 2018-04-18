@@ -16,6 +16,7 @@ When a submission is downloaded all its informations (except for the comments) a
 3. [Upgrade](#upgrading-from-earlier-versions)
 4. [Cookies](#cookies)
 5. [Build instructions](#build-instructions)
+6. [Appendix](#appendix)
 
 ## Usage
 Use the provided binaries or build your own (build instructions at the end).
