@@ -32,6 +32,11 @@ def ping(url):
 def session_make(cookies_file='FA.cookies.json'):
     Session = cfscrape.create_scraper()
 
+    for name in ('FA.cookies'):
+        if os.path.isfile(name) and not os.path.isfile(cookies_file):
+            os.rename(name, cookies_file)
+            break
+
     try:
         with open(cookies_file) as f:
             cookies = json.load(f)
