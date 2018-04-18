@@ -27,7 +27,7 @@ def cookies_error():
 
     missing_names = []
     for n in cookies_name:
-        if n not in [c['name'] for c in cookies]:
+        if n not in [c['name'] for c in cookies if 'name' in list(c.keys())]:
             missing_names.append(n)
     if missing_names:
         print(' Following cookies are missing:')
