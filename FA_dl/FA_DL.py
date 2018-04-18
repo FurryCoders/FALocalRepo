@@ -33,9 +33,12 @@ def session_make(cookies_file='FA.cookies.json'):
     Session = cfscrape.create_scraper()
 
     try:
-        with open(cookies_file) as f: cookies = json.load(f)
+        with open(cookies_file) as f:
+            cookies = json.load(f)
+    except FileNotFoundError:
+        raise
     except:
-        return False
+        raise
 
     for cookie in cookies: Session.cookies.set(cookie['name'], cookie['value'])
 
@@ -64,14 +67,19 @@ def session(Session=None):
             Session = session_make()
             print('Done')
         except FileNotFoundError:
-            print('Failed')
+            print('Failed - Missing Cookies File')
             return False
+        except:
+            print('Failed - Unknown Error')
+            return False
+
 
         print('Checking cookies & bypassing cloudflare ... ', end='', flush=True)
         if check_cookies(Session):
             print('Done')
         else:
             print('Failed')
+            cookies_error()
             return False
 
     return Session
