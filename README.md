@@ -1,7 +1,7 @@
 # FALocalRepo
 Pure Python program to download any user's gallery/scraps/favorites and more from FurAffinity forum in an easily handled database.
 
-**Warning**: A cookie file named FA.cookies in json format is needed.<br>
+**Warning**: A cookie file named FA.cookies.json in json format is needed.<br>
 **Warning**: You need to set the the theme to 'beta' on FurAffinity<br>
 **Warning**: On windows safe exit does NOT work
 
@@ -193,7 +193,7 @@ At each update step the program will save a backup copy of the database.
 **Warning**: The update cannot be skipped, to keep using a specific version of the database you need to download the release relative to that version
 
 ## Cookies
-The program needs to use cookies from a login session to successfully connect to FA. These cookies need to be in json format and can be easily extracted from Firefox/Chrome/Opera/Vivaldi/etc... using extensions or  manually. The value must be written in a file named FA.cookies<br>
+The program needs to use cookies from a login session to successfully connect to FA. These cookies need to be in json format and can be easily extracted from Firefox/Chrome/Opera/Vivaldi/etc... using extensions or  manually. The value must be written in a file named FA.cookies.json<br>
 What follows is an example cookie (not working).
 ```json
 [
