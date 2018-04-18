@@ -33,8 +33,3 @@ def cookies_error():
         print(' Following cookies are missing:')
         for n in missing_names:
             print('  {n}')
-
-    for c in cookies:
-        if 'name' in list(c.keys()) and 'value' in list(c.keys()) and c['name'] == 's':
-            if c['value'] != '1':
-                print(" Cookie 's' doesn't have '1' as value")
