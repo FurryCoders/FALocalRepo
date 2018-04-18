@@ -61,7 +61,8 @@ This menu allows to download a user gallery, scraps, favorites, extras or to upd
         2. Build a Session object and add the provided cookies
         3. Check validity of cookies and bypass cloudflare
 
-        If all these steps are completed without errors then the program will proceed to download the targets. As a bonus feature the program will also handle filetypes to make sure the submission files have the correct extension.
+        If all these steps are completed without errors then the program will proceed to download the targets. As a bonus feature the program will also handle filetypes to make sure the submission files have the correct extension.<br>
+        If the the program cannot verify the cookies and connect to the forum then it will abort the download and check the cookies for some common errors.
 
         The program also throttles download speed down to 100KB/sec to avoid taxing the forum's servers with a huge number of requests and downloads close to each other.
 
@@ -195,7 +196,7 @@ At each update step the program will save a backup copy of the database.
 
 ## Cookies
 The program needs to use cookies from a login session to successfully connect to FA. These cookies need to be in json format and can be easily extracted from Firefox/Chrome/Opera/Vivaldi/etc... using extensions or  manually. The value must be written in a file named FA.cookies.json<br>
-What follows is an example cookie (not working).
+(The value is fake)
 ```json
 [
   {
@@ -223,6 +224,16 @@ The following cookie names are needed in order to successfully connect:
 * a
 * b
 * \_adb
+
+Only 'name' and 'value' are needed for each cookie so the file can also be composed by entries like this:
+```json
+[
+  {
+    "name": "__asc",
+    "value": "kee3gpzjurkaq9fbyrubhys7epk",
+  },
+]
+```
 
 ## Build Instructions
 This program is coded with Python 3.x in mind, Python 2.x will **NOT** work.
