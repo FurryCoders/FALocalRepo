@@ -221,8 +221,6 @@ The following cookie names are needed in order to successfully connect:
 * \_\_qca
 * a
 * b
-* n
-* s
 * \_adb
 
 ## Build Instructions
