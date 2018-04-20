@@ -316,6 +316,8 @@ def repair(Session, DB):
             if not Session:
                 print('Session error')
                 errs_fl_dl = []
+            else:
+                print('-'*47)
             for u in errs_fl_dl:
                 for f in u[1]:
                     dl_usr(Session, u[0], f, DB, False, 2, 0, False)
