@@ -3,7 +3,7 @@ import os, glob
 import re
 from FA_dl import session, dl_usr, dl_sub, check_page
 from FA_db import usr_ins, usr_rm, usr_rep, usr_up
-from FA_tools import tiers, sigint_check
+from FA_tools import tiers, sigint_check, sigint_clear
 
 def check_values(sub):
     if None in sub:
@@ -153,6 +153,8 @@ def repair(Session, DB):
     print(f'Found {len(errs_fl)} files error{"s"*bool(len(errs_fl) != 1)}')
     print()
 
+    sigint_clear()
+
     print('Analyzing users database for errors ... ', end='', flush=True)
     errs_empty, errs_repet, errs_names, errs_foldr, errs_fl_dl = find_errors_usr(DB)
     print('Done')
@@ -162,6 +164,8 @@ def repair(Session, DB):
     print(f'Found {len(errs_foldr)} empty folder{"s"*bool(len(errs_fl) != 1)}')
     print(f'Found {len(errs_fl_dl)} empty folder download{"s"*bool(len(errs_fl) != 1)}')
     print()
+
+    sigint_clear()
 
     if any(len(errs) for errs in (errs_id, errs_vl, errs_fl)):
         Session = session()
