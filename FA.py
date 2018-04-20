@@ -16,6 +16,8 @@ def menu(DB):
     Session = None
 
     while True:
+        fatl.sigint_clear()
+
         print('-'*20)
         print('Main Menu')
         print('-'*20)
