@@ -242,6 +242,8 @@ def repair(Session, DB):
 
         print()
 
+    sigint_clear()
+
     if any(len(errs) for errs in (errs_empty, errs_repet, errs_names, errs_foldr, errs_fl_dl)):
         print()
 
