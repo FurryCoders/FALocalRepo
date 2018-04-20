@@ -317,7 +317,6 @@ def repair(Session, DB):
                 print('Session error')
                 errs_fl_dl = []
             for u in errs_fl_dl:
-                print(f' {u[0][0:12]: <12} {",".join(u[1])}')
                 for f in u[1]:
                     dl_usr(Session, u[0], f, DB, False, 2, 0, False)
             print()
