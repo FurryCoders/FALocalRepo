@@ -1,7 +1,7 @@
 import sqlite3
 import re
 import time, os, sys
-import readkeys
+import PythonRead as readkeys
 
 def regexp(pattern, input):
     return bool(re.match(pattern, input, flags=re.IGNORECASE))

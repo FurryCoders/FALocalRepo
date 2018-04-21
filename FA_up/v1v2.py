@@ -3,10 +3,10 @@ import sys, os
 import bs4
 import re
 from math import log10
+import PythonRead as readkeys
 from FA_db import sub_up
 from FA_dl import session
 from FA_tools import tiers, sigint_check
-from readkeys import getkey
 
 def dl_values(Session, ID):
     url = f'https://www.furaffinity.net/view/{ID}'
@@ -141,7 +141,7 @@ def db_upgrade_v1v2():
     print('This procedure can take a long time, do you want to continue? ', end='', flush=True)
     c = ''
     while c not in ('y','n'):
-        c = getkey().lower()
+        c = readkeys.getkey().lower()
         if c in ('\x03', '\x04'):
             print('n')
             sys.exit(130)

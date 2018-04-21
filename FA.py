@@ -1,6 +1,6 @@
 import sqlite3
 import sys
-import readkeys
+import PythonRead as readkeys
 import FA_db as fadb
 import FA_dl as fadl
 import FA_tools as fatl

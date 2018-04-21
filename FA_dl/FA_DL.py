@@ -2,7 +2,7 @@ import requests, cfscrape, json, bs4
 import os, sys, time
 import re
 import sqlite3
-import readkeys
+import PythonRead as readkeys
 from FA_tools import sigint_check, tiers
 import FA_db as fadb
 from .FA_DLSUB import dl_sub, str_clean
