@@ -246,7 +246,7 @@ To run and/or build the program you will need the following pypi modules:
 * [filetype](https://github.com/h2non/filetype.py)
 
 And the following non-pypi modules:
-* [python-read](https://github.com/MatteoCampinoti94/python-read)
+* [PythonRead](https://github.com/MatteoCampinoti94/PythonRead) (Already included in this repo as a submodule)
 
 The following modules are used but available by default:
 * [json](https://docs.python.org/3/library/json.html)
