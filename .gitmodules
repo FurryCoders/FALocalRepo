@@ -1,0 +1,3 @@
+[submodule "python-read"]
+	path = python-read
+	url = https://github.com/MatteoCampinoti94/python-read.git
