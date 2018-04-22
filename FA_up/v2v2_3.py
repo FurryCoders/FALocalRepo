@@ -39,7 +39,7 @@ def temp_new():
     print('Creating new SUBMISSIONS table ... ', end='', flush=True)
     db_new.execute('''CREATE TABLE IF NOT EXISTS USERS
         (NAME TEXT UNIQUE PRIMARY KEY NOT NULL,
-        NAMEFULL TEXT NOT NULL
+        NAMEFULL TEXT NOT NULL,
         FOLDERS TEXT NOT NULL,
         GALLERY TEXT,
         SCRAPS TEXT,
