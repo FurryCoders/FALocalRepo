@@ -145,7 +145,8 @@ def db_upgrade_v1v2():
             print('n')
             sys.exit(130)
     print(c)
-    if c == 'n': sys.exit(0)
+    if c == 'n':
+        sys.exit(0)
 
     print()
 
