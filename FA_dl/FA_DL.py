@@ -97,7 +97,7 @@ def check_page(Session, url):
     elif page_t == 'Account disabled. -- Fur Affinity [dot] net': return False
     elif page_r.status_code == 404: return False
 
-    return True
+    return page_t
 
 
 def dl_page(Session, user, section, DB, page_i, page_p, sync=False, speed=1, force=0, quiet=False):
@@ -350,16 +350,22 @@ def download(Session, DB, users, sections, sync, speed, force):
         i += 1
         if i == len(usr_sec): break
         print(f'  {usr_sec[i][0]} ... ', end='', flush=True)
-        if not check_page(Session, f'user/{usr_sec[i][0]}'):
+
+        page_check = check_page(Session, f'user/{usr_sec[i][0]}')
+        if page_check:
+            print('Found')
+            usr_full = page_check.lstrip('Userpage of ').rstrip(' -- Fur Affinity [dot] net').strip()
+        else:
             print('Not found')
             usr_sec[i][1] = re.sub('[^eE]', '', usr_sec[i][1])
-        else:
-            print('Found')
+            usr_full = usr_sec[i][0]
+
         if len(usr_sec[i][1]) == 0:
             usr_sec = usr_sec[0:i] + usr_sec[i+1:]
             i -= 1
             continue
-        fadb.usr_ins(DB, usr_sec[i][0])
+
+        fadb.usr_ins(DB, usr_sec[i][0], usr_full)
 
     if sigint_check(): return
 

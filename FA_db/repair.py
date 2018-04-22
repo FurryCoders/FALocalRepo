@@ -59,29 +59,29 @@ def find_errors_sub(DB):
     return errs_id, errs_vl, errs_fl
 
 def check_folder(usr):
-    if len(usr[2]) and 'g' not in usr[1]:
+    if len(usr[3]) and 'g' not in usr[2]:
         return False
-    elif len(usr[3]) and 's' not in usr[1]:
+    elif len(usr[4]) and 's' not in usr[2]:
         return False
-    elif len(usr[4]) and 'f' not in usr[1]:
+    elif len(usr[5]) and 'f' not in usr[2]:
         return False
-    elif len(usr[5]) and 'e' not in usr[1] and 'E' not in usr[1]:
+    elif len(usr[6]) and 'e' not in usr[2] and 'E' not in usr[1]:
         return False
 
     return True
 
 def check_folder_dl(usr):
     ret = []
-    if 'g' in usr[1] and not len(usr[2]):
+    if 'g' in usr[2] and not len(usr[3]):
         if 'g!' not in usr[1]:
             ret.append('g')
-    if 's' in usr[1] and not len(usr[3]):
+    if 's' in usr[2] and not len(usr[4]):
         if 's!' not in usr[1]:
             ret.append('s')
-    if 'f' in usr[1] and not len(usr[4]):
+    if 'f' in usr[2] and not len(usr[5]):
         if 'f!' not in usr[1]:
             ret.append('f')
-    if ('e' in usr[1] or 'E' in usr[1]) and not len(usr[5]):
+    if ('e' in usr[2] or 'E' in usr[2]) and not len(usr[6]):
         ret.append('e')
 
     return ret
@@ -93,6 +93,7 @@ def find_errors_usr(DB):
     errs_empty = []
     errs_repet = []
     errs_names = []
+    errs_namef = []
     errs_foldr = []
     errs_fl_dl = []
 
@@ -125,6 +126,15 @@ def find_errors_usr(DB):
     i = 0
     while i < len(usrs):
         u = usrs[i]
+        if u[1].lower().replace('_','') != u[0]:
+            errs_namef.append(u)
+            usrs = usrs[0:i] + usrs[i+1:]
+            i -= 1
+        i += 1
+
+    i = 0
+    while i < len(usrs):
+        u = usrs[i]
         if not check_folder(u):
             errs_foldr.append(u)
             usrs = usrs[0:i] + usrs[i+1:]
@@ -142,7 +152,7 @@ def find_errors_usr(DB):
         i += 1
 
 
-    return errs_empty, errs_repet, errs_names, errs_foldr, errs_fl_dl
+    return errs_empty, errs_repet, errs_names, errs_namef, errs_foldr, errs_fl_dl
 
 def repair(Session, DB):
     print('Analyzing submissions database for errors ... ', end='', flush=True)
@@ -156,7 +166,7 @@ def repair(Session, DB):
     sigint_clear()
 
     print('Analyzing users database for errors ... ', end='', flush=True)
-    errs_empty, errs_repet, errs_names, errs_foldr, errs_fl_dl = find_errors_usr(DB)
+    errs_empty, errs_repet, errs_names, errs_namef, errs_foldr, errs_fl_dl = find_errors_usr(DB)
     print('Done')
     print(f'Found {len(errs_empty)} empty user{"s"*bool(len(errs_id) != 1)}')
     print(f'Found {len(errs_repet)} repeated user{"s"*bool(len(errs_vl) != 1)}')
@@ -168,7 +178,8 @@ def repair(Session, DB):
     sigint_clear()
 
     if any(len(errs) for errs in (errs_id, errs_vl, errs_fl)):
-        Session = session()
+        if not Session:
+            Session = session()
         print()
 
         if not Session:
@@ -244,7 +255,7 @@ def repair(Session, DB):
 
     sigint_clear()
 
-    if any(len(errs) for errs in (errs_empty, errs_repet, errs_names, errs_foldr, errs_fl_dl)):
+    if any(len(errs) for errs in (errs_empty, errs_repet, errs_names, errs_names, errs_foldr, errs_fl_dl)):
         print()
 
         if len(errs_empty):
@@ -291,21 +302,54 @@ def repair(Session, DB):
             for u in errs_names:
                 print(f' {u[0]}')
                 usr_rep(DB, u[0], u[0], u[0].lower().replace('_',''), 'NAME')
+                u_d = check_folder_dl(u)
+                if u[1].lower().replace('_','') != u[0]:
+                    errs_namef.append(u)
+                elif not check_folder(u):
+                    errs_foldr.append(u)
+                elif len(u_d):
+                    errs_fl_dl.append([u[0], u_d])
+            print()
+
+        if len(errs_namef):
+            print('Incorrect full usernames')
+            if not Session:
+                Session = session()
+            if not Session:
+                print('Session error, will attempt manual repair')
+            print('-'*47)
+            for u in errs_namef:
+                print(f' {u[0]} ', end='', flush=True)
+                u_db = DB.execute(f'SELECT author FROM submissions WHERE authorurl = "{u[0]}"').fetchall()
+                if len(u_db):
+                    u_db = u_db[0][0]
+                    print(f'- DB: {u_db}')
+                    usr_rep(DB, u[0], u[1], u_db, 'NAMEFULL')
+                elif Session:
+                    u_fa = check_page(Session, 'user/'+u[0])
+                    if u_fa:
+                        u_fa = u_fa.lstrip('Userpage of ').rstrip(' -- Fur Affinity [dot] net').strip()
+                    else:
+                        u_fa = u[0]
+                    print(f'- FA: {u_fa}')
+                    usr_rep(DB, u[0], u[1], u_fa, 'NAMEFULL')
+                u_d = check_folder_dl(u)
                 if not check_folder(u):
                     errs_foldr.append(u)
-            print()
+                elif len(u_d):
+                    errs_fl_dl.append([u[0], u_d])
 
         if len(errs_foldr):
             print('Empty folders')
             for u in errs_foldr:
                 print(f' {u[0]}')
-                if len(u[2]):
-                    usr_up(DB, u[0], 'g', 'FOLDERS')
                 if len(u[3]):
-                    usr_up(DB, u[0], 's', 'FOLDERS')
+                    usr_up(DB, u[0], 'g', 'FOLDERS')
                 if len(u[4]):
+                    usr_up(DB, u[0], 's', 'FOLDERS')
+                if len(u[5]):
                     usr_up(DB, u[0], 'f', 'FOLDERS')
-                if len(u[5]) and 'e' not in u[1] and 'E' not in u[1]:
+                if len(u[6]) and 'e' not in u[2] and 'E' not in u[2]:
                     usr_up(DB, u[0], 'e', 'FOLDERS')
                 u_d = check_folder_dl(u)
                 if len(u_d):
@@ -314,7 +358,8 @@ def repair(Session, DB):
 
         if len(errs_fl_dl):
             print('Missing submissions')
-            Session = session()
+            if not Session:
+                Session = session()
             if not Session:
                 print('Session error')
                 errs_fl_dl = []

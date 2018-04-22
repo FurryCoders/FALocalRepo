@@ -16,14 +16,16 @@ import sqlite3
 # 12 (8 v1) LOCATION   the location of the submission inside the files folder
 # 13 (9 v1) SERVER     1 if the submission is available on FA, 0 if it was disabled, deleted, etc...
 
-def usr_ins(DB, user):
+def usr_ins(DB, user, user_full=''):
+    if user_full.lower().replace('_','') != user:
+        user_full = user
     exists = DB.execute(f'SELECT EXISTS(SELECT name FROM users WHERE name = "{user}" LIMIT 1);')
     if exists.fetchall()[0][0]:
         return
     try:
         DB.execute(f'''INSERT INTO USERS
-            (NAME,FOLDERS,GALLERY,SCRAPS,FAVORITES,EXTRAS)
-            VALUES ("{user}", "", "", "", "", "")''')
+            (NAME,NAMEFULL,FOLDERS,GALLERY,SCRAPS,FAVORITES,EXTRAS)
+            VALUES ("{user}", "{user_full}", "", "", "", "", "")''')
     except sqlite3.IntegrityError:
         pass
     except:
@@ -173,7 +175,8 @@ def mktable(DB, table):
     elif table == 'users':
         DB.execute('''CREATE TABLE IF NOT EXISTS USERS
             (NAME TEXT UNIQUE PRIMARY KEY NOT NULL,
-            FOLDERS CHAR(4) NOT NULL,
+            NAMEFULL TEXT NOT NULL,
+            FOLDERS TEXT NOT NULL,
             GALLERY TEXT,
             SCRAPS TEXT,
             FAVORITES TEXT,
@@ -187,7 +190,7 @@ def mktable(DB, table):
                 (FIELD CHAR,
                 VALUE CHAR);''')
             DB.execute('INSERT INTO INFOS (FIELD, VALUE) VALUES ("DBNAME", "")')
-            DB.execute('INSERT INTO INFOS (FIELD, VALUE) VALUES ("VERSION", "2.0")')
+            DB.execute('INSERT INTO INFOS (FIELD, VALUE) VALUES ("VERSION", "2.3")')
             DB.execute('INSERT INTO INFOS (FIELD, VALUE) VALUES ("USRN", 0)')
             DB.execute('INSERT INTO INFOS (FIELD, VALUE) VALUES ("SUBN", 0)')
             DB.execute('INSERT INTO INFOS (FIELD, VALUE) VALUES ("LASTUP", 0)')
