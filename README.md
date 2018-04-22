@@ -108,10 +108,12 @@ Selecting this entry will start the automatic database repair functions. These a
     Users database will also be checked for errors:
         1. `Empty users`<br>
         Users with no folders and no submissions saved.
-        3. `Repeating users`<br>
+        2. `Repeating users`<br>
         User with multiple entries.
-        4. `Names`<br>
+        3. `Names`<br>
         Usernames with capital letters or underscores.
+        4. `Full names`<br>
+        Full usernames that do not match with their url version.
         5. `No folders`<br>
         Users whose folders entry is empty or missing sections with saved submissions (See `Database`&rarr;`USERS`&rarr;`FOLDERS`).
         6. `Empty sections`<br>
@@ -134,9 +136,11 @@ Selecting this entry will start the automatic database repair functions. These a
         Multiple entries of the same user will all be merged, the copies deleted and a new entry created. This new entry will be checked for incorrect `FOLDERS` and empty sections.
         6. `Names`<br>
         Usernames will be updated to remove capital letters and underscores.
-        7. `No folders`<br>
+        7. `Full names`<br>
+        Full usernames that do not match the url version will be collected from the submissions database or the website. If both fail they will be substituted with the url version.
+        8. `No folders`<br>
         Users whose `FOLDERS` column is missing sections containing submissions will be updated with said sections (e.g. user 'tiger' has submissions saved in the `GALLERY` and `FAVORITES` sections but the `FOLDERS` column only contains 'g' so 'g' will be added to `FOLDERS`).
-        8. `Empty sections`<br>
+        9. `Empty sections`<br>
         If a user's `FOLDERS` contains one or more sections empty of submissions (e.g. user 'mouse' has 'g' in their `FOLDERS` but the `GALLERY` column is empty) these will be redownloaded from FA (submissions already present in the database won't be downloaded again but simply added to the user's database entry).
 
     3. `Optimizing`<br>
@@ -154,6 +158,8 @@ This table contains general informations about the database, some of which are n
 The USERS table contains a list of all the users that have been download with the program. Each entry contains the following:
     * `NAME`<br>
     The url username of the user (no caps and no underscores).
+    * `NAMEFULL`<br>
+    The full username as choosen by the user (with caps and underscores if present).
     * `FOLDERS`<br>
     The sections downloaded for that specific user. A '!' beside a section means that the user was disabled, it is used as a flag for the program.*&#42;*
     * `GALLERY`, `SCRAPS`, `FAVORITES`, `EXTRAS`<br>
@@ -189,8 +195,12 @@ The database is built using sqlite so it can be easily opened and searched with 
 When the program is started it will check the database for its version. If the database version is lower than the program then it will update it depending on the difference between the two.
 * `0.x` or `1.x` &rarr; `2.x`<br>
 New informations handled by version 2 and onward will be downloaded and added to the database, these include submission category, rating, gender and species. Depending on the size of the database to be updated this process may take a long time.
+* `2.0` to `2.2` &rarr; `2.3`<br>
+Full versions of users' nicknames will be collected from the submissions database or the website. If both fail the url version will be used instead.
 
 At each update step the program will save a backup copy of the database.
+
+Update can be interrupted and resumed later without losing progress.
 
 **Warning**: The update cannot be skipped, to keep using a specific version of the database you need to download the release relative to that version
 
