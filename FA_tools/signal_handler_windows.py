@@ -6,3 +6,12 @@ def sigint_ublock():
 
 def sigint_check():
     return False
+
+def sigint_clear():
+    while True:
+        try:
+            sigint_ublock()
+            break
+        except:
+            pass
+    sigint_block()
