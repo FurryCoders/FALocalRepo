@@ -1,5 +1,6 @@
 import sqlite3
 from .v1v2 import db_upgrade_v1v2
+from .v2v2_3 import db_upgrade_v2v2_3
 
 def db_upgrade_main():
     while True:
@@ -23,6 +24,9 @@ def db_upgrade_main():
             db_upgrade = db_upgrade_v1v2
         else:
             version = infos_v[infos_f.index('VERSION')]
+            if version < '2.3':
+                db_upgrade = db_upgrade_v2v2_3
+
 
         if db_upgrade:
             print('-'*20)
