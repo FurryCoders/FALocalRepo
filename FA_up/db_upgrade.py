@@ -6,26 +6,25 @@ def db_upgrade_main():
     while True:
         db = sqlite3.connect('FA.db')
 
-        infos = db.execute('SELECT name FROM sqlite_master WHERE type = "table"').fetchall()
-        if infos != [('SUBMISSIONS',), ('USERS',), ('INFOS',)]:
+        tables = db.execute('SELECT name FROM sqlite_master WHERE type = "table"').fetchall()
+        tables = [t[0] for t in tables]
+        if any(t not in tables for t in ('SUBMISSIONS','USERS','INFOS')):
             db.close()
             return
 
-        infos_f = db.execute('SELECT field FROM infos').fetchall()
-        infos_v = db.execute('SELECT value FROM infos').fetchall()
+        infos = db.execute('SELECT FIELD, VALUE FROM INFOS').fetchall()
         db.close()
 
-        infos_f = [f[0] for f in infos_f]
-        infos_v = [v[0] for v in infos_v]
+        infos = {i[0]: i[1] for i in infos}
+        if 'VERSION' not in infos.keys():
+            infos['VERSION'] = '1.0'
 
         db_upgrade = False
 
-        if 'VERSION' not in infos_f:
+        if infos['VERSION'] < '2.0':
             db_upgrade = db_upgrade_v1v2
-        else:
-            version = infos_v[infos_f.index('VERSION')]
-            if version < '2.3':
-                db_upgrade = db_upgrade_v2v2_3
+        elif infos['VERSION'] < '2.3':
+            db_upgrade = db_upgrade_v2v2_3
 
 
         if db_upgrade:
