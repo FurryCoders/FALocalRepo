@@ -86,15 +86,9 @@ def usr_src(DB, user, find, column):
     else: return False
 
 def usr_isempty(DB, user):
-    for col in ('GALLERY', 'SCRAPS', 'FAVORITES', 'EXTRAS'):
-        col = DB.execute(f"SELECT {col} FROM users WHERE name = '{user}'")
-        col = col.fetchall()
-        if len(col) == 0:
-            return True
-        col = col[0][0]
-        if col:
-            return False
-    return True
+    usr = DB.execute(f"SELECT name FROM users WHERE name = '{user}' AND folders = '' AND gallery = '' AND scraps = '' AND favorites = '' AND extras = ''")
+    usr = usr.fetchall()
+    return bool(len(usr))
 
 def sub_ins(DB, infos):
     try:
