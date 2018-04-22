@@ -58,6 +58,7 @@ def temp_new():
     db_old.close()
     print('Done')
 
+    print('Creating new SUBMISSIONS table ... ', end='', flush=True)
     db_new.execute('''CREATE TABLE IF NOT EXISTS SUBMISSIONS
         (ID INT UNIQUE PRIMARY KEY NOT NULL,
         AUTHOR TEXT NOT NULL,
@@ -73,6 +74,8 @@ def temp_new():
         FILENAME TEXT,
         LOCATION TEXT NOT NULL,
         SERVER INT);''')
+    db_new.commit()
+    print('Done')
 
     print('Editing SUBMISSIONS data to add new values ... ', end='', flush=True)
     subs_new = [s[0:6] + ['NULL']*4 + s[6:9] + [1] for s in subs_old]
