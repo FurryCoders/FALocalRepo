@@ -163,10 +163,6 @@ def db_upgrade_v1v2():
     if not Session:
         print('Impossible to connect to the forum, update interrupted')
         print('Please check cookies and status of FA website')
-        print('Cleaning up temporary files ... ', end='', flush=True)
-        db_new.close()
-        os.remove('FA.v1v2.db')
-        print('Done')
         print('Closing program')
         sys.exit(0)
     print()
