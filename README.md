@@ -194,9 +194,11 @@ The database is built using sqlite so it can be easily opened and searched with 
 ## Upgrading from earlier versions
 When the program is started it will check the database for its version. If the database version is lower than the program then it will update it depending on the difference between the two.
 * `0.x` or `1.x` &rarr; `2.x`<br>
-New informations handled by version 2 and onward will be downloaded and added to the database, these include submission category, rating, gender and species. Depending on the size of the database to be updated this process may take a long time.
+New informations handled by version 2 and onward will be downloaded and added to the database, these include submission category, rating, gender and species. Depending on the size of the database to be updated this process may take a long time.<br>
+The older version of the database will be saved as 'FA.v1.db'
 * `2.0` to `2.2` &rarr; `2.3`<br>
-Full versions of users' nicknames will be collected from the submissions database or the website. If both fail the url version will be used instead.
+Full versions of users' nicknames will be collected from the submissions database or the website. If both fail the url version will be used instead.<br>
+The older version of the database will be saved as 'FA.v2.db'
 
 At each update step the program will save a backup copy of the database.
 
