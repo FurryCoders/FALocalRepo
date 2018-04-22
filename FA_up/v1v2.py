@@ -58,8 +58,6 @@ def temp_new():
     db_old.close()
     print('Done')
 
-    db_new = sqlite3.connect('FA.v1v2.db')
-
     db_new.execute('''CREATE TABLE IF NOT EXISTS SUBMISSIONS
         (ID INT UNIQUE PRIMARY KEY NOT NULL,
         AUTHOR TEXT NOT NULL,
@@ -76,7 +74,7 @@ def temp_new():
         LOCATION TEXT NOT NULL,
         SERVER INT);''')
 
-    print('Editing submissions data to add new values ... ', end='', flush=True)
+    print('Editing SUBMISSIONS data to add new values ... ', end='', flush=True)
     subs_new = [s[0:6] + ['NULL']*4 + s[6:9] + [1] for s in subs_old]
     print('Done')
 
