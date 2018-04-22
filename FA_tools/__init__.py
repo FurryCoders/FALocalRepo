@@ -11,7 +11,7 @@ def sigint_clear():
     while True:
         try:
             sigint_ublock()
-            return
+            break
         except:
             pass
     sigint_block()
