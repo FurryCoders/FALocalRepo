@@ -121,7 +121,7 @@ def temp_import():
         return False
 
     subs_new = db_new.execute('SELECT * FROM submissions')
-    subs_new = subs_new = [[si for si in s] for s in subs_new.fetchall()]
+    subs_new = [[si for si in s] for s in subs_new.fetchall()]
     db_old = sqlite3.connect('FA.db')
     subs_old = db_old.execute('SELECT * FROM submissions')
     subs_old = subs_old = [[si for si in s] for s in subs_old.fetchall()]
