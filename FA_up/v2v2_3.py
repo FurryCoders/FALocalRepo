@@ -2,6 +2,7 @@ import sqlite3
 import sys, os
 from math import log10
 import PythonRead as readkeys
+from FA_db import usr_rep
 from FA_dl import session, check_page
 from FA_tools import sigint_check
 
@@ -139,11 +140,12 @@ def db_upgrade_v2v2_3():
         print('If all necessary data cannot be found in the database the update will be interrupted')
     print()
 
-    N = len(subs_new)
+    N = len(usrs_new)
     Nl = int(log10(N)+1)
     Ni = 0
-    missing = 0
+    missing = []
     missing_db = 0
+    print('Getting usernames ... ', end='', flush=True)
     for u in usrs_new:
         Ni += 1
         print(f'{Ni:0>{Nl}}/{N}', end='', flush=True)
@@ -153,7 +155,7 @@ def db_upgrade_v2v2_3():
         u_db = db_new.execute(f'SELECT author FROM submissions WHERE authorurl = "{u[0]}"').fetchall()
         if len(u_db):
             u_db = u_db[0][0]
-            usr_rep(DB, u[0], 'NULL', u_db, 'NAMEFULL')
+            usr_rep(db_new, u[0], 'NULL', u_db, 'NAMEFULL')
         elif Session:
             try:
                 u_fa = check_page(Session, 'user/'+u[0])
@@ -166,8 +168,8 @@ def db_upgrade_v2v2_3():
                         f.write(repr(e)+'\n')
                 print('Informations on the error have been written to FA.v2v2_3.error.txt')
                 print('Update interrupted, it may be resumed later')
-                if missing > 0:
-                    print(f'Found {missing} user/s no longer present on the website')
+                if len(missing) > 0:
+                    print(f'Found {len(missing)} user/s no longer present on the website')
                 if missing_db > 0:
                     print(f'Found {missing_db} user/s not present in the database')
                 print('Closing program')
@@ -176,25 +178,27 @@ def db_upgrade_v2v2_3():
                 u_fa = u_fa.lstrip('Userpage of ').rstrip(' -- Fur Affinity [dot] net').strip()
             else:
                 u_fa = u[0]
-                missing += 1
-            usr_rep(DB, u[0], 'NULL', u_fa, 'NAMEFULL')
+                missing.append(u[0])
+            usr_rep(db_new, u[0], 'NULL', u_fa, 'NAMEFULL')
         else:
             missing_db += 1
         if sigint_check():
             print(' Interrupt')
             print('Update interrupted, it may be resumed later')
-            if missing > 0:
-                print(f'Found {missing} user/s no longer present on the website')
+            if len(missing) > 0:
+                print(f'Found {len(missing)} user/s no longer present on the website')
             if missing_db > 0:
                 print(f'Found {missing_db} user/s not present in the database')
             print('Closing program')
             sys.exit(0)
         print('\b \b'+'\b \b'*(Nl*2), end='', flush=True)
+    print('Done')
 
     db_new.close()
 
-    if missing > 0:
-        print(f'Found {missing} user/s no longer present on the website')
+    if len(missing) > 0:
+        print(f'Found {len(missing)} user/s no longer present on the website:')
+        print('\n '.join(missing))
     if missing_db > 0:
         print(f'Found {missing_db} user/s not present in the database')
 
