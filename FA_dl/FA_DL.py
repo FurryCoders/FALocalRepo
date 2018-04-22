@@ -419,12 +419,11 @@ def download_main(Session, DB):
 
         users = re.sub('([^a-zA-Z0-9\-., ])', '', users)
         users = re.sub('( )+', ',', users.strip())
-        users = users.split(',')
-        users = [users[i] for i in range(0, len(users)) if not any(users[j] == users[i] for j in range(0, i)) and users[i] != '']
+        users = sorted(users.split(','))
+        users = list(set([u for u in users if u != '']))
 
         sections = re.sub('[^gsfeE]', '', sections)
-        sections = list(sections)
-        sections = [sections[i] for i in range(0, len(sections)) if not any(sections[j] == sections[i] for j in range(0, i))]
+        sections = sorted(list(set(sections)))
 
         speed = 1 ; upd = False
         sync = False ; force = 0
