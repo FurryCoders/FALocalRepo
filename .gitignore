@@ -104,6 +104,7 @@ ENV/
 *.cookies
 *.cookies.json
 
-# repo
+# database
 FA.files
-FA.*db
+FA*.db
+FA*.db-journal
