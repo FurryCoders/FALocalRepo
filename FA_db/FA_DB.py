@@ -1,6 +1,15 @@
 import sqlite3
 
-# Entries guide
+# Entries guide - USERS
+# 0 NAME
+# 1 NAMEFULL
+# 2 (1 v2.0) FOLDERS
+# 3 (2 v2.0) GALLERY
+# 4 (3 v2.0) SCRAPS
+# 5 (4 v2.0) FAVORITES
+# 6 (5 v2.0) EXTRAS
+
+# Entries guide - SUBMISSIONS
 # 0 ID          the submission id
 # 1 AUTHOR      the author as written by the user (with underscores and capital letters)
 # 2 AUTHORURL   the author for search and downloads (no underscores and lowercase)
