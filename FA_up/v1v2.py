@@ -120,11 +120,9 @@ def temp_import():
         print('Columns error')
         return False
 
-    subs_new = db_new.execute('SELECT * FROM submissions')
-    subs_new = [[si for si in s] for s in subs_new.fetchall()]
     db_old = sqlite3.connect('FA.db')
-    subs_old = db_old.execute('SELECT * FROM submissions')
-    subs_old = subs_old = [[si for si in s] for s in subs_old.fetchall()]
+    subs_old = db_old.execute('SELECT * FROM submissions').fetchall()
+    subs_new = db_new.execute('SELECT * FROM submissions').fetchall()
     if len(subs_new) != len(subs_old):
         print('Submissions error')
         return False
