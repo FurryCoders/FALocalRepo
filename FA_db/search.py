@@ -1,6 +1,7 @@
 import sqlite3
 import re
 import time
+import os
 import PythonRead as readkeys
 from FA_tools import sigint_block, sigint_ublock, sigint_check, sigint_clear
 
@@ -28,7 +29,7 @@ def search(DB, fields):
         UPPER(gender) LIKE ? AND
         UPPER(Rating) LIKE ?
         ORDER BY authorurl ASC, id DESC''', tuple(fields.values())[2:]).fetchall()
-    subs = {s[0]: s[1:] for s in subs}
+    subs = {s[0]: s for s in subs}
 
     if fields['user']:
         fields['user'] = re.sub('[^a-z0-9\-. ]', '', fields['user'].lower())
@@ -52,12 +53,24 @@ def search(DB, fields):
         else:
             subs_t = subs_u[0] + subs_u[1] + subs_u[2] + subs_u[3]
 
-        subs_u = list(set(subs_t))
+        subs_u = sorted(list(set(subs_t)))
         subs = {s: subs.get(s) for s in subs_u if subs.get(s) != None}
 
     t2 = time.time()
 
-    print(len(subs), t2-t1)
+    for s in subs.values():
+        if fields['user'] and s[1] != fields['user']:
+            print(f'{fields["user"][0:7]: ^5} - {s[1][0:10]: ^10} |', end='', flush=True)
+        else:
+            print(f'{s[1][0:18]: ^18} |', end='', flush=True)
+        print(f' {s[4]} {s[0]:0>10}', end='', flush=True)
+        if os.get_terminal_size()[0] > 45:
+            print(f' | {s[3][0:os.get_terminal_size()[0]-45]}')
+        else:
+            print()
+
+    print()
+    print(f'{len(subs)} results found in {t2-t1:.3f} seconds')
 
 def main(DB):
     while True:
@@ -82,6 +95,7 @@ def main(DB):
         finally:
             sigint_clear()
 
+        print()
         if all(v == '' for v in fields.values()):
             print('At least one field needs to be used')
             print()
