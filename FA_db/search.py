@@ -89,7 +89,14 @@ def main(DB):
 
         break
 
-    search(DB, fields)
+    try:
+        sigint_ublock()
+        search(DB, fields)
+    except:
+        return
+    finally:
+        sigint_clear()
+
     print()
     print('Press any key to continue ', end='', flush=True)
     readkeys.getkey()
