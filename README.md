@@ -29,129 +29,129 @@ When the program starts a simple menu will appear, type the indicated number or 
 ### Download & Update
 This menu allows to download a user gallery, scraps, favorites, extras or to update specific users and/or sections for the database.
 
-    1. `Username: `<br>
-    First field is reserved for users. To download or sync a specific user/s insert the username/s (url or userpage name are both valid). Usernames can be separated with spaces or commas.
+1. `Username: `<br>
+First field is reserved for users. To download or sync a specific user/s insert the username/s (url or userpage name are both valid). Usernames can be separated with spaces or commas.
 
-    2. `Sections: `<br>
-    Second field is reserved for sections. These can be:
-        * g - Gallery
-        * s - Scraps
-        * f - Favorites
-        * e - Extras partial<br>
-        Searches submissions that contain ':iconusername:' OR ':usernameicon:' in the description AND NOT from username gallery/scraps.
-        * E - Extras full<br>
-        Like partial but also searches for 'username' in the descriptions.
+2. `Sections: `<br>
+Second field is reserved for sections. These can be:
+    * g - Gallery
+    * s - Scraps
+    * f - Favorites
+    * e - Extras partial<br>
+    Searches submissions that contain ':iconusername:' OR ':usernameicon:' in the description AND NOT from username gallery/scraps.
+    * E - Extras full<br>
+    Like partial but also searches for 'username' in the descriptions.
 
-        Sections can be omitted if 'update' option is used.
+    Sections can be omitted if 'update' option is used.
 
-    3. `Options: `<br>
-    Last field is reserved for options. These can be:
-        * sync<br>
-        Stops download when a submission already present in the user database entry is encountered.
-        * update<br>
-        Reads usernames from the database and downloads new submissions in the respective sections. This option can be used without specifying users or sections, if either is specified then the update will be limited to those user/s and/or section/s.
-        * forceN<br>
-        Prevents update and sync from stopping the download at the first already present submission. Download stops at the first downloaded submission from page N+1. Example: 'force4' will download the first 4 pages with no interruption and will allow the download to stop from page 5.
-        * all<br>
-        Like 'force' but it will prevent interrupting the download for the whole section (this means **ALL** pages from each user will be checked, only use for a limited amount of users).
-        * quit<br>
-        Quits the program when the current operation is completed.
+3. `Options: `<br>
+Last field is reserved for options. These can be:
+    * sync<br>
+    Stops download when a submission already present in the user database entry is encountered.
+    * update<br>
+    Reads usernames from the database and downloads new submissions in the respective sections. This option can be used without specifying users or sections, if either is specified then the update will be limited to those user/s and/or section/s.
+    * forceN<br>
+    Prevents update and sync from stopping the download at the first already present submission. Download stops at the first downloaded submission from page N+1. Example: 'force4' will download the first 4 pages with no interruption and will allow the download to stop from page 5.
+    * all<br>
+    Like 'force' but it will prevent interrupting the download for the whole section (this means **ALL** pages from each user will be checked, only use for a limited amount of users).
+    * quit<br>
+    Quits the program when the current operation is completed.
 
-        Note: options can be inserted with or without spaces between them.
+    Note: options can be inserted with or without spaces between them.
 
-    4. After inserting the necessary usernames/sections/options (and making sure their combination is valid) the program will:
-        1. Check connection to FA website
-        2. Build a Session object and add the provided cookies
-        3. Check validity of cookies and bypass cloudflare
+4. After inserting the necessary usernames/sections/options (and making sure their combination is valid) the program will:
+    1. Check connection to FA website
+    2. Build a Session object and add the provided cookies
+    3. Check validity of cookies and bypass cloudflare
 
-        If all these steps are completed without errors then the program will proceed to download the targets. As a bonus feature the program will also handle filetypes to make sure the submission files have the correct extension.<br>
-        If the the program cannot verify the cookies and connect to the forum then it will abort the download and check the cookies for some common errors.
+    If all these steps are completed without errors then the program will proceed to download the targets. As a bonus feature the program will also handle filetypes to make sure the submission files have the correct extension.<br>
+    If the the program cannot verify the cookies and connect to the forum then it will abort the download and check the cookies for some common errors.
 
-        The program also throttles download speed down to 100KB/sec to avoid taxing the forum's servers with a huge number of requests and downloads close to each other.
+    The program also throttles download speed down to 100KB/sec to avoid taxing the forum's servers with a huge number of requests and downloads close to each other.
 
 ### Search
 This menu allows to search in the database using one or more among author, title, tags, category, species, gender and rating.<br>
 
-    1. `User`<br>
-    Search authors.
+1. `User`<br>
+Search authors.
 
-        * `Section`<br>
-        If a user is selected the search can be restricted to a specific section/s using g, s, f, e.
+    * `Section`<br>
+    If a user is selected the search can be restricted to a specific section/s using g, s, f, e.
 
-    2. `Title`<br>
-    Search titles.
+2. `Title`<br>
+Search titles.
 
-    3. `Tags`<br>
-    Tags are sorted automatically before search.&#10013;
+3. `Tags`<br>
+Tags are sorted automatically before search.&#10013;
 
-    4. `Category`<br>
-    Matches the category of submissions, like 'Artwork', 'Story', etc...\*&#10013;
+4. `Category`<br>
+Matches the category of submissions, like 'Artwork', 'Story', etc...\*&#10013;
 
-    5. `Species`<br>
-    Search species, like 'Vulpine', 'Feline', etc...\*&#10013;
+5. `Species`<br>
+Search species, like 'Vulpine', 'Feline', etc...\*&#10013;
 
-    6. `Gender`<br>
-    Gender can be 'Male', 'Female', 'Any'.\*&#10013;
+6. `Gender`<br>
+Gender can be 'Male', 'Female', 'Any'.\*&#10013;
 
-    7. `Rating`<br>
-    The rating can be 'general', 'mature' or 'adult'.\*&#10013;
+7. `Rating`<br>
+The rating can be 'general', 'mature' or 'adult'.\*&#10013;
 
-    Results are ordered by username and date.
+Results are ordered by username and date.
 
-    \**As shown on the submission page on the main site.*<br>
-    &#10013;*Fields matched without case sensitivity*
+\**As shown on the submission page on the main site.*<br>
+&#10013;*Fields matched without case sensitivity*
 
 ### Repair database
 Selecting this entry will start the automatic database repair functions. These are divided into three steps:
-    1. `Database analysis`<br>
-    The program will analyze all submissions entries in the database for three different types of errors:
-        1. `ID`<br>
-        Missing IDs will be flagged.
-        2. `Fields`<br>
-        If the id passes the check then the other fields in the submission entry will be searched for misplaced empty strings, incorrect value types and incorrect location.
-        3. `Files`<br>
-        If the previous checks have passed then the program will check that all submission files are present.
+1. `Database analysis`<br>
+The program will analyze all submissions entries in the database for three different types of errors:
+    1. `ID`<br>
+    Missing IDs will be flagged.
+    2. `Fields`<br>
+    If the id passes the check then the other fields in the submission entry will be searched for misplaced empty strings, incorrect value types and incorrect location.
+    3. `Files`<br>
+    If the previous checks have passed then the program will check that all submission files are present.
 
-    Users database will also be checked for errors:
-        1. `Empty users`<br>
-        Users with no folders and no submissions saved.
-        2. `Repeating users`<br>
-        User with multiple entries.
-        3. `Names`<br>
-        Usernames with capital letters or underscores.
-        4. `Full names`<br>
-        Full usernames that do not match with their url version.
-        5. `No folders`<br>
-        Users whose folders entry is empty or missing sections with saved submissions (See `Database`&rarr;`USERS`&rarr;`FOLDERS`).
-        6. `Empty sections`<br>
-        Users with folders but no submissions saved (e.g. `FOLDERS` contains `s` but the `SCRAPS` column is empty)
+Users database will also be checked for errors:
+    1. `Empty users`<br>
+    Users with no folders and no submissions saved.
+    2. `Repeating users`<br>
+    User with multiple entries.
+    3. `Names`<br>
+    Usernames with capital letters or underscores.
+    4. `Full names`<br>
+    Full usernames that do not match with their url version.
+    5. `No folders`<br>
+    Users whose folders entry is empty or missing sections with saved submissions (See `Database`&rarr;`USERS`&rarr;`FOLDERS`).
+    6. `Empty sections`<br>
+    Users with folders but no submissions saved (e.g. `FOLDERS` contains `s` but the `SCRAPS` column is empty)
 
-    Analysis of submissions and/or users database can be skipped with CTRL-C on Unix systems
+Analysis of submissions and/or users database can be skipped with CTRL-C on Unix systems
 
-    2. `Database repair`<br>
-    If errors where found then the program will try to fix them accordingly:
-        1. `ID`<br>
-        This error type doesn't have a fix yet as there is no clear way to identify the submission on FA. However the program cannot create this type of error.
-        2. `Fields`<br>
-        The program will try and fix the errors in-place, replacing NULL values with empty strings. If the automatic fixes are successful then the submission will be checked for missing files, if any is missing then the submission will be passed to the next step. However if the automatic fixes do not work then the corrupted entry will be erased from the database, the files (if any present) deleted and the submission downloaded again, thus also fixing eventual missing files.
-        3. `Files`<br>
-        The program will simply erase the submission folder to remove any stray file (if any is present) and then download them again.
+2. `Database repair`<br>
+If errors where found then the program will try to fix them accordingly:
+    1. `ID`<br>
+    This error type doesn't have a fix yet as there is no clear way to identify the submission on FA. However the program cannot create this type of error.
+    2. `Fields`<br>
+    The program will try and fix the errors in-place, replacing NULL values with empty strings. If the automatic fixes are successful then the submission will be checked for missing files, if any is missing then the submission will be passed to the next step. However if the automatic fixes do not work then the corrupted entry will be erased from the database, the files (if any present) deleted and the submission downloaded again, thus also fixing eventual missing files.
+    3. `Files`<br>
+    The program will simply erase the submission folder to remove any stray file (if any is present) and then download them again.
 
-        4. `Empty users`<br>
-        Empty user entries will be deleted
-        5. `Repeating users`<br>
-        Multiple entries of the same user will all be merged, the copies deleted and a new entry created. This new entry will be checked for incorrect `FOLDERS` and empty sections.
-        6. `Names`<br>
-        Usernames will be updated to remove capital letters and underscores.
-        7. `Full names`<br>
-        Full usernames that do not match the url version will be collected from the submissions database or the website. If both fail they will be substituted with the url version.
-        8. `No folders`<br>
-        Users whose `FOLDERS` column is missing sections containing submissions will be updated with said sections (e.g. user 'tiger' has submissions saved in the `GALLERY` and `FAVORITES` sections but the `FOLDERS` column only contains 'g' so 'g' will be added to `FOLDERS`).
-        9. `Empty sections`<br>
-        If a user's `FOLDERS` contains one or more sections empty of submissions (e.g. user 'mouse' has 'g' in their `FOLDERS` but the `GALLERY` column is empty) these will be redownloaded from FA (submissions already present in the database won't be downloaded again but simply added to the user's database entry).
+    4. `Empty users`<br>
+    Empty user entries will be deleted
+    5. `Repeating users`<br>
+    Multiple entries of the same user will all be merged, the copies deleted and a new entry created. This new entry will be checked for incorrect `FOLDERS` and empty sections.
+    6. `Names`<br>
+    Usernames will be updated to remove capital letters and underscores.
+    7. `Full names`<br>
+    Full usernames that do not match the url version will be collected from the submissions database or the website. If both fail they will be substituted with the url version.
+    8. `No folders`<br>
+    Users whose `FOLDERS` column is missing sections containing submissions will be updated with said sections (e.g. user 'tiger' has submissions saved in the `GALLERY` and `FAVORITES` sections but the `FOLDERS` column only contains 'g' so 'g' will be added to `FOLDERS`).
+    9. `Empty sections`<br>
+    If a user's `FOLDERS` contains one or more sections empty of submissions (e.g. user 'mouse' has 'g' in their `FOLDERS` but the `GALLERY` column is empty) these will be redownloaded from FA (submissions already present in the database won't be downloaded again but simply added to the user's database entry).
 
-    3. `Optimizing`<br>
-    After all errors (if any are found) are fixed then the program will use the sqlite `VACUUM` function to optimize the database and clean it up.
+3. `Optimizing`<br>
+After all errors (if any are found) are fixed then the program will use the sqlite `VACUUM` function to optimize the database and clean it up.
 
 If you run the program on Unix systems then you can use CTRL-C to safely interrupt the program. It will complete the submission download in progress and exit at the first safe point, this works in all parts of the program, download, sync and update.<br>
 If you run the program on Windows systems however safe exit will **NOT** work. This is caused by the the completely different way in which Windows handles signals, specifically SIGINT, interrupt signal sent by CTRL-C and used by this program. The functions are built to be relatively safe in how they handles database updates and downloads but it is suggested not to interrupt any operation to avoid errors.
