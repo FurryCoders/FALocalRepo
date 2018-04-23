@@ -12,7 +12,7 @@ def search(DB, fields):
 
     if fields['user']:
         subs_u = DB.execute(f'SELECT gallery, scraps, favorites, extras FROM users WHERE name = "{fields["user"]}"')
-        subs_u = subs.fetchall()
+        subs_u = subs_u.fetchall()
         subs_u = [[int(si) for si in s.split(',') if si != ''] for s in subs_u[0]]
         if fields['sect']:
             subs_t = []
