@@ -39,6 +39,11 @@ def search(DB, fields):
             subs_u = [['','','','']]
         subs_u = [[int(si) for si in s.split(',') if si != ''] for s in subs_u[0]]
 
+        subs_u[0] = [[i, 'g'] for i in subs_u[0]]
+        subs_u[1] = [[i, 's'] for i in subs_u[1]]
+        subs_u[2] = [[i, 'f'] for i in subs_u[2]]
+        subs_u[3] = [[i, 'e'] for i in subs_u[3]]
+
         if fields['sect']:
             subs_t = []
             if 'g' in fields['sect']:
@@ -52,8 +57,7 @@ def search(DB, fields):
         else:
             subs_t = subs_u[0] + subs_u[1] + subs_u[2] + subs_u[3]
 
-        subs_t = list(set(subs_t))
-        subs = [subs.get(i) for i in subs_t if subs.get(i) != None]
+        subs = [subs.get(i[0]) + (i[1],) for i in subs_t if subs.get(i[0]) != None]
     else:
         subs = list(subs.values())
 
@@ -65,10 +69,7 @@ def search(DB, fields):
     str_cl = re.compile('[^\x00-\x7F]')
     for s in subs:
         if fields['user'] and s[1] != fields['user']:
-            sect = "f"*bool(s[0] in subs_u[2])+"e"*bool(s[0] in subs_u[3])
-            if not sect:
-                sect = 'gs'
-            print(f'({sect}) {s[1][0:15-len(sect)]: ^{15-len(sect)}} |', end='', flush=True)
+            print(f'({s[14]}) {s[1][0:14]: ^{14}} |', end='', flush=True)
         else:
             print(f'{s[1][0:18]: ^18} |', end='', flush=True)
         print(f' {s[4]} {s[0]:0>10}', end='', flush=True)
