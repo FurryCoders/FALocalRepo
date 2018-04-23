@@ -10,6 +10,8 @@ def regexp(pattern, input):
 def search(DB, fields):
     DB.create_function("REGEXP", 2, regexp)
 
+
+
 def main(DB):
     while True:
         fields = {}
@@ -18,7 +20,8 @@ def main(DB):
             sigint_ublock()
             fields['user'] = readkeys.input('User: ').strip()
             if fields['user'] != '':
-                fields['sect'] = readkeys.input('Section: ').strip()
+                fields['sect'] = readkeys.input('Section: ').strip().lower()
+                fields['sect'] = re.sub('[^gsfe]','', fields['sect'])
             else:
                 fields['sect'] = ''
             fields['titl'] = readkeys.input('Title: ')
