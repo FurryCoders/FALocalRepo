@@ -423,7 +423,8 @@ def download_main(Session, DB):
         users = list(set([u for u in users if u != '']))
 
         sections = re.sub('[^gsfeE]', '', sections)
-        sections = sorted(list(set(sections)))
+        sections = list(set(sections))
+        sections = [s for s in ('g','s','f','e','E') if s in sections]
 
         speed = 1 ; upd = False
         sync = False ; force = 0
