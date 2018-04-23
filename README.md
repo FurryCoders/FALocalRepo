@@ -104,18 +104,16 @@ Results are ordered by username and date.
 ### Repair database
 Selecting this entry will start the automatic database repair functions. These are divided into three steps:
 1. `Database analysis`<br>
-The program will analyze all submissions entries in the database for three different types of errors:
+The program will analyze all submissions and users entries in the database for different types of errors:
     1. `ID`<br>
     Missing IDs will be flagged.
     2. `Fields`<br>
     If the id passes the check then the other fields in the submission entry will be searched for misplaced empty strings, incorrect value types and incorrect location.
     3. `Files`<br>
     If the previous checks have passed then the program will check that all submission files are present.
-
-Users database will also be checked for errors:
     1. `Empty users`<br>
     Users with no folders and no submissions saved.
-    2. `Repeating users`<br>
+    3. `Repeating users`<br>
     User with multiple entries.
     3. `Names`<br>
     Usernames with capital letters or underscores.
