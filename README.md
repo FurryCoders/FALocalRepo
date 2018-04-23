@@ -12,6 +12,9 @@ When a submission is downloaded all its informations (except for the comments an
 
 ## Contents
 1. [Usage](#usage)
+    1. [Download](#download-update)
+    2. [Search](#search)
+    3. [Repair database](#repair-database)
 2. [Database](#database)
 3. [Upgrade](#upgrading-from-earlier-versions)
 4. [Cookies](#cookies)
@@ -23,7 +26,7 @@ Use the provided binaries or build your own (build instructions at the end).
 
 When the program starts a simple menu will appear, type the indicated number or key to select an option, there is no need to press ENTER.
 
-1. `Download & Update`<br>
+### Download & Update
 This menu allows to download a user gallery, scraps, favorites, extras or to update specific users and/or sections for the database.
 
     1. `Username: `<br>
@@ -66,7 +69,7 @@ This menu allows to download a user gallery, scraps, favorites, extras or to upd
 
         The program also throttles download speed down to 100KB/sec to avoid taxing the forum's servers with a huge number of requests and downloads close to each other.
 
-2. `Search`<br>
+### Search
 This menu allows to search in the database using one or more among author, title, tags, category, species, gender and rating.<br>
 
     1. `User`<br>
@@ -98,7 +101,7 @@ This menu allows to search in the database using one or more among author, title
     \**As shown on the submission page on the main site.*<br>
     &#10013;*Fields matched without case sensitivity*
 
-3. `Repair database`<br>
+### Repair database
 Selecting this entry will start the automatic database repair functions. These are divided into three steps:
     1. `Database analysis`<br>
     The program will analyze all submissions entries in the database for three different types of errors:
