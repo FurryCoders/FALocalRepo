@@ -198,7 +198,7 @@ def db_upgrade_v2v2_3():
 
     if len(missing) > 0:
         print(f'Found {len(missing)} user/s no longer present on the website:')
-        print('\n '.join(missing))
+        print(' '+'\n '.join(missing))
     if missing_db > 0:
         print(f'Found {missing_db} user/s not present in the database')
 
