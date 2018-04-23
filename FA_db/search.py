@@ -8,7 +8,7 @@ def regexp(pattern, input):
     return bool(re.match(pattern, input, flags=re.IGNORECASE))
 
 def search(DB, fields):
-    DB.create_function("REGEXP", 2, regexp)
+    # DB.create_function("REGEXP", 2, regexp)
 
     for k in list(fields.keys())[2:]:
         fields[k] = f'%{fields[k]}%'
