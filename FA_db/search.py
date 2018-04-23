@@ -58,6 +58,7 @@ def search(DB, fields):
 
     t2 = time.time()
 
+    str_cl = re.compile('[^\x00-\x7F]')
     for s in subs.values():
         if fields['user'] and s[1] != fields['user']:
             sect = "f"*bool(s[0] in subs_u[2])+"e"*bool(s[0] in subs_u[3])
@@ -68,7 +69,7 @@ def search(DB, fields):
             print(f'{s[1][0:18]: ^18} |', end='', flush=True)
         print(f' {s[4]} {s[0]:0>10}', end='', flush=True)
         if os.get_terminal_size()[0] > 45:
-            print(f' | {s[3][0:os.get_terminal_size()[0]-45]}')
+            print(f' | {str_cl.sub("",s[3][0:os.get_terminal_size()[0]-45])}')
         else:
             print()
 
