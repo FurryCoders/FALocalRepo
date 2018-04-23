@@ -10,6 +10,7 @@ def regexp(pattern, input):
 def search(DB, fields):
     # DB.create_function("REGEXP", 2, regexp)
 
+    fields['user'] = re.sub('[^a-z0-9\-. ]', '', fields['user'].lower())
     for k in list(fields.keys())[2:]:
         fields[k] = f'%{fields[k]}%'
     fields['tags'] = re.sub('( )+', '%', fields['tags'])
