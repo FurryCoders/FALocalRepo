@@ -53,14 +53,14 @@ def search(DB, fields):
         else:
             subs_t = subs_u[0] + subs_u[1] + subs_u[2] + subs_u[3]
 
-        subs_u = sorted(list(set(subs_t)))
-        subs = {s: subs.get(s) for s in subs_u if subs.get(s) != None}
+        subs_t = sorted(list(set(subs_t)))
+        subs = {s: subs.get(s) for s in subs_t if subs.get(s) != None}
 
     t2 = time.time()
 
     for s in subs.values():
         if fields['user'] and s[1] != fields['user']:
-            print(f'{fields["user"][0:7]: ^5} - {s[1][0:10]: ^10} |', end='', flush=True)
+            print(f'{"f"*bool(s[0] in subs_u[2])+"e"*bool(s[0] in subs_u[3]): <2} : {s[1][0:13]: ^13} |', end='', flush=True)
         else:
             print(f'{s[1][0:18]: ^18} |', end='', flush=True)
         print(f' {s[4]} {s[0]:0>10}', end='', flush=True)
