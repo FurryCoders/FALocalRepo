@@ -60,7 +60,10 @@ def search(DB, fields):
 
     for s in subs.values():
         if fields['user'] and s[1] != fields['user']:
-            print(f'{"f"*bool(s[0] in subs_u[2])+"e"*bool(s[0] in subs_u[3]): <2} : {s[1][0:13]: ^13} |', end='', flush=True)
+            sect = "f"*bool(s[0] in subs_u[2])+"e"*bool(s[0] in subs_u[3])
+            if not sect:
+                sect = 'gs'
+            print(f'({sect}) {s[1][0:15-len(sect)]: ^{15-len(sect)}} |', end='', flush=True)
         else:
             print(f'{s[1][0:18]: ^18} |', end='', flush=True)
         print(f' {s[4]} {s[0]:0>10}', end='', flush=True)
