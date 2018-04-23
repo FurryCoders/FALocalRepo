@@ -2,6 +2,7 @@ import sqlite3
 import re
 import time
 import os
+from operator import itemgetter
 import PythonRead as readkeys
 from FA_tools import sigint_block, sigint_ublock, sigint_check, sigint_clear
 
@@ -28,7 +29,7 @@ def search(DB, fields):
         UPPER(species) LIKE ? AND
         UPPER(gender) LIKE ? AND
         UPPER(Rating) LIKE ?
-        ORDER BY authorurl ASC, id DESC''', tuple(fields.values())[2:]).fetchall()
+        ORDER BY authorurl ASC, id ASC''', tuple(fields.values())[2:]).fetchall()
     subs = {s[0]: s for s in subs}
 
     if fields['user']:
@@ -53,13 +54,16 @@ def search(DB, fields):
         else:
             subs_t = subs_u[0] + subs_u[1] + subs_u[2] + subs_u[3]
 
-        subs_t = sorted(list(set(subs_t)))
-        subs = {s: subs.get(s) for s in subs_t if subs.get(s) != None}
+        subs_t = list(set(subs_t))
+        subs = {i: subs.get(i) for i in subs_t if subs.get(i) != None}
+
+    subs = list(subs.values())
+    subs.sort(key=itemgetter(2))
 
     t2 = time.time()
 
     str_cl = re.compile('[^\x00-\x7F]')
-    for s in subs.values():
+    for s in subs:
         if fields['user'] and s[1] != fields['user']:
             sect = "f"*bool(s[0] in subs_u[2])+"e"*bool(s[0] in subs_u[3])
             if not sect:
@@ -111,7 +115,7 @@ def main(DB):
         sigint_ublock()
         search(DB, fields)
     except:
-        return
+        raise
     finally:
         sigint_clear()
 
