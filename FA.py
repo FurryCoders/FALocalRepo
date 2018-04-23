@@ -44,7 +44,7 @@ def menu(DB):
             print('Search')
             print('-'*20)
             print()
-            fatl.db_search(DB)
+            fadb.db_search(DB)
         elif o == '3':
             print('-'*20)
             print('Repair database')

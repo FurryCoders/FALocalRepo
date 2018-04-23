@@ -1,4 +1,3 @@
-from .search import main as db_search
 from .tools import tiers, cookies_error
 
 from sys import platform
