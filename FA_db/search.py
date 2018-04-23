@@ -10,7 +10,6 @@ from FA_tools import sigint_block, sigint_ublock, sigint_check, sigint_clear
 def search(DB, fields):
     # DB.create_function("REGEXP", 2, regexp)
 
-    fields['user'] = re.sub('[^a-z0-9\-. ]', '', fields['user'].lower())
     fields['titl'] = '%'+fields['titl']+'%'
     fields['tags'] = re.sub('( )+', ' ', fields['tags'].upper()).split(' ')
     fields['tags'] = sorted(fields['tags'], key=str.lower)
@@ -32,11 +31,14 @@ def search(DB, fields):
     subs = {s[0]: s[1:] for s in subs}
 
     if fields['user']:
+        fields['user'] = re.sub('[^a-z0-9\-. ]', '', fields['user'].lower())
+
         subs_u = DB.execute(f'SELECT gallery, scraps, favorites, extras FROM users WHERE name = "{fields["user"]}"')
         subs_u = subs_u.fetchall()
         if not len(subs_u):
             subs_u = [['','','','']]
         subs_u = [[int(si) for si in s.split(',') if si != ''] for s in subs_u[0]]
+
         if fields['sect']:
             subs_t = []
             if 'g' in fields['sect']:
@@ -49,6 +51,7 @@ def search(DB, fields):
                 subs_t += subs_u[3]
         else:
             subs_t = subs_u[0] + subs_u[1] + subs_u[2] + subs_u[3]
+
         subs_u = list(set(subs_t))
         subs = {s: subs.get(s) for s in subs_u if subs.get(s) != None}
 
@@ -63,8 +66,8 @@ def main(DB):
         try:
             sigint_ublock()
             fields['user'] = readkeys.input('User: ').strip()
-            if fields['user'] != '':
-                fields['sect'] = readkeys.input('Section: ').strip().lower()
+            if fields['user']:
+                fields['sect'] = readkeys.input('Section: ').lower()
                 fields['sect'] = re.sub('[^gsfe]','', fields['sect'])
             else:
                 fields['sect'] = ''
