@@ -2,7 +2,6 @@ import sqlite3
 import re
 import time
 import os
-from operator import itemgetter
 import PythonRead as readkeys
 from FA_tools import sigint_block, sigint_ublock, sigint_check, sigint_clear
 
@@ -28,8 +27,7 @@ def search(DB, fields):
         UPPER(category) LIKE ? AND
         UPPER(species) LIKE ? AND
         UPPER(gender) LIKE ? AND
-        UPPER(Rating) LIKE ?
-        ORDER BY authorurl ASC, id ASC''', tuple(fields.values())[2:]).fetchall()
+        UPPER(Rating) LIKE ?''', tuple(fields.values())[2:]).fetchall()
     subs = {s[0]: s for s in subs}
 
     if fields['user']:
@@ -54,12 +52,13 @@ def search(DB, fields):
         else:
             subs_t = subs_u[0] + subs_u[1] + subs_u[2] + subs_u[3]
 
-        subs_t = sorted(list(set(subs_t)))
+        subs_t = list(set(subs_t))
         subs = [subs.get(i) for i in subs_t if subs.get(i) != None]
     else:
         subs = list(subs.values())
 
-    subs.sort(key=itemgetter(2))
+    subs.sort(key=lambda x: x[0])
+    subs.sort(key=lambda x: x[2])
 
     t2 = time.time()
 
