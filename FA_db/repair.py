@@ -65,7 +65,7 @@ def check_folder(usr):
         return False
     elif len(usr[5]) and 'f' not in usr[2]:
         return False
-    elif len(usr[6]) and 'e' not in usr[2] and 'E' not in usr[1]:
+    elif len(usr[6]) and 'e' not in usr[2] and 'E' not in usr[2]:
         return False
 
     return True
