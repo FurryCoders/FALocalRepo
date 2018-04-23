@@ -37,7 +37,7 @@ def temp_new():
     usrs_new = [u[0:1] + ['NULL'] + u[1:] for u in usrs_old]
     print('Done')
 
-    print('Creating new SUBMISSIONS table ... ', end='', flush=True)
+    print('Creating new USERS table ... ', end='', flush=True)
     db_new.execute('''CREATE TABLE IF NOT EXISTS USERS
         (NAME TEXT UNIQUE PRIMARY KEY NOT NULL,
         NAMEFULL TEXT NOT NULL,
