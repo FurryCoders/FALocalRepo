@@ -1,6 +1,6 @@
 import sqlite3
 import re
-import time, os, sys
+import time
 import PythonRead as readkeys
 from FA_tools import sigint_block, sigint_ublock, sigint_check, sigint_clear
 
