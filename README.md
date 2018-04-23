@@ -68,31 +68,35 @@ This menu allows to download a user gallery, scraps, favorites, extras or to upd
 
 2. `Search`<br>
 This menu allows to search in the database using one or more among author, title, tags, category, species, gender and rating.<br>
-All search fields support regex, that means that for example to find 'dragon' you can either use 'dragon' or a section of it like 'dra', or something like `dr.*n` (match 'dr' then any number `*` of characters `.` followed by 'n'). More informations on regex syntax on [Wikipedia](https://en.wikipedia.org/wiki/Regular_expression) while a more complete reference can be found on [www.regular-expressions.info](https://www.regular-expressions.info/refquick.html). Even though regex is supported it is not necessary, without regex syntax the search function will still match any field that contains the text inserted.
 
-    1. `Author`<br>
+    1. `User`<br>
     Search authors.
+
+        * `Section`<br>
+        If a user is selected the search can be restricted to a specific section/s using g, s, f, e.
 
     2. `Title`<br>
     Search titles.
 
     3. `Tags`<br>
-    Tags are matched using regex as well, but with added support for negative matches. For example to search all submissions whose tags contain 'forest' but not 'autumn' you would type 'forest !autumn'. This is done surrounding the tags to be excluded with `(?!((?:.)*`tag`))`.<br>
-    Using regex in tags is not recommended unless you know how to use it properly as it can lead to missing results. The tags are saved in alphanumerical order in the database and while the program orders the user-inserted tags (both the ones to include and the ones to exclude) before searching for them it cannot order them if regex is not used correctly. For example a search for `forest.*\W.*autumn` will not yield any results because 'autumn' never follows 'forest' in the database and the program cannot separate the two since it's a single string.
+    Tags are sorted automatically before search.&#10013;
 
     4. `Category`<br>
-    Matches the category of submissions, like 'Artwork', 'Story', etc...*&#42;*
+    Matches the category of submissions, like 'Artwork', 'Story', etc...\*&#10013;
 
     5. `Species`<br>
-    Search species, like 'Vulpine', 'Feline', etc...*&#42;*
+    Search species, like 'Vulpine', 'Feline', etc...\*&#10013;
 
     6. `Gender`<br>
-    Gender can be 'Male', 'Female', 'Any'.*&#42;*
+    Gender can be 'Male', 'Female', 'Any'.\*&#10013;
 
     7. `Rating`<br>
-    The rating can be 'general', 'mature' or 'adult'.*&#42;*
+    The rating can be 'general', 'mature' or 'adult'.\*&#10013;
 
-    *&#42;As shown on the submission page on the main site.*
+    Results are ordered by username and date.
+
+    \**As shown on the submission page on the main site.*<br>
+    &#10013;*Fields matched without case sensitivity*
 
 3. `Repair database`<br>
 Selecting this entry will start the automatic database repair functions. These are divided into three steps:
