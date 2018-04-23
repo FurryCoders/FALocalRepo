@@ -75,8 +75,8 @@ def main(DB):
             fields['tags'] = readkeys.input('Tags: ')
             fields['catg'] = readkeys.input('Category: ')
             fields['spec'] = readkeys.input('Species: ')
-            fields['gend'] = readkeys.input('Gender: ').lower()
-            fields['ratg'] = readkeys.input('Rating: ').lower()
+            fields['gend'] = readkeys.input('Gender: ')
+            fields['ratg'] = readkeys.input('Rating: ')
         except:
             return
         finally:
