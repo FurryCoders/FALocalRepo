@@ -151,8 +151,8 @@ If errors where found then the program will try to fix them accordingly:
 3. `Optimizing`<br>
 After all errors (if any are found) are fixed then the program will use the sqlite `VACUUM` function to optimize the database and clean it up.
 
-If you run the program on Unix systems then you can use CTRL-C to safely interrupt the program. It will complete the submission download in progress and exit at the first safe point, this works in all parts of the program, download, sync and update.<br>
-If you run the program on Windows systems however safe exit will **NOT** work. This is caused by the the completely different way in which Windows handles signals, specifically SIGINT, interrupt signal sent by CTRL-C and used by this program. The functions are built to be relatively safe in how they handles database updates and downloads but it is suggested not to interrupt any operation to avoid errors.
+If you run the program on Unix systems then you can use CTRL-C to interrupt the current operation safely. If a download is in progress it will complete the current operation and exit at the first safe point. Safe interrupt works in all sections of the program.<br>
+If you run the program on Windows systems however safe exit will **NOT** work. This is caused by the the completely different way in which Windows handles signals, specifically SIGINT, the interrupt signal sent by CTRL-C and used by this program. The functions are built to be relatively safe in how they handle database and download operations but it is suggested not to interrupt the program to avoid errors.
 
 ## Database
 The database (named 'FA.db') contains three tables:
