@@ -20,6 +20,7 @@ def search(DB, fields):
     fields['gend'] = '(?:.)*'+fields['gend']+'(?:.)*'
     fields['ratg'] = '%'+fields['ratg']+'%'
 
+    t1 = time.time()
     subs = DB.execute('''SELECT * FROM submissions
         WHERE title LIKE ? AND
         tags LIKE ? AND
@@ -52,7 +53,9 @@ def search(DB, fields):
         subs = [subs.get(s) for s in subs_u]
         subs = [s for s in subs if s != None]
 
-    print(len(subs))
+    t2 = time.time()
+
+    print(len(subs), t2-t1)
 
 def main(DB):
     while True:
