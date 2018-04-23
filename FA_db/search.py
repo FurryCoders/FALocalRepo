@@ -9,8 +9,23 @@ def regexp(pattern, input):
 
 def search(DB, fields):
     DB.create_function("REGEXP", 2, regexp)
-
-
+    if fields['user']:
+        subs = DB.execute(f'SELECT gallery, scraps, favorites, extras FROM users WHERE name = "{fields["user"]}"')
+        subs = subs.fetchall()
+        subs = [s for s in subs[0]]
+        if fields['sect']:
+            subs_t = subs
+            subs = []
+            if 'g' in fields['sect']:
+                subs.append(subs_t[0])
+            if 's' in fields['sect']:
+                subs.append(subs_t[1])
+            if 'f' in fields['sect']:
+                subs.append(subs_t[2])
+            if 'e' in fields['sect']:
+                subs.append(subs_t[3])
+    else:
+        subs = DB.execute(f'SELECT * FROM submissions')
 
 def main(DB):
     while True:
