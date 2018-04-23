@@ -10,6 +10,10 @@ def regexp(pattern, input):
 def search(DB, fields):
     DB.create_function("REGEXP", 2, regexp)
 
+    for k in list(fields.keys())[2:]:
+        fields[k] = f'%{fields[k]}%'
+    fields['tags'] = re.sub('( )+', '%', fields['tags'])
+
     subs = DB.execute('''SELECT * FROM submissions
         WHERE title LIKE ? AND
         tags LIKE ? AND
@@ -18,10 +22,13 @@ def search(DB, fields):
         gender LIKE ? AND
         rating LIKE ?
         ORDER BY authorurl ASC, id DESC''', tuple(fields.values())[2:]).fetchall()
+    subs = {s[0]: s[1:] for s in subs}
 
     if fields['user']:
         subs_u = DB.execute(f'SELECT gallery, scraps, favorites, extras FROM users WHERE name = "{fields["user"]}"')
         subs_u = subs_u.fetchall()
+        if not len(subs_u):
+            subs_u = ['']
         subs_u = [[int(si) for si in s.split(',') if si != ''] for s in subs_u[0]]
         if fields['sect']:
             subs_t = []
@@ -36,7 +43,8 @@ def search(DB, fields):
         else:
             subs_t = subs_u[0] + subs_u[1] + subs_u[2] + subs_u[3]
         subs_u = list(set(subs_t))
-        subs = [s for s in subs if s[0] in subs_u]
+        subs = [subs.get(s) for s in subs_u]
+        subs = [s for s in subs if s != None]
 
 def main(DB):
     while True:
