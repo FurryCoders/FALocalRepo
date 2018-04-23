@@ -54,10 +54,11 @@ def search(DB, fields):
         else:
             subs_t = subs_u[0] + subs_u[1] + subs_u[2] + subs_u[3]
 
-        subs_t = list(set(subs_t))
-        subs = {i: subs.get(i) for i in subs_t if subs.get(i) != None}
+        subs_t = sorted(list(set(subs_t)))
+        subs = [subs.get(i) for i in subs_t if subs.get(i) != None]
+    else:
+        subs = list(subs.values())
 
-    subs = list(subs.values())
     subs.sort(key=itemgetter(2))
 
     t2 = time.time()
