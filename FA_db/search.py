@@ -8,19 +8,24 @@ def regexp(pattern, input):
     return bool(re.match(pattern, input, flags=re.IGNORECASE))
 
 def search(DB, fields):
-    # DB.create_function("REGEXP", 2, regexp)
+    DB.create_function("REGEXP", 2, regexp)
 
     fields['user'] = re.sub('[^a-z0-9\-. ]', '', fields['user'].lower())
-    for k in list(fields.keys())[2:]:
-        fields[k] = f'%{fields[k]}%'
-    fields['tags'] = re.sub('( )+', '%', fields['tags'])
+    fields['titl'] = '%'+fields['titl']+'%'
+    fields['tags'] = re.sub('( )+', ' ', fields['tags']).split(' ')
+    fields['tags'] = sorted(fields['tags'], key=str.lower)
+    fields['tags'] = '%'+'%'.join(fields['tags'])+'%'
+    fields['catg'] = '(?:.)*'+fields['catg']+'(?:.)*'
+    fields['spec'] = '(?:.)*'+fields['spec']+'(?:.)*'
+    fields['gend'] = '(?:.)*'+fields['gend']+'(?:.)*'
+    fields['ratg'] = '%'+fields['ratg']+'%'
 
     subs = DB.execute('''SELECT * FROM submissions
         WHERE title LIKE ? AND
         tags LIKE ? AND
-        category LIKE ? AND
-        species LIKE ? AND
-        gender LIKE ? AND
+        category REGEXP ? AND
+        species REGEXP ? AND
+        gender REGEXP ? AND
         rating LIKE ?
         ORDER BY authorurl ASC, id DESC''', tuple(fields.values())[2:]).fetchall()
     subs = {s[0]: s[1:] for s in subs}
@@ -46,6 +51,8 @@ def search(DB, fields):
         subs_u = list(set(subs_t))
         subs = [subs.get(s) for s in subs_u]
         subs = [s for s in subs if s != None]
+
+    print(len(subs))
 
 def main(DB):
     while True:
