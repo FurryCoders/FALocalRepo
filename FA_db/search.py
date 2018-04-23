@@ -9,23 +9,32 @@ def regexp(pattern, input):
 
 def search(DB, fields):
     DB.create_function("REGEXP", 2, regexp)
+
     if fields['user']:
-        subs = DB.execute(f'SELECT gallery, scraps, favorites, extras FROM users WHERE name = "{fields["user"]}"')
-        subs = subs.fetchall()
-        subs = [s for s in subs[0]]
+        subs_u = DB.execute(f'SELECT gallery, scraps, favorites, extras FROM users WHERE name = "{fields["user"]}"')
+        subs_u = subs.fetchall()
+        subs_u = [[int(si) for si in s.split(',') if si != ''] for s in subs_u[0]]
         if fields['sect']:
-            subs_t = subs
-            subs = []
+            subs_t = []
             if 'g' in fields['sect']:
-                subs.append(subs_t[0])
+                subs_t += subs_u[0]
             if 's' in fields['sect']:
-                subs.append(subs_t[1])
+                subs_t += subs_u[1]
             if 'f' in fields['sect']:
-                subs.append(subs_t[2])
+                subs_t += subs_u[2]
             if 'e' in fields['sect']:
-                subs.append(subs_t[3])
+                subs_t += subs_u[3]
+        else:
+            subs_t = subs_u[0] + subs_u[1] + subs_u[2] + subs_u[3]
+        subs_t = list(set(subs_t))
+        subs = []
+        for s in subs_t:
+            s = DB.execute(f'SELECT * FROM submissions WHERE id = {s}').fetchall()
+            s = [si for si in s[0]]
+            subs.append(s)
     else:
-        subs = DB.execute(f'SELECT * FROM submissions')
+        subs = DB.execute(f'SELECT * FROM submissions').fetchall()
+        subs = [[si for si in s] for s in subs]
 
 def main(DB):
     while True:
