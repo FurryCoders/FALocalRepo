@@ -6,10 +6,10 @@ import FA_dl as fadl
 import FA_tools as fatl
 import FA_up as faup
 
-def header(s, end='\n', l=20):
-    print('-'*l)
+def header(s, brk='-', end='\n', l=20):
+    print(brk*l)
     print(s)
-    print('-'*l)
+    print(brk*l)
     print(end=end)
 
 def menu(DB):
