@@ -13,11 +13,12 @@ def header(s, brk='-', end='\n', l=20):
     print(end=end)
 
 def menu(DB):
-    menu = {}
-    menu[str(len(menu)+1)] = ['Download & Update', fadl.download_main]
-    menu[str(len(menu)+1)] = ['Search', fadb.db_search]
-    menu[str(len(menu)+1)] = ['Repair database', fadb.repair]
-    menu[str(len(menu)+1)] = ['Exit', (lambda *x: sys.exit(0))]
+    menu = []
+    menu.append(['Download & Update', fadl.download_main])
+    menu.append(['Search', fadb.db_search])
+    menu.append(['Repair database', fadb.repair])
+    menu.append(['Exit', (lambda *x: sys.exit(0))])
+    menu = {str(k): mk for k, mk in enumerate(menu, 1)}
 
     menu_l = [f'{i}) {menu[i][0]}' for i in menu]
 
