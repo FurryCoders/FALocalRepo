@@ -80,6 +80,10 @@ def search(DB, fields):
 
     print()
     print(f'{len(subs)} results found in {t2-t1:.3f} seconds')
+    print()
+    print('Press any key to continue ', end='', flush=True)
+    readkeys.getkey()
+    print('\b \b'*26, end='')
 
 def main(DB):
     while True:
@@ -116,11 +120,6 @@ def main(DB):
         sigint_ublock()
         search(DB, fields)
     except:
-        return
+        pass
     finally:
         sigint_clear()
-
-    print()
-    print('Press any key to continue ', end='', flush=True)
-    readkeys.getkey()
-    print('\b \b'*26, end='')
