@@ -81,7 +81,7 @@ def search(DB, fields):
     print()
     print(f'{len(subs)} results found in {t2-t1:.3f} seconds')
 
-def main(DB):
+def main(Session, DB):
     while True:
         fields = {}
 
@@ -124,3 +124,5 @@ def main(DB):
     print('Press any key to continue ', end='', flush=True)
     readkeys.getkey()
     print('\b \b'*26, end='')
+
+    return Session
