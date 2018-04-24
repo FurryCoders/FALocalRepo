@@ -19,6 +19,8 @@ def menu(DB):
     menu[str(len(menu)+1)] = ['Repair database', fadb.repair]
     menu[str(len(menu)+1)] = ['Exit', (lambda x,y: sys.exit(0))]
 
+    menu_l = [f'{i}) {menu[i][0]}' for i in menu]
+
     Session = None
 
     while True:
@@ -26,7 +28,7 @@ def menu(DB):
 
         header('Menu')
 
-        print('\n'.join([f'{i}) {menu[i][0]}' for i in menu]))
+        print('\n'.join(menu_l))
         print('\nChoose option: ', end='', flush=True)
         k = '0'
         while k not in menu:
