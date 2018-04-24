@@ -38,7 +38,7 @@ def menu(DB):
         header(menu[k][0])
         Session = menu[k][1](Session, DB)
 
-        print(-'*30'+'\n')
+        print('-'*30+'\n')
 
 fatl.sigint_block()
 
