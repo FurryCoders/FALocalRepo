@@ -69,7 +69,7 @@ def search(DB, fields):
     str_cl = re.compile('[^\x00-\x7F]')
     for s in subs:
         if fields['user'] and s[1] != fields['user']:
-            print(f'({s[14]}) {s[1][0:14]: ^{14}} |', end='', flush=True)
+            print(f'({s[-1]}) {s[1][0:14]: ^{14}} |', end='', flush=True)
         else:
             print(f'{s[1][0:18]: ^18} |', end='', flush=True)
         print(f' {s[4]} {s[0]:0>10}', end='', flush=True)
