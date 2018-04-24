@@ -116,7 +116,7 @@ def main(DB):
         sigint_ublock()
         search(DB, fields)
     except:
-        raise
+        return
     finally:
         sigint_clear()
 
