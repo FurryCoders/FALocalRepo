@@ -3,7 +3,7 @@ import re
 import time
 import os
 import PythonRead as readkeys
-from FA_tools import sigint_block, sigint_ublock, sigint_check, sigint_clear
+import FA_tools as fatl
 
 # def regexp(pattern, input):
 #     return bool(re.match(pattern, input, flags=re.IGNORECASE))
@@ -86,7 +86,7 @@ def main(Session, DB):
         fields = {}
 
         try:
-            sigint_ublock()
+            fatl.sigint_ublock()
             fields['user'] = readkeys.input('User: ').strip()
             if fields['user']:
                 fields['sect'] = readkeys.input('Section: ').lower()
@@ -102,7 +102,7 @@ def main(Session, DB):
         except:
             return
         finally:
-            sigint_clear()
+            fatl.sigint_clear()
 
         print()
         if all(v == '' for v in fields.values()):
@@ -113,12 +113,12 @@ def main(Session, DB):
         break
 
     try:
-        sigint_ublock()
+        fatl.sigint_ublock()
         search(DB, fields)
     except:
         raise
     finally:
-        sigint_clear()
+        fatl.sigint_clear()
 
     print()
     print('Press any key to continue ', end='', flush=True)
