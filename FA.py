@@ -17,7 +17,7 @@ def menu(DB):
     menu[str(len(menu)+1)] = ['Download & Update', fadl.download_main]
     menu[str(len(menu)+1)] = ['Search', fadb.db_search]
     menu[str(len(menu)+1)] = ['Repair database', fadb.repair]
-    menu[str(len(menu)+1)] = ['Exit', (lambda x,y: sys.exit(0))]
+    menu[str(len(menu)+1)] = ['Exit', (lambda *x: sys.exit(0))]
 
     menu_l = [f'{i}) {menu[i][0]}' for i in menu]
 
