@@ -34,6 +34,7 @@ def menu(DB):
         while k not in menu:
             k = readkeys.getkey()
             k = k.replace('\x03', str(len(menu)))
+            k = k.replace('\x04', str(len(menu)))
             k = k.replace('\x1b', str(len(menu)))
         print(k+'\n')
 
