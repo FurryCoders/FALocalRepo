@@ -11,7 +11,6 @@ from FA_dl import session
 #     return bool(re.match(pattern, input, flags=re.IGNORECASE))
 
 def search_web(Session, fields):
-    print()
     Session = session(Session)
     if not Session:
         print("Couldn't establish connection, search aborted")
@@ -34,16 +33,16 @@ def search_web(Session, fields):
     page_i = 1
     re_id = re.compile('[^0-9]')
     str_cl = re.compile('[^\x00-\x7F]')
+    n = 0
+
+    print(f'{page_i:03d}', end='', flush=True)
 
     page = Session.get(f'{search_url}&page={page_i}')
     page = bs4.BeautifulSoup(page.text, 'lxml')
     page = page.find('section', id="gallery-search-results")
-    if not page:
-        return
 
-    while page.find('figure'):
+    while page and page.find('figure'):
         results = page.findAll('figure')
-        print(f'{page_i:03d}', end='', flush=True)
 
         for r in results:
             ratg = r.get('class')[0].lstrip('r-')
@@ -53,17 +52,22 @@ def search_web(Session, fields):
             user = r.findAll('a')[2].string
             titl = r.findAll('a')[1].string
 
-            print(f'\r{user[0:18]: ^18} | {s_id}', end='', flush=True)
+            n += 1
+
+            print(f'\r{user[0:18]: <18} | {s_id}', end='', flush=True)
             if os.get_terminal_size()[0] > 33:
                 print(f' | {str_cl.sub("",titl[0:os.get_terminal_size()[0]-33])}', end='')
             print()
 
         page_i += 1
+        print(f'\r{page_i:03d}', end='', flush=True)
+
         page = Session.get(f'{search_url}&page={page_i}')
         page = bs4.BeautifulSoup(page.text, 'lxml')
         page = page.find('section', id="gallery-search-results")
-        if not page:
-            return
+
+    print('\r   \r', end='', flush=True)
+    print('\n'*bool(n) + f'{n} results found')
 
 def search(Session, DB, fields):
     # DB.create_function("REGEXP", 2, regexp)
@@ -143,7 +147,7 @@ def search(Session, DB, fields):
         if fields['user'] and s[1] != fields['user']:
             print(f'({s[-1]}) {s[1][0:14]: ^{14}} |', end='', flush=True)
         else:
-            print(f'{s[1][0:18]: ^18} |', end='', flush=True)
+            print(f'{s[1][0:18]: <18} |', end='', flush=True)
         print(f' {s[4]} {s[0]:0>10}', end='', flush=True)
         if os.get_terminal_size()[0] > 45:
             print(f' | {str_cl.sub("",s[3][0:os.get_terminal_size()[0]-45])}')
@@ -160,6 +164,7 @@ def search(Session, DB, fields):
         print(c)
 
         if c == 'y':
+            print()
             search_web(Session, fields_o)
 
 def main(Session, DB):
