@@ -8,7 +8,7 @@ import FA_tools as fatl
 from FA_dl import session
 
 def regexp(pattern, input):
-    return bool(re.match(pattern, input, flags=re.IGNORECASE))
+    return bool(re.match(pattern, input))
 
 def search_web(Session, fields):
     Session = session(Session)
