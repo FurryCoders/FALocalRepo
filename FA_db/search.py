@@ -97,7 +97,7 @@ def search(Session, DB, fields):
             UPPER(category) LIKE ? AND
             UPPER(species) LIKE ? AND
             UPPER(gender) LIKE ? AND
-            UPPER(Rating) LIKE ?''', tuple(fields.values())[0:1]+tuple(fields.values())[2:]).fetchall()
+            UPPER(Rating) LIKE ?''', ('%'+fields['user']+'%',) + tuple(fields.values())[2:]).fetchall()
     else:
         subs = DB.execute('''SELECT * FROM submissions
             WHERE title LIKE ? AND
@@ -112,31 +112,33 @@ def search(Session, DB, fields):
     if fields['user']:
         fields['user'] = re.sub('[^a-z0-9\-.]', '', fields['user'])
 
-        subs_u = DB.execute(f'SELECT gallery, scraps, favorites, extras FROM users WHERE name = "{fields["user"]}"')
-        subs_u = subs_u.fetchall()
-        if not len(subs_u):
-            subs_u = [['','','','']]
-        subs_u = [[int(si) for si in s.split(',') if si != ''] for s in subs_u[0]]
+        users = DB.execute('SELECT gallery, scraps, favorites, extras FROM users WHERE name LIKE ?', ('%'+fields['user']+'%',))
+        users = users.fetchall()
+        if not len(users):
+            users = [('','','','')]
+        subs_u = []
 
-        subs_u[0] = [[i, 'g'] for i in subs_u[0]]
-        subs_u[1] = [[i, 's'] for i in subs_u[1]]
-        subs_u[2] = [[i, 'f'] for i in subs_u[2]]
-        subs_u[3] = [[i, 'e'] for i in subs_u[3]]
+        for u in users:
+            u = [[int(si) for si in s.split(',') if si != ''] for s in u]
 
-        if fields['sect']:
-            subs_t = []
-            if 'g' in fields['sect']:
-                subs_t += subs_u[0]
-            if 's' in fields['sect']:
-                subs_t += subs_u[1]
-            if 'f' in fields['sect']:
-                subs_t += subs_u[2]
-            if 'e' in fields['sect']:
-                subs_t += subs_u[3]
-        else:
-            subs_t = subs_u[0] + subs_u[1] + subs_u[2] + subs_u[3]
+            u[0] = [[i, 'g'] for i in u[0]]
+            u[1] = [[i, 's'] for i in u[1]]
+            u[2] = [[i, 'f'] for i in u[2]]
+            u[3] = [[i, 'e'] for i in u[3]]
 
-        subs = [subs.get(i[0]) + (i[1],) for i in subs_t if subs.get(i[0]) != None]
+            if fields['sect']:
+                if 'g' in fields['sect']:
+                    subs_u += u[0]
+                if 's' in fields['sect']:
+                    subs_u += u[1]
+                if 'f' in fields['sect']:
+                    subs_u += u[2]
+                if 'e' in fields['sect']:
+                    subs_u += u[3]
+            else:
+                subs_u += u[0] + u[1] + u[2] + u[3]
+
+        subs = [subs.get(i[0]) + (i[1],) for i in subs_u if subs.get(i[0]) != None]
     else:
         subs = list(subs.values())
 
