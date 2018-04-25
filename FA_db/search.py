@@ -35,6 +35,9 @@ def search_web(Session, fields):
     str_cl = re.compile('[^\x00-\x7F]')
     n = 0
 
+    print('USER               |     ID     | TITLE'[0:os.get_terminal_size()[0]])
+    print(('-'*41)[0:os.get_terminal_size()[0]])
+
     print(f'{page_i:03d}', end='', flush=True)
 
     page = Session.get(f'{search_url}&page={page_i}')
@@ -142,22 +145,27 @@ def search(Session, DB, fields):
 
     t2 = time.time()
 
+    if fields['user']:
+        print('(SECTION) USER  |    DATE        ID     | TITLE'[0:os.get_terminal_size()[0]])
+    else:
+        print('USER            |    DATE        ID     | TITLE'[0:os.get_terminal_size()[0]])
+    print(('-'*49)[0:os.get_terminal_size()[0]])
+
     str_cl = re.compile('[^\x00-\x7F]')
     for s in subs:
-        if fields['user'] and s[1] != fields['user']:
-            print(f'({s[-1]}) {s[1][0:14]: ^{14}} |', end='', flush=True)
+        if fields['user']:
+            print(f'({s[-1]}) {s[1][0:11]: ^{11}} |', end='', flush=True)
         else:
-            print(f'{s[1][0:18]: <18} |', end='', flush=True)
+            print(f'{s[1][0:15]: <15} |', end='', flush=True)
         print(f' {s[4]} {s[0]:0>10}', end='', flush=True)
-        if os.get_terminal_size()[0] > 45:
+        if os.get_terminal_size()[0] > 42:
             print(f' | {str_cl.sub("",s[3][0:os.get_terminal_size()[0]-45])}')
         else:
             print()
 
-    print()
-    print(f'{len(subs)} results found in {t2-t1:.3f} seconds')
+    print('\n'*bool(len(subs)) + f'{len(subs)} results found in {t2-t1:.3f} seconds')
     if not len(subs):
-        print('No results found in the local database\nDo you want to search online (y/n)? ', end='', flush=True)
+        print('\nNo results found in the local database\nDo you want to search online (y/n)? ', end='', flush=True)
         c = ''
         while c not in ('y','n'):
             c = readkeys.getkey().lower()
