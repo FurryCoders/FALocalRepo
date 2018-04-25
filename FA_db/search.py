@@ -23,13 +23,23 @@ def search(DB, fields):
     fields['ratg'] = '%'+fields['ratg'].upper()+'%'
 
     t1 = time.time()
-    subs = DB.execute('''SELECT * FROM submissions
-        WHERE title LIKE ? AND
-        UPPER(tags) LIKE ? AND
-        UPPER(category) LIKE ? AND
-        UPPER(species) LIKE ? AND
-        UPPER(gender) LIKE ? AND
-        UPPER(Rating) LIKE ?''', tuple(fields.values())[2:]).fetchall()
+    if fields['user'] and re.match('^[gs]+$', fields['sect']):
+        subs = DB.execute('''SELECT * FROM submissions
+            WHERE authorurl LIKE ? AND
+            title LIKE ? AND
+            UPPER(tags) LIKE ? AND
+            UPPER(category) LIKE ? AND
+            UPPER(species) LIKE ? AND
+            UPPER(gender) LIKE ? AND
+            UPPER(Rating) LIKE ?''', tuple(fields.values())[0:1]+tuple(fields.values())[2:]).fetchall()
+    else:
+        subs = DB.execute('''SELECT * FROM submissions
+            WHERE title LIKE ? AND
+            UPPER(tags) LIKE ? AND
+            UPPER(category) LIKE ? AND
+            UPPER(species) LIKE ? AND
+            UPPER(gender) LIKE ? AND
+            UPPER(Rating) LIKE ?''', tuple(fields.values())[2:]).fetchall()
     subs = {s[0]: s for s in subs}
 
     if fields['user']:
@@ -125,6 +135,6 @@ def main(Session, DB):
     except:
         pass
     finally:
-        sigint_clear()
+        fatl.sigint_clear()
 
     return Session
