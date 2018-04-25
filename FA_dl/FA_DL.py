@@ -100,7 +100,7 @@ def check_page(Session, url):
     return page_t
 
 
-def dl_page(Session, user, section, DB, page_i, page_p, sync=False, speed=1, force=0, quiet=False):
+def dl_page(Session, user, section, db, page_i, page_p, sync=False, speed=1, force=0, quiet=False):
     sub_i = 0
     for sub in page_p.findAll('figure'):
         if sigint_check(): return 5
@@ -110,7 +110,7 @@ def dl_page(Session, user, section, DB, page_i, page_p, sync=False, speed=1, for
         print(f'{user[0:5]: ^5} {page_i:0>3}/{sub_i:0>2} {section} | {ID:0>10} | ', end='', flush=True)
         folder = f'FA.files/{tiers(ID)}/{ID:0>10}'
 
-        if fadb.usr_src(DB, user, ID.zfill(10), section_db[section]):
+        if fadb.usr_src(db, user, ID.zfill(10), section_db[section]):
             cols = os.get_terminal_size()[0] - 44
             if cols < 0: cols = 0
             titl = str_clean(sub.find_all('a')[1].string)
@@ -127,7 +127,7 @@ def dl_page(Session, user, section, DB, page_i, page_p, sync=False, speed=1, for
 
         if sigint_check(): return 5
 
-        s_ret = dl_sub(Session, ID, folder, DB, False, True, speed)
+        s_ret = dl_sub(Session, ID, folder, db, False, True, speed)
         if s_ret == 0:
             print("\b"*5+" -> Downloaded")
         elif s_ret == 1:
@@ -138,13 +138,13 @@ def dl_page(Session, user, section, DB, page_i, page_p, sync=False, speed=1, for
             print("\b"*5+" -> Page Error")
 
         if s_ret != 3:
-            fadb.usr_up(DB, user, ID.zfill(10), section_db[section])
+            fadb.usr_up(db, user, ID.zfill(10), section_db[section])
 
         if sigint_check(): return 5
 
     return 0
 
-def dl_gs(Session, user, section, DB, sync=False, speed=1, force=0, quiet=False):
+def dl_gs(Session, user, section, db, sync=False, speed=1, force=0, quiet=False):
     url = 'https://www.furaffinity.net/'
     url += f'{section_full[section]}/{user}/'
 
@@ -174,13 +174,13 @@ def dl_gs(Session, user, section, DB, sync=False, speed=1, force=0, quiet=False)
 
         if sigint_check(): return 5
 
-        page_ret = dl_page(Session, user, section, DB, page_i, page_p, sync, speed, force, quiet)
+        page_ret = dl_page(Session, user, section, db, page_i, page_p, sync, speed, force, quiet)
 
         if page_ret != 0: return page_ret
 
         if sigint_check(): return 5
 
-def dl_e(Session, user, section, DB, sync=False, speed=1, force=0, quiet=False):
+def dl_e(Session, user, section, db, sync=False, speed=1, force=0, quiet=False):
     url = 'https://www.furaffinity.net/'
     if section == 'e':
         url += 'search/?q=( ":icon{0}:" | ":{0}icon:" ) ! ( @lower {0} )&order-by=date'.format(user)
@@ -212,13 +212,13 @@ def dl_e(Session, user, section, DB, sync=False, speed=1, force=0, quiet=False):
 
         if sigint_check(): return 5
 
-        page_ret = dl_page(Session, user, section, DB, page_i, page_p, sync, speed, force, quiet)
+        page_ret = dl_page(Session, user, section, db, page_i, page_p, sync, speed, force, quiet)
 
         if page_ret != 0: return page_ret
 
         if sigint_check(): return 5
 
-def dl_f(Session, user, section, DB, sync=False, speed=1, force=0, quiet=False):
+def dl_f(Session, user, section, db, sync=False, speed=1, force=0, quiet=False):
     url = f'https://www.furaffinity.net/favorites/{user}'
 
     page_i = 0
@@ -249,7 +249,7 @@ def dl_f(Session, user, section, DB, sync=False, speed=1, force=0, quiet=False):
 
         if sigint_check(): return 5
 
-        page_ret = dl_page(Session, user, section, DB, page_i, page_p, sync, speed, force, quiet)
+        page_ret = dl_page(Session, user, section, db, page_i, page_p, sync, speed, force, quiet)
 
         if page_ret != 0: return page_ret
 
@@ -262,37 +262,37 @@ def dl_f(Session, user, section, DB, sync=False, speed=1, force=0, quiet=False):
         else:
             return 0
 
-def dl_usr(Session, user, section, DB, sync=False, speed=1, force=0, quiet=False):
+def dl_usr(Session, user, section, db, sync=False, speed=1, force=0, quiet=False):
     print(f'{user[0:12]: ^12} {section}\r', end='', flush=True)
     if section in ('g', 's'):
-        dl_ret = dl_gs(Session, user, section, DB, sync, speed, force, quiet)
+        dl_ret = dl_gs(Session, user, section, db, sync, speed, force, quiet)
     elif section in ('e', 'E'):
-        dl_ret = dl_e(Session, user, section, DB, sync, speed, force, quiet)
+        dl_ret = dl_e(Session, user, section, db, sync, speed, force, quiet)
     elif section in ('f'):
-        dl_ret = dl_f(Session, user, section, DB, sync, speed, force, quiet)
+        dl_ret = dl_f(Session, user, section, db, sync, speed, force, quiet)
 
     if dl_ret not in (1, 4):
         if section == 'e':
-            fadb.usr_rep(DB, user, 'E', 'e', 'FOLDERS')
+            fadb.usr_rep(db, user, 'E', 'e', 'FOLDERS')
         elif section == 'E':
-            fadb.usr_rep(DB, user, 'e', 'E', 'FOLDERS')
+            fadb.usr_rep(db, user, 'e', 'E', 'FOLDERS')
         else:
-            fadb.usr_up(DB, user, section, 'FOLDERS')
+            fadb.usr_up(db, user, section, 'FOLDERS')
 
     return dl_ret
 
 
-def update(Session, DB, users=[], sections=[], speed=2, force=0):
+def update(Session, db, users=[], sections=[], speed=2, force=0):
     if sigint_check(): return
 
     print('Update')
     print('USR PAGE SECT. |     ID     | TITLE -> RESULT')
     print('-'*47)
 
-    users_db = DB.execute("SELECT name, folders FROM users ORDER BY name ASC")
+    users_db = db.execute("SELECT name, folders FROM users ORDER BY name ASC")
     t = int(time.time())
-    fadb.info_up(DB, 'LASTUP', t)
-    fadb.info_up(DB, 'LASTUPT', 0)
+    fadb.info_up(db, 'LASTUP', t)
+    fadb.info_up(db, 'LASTUPT', 0)
     flag_download = False
 
     for u in users_db:
@@ -314,14 +314,14 @@ def update(Session, DB, users=[], sections=[], speed=2, force=0):
 
             print(f'{u[0][0:12]: ^12} {s}\r', end='', flush=True)
 
-            dl_ret = dl_usr(Session, u[0], s, DB, True, speed, force, quiet=True)
+            dl_ret = dl_usr(Session, u[0], s, db, True, speed, force, quiet=True)
             if dl_ret == 3:
                 print('\b \b'*os.get_terminal_size()[0], end='', flush=True)
             if dl_ret in (0,2,4):
                 flag_download_u = True
             if dl_ret == 4:
                 print(f'{section_full[s]} DISABLED')
-                fadb.usr_rep(DB, u[0], s, s+'!', 'FOLDERS')
+                fadb.usr_rep(db, u[0], s, s+'!', 'FOLDERS')
             if dl_ret == 5 or sigint_check():
                 dl_ret = 5
                 break
@@ -337,9 +337,9 @@ def update(Session, DB, users=[], sections=[], speed=2, force=0):
         print("No new submissions were downloaded")
 
     t = int(time.time()) - t
-    fadb.info_up(DB, 'LASTUPT', t)
+    fadb.info_up(db, 'LASTUPT', t)
 
-def download(Session, DB, users, sections, sync, speed, force):
+def download(Session, db, users, sections, sync, speed, force):
     if sigint_check(): return
 
     usr_sec = [[u, "".join(sections)] for u in users]
@@ -365,7 +365,7 @@ def download(Session, DB, users, sections, sync, speed, force):
             i -= 1
             continue
 
-        fadb.usr_ins(DB, usr_sec[i][0], usr_full)
+        fadb.usr_ins(db, usr_sec[i][0], usr_full)
 
     if sigint_check(): return
 
@@ -378,37 +378,37 @@ def download(Session, DB, users, sections, sync, speed, force):
     print('USR PAGE SECT. |     ID     | TITLE -> RESULT')
 
     t = int(time.time())
-    fadb.info_up(DB, 'LASTDL', t)
-    fadb.info_up(DB, 'LASTDLT', 0)
+    fadb.info_up(db, 'LASTDL', t)
+    fadb.info_up(db, 'LASTDLT', 0)
 
     for usr in usr_sec:
         print('-'*47)
         for i in range(0, len(usr[1])):
             sec = usr[1][i]
-            dl_ret = dl_usr(Session, usr[0], sec, DB, sync, speed, force)
+            dl_ret = dl_usr(Session, usr[0], sec, db, sync, speed, force)
             if dl_ret in (0,1,2,3,5):
                 if sec == 'e':
-                    fadb.usr_rep(DB, usr[0], 'E', 'e', 'FOLDERS')
+                    fadb.usr_rep(db, usr[0], 'E', 'e', 'FOLDERS')
                 elif sec == 'E':
-                    fadb.usr_rep(DB, usr[0], 'e', 'E', 'FOLDERS')
+                    fadb.usr_rep(db, usr[0], 'e', 'E', 'FOLDERS')
                 else:
-                    fadb.usr_up(DB, usr[0], sec, 'FOLDERS')
+                    fadb.usr_up(db, usr[0], sec, 'FOLDERS')
             elif dl_ret == 4:
-                fadb.usr_rep(DB, usr[0], sec, sec+'!', 'FOLDERS')
+                fadb.usr_rep(db, usr[0], sec, sec+'!', 'FOLDERS')
             if dl_ret == 5:
                 break
             if i < len(usr[1])-1:
                 print('-'*29)
-        if fadb.usr_isempty(DB, usr[0]):
-            fadb.usr_rm(DB, usr[0])
+        if fadb.usr_isempty(db, usr[0]):
+            fadb.usr_rm(db, usr[0])
             print(f'{usr[0][0:14]: ^14} | No downloads, user deleted')
         if dl_ret == 5:
             break
 
     t = int(time.time()) - t
-    fadb.info_up(DB, 'LASTDLT', t)
+    fadb.info_up(db, 'LASTDLT', t)
 
-def download_main(Session, DB):
+def download_main(Session, db):
     header('Download & Update')
 
     while True:
@@ -459,11 +459,11 @@ def download_main(Session, DB):
     if sigint_check(): return Session
 
     if upd:
-        update(Session, DB, users, sections, speed, force)
+        update(Session, db, users, sections, speed, force)
     else:
-        download(Session, DB, users, sections, sync, speed, force)
-    fadb.info_up(DB, 'USRN', fadb.table_n(DB, 'USERS'))
-    fadb.info_up(DB, 'SUBN', fadb.table_n(DB, 'SUBMISSIONS'))
+        download(Session, db, users, sections, sync, speed, force)
+    fadb.info_up(db, 'USRN', fadb.table_n(db, 'USERS'))
+    fadb.info_up(db, 'SUBN', fadb.table_n(db, 'SUBMISSIONS'))
 
     if quit: sys.exit(0)
     return Session

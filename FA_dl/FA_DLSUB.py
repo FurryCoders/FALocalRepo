@@ -117,12 +117,12 @@ def str_clean(string):
     return re.sub('[^\x00-\x7F]', '', string)
 
 
-def dl_sub(Session, ID, folder, DB, quiet=False, check=False, speed=1):
-    if check and sub_exists(DB, ID):
+def dl_sub(Session, ID, folder, db, quiet=False, check=False, speed=1):
+    if check and sub_exists(db, ID):
         if not quiet:
             cols = os.get_terminal_size()[0] - 44
             if cols < 0: cols = 0
-            titl = str_clean(sub_read(DB, ID, "title"))
+            titl = str_clean(sub_read(db, ID, "title"))
             print(f'{titl[0:cols]} ... ', end='', flush=True)
         return 2
 
@@ -153,7 +153,7 @@ def dl_sub(Session, ID, folder, DB, quiet=False, check=False, speed=1):
         f.write(f'File: {link}\n')
 
     sub_info = (ID, data[0], data[0].lower().replace('_', ''), data[1], data[2], data[3], data[4], data[5], data[6], data[7], link, subf, folder.split('/',1)[-1], 1)
-    sub_ins(DB, sub_info)
+    sub_ins(db, sub_info)
 
     if subf == False:
         return 1

@@ -32,8 +32,8 @@ def check_files(sub):
 
     return True
 
-def find_errors_sub(DB):
-    subs = DB.execute('SELECT * FROM submissions ORDER BY id ASC')
+def find_errors_sub(db):
+    subs = db.execute('SELECT * FROM submissions ORDER BY id ASC')
     subs = [[si for si in s] for s in subs.fetchall()]
 
     errs_id = []
@@ -86,8 +86,8 @@ def check_folder_dl(usr):
 
     return ret
 
-def find_errors_usr(DB):
-    usrs = DB.execute('SELECT * FROM users ORDER BY name ASC')
+def find_errors_usr(db):
+    usrs = db.execute('SELECT * FROM users ORDER BY name ASC')
     usrs = [[ui for ui in u] for u in usrs.fetchall()]
 
     errs_empty = []
@@ -154,11 +154,11 @@ def find_errors_usr(DB):
 
     return errs_empty, errs_repet, errs_names, errs_namef, errs_foldr, errs_fl_dl
 
-def repair(Session, DB):
+def repair(Session, db):
     fatl.header('Repair database')
 
     print('Analyzing submissions database for errors ... ', end='', flush=True)
-    errs_id, errs_vl, errs_fl = find_errors_sub(DB)
+    errs_id, errs_vl, errs_fl = find_errors_sub(db)
     print('Done')
     print(f'Found {len(errs_id)} id error{"s"*bool(len(errs_id) != 1)}')
     print(f'Found {len(errs_vl)} field values error{"s"*bool(len(errs_vl) != 1)}')
@@ -168,7 +168,7 @@ def repair(Session, DB):
     fatl.sigint_clear()
 
     print('Analyzing users database for errors ... ', end='', flush=True)
-    errs_empty, errs_repet, errs_names, errs_namef, errs_foldr, errs_fl_dl = find_errors_usr(DB)
+    errs_empty, errs_repet, errs_names, errs_namef, errs_foldr, errs_fl_dl = find_errors_usr(db)
     print('Done')
     print(f'Found {len(errs_empty)} empty user{"s"*bool(len(errs_id) != 1)}')
     print(f'Found {len(errs_repet)} repeated user{"s"*bool(len(errs_vl) != 1)}')
@@ -204,9 +204,9 @@ def repair(Session, DB):
                 if sub[3] == None: sub[3] = ''
                 if sub[5] == None: sub[5] = ''
                 if check_values(sub):
-                    DB.execute(f'UPDATE submissions SET title = "{sub[3]}" WHERE id = {ID}')
-                    DB.execute(f'UPDATE submissions SET tags = "{sub[5]}" WHERE id = {ID}')
-                    DB.commit()
+                    db.execute(f'UPDATE submissions SET title = "{sub[3]}" WHERE id = {ID}')
+                    db.execute(f'UPDATE submissions SET tags = "{sub[5]}" WHERE id = {ID}')
+                    db.commit()
                     if not check_files(sub) and sub[13]:
                         errs_fl.append(sub)
                         errs_fl_mv += 1
@@ -216,15 +216,15 @@ def repair(Session, DB):
                     continue
                 if not fadl.check_page(Session, 'view/'+str(ID)):
                     print(' - Page Error', end='', flush=True)
-                    DB.execute(f'UPDATE submissions SET server = 0 WHERE id = {ID}')
-                    DB.commit()
+                    db.execute(f'UPDATE submissions SET server = 0 WHERE id = {ID}')
+                    db.commit()
                     continue
                 if sub[12] == fatl.tiers(ID)+f'{ID:0>10}':
                     for f in glob.glob(f'FA.files/{sub[12]}/*'):
                         os.remove(f)
-                DB.execute(f'DELETE FROM submissions WHERE id = {ID}')
-                DB.commit()
-                fadl.dl_sub(Session, str(ID), f'FA.files/{fatl.tiers(ID)}/{ID:0>10}', DB, True, False, 2)
+                db.execute(f'DELETE FROM submissions WHERE id = {ID}')
+                db.commit()
+                fadl.dl_sub(Session, str(ID), f'FA.files/{fatl.tiers(ID)}/{ID:0>10}', db, True, False, 2)
             print()
             if errs_fl_mv:
                 print(f'{errs_fl_mv} new submission{"s"*bool(len(errs_fl_mv) != 1)} with files missing')
@@ -242,14 +242,14 @@ def repair(Session, DB):
                     continue
                 if not fadl.check_page(Session, 'view/'+str(ID)):
                     print(' - Page Error', end='', flush=True)
-                    DB.execute(f'UPDATE submissions SET server = 0 WHERE id = {ID}')
-                    DB.commit()
+                    db.execute(f'UPDATE submissions SET server = 0 WHERE id = {ID}')
+                    db.commit()
                     continue
                 for f in glob.glob(f'FA.files/{sub[12]}/*'):
                     os.remove(f)
-                DB.execute(f'DELETE FROM submissions WHERE id = {ID}')
-                DB.commit()
-                fadl.dl_sub(Session, str(ID), f'FA.files/{sub[12]}', DB, True, False, 2)
+                db.execute(f'DELETE FROM submissions WHERE id = {ID}')
+                db.commit()
+                fadl.dl_sub(Session, str(ID), f'FA.files/{sub[12]}', db, True, False, 2)
             print()
 
         print()
@@ -263,7 +263,7 @@ def repair(Session, DB):
             print('Empty users')
             for u in errs_empty:
                 print(f' {u}')
-                fadb.usr_rm(DB, u, True)
+                fadb.usr_rm(db, u, True)
         print()
 
         if len(errs_repet):
@@ -283,13 +283,13 @@ def repair(Session, DB):
                     u_new_i.sort()
                     u_new[i] = ",".join(u_new_i)
                 for u in u_rep:
-                    fadb.usr_rm(DB, u[0])
-                fadb.usr_ins(DB, u[0])
-                fadb.usr_up(DB, u[0], u_new[1], 'FOLDERS')
-                fadb.usr_up(DB, u[0], u_new[2], 'GALLERY')
-                fadb.usr_up(DB, u[0], u_new[3], 'SCRAPS')
-                fadb.usr_up(DB, u[0], u_new[4], 'FAVORITES')
-                fadb.usr_up(DB, u[0], u_new[5], 'EXTRAS')
+                    fadb.usr_rm(db, u[0])
+                fadb.usr_ins(db, u[0])
+                fadb.usr_up(db, u[0], u_new[1], 'FOLDERS')
+                fadb.usr_up(db, u[0], u_new[2], 'GALLERY')
+                fadb.usr_up(db, u[0], u_new[3], 'SCRAPS')
+                fadb.usr_up(db, u[0], u_new[4], 'FAVORITES')
+                fadb.usr_up(db, u[0], u_new[5], 'EXTRAS')
                 if not check_folder(u_new):
                     errs_foldr.append(u_new)
                 else:
@@ -302,7 +302,7 @@ def repair(Session, DB):
             print('Capitalized usernames')
             for u in errs_names:
                 print(f' {u[0]}')
-                fadb.usr_rep(DB, u[0], u[0], u[0].lower().replace('_',''), 'NAME')
+                fadb.usr_rep(db, u[0], u[0], u[0].lower().replace('_',''), 'NAME')
                 u_d = check_folder_dl(u)
                 if u[1].lower().replace('_','') != u[0]:
                     errs_namef.append(u)
@@ -320,11 +320,11 @@ def repair(Session, DB):
             print('-'*47)
             for u in errs_namef:
                 print(f' {u[0]} ', end='', flush=True)
-                u_db = DB.execute(f'SELECT author FROM submissions WHERE authorurl = "{u[0]}"').fetchall()
+                u_db = db.execute(f'SELECT author FROM submissions WHERE authorurl = "{u[0]}"').fetchall()
                 if len(u_db):
                     u_db = u_db[0][0]
-                    print(f'- DB: {u_db}')
-                    fadb.usr_rep(DB, u[0], u[1], u_db, 'NAMEFULL')
+                    print(f'- db: {u_db}')
+                    fadb.usr_rep(db, u[0], u[1], u_db, 'NAMEFULL')
                 elif Session:
                     u_fa = fadl.check_page(Session, 'user/'+u[0])
                     if u_fa:
@@ -332,7 +332,7 @@ def repair(Session, DB):
                     else:
                         u_fa = u[0]
                     print(f'- FA: {u_fa}')
-                    fadb.usr_rep(DB, u[0], u[1], u_fa, 'NAMEFULL')
+                    fadb.usr_rep(db, u[0], u[1], u_fa, 'NAMEFULL')
                 u_d = check_folder_dl(u)
                 if not check_folder(u):
                     errs_foldr.append(u)
@@ -344,13 +344,13 @@ def repair(Session, DB):
             for u in errs_foldr:
                 print(f' {u[0]}')
                 if len(u[3]):
-                    fadb.usr_up(DB, u[0], 'g', 'FOLDERS')
+                    fadb.usr_up(db, u[0], 'g', 'FOLDERS')
                 if len(u[4]):
-                    fadb.usr_up(DB, u[0], 's', 'FOLDERS')
+                    fadb.usr_up(db, u[0], 's', 'FOLDERS')
                 if len(u[5]):
-                    fadb.usr_up(DB, u[0], 'f', 'FOLDERS')
+                    fadb.usr_up(db, u[0], 'f', 'FOLDERS')
                 if len(u[6]) and 'e' not in u[2] and 'E' not in u[2]:
-                    fadb.usr_up(DB, u[0], 'e', 'FOLDERS')
+                    fadb.usr_up(db, u[0], 'e', 'FOLDERS')
                 u_d = check_folder_dl(u)
                 if len(u_d):
                     errs_fl_dl.append([u[0], u_d])
@@ -366,11 +366,11 @@ def repair(Session, DB):
                 print('-'*47)
             for u in errs_fl_dl:
                 for f in u[1]:
-                    fadl.dl_usr(Session, u[0], f, DB, False, 2, 0, False)
+                    fadl.dl_usr(Session, u[0], f, db, False, 2, 0, False)
             print()
 
     print('Optimizing database ... ', end='', flush=True)
-    DB.execute("VACUUM")
+    db.execute("VACUUM")
     print('Done')
     print('\nAll done')
 

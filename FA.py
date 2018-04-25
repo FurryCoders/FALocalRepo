@@ -6,7 +6,7 @@ import FA_dl as fadl
 import FA_tools as fatl
 import FA_up as faup
 
-def menu(DB):
+def menu(db):
     menu = (
         ('Download & Update', fadl.download_main),
         ('Search', fadb.db_search),
@@ -34,7 +34,7 @@ def menu(DB):
             k = k.replace('\x1b', str(len(menu)))
         print(k+'\n')
 
-        Session = menu[k][1](Session, DB)
+        Session = menu[k][1](Session, db)
 
         print('-'*30+'\n')
 
@@ -42,9 +42,9 @@ fatl.sigint_block()
 
 faup.db_upgrade()
 
-DB = sqlite3.connect('FA.db')
-fadb.mktable(DB, 'submissions')
-fadb.mktable(DB, 'users')
-fadb.mktable(DB, 'infos')
+db = sqlite3.connect('FA.db')
+fadb.mktable(db, 'submissions')
+fadb.mktable(db, 'users')
+fadb.mktable(db, 'infos')
 
-menu(DB)
+menu(db)

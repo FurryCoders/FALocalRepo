@@ -74,10 +74,10 @@ def search_web(Session, fields):
 
     return Session
 
-def search(Session, DB, fields, regex=False):
+def search(Session, db, fields, regex=False):
     match = ('LIKE', '%')
     if regex:
-        DB.create_function("REGEXP", 2, regexp)
+        db.create_function("REGEXP", 2, regexp)
         match = ('REGEXP', '(?:.)*')
 
     fields_o = {k: v for k,v in fields.items()}
@@ -96,7 +96,7 @@ def search(Session, DB, fields, regex=False):
     t1 = time.time()
 
     if fields['user'] and re.match('^[gs]+$', fields['sect']):
-        subs = DB.execute(f'''SELECT * FROM submissions
+        subs = db.execute(f'''SELECT * FROM submissions
             WHERE authorurl {match[0]} ? AND
             title {match[0]} ? AND
             UPPER(tags) {match[0]} ? AND
@@ -105,7 +105,7 @@ def search(Session, DB, fields, regex=False):
             UPPER(gender) {match[0]} ? AND
             UPPER(Rating) {match[0]} ?''', (match[1]+fields['user']+match[1],) + tuple(fields.values())[2:]).fetchall()
     else:
-        subs = DB.execute(f'''SELECT * FROM submissions
+        subs = db.execute(f'''SELECT * FROM submissions
             WHERE title {match[0]} ? AND
             UPPER(tags) {match[0]} ? AND
             UPPER(category) {match[0]} ? AND
@@ -119,7 +119,7 @@ def search(Session, DB, fields, regex=False):
         if not regex:
             fields['user'] = re.sub('[^a-z0-9\-.]', '', fields['user'])
 
-        users = DB.execute(f'SELECT gallery, scraps, favorites, extras FROM users WHERE name {match[0]} ?', (match[1]+fields['user']+match[1],))
+        users = db.execute(f'SELECT gallery, scraps, favorites, extras FROM users WHERE name {match[0]} ?', (match[1]+fields['user']+match[1],))
         users = users.fetchall()
         if not len(users):
             users = [('','','','')]
@@ -184,7 +184,7 @@ def search(Session, DB, fields, regex=False):
             print()
             Session = search_web(Session, fields_o)
 
-def main(Session, DB):
+def main(Session, db):
     fatl.header('Search')
 
     while True:
@@ -223,9 +223,9 @@ def main(Session, DB):
         if 'web' in options.lower():
             Session = search_web(Session, fields)
         elif 'regex' in options.lower():
-            Session = search(Session, DB, fields, regex=True)
+            Session = search(Session, db, fields, regex=True)
         else:
-            Session = search(Session, DB, fields)
+            Session = search(Session, db, fields)
 
         print('\nPress any key to continue ', end='', flush=True)
         readkeys.getkey()

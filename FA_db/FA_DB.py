@@ -25,14 +25,14 @@ import sqlite3
 # 12 (8 v1) LOCATION   the location of the submission inside the files folder
 # 13 (9 v1) SERVER     1 if the submission is available on FA, 0 if it was disabled, deleted, etc...
 
-def usr_ins(DB, user, user_full=''):
+def usr_ins(db, user, user_full=''):
     if user_full.lower().replace('_','') != user:
         user_full = user
-    exists = DB.execute(f'SELECT EXISTS(SELECT name FROM users WHERE name = "{user}" LIMIT 1);')
+    exists = db.execute(f'SELECT EXISTS(SELECT name FROM users WHERE name = "{user}" LIMIT 1);')
     if exists.fetchall()[0][0]:
         return
     try:
-        DB.execute(f'''INSERT INTO USERS
+        db.execute(f'''INSERT INTO USERS
             (NAME,NAMEFULL,FOLDERS,GALLERY,SCRAPS,FAVORITES,EXTRAS)
             VALUES ("{user}", "{user_full}", "", "", "", "", "")''')
     except sqlite3.IntegrityError:
@@ -40,21 +40,21 @@ def usr_ins(DB, user, user_full=''):
     except:
         raise
     finally:
-        DB.commit()
+        db.commit()
 
-def usr_rm(DB, user, isempty=False):
+def usr_rm(db, user, isempty=False):
     try:
         if isempty:
-            DB.execute(f'DELETE FROM users WHERE name = "{user}" AND folders = "" AND gallery = "" AND scraps = "" AND favorites = "" AND extras = ""')
+            db.execute(f'DELETE FROM users WHERE name = "{user}" AND folders = "" AND gallery = "" AND scraps = "" AND favorites = "" AND extras = ""')
         else:
-            DB.execute(f'DELETE FROM users WHERE name = "{user}"')
+            db.execute(f'DELETE FROM users WHERE name = "{user}"')
     except:
         pass
     finally:
-        DB.commit()
+        db.commit()
 
-def usr_up(DB, user, to_add, column):
-    col = DB.execute(f"SELECT {column} FROM users WHERE name = '{user}'")
+def usr_up(db, user, to_add, column):
+    col = db.execute(f"SELECT {column} FROM users WHERE name = '{user}'")
     col = col.fetchall()
     if not len(col):
         raise sqlite3.IntegrityError
@@ -67,11 +67,11 @@ def usr_up(DB, user, to_add, column):
         col.append(to_add)
     col.sort(key=str.lower)
     col = ",".join(col)
-    DB.execute(f"UPDATE users SET {column} = '{col}' WHERE name = '{user}'")
-    DB.commit()
+    db.execute(f"UPDATE users SET {column} = '{col}' WHERE name = '{user}'")
+    db.commit()
 
-def usr_rep(DB, user, find, replace, column):
-    col = DB.execute(f"SELECT {column} FROM users WHERE name = '{user}'")
+def usr_rep(db, user, find, replace, column):
+    col = db.execute(f"SELECT {column} FROM users WHERE name = '{user}'")
     col = col.fetchall()
     if not len(col):
         raise sqlite3.IntegrityError
@@ -86,24 +86,24 @@ def usr_rep(DB, user, find, replace, column):
         col = [e.replace(find, replace) for e in col]
     col.sort(key=str.lower)
     col = ",".join(col)
-    DB.execute(f"UPDATE users SET {column} = '{col}' WHERE name = '{user}'")
-    DB.commit()
+    db.execute(f"UPDATE users SET {column} = '{col}' WHERE name = '{user}'")
+    db.commit()
 
-def usr_src(DB, user, find, column):
-    col = DB.execute(f"SELECT {column} FROM users WHERE name = '{user}'")
+def usr_src(db, user, find, column):
+    col = db.execute(f"SELECT {column} FROM users WHERE name = '{user}'")
     col = col.fetchall()[0]
     col = "".join(col).split(',')
     if find in col: return True
     else: return False
 
-def usr_isempty(DB, user):
-    usr = DB.execute(f"SELECT name FROM users WHERE name = '{user}' AND folders = '' AND gallery = '' AND scraps = '' AND favorites = '' AND extras = ''")
+def usr_isempty(db, user):
+    usr = db.execute(f"SELECT name FROM users WHERE name = '{user}' AND folders = '' AND gallery = '' AND scraps = '' AND favorites = '' AND extras = ''")
     usr = usr.fetchall()
     return bool(len(usr))
 
-def sub_ins(DB, infos):
+def sub_ins(db, infos):
     try:
-        DB.execute(f'''INSERT INTO SUBMISSIONS
+        db.execute(f'''INSERT INTO SUBMISSIONS
             (ID,AUTHOR,AUTHORURL,TITLE,UDATE,TAGS,CATEGORY,SPECIES,GENDER,RATING,FILELINK,FILENAME,LOCATION, SERVER)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)''', infos)
     except sqlite3.IntegrityError:
@@ -111,9 +111,9 @@ def sub_ins(DB, infos):
     except:
         raise
     finally:
-        DB.commit()
+        db.commit()
 
-def sub_up(DB, ID, new_value, column):
+def sub_up(db, ID, new_value, column):
     if type(new_value) != list:
         new_value = [new_value]
     if type(column) != list:
@@ -123,50 +123,50 @@ def sub_up(DB, ID, new_value, column):
 
     cols = []
     for i in range(0, len(column)):
-        col = DB.execute(f"SELECT {column[i]} FROM submissions WHERE id = '{ID}'")
+        col = db.execute(f"SELECT {column[i]} FROM submissions WHERE id = '{ID}'")
         cols.append(col.fetchall())
     if any(len(col) == 0 for col in cols):
         return False
 
     cols = [col[0][0] for col in cols]
     for i in range(0, len(new_value)):
-        DB.execute(f"UPDATE submissions SET {column[i]} = '{new_value[i]}' WHERE id = '{ID}'")
-    DB.commit()
+        db.execute(f"UPDATE submissions SET {column[i]} = '{new_value[i]}' WHERE id = '{ID}'")
+    db.commit()
 
     return True
 
-def sub_read(DB, ID, column):
-    col = DB.execute(f"SELECT {column} FROM submissions WHERE id = '{ID}'")
+def sub_read(db, ID, column):
+    col = db.execute(f"SELECT {column} FROM submissions WHERE id = '{ID}'")
     col = col.fetchall()[0]
     return col[0]
 
-def sub_search(DB, terms):
-    return DB.execute('''SELECT author, udate, title FROM submissions
+def sub_search(db, terms):
+    return db.execute('''SELECT author, udate, title FROM submissions
         WHERE id LIKE ? AND
         authorurl LIKE ? AND
         title LIKE ? AND
         tags REGEXP ?
         ORDER BY authorurl ASC, id ASC''', terms)
 
-def sub_exists(DB, ID):
-    exists = DB.execute(f'SELECT EXISTS(SELECT id FROM submissions WHERE id = "{ID}" LIMIT 1);')
+def sub_exists(db, ID):
+    exists = db.execute(f'SELECT EXISTS(SELECT id FROM submissions WHERE id = "{ID}" LIMIT 1);')
     return exists.fetchall()[0][0]
 
-def info_up(DB, field, value):
-    DB.execute(f'UPDATE infos SET value = "{value}" WHERE field = "{field}"')
-    DB.commit()
+def info_up(db, field, value):
+    db.execute(f'UPDATE infos SET value = "{value}" WHERE field = "{field}"')
+    db.commit()
 
-def table_n(DB, table):
-    table_b = DB.execute(f'SELECT EXISTS(SELECT name FROM sqlite_master WHERE type = "table" AND name = "{table}");')
+def table_n(db, table):
+    table_b = db.execute(f'SELECT EXISTS(SELECT name FROM sqlite_master WHERE type = "table" AND name = "{table}");')
     table_b = table_b.fetchall()[0][0]
 
     if table_b:
-        num = DB.execute(f'SELECT * FROM {table}')
+        num = db.execute(f'SELECT * FROM {table}')
         return len(num.fetchall())
 
-def mktable(DB, table):
+def mktable(db, table):
     if table == 'submissions':
-        DB.execute('''CREATE TABLE IF NOT EXISTS SUBMISSIONS
+        db.execute('''CREATE TABLE IF NOT EXISTS SUBMISSIONS
             (ID INT UNIQUE PRIMARY KEY NOT NULL,
             AUTHOR TEXT NOT NULL,
             AUTHORURL TEXT NOT NULL,
@@ -182,7 +182,7 @@ def mktable(DB, table):
             LOCATION TEXT NOT NULL,
             SERVER INT);''')
     elif table == 'users':
-        DB.execute('''CREATE TABLE IF NOT EXISTS USERS
+        db.execute('''CREATE TABLE IF NOT EXISTS USERS
             (NAME TEXT UNIQUE PRIMARY KEY NOT NULL,
             NAMEFULL TEXT NOT NULL,
             FOLDERS TEXT NOT NULL,
@@ -191,21 +191,21 @@ def mktable(DB, table):
             FAVORITES TEXT,
             EXTRAS TEXT);''')
     elif table == 'infos':
-        infos = DB.execute('SELECT EXISTS(SELECT name FROM sqlite_master WHERE type = "table" AND name = "INFOS")')
+        infos = db.execute('SELECT EXISTS(SELECT name FROM sqlite_master WHERE type = "table" AND name = "INFOS")')
         infos = infos.fetchall()[0][0]
 
         if not infos:
-            DB.execute('''CREATE TABLE INFOS
+            db.execute('''CREATE TABLE INFOS
                 (FIELD CHAR,
                 VALUE CHAR);''')
-            DB.execute('INSERT INTO INFOS (FIELD, VALUE) VALUES ("DBNAME", "")')
-            DB.execute('INSERT INTO INFOS (FIELD, VALUE) VALUES ("VERSION", "2.3")')
-            DB.execute('INSERT INTO INFOS (FIELD, VALUE) VALUES ("USRN", 0)')
-            DB.execute('INSERT INTO INFOS (FIELD, VALUE) VALUES ("SUBN", 0)')
-            DB.execute('INSERT INTO INFOS (FIELD, VALUE) VALUES ("LASTUP", 0)')
-            DB.execute('INSERT INTO INFOS (FIELD, VALUE) VALUES ("LASTUPT", 0)')
-            DB.execute('INSERT INTO INFOS (FIELD, VALUE) VALUES ("LASTDL", 0)')
-            DB.execute('INSERT INTO INFOS (FIELD, VALUE) VALUES ("LASTDLT", 0)')
-            DB.commit()
-            info_up(DB, 'USRN', table_n(DB, 'USERS'))
-            info_up(DB, 'SUBN', table_n(DB, 'SUBMISSIONS'))
+            db.execute('INSERT INTO INFOS (FIELD, VALUE) VALUES ("dbNAME", "")')
+            db.execute('INSERT INTO INFOS (FIELD, VALUE) VALUES ("VERSION", "2.3")')
+            db.execute('INSERT INTO INFOS (FIELD, VALUE) VALUES ("USRN", 0)')
+            db.execute('INSERT INTO INFOS (FIELD, VALUE) VALUES ("SUBN", 0)')
+            db.execute('INSERT INTO INFOS (FIELD, VALUE) VALUES ("LASTUP", 0)')
+            db.execute('INSERT INTO INFOS (FIELD, VALUE) VALUES ("LASTUPT", 0)')
+            db.execute('INSERT INTO INFOS (FIELD, VALUE) VALUES ("LASTDL", 0)')
+            db.execute('INSERT INTO INFOS (FIELD, VALUE) VALUES ("LASTDLT", 0)')
+            db.commit()
+            info_up(db, 'USRN', table_n(db, 'USERS'))
+            info_up(db, 'SUBN', table_n(db, 'SUBMISSIONS'))
