@@ -7,8 +7,8 @@ import PythonRead as readkeys
 import FA_tools as fatl
 from FA_dl import session
 
-# def regexp(pattern, input):
-#     return bool(re.match(pattern, input, flags=re.IGNORECASE))
+def regexp(pattern, input):
+    return bool(re.match(pattern, input, flags=re.IGNORECASE))
 
 def search_web(Session, fields):
     Session = session(Session)
@@ -72,47 +72,52 @@ def search_web(Session, fields):
     print('\r   \r', end='', flush=True)
     print('\n'*bool(n) + f'{n} results found')
 
-def search(Session, DB, fields):
-    # DB.create_function("REGEXP", 2, regexp)
+def search(Session, DB, fields, regex=False):
+    match = ('LIKE', '%')
+    if regex:
+        DB.create_function("REGEXP", 2, regexp)
+        match = ('REGEXP', '(?:.)*')
+
     fields_o = {k: v for k,v in fields.items()}
 
     fields['user'] = fields['user'].strip().lower()
     fields['sect'] = re.sub('[^gsfe]','', fields['sect'].lower())
-    fields['titl'] = '%'+fields['titl']+'%'
+    fields['titl'] = match[1]+fields['titl']+match[1]
     fields['tags'] = re.sub('( )+', ' ', fields['tags'].upper()).split(' ')
     fields['tags'] = sorted(fields['tags'], key=str.lower)
-    fields['tags'] = '%'+'%'.join(fields['tags'])+'%'
-    fields['catg'] = '%'+fields['catg'].upper()+'%'
-    fields['spec'] = '%'+fields['spec'].upper()+'%'
-    fields['gend'] = '%'+fields['gend'].upper()+'%'
-    fields['ratg'] = '%'+fields['ratg'].upper()+'%'
+    fields['tags'] = match[1]+match[1].join(fields['tags'])+match[1]
+    fields['catg'] = match[1]+fields['catg'].upper()+match[1]
+    fields['spec'] = match[1]+fields['spec'].upper()+match[1]
+    fields['gend'] = match[1]+fields['gend'].upper()+match[1]
+    fields['ratg'] = match[1]+fields['ratg'].upper()+match[1]
 
     t1 = time.time()
 
     if fields['user'] and re.match('^[gs]+$', fields['sect']):
-        subs = DB.execute('''SELECT * FROM submissions
-            WHERE authorurl LIKE ? AND
-            title LIKE ? AND
-            UPPER(tags) LIKE ? AND
-            UPPER(category) LIKE ? AND
-            UPPER(species) LIKE ? AND
-            UPPER(gender) LIKE ? AND
-            UPPER(Rating) LIKE ?''', ('%'+fields['user']+'%',) + tuple(fields.values())[2:]).fetchall()
+        subs = DB.execute(f'''SELECT * FROM submissions
+            WHERE authorurl {match[0]} ? AND
+            title {match[0]} ? AND
+            UPPER(tags) {match[0]} ? AND
+            UPPER(category) {match[0]} ? AND
+            UPPER(species) {match[0]} ? AND
+            UPPER(gender) {match[0]} ? AND
+            UPPER(Rating) {match[0]} ?''', (match[1]+fields['user']+match[1],) + tuple(fields.values())[2:]).fetchall()
     else:
-        subs = DB.execute('''SELECT * FROM submissions
-            WHERE title LIKE ? AND
-            UPPER(tags) LIKE ? AND
-            UPPER(category) LIKE ? AND
-            UPPER(species) LIKE ? AND
-            UPPER(gender) LIKE ? AND
-            UPPER(Rating) LIKE ?''', tuple(fields.values())[2:]).fetchall()
+        subs = DB.execute(f'''SELECT * FROM submissions
+            WHERE title {match[0]} ? AND
+            UPPER(tags) {match[0]} ? AND
+            UPPER(category) {match[0]} ? AND
+            UPPER(species) {match[0]} ? AND
+            UPPER(gender) {match[0]} ? AND
+            UPPER(Rating) {match[0]} ?''', tuple(fields.values())[2:]).fetchall()
 
     subs = {s[0]: s for s in subs}
 
     if fields['user']:
-        fields['user'] = re.sub('[^a-z0-9\-.]', '', fields['user'])
+        if not regex:
+            fields['user'] = re.sub('[^a-z0-9\-.]', '', fields['user'])
 
-        users = DB.execute('SELECT gallery, scraps, favorites, extras FROM users WHERE name LIKE ?', ('%'+fields['user']+'%',))
+        users = DB.execute(f'SELECT gallery, scraps, favorites, extras FROM users WHERE name {match[0]} ?', (match[1]+fields['user']+match[1],))
         users = users.fetchall()
         if not len(users):
             users = [('','','','')]
@@ -215,6 +220,8 @@ def main(Session, DB):
 
         if 'web' in options.lower():
             search_web(Session, fields)
+        elif 'regex' in options.lower():
+            search(Session, DB, fields, regex=True)
         else:
             search(Session, DB, fields)
 
