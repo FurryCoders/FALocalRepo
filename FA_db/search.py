@@ -2,14 +2,72 @@ import sqlite3
 import re
 import time
 import os
+import bs4
 import PythonRead as readkeys
 import FA_tools as fatl
+from FA_dl import session
 
 # def regexp(pattern, input):
 #     return bool(re.match(pattern, input, flags=re.IGNORECASE))
 
-def search(DB, fields):
+def search_web(Session, fields):
+    print()
+    Session = session(Session)
+    if not Session:
+        print("Couldn't establish connection, search aborted")
+        return
+    print()
+
+    for k in fields:
+        fields[k] = fields[k].strip()
+
+    search_string = ''
+    if fields['user']:
+        search_string += f"@lower {fields['user']} "
+    if fields['titl']:
+        search_string += f"@title {fields['titl']} "
+    if fields['tags']:
+        search_string += f"@keywords {fields['tags']} "
+    search_string = search_string.strip()
+
+    search_url = f'https://www.furaffinity.net/search/?q={search_string}&order-by=date&order-direction=asc'
+    page_i = 1
+    re_id = re.compile('[^0-9]')
+    str_cl = re.compile('[^\x00-\x7F]')
+
+    page = Session.get(f'{search_url}&page={page_i}')
+    page = bs4.BeautifulSoup(page.text, 'lxml')
+    page = page.find('section', id="gallery-search-results")
+    if not page:
+        return
+
+    while page.find('figure'):
+        results = page.findAll('figure')
+        print(f'{page_i:03d}', end='', flush=True)
+
+        for r in results:
+            ratg = r.get('class')[0].lstrip('r-')
+            if fields['ratg'] and fields['ratg'].lower() != ratg:
+                continue
+            s_id = re_id.sub('', r.get('id')).zfill(10)
+            user = r.findAll('a')[2].string
+            titl = r.findAll('a')[1].string
+
+            print(f'\r{user[0:18]: ^18} | {s_id}', end='', flush=True)
+            if os.get_terminal_size()[0] > 33:
+                print(f' | {str_cl.sub("",titl[0:os.get_terminal_size()[0]-33])}', end='')
+            print()
+
+        page_i += 1
+        page = Session.get(f'{search_url}&page={page_i}')
+        page = bs4.BeautifulSoup(page.text, 'lxml')
+        page = page.find('section', id="gallery-search-results")
+        if not page:
+            return
+
+def search(Session, DB, fields):
     # DB.create_function("REGEXP", 2, regexp)
+    fields_o = {k: v for k,v in fields.items()}
 
     fields['user'] = fields['user'].strip()
     fields['sect'] = re.sub('[^gsfe]','', fields['sect'].lower())
@@ -23,6 +81,7 @@ def search(DB, fields):
     fields['ratg'] = '%'+fields['ratg'].upper()+'%'
 
     t1 = time.time()
+
     if fields['user'] and re.match('^[gs]+$', fields['sect']):
         subs = DB.execute('''SELECT * FROM submissions
             WHERE authorurl LIKE ? AND
@@ -40,6 +99,7 @@ def search(DB, fields):
             UPPER(species) LIKE ? AND
             UPPER(gender) LIKE ? AND
             UPPER(Rating) LIKE ?''', tuple(fields.values())[2:]).fetchall()
+
     subs = {s[0]: s for s in subs}
 
     if fields['user']:
@@ -92,10 +152,15 @@ def search(DB, fields):
 
     print()
     print(f'{len(subs)} results found in {t2-t1:.3f} seconds')
-    print()
-    print('Press any key to continue ', end='', flush=True)
-    readkeys.getkey()
-    print('\b \b'*26, end='')
+    if not len(subs):
+        print('No results found in the local database\nDo you want to search online (y/n)? ', end='', flush=True)
+        c = ''
+        while c not in ('y','n'):
+            c = readkeys.getkey().lower()
+        print(c)
+
+        if c == 'y':
+            search_web(Session, fields_o)
 
 def main(Session, DB):
     fatl.header('Search')
@@ -116,6 +181,7 @@ def main(Session, DB):
             fields['spec'] = readkeys.input('Species: "', '"')
             fields['gend'] = readkeys.input('Gender: "', '"')
             fields['ratg'] = readkeys.input('Rating: "', '"')
+            options = readkeys.input('Options: ')
         except:
             return
         finally:
@@ -131,9 +197,17 @@ def main(Session, DB):
 
     try:
         fatl.sigint_ublock()
-        search(DB, fields)
+
+        if 'web' in options.lower():
+            search_web(Session, fields)
+        else:
+            search(Session, DB, fields)
+
+        print('\nPress any key to continue ', end='', flush=True)
+        readkeys.getkey()
+        print('\b \b'*26, end='')
     except:
-        pass
+        raise
     finally:
         fatl.sigint_clear()
 
