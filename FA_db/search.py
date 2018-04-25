@@ -93,18 +93,18 @@ def main(Session, DB):
 
         try:
             fatl.sigint_ublock()
-            fields['user'] = readkeys.input('User: ').strip()
+            fields['user'] = readkeys.input('User: "', '"').strip()
             if fields['user']:
-                fields['sect'] = readkeys.input('Section: ').lower()
+                fields['sect'] = readkeys.input('Section: "', '"').lower()
                 fields['sect'] = re.sub('[^gsfe]','', fields['sect'])
             else:
                 fields['sect'] = ''
-            fields['titl'] = readkeys.input('Title: ')
-            fields['tags'] = readkeys.input('Tags: ')
-            fields['catg'] = readkeys.input('Category: ')
-            fields['spec'] = readkeys.input('Species: ')
-            fields['gend'] = readkeys.input('Gender: ')
-            fields['ratg'] = readkeys.input('Rating: ')
+            fields['titl'] = readkeys.input('Title: "', '"')
+            fields['tags'] = readkeys.input('Tags: "', '"')
+            fields['catg'] = readkeys.input('Category: "', '"')
+            fields['spec'] = readkeys.input('Species: "', '"')
+            fields['gend'] = readkeys.input('Gender: "', '"')
+            fields['ratg'] = readkeys.input('Rating: "', '"')
         except:
             return
         finally:
