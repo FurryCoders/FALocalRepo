@@ -3,7 +3,7 @@ import os, sys, time
 import re
 import sqlite3
 import PythonRead as readkeys
-from FA_tools import sigint_check, tiers
+from FA_tools import sigint_check, tiers, header
 import FA_db as fadb
 from .FA_DLSUB import dl_sub, str_clean
 
@@ -409,6 +409,8 @@ def download(Session, DB, users, sections, sync, speed, force):
     fadb.info_up(DB, 'LASTDLT', t)
 
 def download_main(Session, DB):
+    header('Download & Update')
+
     while True:
         try:
             users = readkeys.input('Insert username: ').lower()

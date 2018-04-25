@@ -1,4 +1,5 @@
 import sqlite3
+import FA_tools as fatl
 from .v1v2 import db_upgrade_v1v2
 from .v2v2_3 import db_upgrade_v2v2_3
 
@@ -28,10 +29,7 @@ def db_upgrade_main():
 
 
         if db_upgrade:
-            print('-'*20)
-            print('Database version upgrade')
-            print('-'*20)
-            print()
+            fatl.header('Database version upgrade')
             db_upgrade()
             print()
         else:

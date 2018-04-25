@@ -86,6 +86,8 @@ def search(DB, fields):
     print('\b \b'*26, end='')
 
 def main(Session, DB):
+    fatl.header('Search')
+
     while True:
         fields = {}
 

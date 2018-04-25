@@ -34,7 +34,6 @@ def menu(DB):
             k = k.replace('\x1b', str(len(menu)))
         print(k+'\n')
 
-        fatl.header(menu[k][0])
         Session = menu[k][1](Session, DB)
 
         print('-'*30+'\n')

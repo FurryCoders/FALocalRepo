@@ -155,6 +155,8 @@ def find_errors_usr(DB):
     return errs_empty, errs_repet, errs_names, errs_namef, errs_foldr, errs_fl_dl
 
 def repair(Session, DB):
+    fatl.header('Repair database')
+
     print('Analyzing submissions database for errors ... ', end='', flush=True)
     errs_id, errs_vl, errs_fl = find_errors_sub(DB)
     print('Done')
