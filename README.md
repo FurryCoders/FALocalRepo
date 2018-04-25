@@ -34,27 +34,27 @@ First field is reserved for users. To download or sync a specific user/s insert 
 
 2. `Sections: `<br>
 Second field is reserved for sections. These can be:
-    * g - Gallery
-    * s - Scraps
-    * f - Favorites
-    * e - Extras partial<br>
+    * `g` - Gallery
+    * `s` - Scraps
+    * `f` - Favorites
+    * `e` - Extras partial<br>
     Searches submissions that contain ':iconusername:' OR ':usernameicon:' in the description AND NOT from username gallery/scraps.
-    * E - Extras full<br>
+    * `E` - Extras full<br>
     Like partial but also searches for 'username' in the descriptions.
 
     Sections can be omitted if 'update' option is used.
 
 3. `Options: `<br>
 Last field is reserved for options. These can be:
-    * sync<br>
+    * `sync`<br>
     Stops download when a submission already present in the user database entry is encountered.
-    * update<br>
+    * `update`<br>
     Reads usernames from the database and downloads new submissions in the respective sections. This option can be used without specifying users or sections, if either is specified then the update will be limited to those user/s and/or section/s.
-    * forceN<br>
+    * `forceN`<br>
     Prevents update and sync from stopping the download at the first already present submission. Download stops at the first downloaded submission from page N+1. Example: 'force4' will download the first 4 pages with no interruption and will allow the download to stop from page 5.
-    * all<br>
+    * `all`<br>
     Like 'force' but it will prevent interrupting the download for the whole section (this means **ALL** pages from each user will be checked, only use for a limited amount of users).
-    * quit<br>
+    * `quit`<br>
     Quits the program when the current operation is completed.
 
     Note: options can be inserted with or without spaces between them.
@@ -70,10 +70,10 @@ Last field is reserved for options. These can be:
     The program also throttles download speed down to 100KB/sec to avoid taxing the forum's servers with a huge number of requests and downloads close to each other.
 
 ### Search
-This menu allows to search in the database using one or more among author, title, tags, category, species, gender and rating.<br>
+This menu allows to search in the database using one or more among user (with or w/o sections), title, tags, category, species, gender and rating.<br>
 
-1. `User`<br>
-Search authors.
+1. `User` &#10013;<br>
+Search users. Multiple users can be matched.
 
     * `Section`<br>
     If a user is selected the search can be restricted to a specific section/s using g, s, f, e.
@@ -81,25 +81,34 @@ Search authors.
 2. `Title`<br>
 Search titles.
 
-3. `Tags`<br>
-Tags are sorted automatically before search.&#10013;
+3. `Tags` &#10013;<br>
+Tags are sorted automatically before search.
 
-4. `Category`<br>
-Matches the category of submissions, like 'Artwork', 'Story', etc...\*&#10013;
+4. `Category` \*&#10013;<br>
+Matches the category of submissions, like 'Artwork', 'Story', etc...
 
-5. `Species`<br>
-Search species, like 'Vulpine', 'Feline', etc...\*&#10013;
+5. `Species` \*&#10013;<br>
+Search species, like 'Vulpine', 'Feline', etc...
 
-6. `Gender`<br>
-Gender can be 'Male', 'Female', 'Any'.\*&#10013;
+6. `Gender` \*&#10013;<br>
+Gender can be 'Male', 'Female', 'Any'.
 
-7. `Rating`<br>
-The rating can be 'general', 'mature' or 'adult'.\*&#10013;
+7. `Rating` \*&#10013;<br>
+The rating can be 'general', 'mature' or 'adult'.
 
-Results are ordered by username and date.
+8. `Options`<br>
+There are two possible options:
+    * `regex`<br>
+    Use regular expressions to search the database. Full regex syntax is supported in all fields.
 
-\**As shown on the submission page on the main site.*<br>
-&#10013;*Fields matched without case sensitivity*
+    * `web`<br>
+    Search on the website directly. Only user, title, tags and rating will be used.
+
+Results are ordered by username and date.<br>
+If no results can be found in the local database the program will prompt to run the search on the website instead.
+
+\* *As shown on the submission page on the main site.*<br>
+&#10013; *Fields matched without case sensitivity*
 
 ### Repair database
 Selecting this entry will start the automatic database repair functions. These are divided into three steps:
