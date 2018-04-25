@@ -70,10 +70,10 @@ Last field is reserved for options. These can be:
     The program also throttles download speed down to 100KB/sec to avoid taxing the forum's servers with a huge number of requests and downloads close to each other.
 
 ### Search
-This menu allows to search in the database using one or more among author, title, tags, category, species, gender and rating.<br>
+This menu allows to search in the database using one or more among user (with or w/o sections), title, tags, category, species, gender and rating.<br>
 
 1. `User`<br>
-Search authors.
+Search users. Multiple users can be matched.
 
     * `Section`<br>
     If a user is selected the search can be restricted to a specific section/s using g, s, f, e.
@@ -96,9 +96,18 @@ Gender can be 'Male', 'Female', 'Any'.\*&#10013;
 7. `Rating`<br>
 The rating can be 'general', 'mature' or 'adult'.\*&#10013;
 
-Results are ordered by username and date.
+8. `Options`<br>
+There are two possible options:
+    * `regex`<br>
+    Use regular expressions to search the database. Full regex syntax is supported in all fields.
 
-\**As shown on the submission page on the main site.*<br>
+    * `web`<br>
+    Search on the website directly. Only user, title, tags and rating will be used.
+
+Results are ordered by username and date.<br>
+If no results can be found in the local database the program will prompt to run the search on the website instead.
+
+\*As shown on the submission page on the main site.*<br>
 &#10013;*Fields matched without case sensitivity*
 
 ### Repair database
