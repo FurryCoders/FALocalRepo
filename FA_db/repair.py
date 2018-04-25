@@ -180,8 +180,7 @@ def repair(Session, DB):
     fatl.sigint_clear()
 
     if any(len(errs) for errs in (errs_id, errs_vl, errs_fl)):
-        if not Session:
-            Session = fadl.session()
+        Session = fadl.session(Session)
         print()
 
         if not Session:
@@ -315,8 +314,7 @@ def repair(Session, DB):
 
         if len(errs_namef):
             print('Incorrect full usernames')
-            if not Session:
-                Session = fadl.session()
+            Session = fadl.session(Session)
             if not Session:
                 print('Session error, will attempt manual repair')
             print('-'*47)
@@ -360,8 +358,7 @@ def repair(Session, DB):
 
         if len(errs_fl_dl):
             print('Missing submissions')
-            if not Session:
-                Session = fadl.session()
+            Session = fadl.session(Session)
             if not Session:
                 print('Session error')
                 errs_fl_dl = []
