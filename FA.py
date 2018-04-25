@@ -6,12 +6,6 @@ import FA_dl as fadl
 import FA_tools as fatl
 import FA_up as faup
 
-def header(s, brk='-', end='\n', l=20):
-    print(brk*l)
-    print(s)
-    print(brk*l)
-    print(end=end)
-
 def menu(DB):
     menu = (
         ('Download & Update', fadl.download_main),
@@ -28,7 +22,7 @@ def menu(DB):
     while True:
         fatl.sigint_clear()
 
-        header('Menu')
+        fatl.header('Menu')
 
         print('\n'.join(menu_l))
         print('\nChoose option: ', end='', flush=True)
@@ -40,7 +34,7 @@ def menu(DB):
             k = k.replace('\x1b', str(len(menu)))
         print(k+'\n')
 
-        header(menu[k][0])
+        fatl.header(menu[k][0])
         Session = menu[k][1](Session, DB)
 
         print('-'*30+'\n')

@@ -1,4 +1,4 @@
-from .tools import tiers, cookies_error
+from .tools import tiers, cookies_error, header
 
 from sys import platform
 if platform not in ('win32', 'cygwin'):

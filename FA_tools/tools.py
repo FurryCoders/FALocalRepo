@@ -6,6 +6,12 @@ def tiers(ID, t1=10000000, t2=1000000, t3=1000):
 
     return f'{tier1}/{tier2}/{tier3:03d}'
 
+def header(s, brk='-', end='\n', l=20):
+    print(brk*l)
+    print(s)
+    print(brk*l)
+    print(end=end)
+
 def cookies_error():
     print('Analyzing cookies file for errors:')
     cookies_name = ['__cfduid', 'b', '_adb', '__qca', '__asc', '__auc', '__gads', 'a']
