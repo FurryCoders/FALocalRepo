@@ -72,6 +72,8 @@ def search_web(Session, fields):
     print('\r   \r', end='', flush=True)
     print('\n'*bool(n) + f'{n} results found')
 
+    return Session
+
 def search(Session, DB, fields, regex=False):
     match = ('LIKE', '%')
     if regex:
@@ -180,7 +182,7 @@ def search(Session, DB, fields, regex=False):
 
         if c == 'y':
             print()
-            search_web(Session, fields_o)
+            Session = search_web(Session, fields_o)
 
 def main(Session, DB):
     fatl.header('Search')
@@ -219,11 +221,11 @@ def main(Session, DB):
         fatl.sigint_ublock()
 
         if 'web' in options.lower():
-            search_web(Session, fields)
+            Session = search_web(Session, fields)
         elif 'regex' in options.lower():
-            search(Session, DB, fields, regex=True)
+            Session = search(Session, DB, fields, regex=True)
         else:
-            search(Session, DB, fields)
+            Session = search(Session, DB, fields)
 
         print('\nPress any key to continue ', end='', flush=True)
         readkeys.getkey()
