@@ -11,6 +11,8 @@ import FA_tools as fatl
 def search(DB, fields):
     # DB.create_function("REGEXP", 2, regexp)
 
+    fields['user'] = fields['user'].strip()
+    fields['sect'] = re.sub('[^gsfe]','', fields['sect'].lower())
     fields['titl'] = '%'+fields['titl']+'%'
     fields['tags'] = re.sub('( )+', ' ', fields['tags'].upper()).split(' ')
     fields['tags'] = sorted(fields['tags'], key=str.lower)
@@ -93,10 +95,9 @@ def main(Session, DB):
 
         try:
             fatl.sigint_ublock()
-            fields['user'] = readkeys.input('User: "', '"').strip()
+            fields['user'] = readkeys.input('User: "', '"')
             if fields['user']:
-                fields['sect'] = readkeys.input('Section: "', '"').lower()
-                fields['sect'] = re.sub('[^gsfe]','', fields['sect'])
+                fields['sect'] = readkeys.input('Section: "', '"')
             else:
                 fields['sect'] = ''
             fields['titl'] = readkeys.input('Title: "', '"')
