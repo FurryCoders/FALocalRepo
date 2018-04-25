@@ -22,7 +22,7 @@ def search_web(Session, fields):
 
     search_string = ''
     if fields['user']:
-        search_string += f"@lower {fields['user']} "
+        search_string += f"@lower {fields['user'].lower()} "
     if fields['titl']:
         search_string += f"@title {fields['titl']} "
     if fields['tags']:
@@ -76,7 +76,7 @@ def search(Session, DB, fields):
     # DB.create_function("REGEXP", 2, regexp)
     fields_o = {k: v for k,v in fields.items()}
 
-    fields['user'] = fields['user'].strip()
+    fields['user'] = fields['user'].strip().lower()
     fields['sect'] = re.sub('[^gsfe]','', fields['sect'].lower())
     fields['titl'] = '%'+fields['titl']+'%'
     fields['tags'] = re.sub('( )+', ' ', fields['tags'].upper()).split(' ')
@@ -110,7 +110,7 @@ def search(Session, DB, fields):
     subs = {s[0]: s for s in subs}
 
     if fields['user']:
-        fields['user'] = re.sub('[^a-z0-9\-. ]', '', fields['user'].lower())
+        fields['user'] = re.sub('[^a-z0-9\-.]', '', fields['user'])
 
         subs_u = DB.execute(f'SELECT gallery, scraps, favorites, extras FROM users WHERE name = "{fields["user"]}"')
         subs_u = subs_u.fetchall()
