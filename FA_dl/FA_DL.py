@@ -320,7 +320,6 @@ def update(Session, db, users=[], sections=[], speed=2, force=0):
             if dl_ret in (0,2,4):
                 flag_download_u = True
             if dl_ret == 4:
-                print(f'{section_full[s]} DISABLED')
                 fadb.usr_rep(db, u[0], s, s+'!', 'FOLDERS')
             if dl_ret == 5 or sigint_check():
                 dl_ret = 5
