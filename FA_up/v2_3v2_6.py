@@ -3,6 +3,7 @@ import os
 import sys
 from math import log10
 import PythonRead as readkeys
+import FA_db as fadb
 from FA_tools import sigint_check
 
 def temp_new():
@@ -175,4 +176,15 @@ def db_upgrade_v2_3v2_6():
 
         print('\b \b'+'\b \b'*(Nl*2), end='', flush=True)
 
+    print('Indexing tables ... ', end='', flush=True)
+    fadb.mkindex(db_new)
+    print('Done')
+
+    print('Updating VERSION to 2.6 ... ', end='', flush=True)
     db_new.execute(f"UPDATE infos SET value = '2.6' WHERE field = 'VERSION'")
+    print('Done')
+
+    print('Backing up old database and renaming new one ... ', end='', flush=True)
+    os.rename('FA.db', 'FA.v2_3.db')
+    os.rename('FA.v2_3v2_6.db', 'FA.db')
+    print('Done')
