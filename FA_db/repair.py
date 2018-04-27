@@ -85,7 +85,7 @@ def check_folder_dl(usr):
     return ret
 
 def find_errors_usr(db):
-    usrs = db.execute('SELECT * FROM users ORDER BY name ASC')
+    usrs = db.execute('SELECT * FROM users ORDER BY user ASC')
     usrs = [[ui for ui in u] for u in usrs.fetchall()]
 
     errs_empty = []
@@ -302,7 +302,7 @@ def repair(Session, db):
             print('Capitalized usernames')
             for u in errs_names:
                 print(f' {u[0]}')
-                fadb.usr_rep(db, u[0], u[0], u[0].lower().replace('_',''), 'NAME')
+                fadb.usr_rep(db, u[0], u[0], u[0].lower().replace('_',''), 'USER')
                 u_d = check_folder_dl(u)
                 if u[1].lower().replace('_','') != u[0]:
                     errs_namef.append(u)
@@ -324,7 +324,7 @@ def repair(Session, db):
                 if len(u_db):
                     u_db = u_db[0][0]
                     print(f'- db: {u_db}')
-                    fadb.usr_rep(db, u[0], u[1], u_db, 'NAMEFULL')
+                    fadb.usr_rep(db, u[0], u[1], u_db, 'USERFULL')
                 elif Session:
                     u_fa = fadl.check_page(Session, 'user/'+u[0])
                     if u_fa:
@@ -332,7 +332,7 @@ def repair(Session, db):
                     else:
                         u_fa = u[0]
                     print(f'- FA: {u_fa}')
-                    fadb.usr_rep(db, u[0], u[1], u_fa, 'NAMEFULL')
+                    fadb.usr_rep(db, u[0], u[1], u_fa, 'USERFULL')
                 u_d = check_folder_dl(u)
                 if not check_folder(u):
                     errs_foldr.append(u)
