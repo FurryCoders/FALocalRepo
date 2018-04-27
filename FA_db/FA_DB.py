@@ -204,7 +204,7 @@ def mkindex(db):
         except:
             raise
         finally:
-            db.execute(f'CREATE INDEX {col} ON uses ({col} ASC)')
+            db.execute(f'CREATE INDEX {col} ON users ({col} ASC)')
 
     for col in col_subs:
         try:
