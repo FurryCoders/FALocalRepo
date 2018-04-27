@@ -115,6 +115,7 @@ def temp_import():
     subs_new1 = [[s[0], 1, s[1]] for s in subs_new1]
     subs_new2 = [[s[0], 0, s[1]] for s in subs_new2]
     subs_new = subs_new1 + subs_new2
+    print('Done')
 
     db_old.close()
     db_new.close()
