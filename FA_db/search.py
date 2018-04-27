@@ -96,7 +96,7 @@ def search(Session, db, fields, regex=False):
     t1 = time.time()
 
     if fields['user'] and re.match('^[gs]+$', fields['sect']):
-        subs = db.execute(f'''SELECT * FROM submissions
+        subs = db.execute(f'''SELECT author, udate, id, title FROM submissions
             WHERE authorurl {match[0]} ? AND
             title {match[0]} ? AND
             UPPER(tags) {match[0]} ? AND
@@ -105,7 +105,7 @@ def search(Session, db, fields, regex=False):
             UPPER(gender) {match[0]} ? AND
             UPPER(Rating) {match[0]} ?''', (match[1]+fields['user']+match[1],) + tuple(fields.values())[2:]).fetchall()
     else:
-        subs = db.execute(f'''SELECT * FROM submissions
+        subs = db.execute(f'''SELECT author, udate, id, title FROM submissions
             WHERE title {match[0]} ? AND
             UPPER(tags) {match[0]} ? AND
             UPPER(category) {match[0]} ? AND
@@ -113,7 +113,7 @@ def search(Session, db, fields, regex=False):
             UPPER(gender) {match[0]} ? AND
             UPPER(Rating) {match[0]} ?''', tuple(fields.values())[2:]).fetchall()
 
-    subs = {s[0]: s for s in subs}
+    subs = {s[2]: s for s in subs}
 
     if fields['user']:
         if not regex:
@@ -163,10 +163,10 @@ def search(Session, db, fields, regex=False):
     str_cl = re.compile('[^\x00-\x7F]')
     for s in subs:
         if fields['user']:
-            print(f'({s[-1]}) {s[1][0:11]: ^{11}} |', end='', flush=True)
+            print(f'({s[-1]}) {s[0][0:11]: ^{11}} |', end='', flush=True)
         else:
-            print(f'{s[1][0:15]: <15} |', end='', flush=True)
-        print(f' {s[4]} {s[0]:0>10}', end='', flush=True)
+            print(f'{s[0][0:15]: <15} |', end='', flush=True)
+        print(f' {s[1]} {s[2]:0>10}', end='', flush=True)
         if os.get_terminal_size()[0] > 42:
             print(f' | {str_cl.sub("",s[3][0:os.get_terminal_size()[0]-45])}')
         else:
