@@ -289,7 +289,7 @@ def update(Session, db, users=[], sections=[], speed=2, force=0):
     print('USR PAGE SECT. |     ID     | TITLE -> RESULT')
     print('-'*47)
 
-    users_db = db.execute("SELECT name, folders FROM users ORDER BY name ASC")
+    users_db = db.execute("SELECT user, folders FROM users ORDER BY user ASC")
     t = int(time.time())
     fadb.info_up(db, 'LASTUP', t)
     fadb.info_up(db, 'LASTUPT', 0)
