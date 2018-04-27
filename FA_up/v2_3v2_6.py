@@ -7,12 +7,12 @@ from FA_tools import sigint_check
 
 def temp_new():
     print('Creating temporary database ... ', end='', flush=True)
-    if os.path.isfile('FA.v2_3.db'): os.remove('FA.v2_3.db')
-    db_new = sqlite3.connect('FA.v2_3.db')
+    if os.path.isfile('FA.v2_3v2_6.db'): os.remove('FA.v2_3v2_6.db')
+    db_new = sqlite3.connect('FA.v2_3v2_6.db')
     print('Done')
 
     db_old = sqlite3.connect('FA.db')
-    db_old.execute("ATTACH DATABASE 'FA.v2_3.db' AS db_new")
+    db_old.execute("ATTACH DATABASE 'FA.v2_3v2_6.db' AS db_new")
 
     print('Copying INFOS data ... ', end='', flush=True)
     db_old.execute("CREATE TABLE IF NOT EXISTS db_new.INFOS AS SELECT * FROM main.INFOS")
@@ -140,13 +140,13 @@ def db_upgrade_v2_3v2_6():
 
     print()
 
-    if os.path.isfile('FA.v2v2_3.db'):
+    if os.path.isfile('FA.v2_3v2_6.db'):
         subs_new = temp_import()
         if not subs_new:
             subs_new = temp_new()
     else:
         subs_new = temp_new()
-    db_new = sqlite3.connect('FA.v2v2_3.db')
+    db_new = sqlite3.connect('FA.v2_3v2_6.db')
 
     print('Saving DESCRIPTIONS ... ', end='', flush=True)
     N = len(subs_new)
@@ -170,4 +170,4 @@ def db_upgrade_v2_3v2_6():
                 desc = '\n'.join(f.readlines())
 
         db_new.execute(f"UPDATE submissions SET description = ? WHERE id = {s[0]}", (desc,))
-    db_new.commit()
+        db_new.commit()
