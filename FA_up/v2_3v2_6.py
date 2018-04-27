@@ -45,7 +45,7 @@ def temp_new():
     print('Done')
 
     print('Creating new SUBMISSIONS table ... ', end='', flush=True)
-    db.execute('''CREATE TABLE IF NOT EXISTS SUBMISSIONS
+    db_new.execute('''CREATE TABLE IF NOT EXISTS SUBMISSIONS
         (ID INT UNIQUE PRIMARY KEY NOT NULL,
         AUTHOR TEXT NOT NULL,
         AUTHORURL TEXT NOT NULL,
