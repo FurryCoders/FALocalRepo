@@ -157,7 +157,7 @@ def db_upgrade_v2_3v2_6():
             print(' Interrupt')
             print('Update interrupted, it may be resumed later')
             print('Closing program')
-            break
+            sys.exit(0)
 
         Ni += 1
         print(f'{Ni:0>{Nl}}/{N}', end='', flush=True)
