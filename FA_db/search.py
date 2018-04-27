@@ -27,6 +27,8 @@ def search_web(Session, fields):
         search_string += f"@title {fields['titl']} "
     if fields['tags']:
         search_string += f"@keywords {fields['tags']} "
+    if fields['desc']:
+        search_string += f"@message {fields['desc']} "
     search_string = search_string.strip()
 
     search_url = f'https://www.furaffinity.net/search/?q={search_string}&order-by=date&order-direction=asc'
@@ -85,6 +87,7 @@ def search(Session, db, fields, regex=False):
     fields['user'] = fields['user'].strip().lower()
     fields['sect'] = re.sub('[^gsfe]','', fields['sect'].lower())
     fields['titl'] = match[1]+fields['titl']+match[1]
+    fields['desc'] = match[1]+fields['desc']+match[1]
     fields['tags'] = re.sub('( )+', ' ', fields['tags'].upper()).split(' ')
     fields['tags'] = sorted(fields['tags'], key=str.lower)
     fields['tags'] = match[1]+match[1].join(fields['tags'])+match[1]
@@ -99,6 +102,7 @@ def search(Session, db, fields, regex=False):
         subs = db.execute(f'''SELECT author, udate, id, title FROM submissions
             WHERE authorurl {match[0]} ? AND
             title {match[0]} ? AND
+            description {match[0]} ? AND
             UPPER(tags) {match[0]} ? AND
             UPPER(category) {match[0]} ? AND
             UPPER(species) {match[0]} ? AND
@@ -107,6 +111,7 @@ def search(Session, db, fields, regex=False):
     else:
         subs = db.execute(f'''SELECT author, udate, id, title FROM submissions
             WHERE title {match[0]} ? AND
+            description {match[0]} ? AND
             UPPER(tags) {match[0]} ? AND
             UPPER(category) {match[0]} ? AND
             UPPER(species) {match[0]} ? AND
@@ -198,6 +203,7 @@ def main(Session, db):
             else:
                 fields['sect'] = ''
             fields['titl'] = readkeys.input('Title: "', '"')
+            fields['desc'] = readkeys.input('Description: "', '"')
             fields['tags'] = readkeys.input('Tags: "', '"')
             fields['catg'] = readkeys.input('Category: "', '"')
             fields['spec'] = readkeys.input('Species: "', '"')

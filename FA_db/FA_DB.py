@@ -104,8 +104,8 @@ def usr_isempty(db, user):
 def sub_ins(db, infos):
     try:
         db.execute(f'''INSERT INTO SUBMISSIONS
-            (ID,AUTHOR,AUTHORURL,TITLE,UDATE,TAGS,CATEGORY,SPECIES,GENDER,RATING,FILELINK,FILENAME,LOCATION, SERVER)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)''', infos)
+            (ID,AUTHOR,AUTHORURL,TITLE,UDATE,DESCRIPTION,TAGS,CATEGORY,SPECIES,GENDER,RATING,FILELINK,FILENAME,LOCATION, SERVER)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)''', infos)
     except sqlite3.IntegrityError:
         pass
     except:
@@ -172,6 +172,7 @@ def mktable(db, table):
             AUTHORURL TEXT NOT NULL,
             TITLE TEXT,
             UDATE CHAR(10) NOT NULL,
+            DESCRIPTION TEXT,
             TAGS TEXT,
             CATEGORY TEXT,
             SPECIES TEXT,

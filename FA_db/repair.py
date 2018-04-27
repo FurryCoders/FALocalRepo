@@ -8,26 +8,24 @@ import FA_tools as fatl
 def check_values(sub):
     if None in sub:
         return False
-    elif '' in (sub[1], sub[2], sub[4], sub[12]):
+    elif '' in (sub[1], sub[2], sub[4], sub[5], sub[7], sub[8], sub[9], sub[10], sub[13]):
         return False
-    elif '' in (sub[6], sub[7], sub[8], sub[9]):
+    elif sub[12] != '0' and sub[11] == '':
         return False
-    elif sub[11] != '0' and sub[10] == '':
-        return False
-    elif sub[12] != fatl.tiers(sub[0])+f'/{sub[0]:0>10}':
+    elif sub[13] != fatl.tiers(sub[0])+f'/{sub[0]:0>10}':
         return False
 
     return True
 
 def check_files(sub):
-    loc = 'FA.files/'+sub[12]
+    loc = 'FA.files/'+sub[13]
     if not os.path.isdir(loc):
         return False
     elif not os.path.isfile(loc+'/info.txt'):
         return False
     elif not os.path.isfile(loc+'/description.html'):
         return False
-    elif sub[11] != '0' and not os.path.isfile(loc+f'/{sub[11]}'):
+    elif sub[12] != '0' and not os.path.isfile(loc+f'/{sub[12]}'):
         return False
 
     return True
@@ -203,15 +201,17 @@ def repair(Session, db):
                 print(f'\n{i:0>{l}}/{L} - {ID:0>10}', end='', flush=True)
                 if sub[3] == None: sub[3] = ''
                 if sub[5] == None: sub[5] = ''
+                if sub[6] == None: sub[6] = ''
                 if check_values(sub):
                     db.execute(f'UPDATE submissions SET title = "{sub[3]}" WHERE id = {ID}')
-                    db.execute(f'UPDATE submissions SET tags = "{sub[5]}" WHERE id = {ID}')
+                    db.execute(f'UPDATE submissions SET description = "{sub[5]}" WHERE id = {ID}')
+                    db.execute(f'UPDATE submissions SET tags = "{sub[6]}" WHERE id = {ID}')
                     db.commit()
-                    if not check_files(sub) and sub[13]:
+                    if not check_files(sub) and sub[14]:
                         errs_fl.append(sub)
                         errs_fl_mv += 1
                     continue
-                if not sub[13]:
+                if not sub[14]:
                     print(' - Page Error', end='', flush=True)
                     continue
                 if not fadl.check_page(Session, 'view/'+str(ID)):
@@ -219,8 +219,8 @@ def repair(Session, db):
                     db.execute(f'UPDATE submissions SET server = 0 WHERE id = {ID}')
                     db.commit()
                     continue
-                if sub[12] == fatl.tiers(ID)+f'{ID:0>10}':
-                    for f in glob.glob(f'FA.files/{sub[12]}/*'):
+                if sub[13] == fatl.tiers(ID)+f'{ID:0>10}':
+                    for f in glob.glob(f'FA.files/{sub[13]}/*'):
                         os.remove(f)
                 db.execute(f'DELETE FROM submissions WHERE id = {ID}')
                 db.commit()
@@ -236,8 +236,8 @@ def repair(Session, db):
                 if fatl.sigint_check(): return Session
                 ID = sub[0]
                 i += 1
-                print(f'\n{i:0>{l}}/{L} - {ID:0>10} {sub[12]}', end='', flush=True)
-                if not sub[13]:
+                print(f'\n{i:0>{l}}/{L} - {ID:0>10} {sub[13]}', end='', flush=True)
+                if not sub[14]:
                     print(' - Page Error', end='', flush=True)
                     continue
                 if not fadl.check_page(Session, 'view/'+str(ID)):
@@ -245,11 +245,11 @@ def repair(Session, db):
                     db.execute(f'UPDATE submissions SET server = 0 WHERE id = {ID}')
                     db.commit()
                     continue
-                for f in glob.glob(f'FA.files/{sub[12]}/*'):
+                for f in glob.glob(f'FA.files/{sub[13]}/*'):
                     os.remove(f)
                 db.execute(f'DELETE FROM submissions WHERE id = {ID}')
                 db.commit()
-                fadl.dl_sub(Session, str(ID), f'FA.files/{sub[12]}', db, True, False, 2)
+                fadl.dl_sub(Session, str(ID), f'FA.files/{sub[13]}', db, True, False, 2)
             print()
 
         print()
