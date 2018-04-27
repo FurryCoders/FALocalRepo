@@ -65,7 +65,7 @@ def temp_new():
     print('Done')
 
     print('Editing SUBMISSIONS data to add new values ... ', end='', flush=True)
-    subs_new = [s[0:4] + [None] + s[4:] for s in subs_old]
+    subs_new = [s[0:5] + (None,) + s[5:] for s in subs_old]
     print('Done')
 
     print('Copying USERS data ... ', end='', flush=True)
@@ -84,7 +84,7 @@ def temp_new():
     db_new.commit()
     print('Done')
 
-    subs_new = [[s[0], 0, s[13]] for s in subs_new]
+    subs_new = [(s[0], 0, s[13]) for s in subs_new]
 
     db_new.close()
     return subs_new
@@ -114,8 +114,8 @@ def temp_import():
     print('Importing temporary data ... ', end='', flush=True)
     subs_new1 = db_new.execute('SELECT id, location FROM submissions WHERE description != NULL').fetchall()
     subs_new2 = db_new.execute('SELECT id, location FROM submissions WHERE description == NULL').fetchall()
-    subs_new1 = [[s[0], 1, s[1]] for s in subs_new1]
-    subs_new2 = [[s[0], 0, s[1]] for s in subs_new2]
+    subs_new1 = [(s[0], 1, s[1]) for s in subs_new1]
+    subs_new2 = [(s[0], 0, s[1]) for s in subs_new2]
     subs_new = subs_new1 + subs_new2
     print('Done')
 
