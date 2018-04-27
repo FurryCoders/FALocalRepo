@@ -477,5 +477,7 @@ def download_main(Session, db):
     fadb.info_up(db, 'USRN', fadb.table_n(db, 'USERS'))
     fadb.info_up(db, 'SUBN', fadb.table_n(db, 'SUBMISSIONS'))
 
+    print()
+
     if quit: sys.exit(0)
     return Session
