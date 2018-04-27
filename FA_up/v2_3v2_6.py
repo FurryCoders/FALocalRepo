@@ -63,7 +63,7 @@ def temp_new():
     print('Done')
 
     print('Editing SUBMISSIONS data to add new values ... ', end='', flush=True)
-    subs_new = [s[0:4] + ['NULL'] + s[4:] for s in subs_old]
+    subs_new = [s[0:4] + [None] + s[4:] for s in subs_old]
     print('Done')
 
     print('Copying USERS data ... ', end='', flush=True)
@@ -77,10 +77,12 @@ def temp_new():
     print('Adding SUBMISSIONS data ... ', end='', flush=True)
     for s in subs_new:
         db_new.execute(f'''INSERT INTO SUBMISSIONS
-            (ID,AUTHOR,AUTHORURL,TITLE,UDATE,DESCRIPTION,TAGS,CATEGORY,SPECIES,GENDER,RATING,FILELINK,FILENAME,LOCATION, SERVER)
+            (ID,AUTHOR,AUTHORURL,TITLE,UDATE,DESCRIPTION,TAGS,CATEGORY,SPECIES,GENDER,RATING,FILELINK,FILENAME,LOCATION,SERVER)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)''', s)
     db_new.commit()
     print('Done')
+
+    subs_new = [[s[0], 0, s[13]] for s in subs_new]
 
     db_new.close()
     return subs_new
@@ -99,13 +101,20 @@ def temp_import():
         return False
 
     db_old = sqlite3.connect('FA.db')
-    subs_old = db_old.execute('SELECT * FROM submissions').fetchall()
-    subs_new = db_new.execute('SELECT * FROM submissions').fetchall()
+    subs_old = db_old.execute('SELECT id FROM submissions').fetchall()
+    subs_new = db_new.execute('SELECT id FROM submissions').fetchall()
     if len(subs_new) != len(subs_old):
         print('Submissions error')
         return False
 
     print('Done')
+
+    print('Importing temporary data ... ', end='', flush=True)
+    subs_new1 = db_new.execute('SELECT id, location FROM submissions WHERE description != NULL').fetchall()
+    subs_new2 = db_new.execute('SELECT id, location FROM submissions WHERE description == NULL').fetchall()
+    subs_new1 = [[s[0], 1, s[1]] for s in subs_new1]
+    subs_new2 = [[s[0], 0, s[1]] for s in subs_new2]
+    subs_new = subs_new1 + subs_new2
 
     db_old.close()
     db_new.close()
@@ -143,7 +152,9 @@ def db_upgrade_v2v2_3():
     for s in subs_new:
         Ni += 1
         print(f'{Ni:0>{Nl}}/{N}', end='', flush=True)
-        desc =  'FA.files/' + s[12] + '/description.html'
+        if s[1]:
+            continue
+        desc =  'FA.files/' + s[2] + '/description.html'
 
         if not os.path.isfile(desc):
             desc = ''
