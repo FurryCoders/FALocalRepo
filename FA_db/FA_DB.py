@@ -167,6 +167,55 @@ def table_n(db, table):
         num = db.execute(f'SELECT * FROM {table}')
         return len(num.fetchall())
 
+def mkindex(db):
+    col_usrs = (
+        'USER',
+        'USERFULL',
+        'FOLDERS',
+        'GALLERY',
+        'SCRAPS',
+        'FAVORITES',
+        'EXTRAS',
+    )
+
+    col_subs = (
+        'ID',
+        'AUTHOR',
+        'AUTHORURL',
+        'TITLE',
+        'UDATE',
+        'DESCRIPTION',
+        'TAGS',
+        'CATEGORY',
+        'SPECIES',
+        'GENDER',
+        'RATING',
+        'FILELINK',
+        'FILENAME',
+        'LOCATION',
+        'SERVER',
+    )
+
+    for col in col_usrs:
+        try:
+            db.execute(f'DROP INDEX {col}')
+        except sqlite3.OperationalError:
+            pass
+        except:
+            raise
+        finally:
+            db.execute(f'CREATE INDEX {col} ON uses ({col} ASC)')
+
+    for col in col_subs:
+        try:
+            db.execute(f'DROP INDEX {col}')
+        except sqlite3.OperationalError:
+            pass
+        except:
+            raise
+        finally:
+            db.execute(f'CREATE INDEX {col} ON submissions ({col} ASC)')
+
 def mktable(db, table):
     if table == 'submissions':
         db.execute('''CREATE TABLE IF NOT EXISTS SUBMISSIONS
