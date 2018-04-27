@@ -89,7 +89,7 @@ def temp_new():
 
 def temp_import():
     print('Opening temporary database ... ', end='', flush=True)
-    db_new = sqlite3.connect('FA.v2v2_3.db')
+    db_new = sqlite3.connect('FA.v2_3v2_6.db')
     print('Done')
 
     print('Checking temporary database ... ', end='', flush=True)
