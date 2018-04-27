@@ -5,7 +5,6 @@ from math import log10
 import PythonRead as readkeys
 from FA_tools import sigint_check
 
-
 def temp_new():
     print('Creating temporary database ... ', end='', flush=True)
     if os.path.isfile('FA.v2_3.db'): os.remove('FA.v2_3.db')
@@ -124,7 +123,7 @@ def temp_import():
     db_new.close()
     return subs_new
 
-def db_upgrade_v2v2_3():
+def db_upgrade_v2_3v2_6():
     print('The database needs to be upgraded to version 2.6')
     print('This procedure is required to continue using the program')
     print('The current database will be saved in a backup file named FA.v2_3.db')
