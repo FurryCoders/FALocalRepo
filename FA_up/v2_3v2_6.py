@@ -110,8 +110,8 @@ def temp_import():
     print('Done')
 
     print('Importing temporary data ... ', end='', flush=True)
-    subs_new1 = db_new.execute('SELECT id, location FROM submissions WHERE description != NULL').fetchall()
-    subs_new2 = db_new.execute('SELECT id, location FROM submissions WHERE description == NULL').fetchall()
+    subs_new1 = db_new.execute('SELECT id, location FROM submissions WHERE description IS NOT NULL ORDER BY id ASC').fetchall()
+    subs_new2 = db_new.execute('SELECT id, location FROM submissions WHERE description IS NULL ORDER BY id ASC').fetchall()
     subs_new1 = [(s[0], 1, s[1]) for s in subs_new1]
     subs_new2 = [(s[0], 0, s[1]) for s in subs_new2]
     subs_new = subs_new1 + subs_new2
@@ -154,6 +154,7 @@ def db_upgrade_v2_3v2_6():
         Ni += 1
         print(f'{Ni:0>{Nl}}/{N}', end='', flush=True)
         if s[1]:
+            print('\b \b'+'\b \b'*(Nl*2), end='', flush=True)
             continue
         desc =  'FA.files/' + s[2] + '/description.html'
 
