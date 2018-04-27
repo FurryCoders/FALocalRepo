@@ -1,29 +1,32 @@
 import sqlite3
 
 # Entries guide - USERS
-# 0 NAME
-# 1 NAMEFULL
-# 2 (1 v2.0) FOLDERS
-# 3 (2 v2.0) GALLERY
-# 4 (3 v2.0) SCRAPS
-# 5 (4 v2.0) FAVORITES
-# 6 (5 v2.0) EXTRAS
+# v0    v2.3
+# 0     0   NAME
+#       1   NAMEFULL
+# 1     2   FOLDERS
+# 2     3   GALLERY
+# 3     4   SCRAPS
+# 4     5   FAVORITES
+# 5     6   EXTRAS
 
 # Entries guide - SUBMISSIONS
-# 0 ID          the submission id
-# 1 AUTHOR      the author as written by the user (with underscores and capital letters)
-# 2 AUTHORURL   the author for search and downloads (no underscores and lowercase)
-# 3 TITLE       the title as posted with the submission
-# 4 UDATE       upload date in YYYY-MM-DD format (no need for HH:MM as the id already orders submissions)
-# 5 TAGS        tags sorted by alphanumeric order
-# 6 CATEGORY    submission category
-# 7 SPECIES     submission species
-# 8 GENDER      submission gender
-# 9 RATING      submission rating
-# 10 (6 v1) FILELINK   link to submission file
-# 11 (7 v1) FILENAME   the filename of the submission (0 if absent and 'submission' + the extension otherwise)
-# 12 (8 v1) LOCATION   the location of the submission inside the files folder
-# 13 (9 v1) SERVER     1 if the submission is available on FA, 0 if it was disabled, deleted, etc...
+# v0    v2  v2.6
+# 0     0   0   ID
+# 1     1   1   AUTHOR
+# 2     2   2   AUTHORURL
+# 3     3   3   TITLE
+# 4     4   4   UDATE
+#           5   DESCRIPTION
+# 5     5   6   TAGS
+#       6   7   CATEGORY
+#       7   8   SPECIES
+#       8   9   GENDER
+#       9   10  RATING
+#  6    10  11  FILELINK
+#  7    11  12  FILENAME
+#  8    12  13  LOCATION
+#  9    13  14  SERVER
 
 def usr_ins(db, user, user_full=''):
     if user_full.lower().replace('_','') != user:
