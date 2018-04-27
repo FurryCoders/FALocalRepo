@@ -42,9 +42,7 @@ def temp_new():
 
     print('Copying INFOS data ... ', end='', flush=True)
     db_old.execute("CREATE TABLE IF NOT EXISTS db_new.INFOS AS SELECT * FROM main.INFOS")
-    db_new.execute('INSERT INTO INFOS (FIELD, VALUE) VALUES ("VERSION", "2.0")')
     db_old.commit()
-    db_new.commit()
     print('Done')
 
     print('Copying USERS data ... ', end='', flush=True)
@@ -213,6 +211,7 @@ def db_upgrade_v1v2():
     if missing > 0:
         print(f'Found {missing} submission/s no longer present on the website')
 
+    db_new.execute('INSERT INTO INFOS (FIELD, VALUE) VALUES ("VERSION", "2.0")')
     db_new.close()
 
     print()
