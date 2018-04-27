@@ -2,7 +2,7 @@ import sqlite3
 import FA_tools as fatl
 from .v1v2 import db_upgrade_v1v2
 from .v2v2_3 import db_upgrade_v2v2_3
-from .v2v2_3v2_6 import db_upgrade_v2_3v2_6
+from .v2_3v2_6 import db_upgrade_v2_3v2_6
 
 def db_upgrade_main():
     while True:
