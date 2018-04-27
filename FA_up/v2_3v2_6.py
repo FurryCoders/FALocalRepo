@@ -154,9 +154,11 @@ def db_upgrade_v2_3v2_6():
     Ni = 0
     for s in subs_new:
         if sigint_check():
+            print(' Interrupt')
             print('Update interrupted, it may be resumed later')
             print('Closing program')
             break
+
         Ni += 1
         print(f'{Ni:0>{Nl}}/{N}', end='', flush=True)
         if s[1]:
@@ -171,3 +173,5 @@ def db_upgrade_v2_3v2_6():
 
         db_new.execute(f"UPDATE submissions SET description = ? WHERE id = {s[0]}", (desc,))
         db_new.commit()
+
+        print('\b \b'+'\b \b'*(Nl*2), end='', flush=True)
