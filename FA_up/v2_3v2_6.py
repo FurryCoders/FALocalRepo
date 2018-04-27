@@ -16,9 +16,7 @@ def temp_new():
 
     print('Copying INFOS data ... ', end='', flush=True)
     db_old.execute("CREATE TABLE IF NOT EXISTS db_new.INFOS AS SELECT * FROM main.INFOS")
-    db_new.execute(f"UPDATE infos SET value = '2.6' WHERE field = 'VERSION'")
     db_old.commit()
-    db_new.commit()
     print('Done')
 
     print('Grabbing USERS data .. ', end='', flush=True)
@@ -175,3 +173,5 @@ def db_upgrade_v2_3v2_6():
         db_new.commit()
 
         print('\b \b'+'\b \b'*(Nl*2), end='', flush=True)
+
+    db_new.execute(f"UPDATE infos SET value = '2.6' WHERE field = 'VERSION'")
