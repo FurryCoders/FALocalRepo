@@ -140,14 +140,6 @@ def sub_read(db, ID, column):
     col = col.fetchall()[0]
     return col[0]
 
-def sub_search(db, terms):
-    return db.execute('''SELECT author, udate, title FROM submissions
-        WHERE id LIKE ? AND
-        authorurl LIKE ? AND
-        title LIKE ? AND
-        tags REGEXP ?
-        ORDER BY authorurl ASC, id ASC''', terms)
-
 def sub_exists(db, ID):
     exists = db.execute(f'SELECT EXISTS(SELECT id FROM submissions WHERE id = "{ID}" LIMIT 1);')
     return exists.fetchall()[0][0]
