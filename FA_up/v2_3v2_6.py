@@ -3,6 +3,8 @@ import os
 import sys
 from math import log10
 import PythonRead as readkeys
+from FA_tools import sigint_check
+
 
 def temp_new():
     print('Creating temporary database ... ', end='', flush=True)
@@ -152,6 +154,10 @@ def db_upgrade_v2v2_3():
     Nl = int(log10(N)+1)
     Ni = 0
     for s in subs_new:
+        if sigint_check():
+            print('Update interrupted, it may be resumed later')
+            print('Closing program')
+            break
         Ni += 1
         print(f'{Ni:0>{Nl}}/{N}', end='', flush=True)
         if s[1]:
