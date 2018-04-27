@@ -1,14 +1,14 @@
 import sqlite3
 
 # Entries guide - USERS
-# v0    v2.3
-# 0     0   NAME
-#       1   NAMEFULL
-# 1     2   FOLDERS
-# 2     3   GALLERY
-# 3     4   SCRAPS
-# 4     5   FAVORITES
-# 5     6   EXTRAS
+# v0    v2.3        v2.6
+# 0     0 NAME      0   USER
+#       1 NAMEFULL  1   USERFULL
+# 1     2           2   FOLDERS
+# 2     3           3   GALLERY
+# 3     4           4   SCRAPS
+# 4     5           5   FAVORITES
+# 5     6           6   EXTRAS
 
 # Entries guide - SUBMISSIONS
 # v0    v2  v2.6
@@ -31,12 +31,12 @@ import sqlite3
 def usr_ins(db, user, user_full=''):
     if user_full.lower().replace('_','') != user:
         user_full = user
-    exists = db.execute(f'SELECT EXISTS(SELECT name FROM users WHERE name = "{user}" LIMIT 1);')
+    exists = db.execute(f'SELECT EXISTS(SELECT user FROM users WHERE user = "{user}" LIMIT 1);')
     if exists.fetchall()[0][0]:
         return
     try:
         db.execute(f'''INSERT INTO USERS
-            (NAME,NAMEFULL,FOLDERS,GALLERY,SCRAPS,FAVORITES,EXTRAS)
+            (USER,USERFULL,FOLDERS,GALLERY,SCRAPS,FAVORITES,EXTRAS)
             VALUES ("{user}", "{user_full}", "", "", "", "", "")''')
     except sqlite3.IntegrityError:
         pass
@@ -48,16 +48,16 @@ def usr_ins(db, user, user_full=''):
 def usr_rm(db, user, isempty=False):
     try:
         if isempty:
-            db.execute(f'DELETE FROM users WHERE name = "{user}" AND folders = "" AND gallery = "" AND scraps = "" AND favorites = "" AND extras = ""')
+            db.execute(f'DELETE FROM users WHERE user = "{user}" AND folders = "" AND gallery = "" AND scraps = "" AND favorites = "" AND extras = ""')
         else:
-            db.execute(f'DELETE FROM users WHERE name = "{user}"')
+            db.execute(f'DELETE FROM users WHERE user = "{user}"')
     except:
         pass
     finally:
         db.commit()
 
 def usr_up(db, user, to_add, column):
-    col = db.execute(f"SELECT {column} FROM users WHERE name = '{user}'")
+    col = db.execute(f"SELECT {column} FROM users WHERE user = '{user}'")
     col = col.fetchall()
     if not len(col):
         raise sqlite3.IntegrityError
@@ -70,11 +70,11 @@ def usr_up(db, user, to_add, column):
         col.append(to_add)
     col.sort(key=str.lower)
     col = ",".join(col)
-    db.execute(f"UPDATE users SET {column} = '{col}' WHERE name = '{user}'")
+    db.execute(f"UPDATE users SET {column} = '{col}' WHERE user = '{user}'")
     db.commit()
 
 def usr_rep(db, user, find, replace, column):
-    col = db.execute(f"SELECT {column} FROM users WHERE name = '{user}'")
+    col = db.execute(f"SELECT {column} FROM users WHERE user = '{user}'")
     col = col.fetchall()
     if not len(col):
         raise sqlite3.IntegrityError
@@ -89,18 +89,18 @@ def usr_rep(db, user, find, replace, column):
         col = [e.replace(find, replace) for e in col]
     col.sort(key=str.lower)
     col = ",".join(col)
-    db.execute(f"UPDATE users SET {column} = '{col}' WHERE name = '{user}'")
+    db.execute(f"UPDATE users SET {column} = '{col}' WHERE user = '{user}'")
     db.commit()
 
 def usr_src(db, user, find, column):
-    col = db.execute(f"SELECT {column} FROM users WHERE name = '{user}'")
+    col = db.execute(f"SELECT {column} FROM users WHERE user = '{user}'")
     col = col.fetchall()[0]
     col = "".join(col).split(',')
     if find in col: return True
     else: return False
 
 def usr_isempty(db, user):
-    usr = db.execute(f"SELECT name FROM users WHERE name = '{user}' AND folders = '' AND gallery = '' AND scraps = '' AND favorites = '' AND extras = ''")
+    usr = db.execute(f"SELECT user FROM users WHERE user = '{user}' AND folders = '' AND gallery = '' AND scraps = '' AND favorites = '' AND extras = ''")
     usr = usr.fetchall()
     return bool(len(usr))
 
@@ -187,8 +187,8 @@ def mktable(db, table):
             SERVER INT);''')
     elif table == 'users':
         db.execute('''CREATE TABLE IF NOT EXISTS USERS
-            (NAME TEXT UNIQUE PRIMARY KEY NOT NULL,
-            NAMEFULL TEXT NOT NULL,
+            (USER TEXT UNIQUE PRIMARY KEY NOT NULL,
+            USERFULL TEXT NOT NULL,
             FOLDERS TEXT NOT NULL,
             GALLERY TEXT,
             SCRAPS TEXT,
