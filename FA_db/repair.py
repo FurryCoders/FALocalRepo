@@ -152,31 +152,7 @@ def find_errors_usr(db):
 
     return errs_empty, errs_repet, errs_names, errs_namef, errs_foldr, errs_fl_dl
 
-def repair(Session, db):
-    fatl.header('Repair database')
-
-    print('Analyzing submissions database for errors ... ', end='', flush=True)
-    errs_id, errs_vl, errs_fl = find_errors_sub(db)
-    print('Done')
-    print(f'Found {len(errs_id)} id error{"s"*bool(len(errs_id) != 1)}')
-    print(f'Found {len(errs_vl)} field values error{"s"*bool(len(errs_vl) != 1)}')
-    print(f'Found {len(errs_fl)} files error{"s"*bool(len(errs_fl) != 1)}')
-    print()
-
-    fatl.sigint_clear()
-
-    print('Analyzing users database for errors ... ', end='', flush=True)
-    errs_empty, errs_repet, errs_names, errs_namef, errs_foldr, errs_fl_dl = find_errors_usr(db)
-    print('Done')
-    print(f'Found {len(errs_empty)} empty user{"s"*bool(len(errs_id) != 1)}')
-    print(f'Found {len(errs_repet)} repeated user{"s"*bool(len(errs_vl) != 1)}')
-    print(f'Found {len(errs_names)} capitalized username{"s"*bool(len(errs_fl) != 1)}')
-    print(f'Found {len(errs_foldr)} empty folder{"s"*bool(len(errs_fl) != 1)}')
-    print(f'Found {len(errs_fl_dl)} empty folder download{"s"*bool(len(errs_fl) != 1)}')
-    print()
-
-    fatl.sigint_clear()
-
+def repair_subs(Session, db, errs_id, errs_vl, errs_fl):
     if any(len(errs) for errs in (errs_id, errs_vl, errs_fl)):
         Session = fadl.session(Session)
         print()
@@ -254,8 +230,9 @@ def repair(Session, db):
 
         print()
 
-    fatl.sigint_clear()
+    return Session
 
+def repair_usrs(Session, db, errs_empty, errs_repet, errs_names, errs_namef, errs_foldr, errs_fl_dl):
     if any(len(errs) for errs in (errs_empty, errs_repet, errs_names, errs_names, errs_foldr, errs_fl_dl)):
         print()
 
@@ -369,6 +346,44 @@ def repair(Session, db):
                     fadl.dl_usr(Session, u[0], f, db, False, 2, 0, False)
             print()
 
+    return Session
+
+def repair(Session, db):
+    fatl.header('Repair database')
+
+    print('Analyzing submissions database for errors ... ', end='', flush=True)
+    errs_id, errs_vl, errs_fl = find_errors_sub(db)
+    print('Done')
+    print(f'Found {len(errs_id)} id error{"s"*bool(len(errs_id) != 1)}')
+    print(f'Found {len(errs_vl)} field values error{"s"*bool(len(errs_vl) != 1)}')
+    print(f'Found {len(errs_fl)} files error{"s"*bool(len(errs_fl) != 1)}')
+    print()
+
+    fatl.sigint_clear()
+
+    print('Analyzing users database for errors ... ', end='', flush=True)
+    errs_empty, errs_repet, errs_names, errs_namef, errs_foldr, errs_fl_dl = find_errors_usr(db)
+    print('Done')
+    print(f'Found {len(errs_empty)} empty user{"s"*bool(len(errs_id) != 1)}')
+    print(f'Found {len(errs_repet)} repeated user{"s"*bool(len(errs_vl) != 1)}')
+    print(f'Found {len(errs_names)} capitalized username{"s"*bool(len(errs_fl) != 1)}')
+    print(f'Found {len(errs_foldr)} empty folder{"s"*bool(len(errs_fl) != 1)}')
+    print(f'Found {len(errs_fl_dl)} empty folder download{"s"*bool(len(errs_fl) != 1)}')
+    print()
+
+    fatl.sigint_clear()
+
+    Session = repair_subs(Session, db, errs_id, errs_vl, errs_fl)
+
+    fatl.sigint_clear()
+
+    Session = repair_usrs(Session, db, errs_empty, errs_repet, errs_names, errs_namef, errs_foldr, errs_fl_dl)
+
+    fatl.sigint_clear()
+
+    print('Indexing new entries ... ', end='', flush=True)
+    fadb.mkindex(db)
+    print('Done')
     print('Optimizing database ... ', end='', flush=True)
     db.execute("VACUUM")
     print('Done')
