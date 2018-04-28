@@ -8,8 +8,6 @@ Pure Python program to download any user's gallery/scraps/favorites and more fro
 ## Introduction
 This program was born with the desire to provide a relatively easy-to-use method for FA users to download submissions that they care about from the forum. At the moment its a little more than a text interface in a terminal window with only basic search functionality, a GUI will be hopefully added in the near future.
 
-When a submission is downloaded all its informations (except for the comments and user-made folders) are downloaded into a database located in the same folder the program is launched in. The file (artwork, story, audio, etc...) and the description are instead saved in separate files inside a folder named 'FA.files' which contains all submissions in a tiered structure based on their ID (e.g submission '3704554' will be saved in the folder 'FA.files/0/3/704/0003704554'). A backup informations txt is also saved with the description and file, it contains the basic informations and is there for safety (in case the database is accidentally deleted). For a guide on the database structure see `Database` below.
-
 ## Contents
 1. [Usage](#usage)
     1. [Download](#download-update)
@@ -28,6 +26,8 @@ When the program starts a simple menu will appear, type the indicated number or 
 
 ### Download & Update
 This menu allows to download a user gallery, scraps, favorites, extras or to update specific users and/or sections for the database.
+
+When a submission is downloaded all its informations (except for the comments and user-made folders) are downloaded into a database located in the same folder the program is launched in. The file (artwork, story, audio, etc...) is saved inside a folder named 'FA.files' which contains all submissions in a tiered structure based on their ID (e.g submission '3704554' will be saved in the folder 'FA.files/0/3/704/0003704554'). Backup .txt and .html files are also saved with the file, they contain the basic informations and the description and are there for safety (in case the database is accidentally deleted). For a guide on the database structure see `Database` below.
 
 1. `Username: `<br>
 First field is reserved for users. To download or sync a specific user/s insert the username/s (url or userpage name are both valid). Usernames can be separated with spaces or commas.
@@ -72,7 +72,7 @@ Last field is reserved for options. These can be:
 ### Search
 This menu allows to search in the database using one or more among user (with or w/o sections), title, tags, category, species, gender and rating.<br>
 
-1. `User` &#10013;<br>
+1. `User`<br>
 Search users. Multiple users can be matched.
 
     * `Section`<br>
@@ -81,19 +81,22 @@ Search users. Multiple users can be matched.
 2. `Title`<br>
 Search titles.
 
-3. `Tags` &#10013;<br>
+3. `Description`<br>
+Search inside submissions' descriptions.
+
+3. `Tags`<br>
 Tags are sorted automatically before search.
 
-4. `Category` \*&#10013;<br>
+4. `Category` \*<br>
 Matches the category of submissions, like 'Artwork', 'Story', etc...
 
-5. `Species` \*&#10013;<br>
+5. `Species` \*<br>
 Search species, like 'Vulpine', 'Feline', etc...
 
-6. `Gender` \*&#10013;<br>
+6. `Gender` \*<br>
 Gender can be 'Male', 'Female', 'Any'.
 
-7. `Rating` \*&#10013;<br>
+7. `Rating` \*<br>
 The rating can be 'general', 'mature' or 'adult'.
 
 8. `Options`<br>
@@ -101,14 +104,17 @@ There are two possible options:
     * `regex`<br>
     Use regular expressions to search the database. Full regex syntax is supported in all fields.
 
+    * `case`<br>
+    Turn on case sensitivity on ALL fields. This works in both normal and regex mode.
+
     * `web`<br>
-    Search on the website directly. Only user, title, tags and rating will be used.
+    Search on the website directly. Only user, title, tags, description and rating will be used.
 
 Results are ordered by username and date.<br>
+When turned on case sensitivity will be enabled for all fields, this means that, for example, 'tiger' won't match anything as the species is saved as 'Tiger' on FA.<br>
 If no results can be found in the local database the program will prompt to run the search on the website instead.
 
-\* *As shown on the submission page on the main site.*<br>
-&#10013; *Fields matched without case sensitivity*
+\* *As shown on the submission page on the main site.*
 
 ### Repair database
 Selecting this entry will start the automatic database repair functions. These are divided into three steps:
@@ -170,10 +176,10 @@ This table contains general informations about the database, some of which are n
 
 2. `USERS`<br>
 The USERS table contains a list of all the users that have been download with the program. Each entry contains the following:
-    * `NAME`<br>
+    * `USER`<br>
     The url username of the user (no caps and no underscores).
-    * `NAMEFULL`<br>
-    The full username as choosen by the user (with caps and underscores if present).
+    * `USERFULL`<br>
+    The full username as chosen by the user (with caps and underscores if present).
     * `FOLDERS`<br>
     The sections downloaded for that specific user. A '!' beside a section means that the user was disabled, it is used as a flag for the program.*&#42;*
     * `GALLERY`, `SCRAPS`, `FAVORITES`, `EXTRAS`<br>
@@ -192,6 +198,8 @@ The last table is a list of all the single submissions downloaded by the program
     The title
     * `UDATE`<br>
     Upload date
+    * `DESCRIPTION`<br>
+    Description in html format.
     * `TAGS`<br>
     The submission's keywords sorted alphanumerically
     * `CATEGORY`, `SPECIES`, `GENDER`, `RATING`<br>
@@ -213,6 +221,10 @@ The older version of the database will be saved as 'FA.v1.db'
 * `2.0` to `2.2` &rarr; `2.3`<br>
 Full versions of users' nicknames will be collected from the submissions database or the website. If both fail the url version will be used instead.<br>
 The older version of the database will be saved as 'FA.v2.db'
+* `2.3` &rarr; `2.6`<br>
+Two columns in the `USERS` will be renamed (`NAME`&rarr;`USER` and `NAMEFULL`&rarr;`USERFULL`) and descriptions will be moved inside the database. It is recommended to run `Repair` (See `Usage`&rarr;`Repair database` for details) with a version lower than 2.6 to make sure all description files are present. When the upgrade is completed indexes will be creared for all fields.<br>
+Size of the database will increase by about 1KB per submission (averaged on a database of over 230k submissions which increased by about 230MB).<br>
+The older version of the database will be saved as 'FA.v2_3.db'
 
 At each update step the program will save a backup copy of the database.
 
