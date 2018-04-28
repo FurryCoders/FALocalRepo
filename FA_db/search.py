@@ -90,19 +90,24 @@ def search(Session, db, fields, regex=False, case=False):
         db.create_function("REGEXP", 2, regexp)
         match = ('REGEXP', '(?:.)*')
 
+    if case:
+        db.execute('PRAGMA case_sensitive_like=ON')
+    else:
+        db.execute('PRAGMA case_sensitive_like=OFF')
+
     fields_o = {k: v for k,v in fields.items()}
 
-    fields['user'] = fields['user'].strip().lower()
+    fields['user'] = fields['user'].strip()
     fields['sect'] = re.sub('[^gsfe]','', fields['sect'].lower())
     fields['titl'] = match[1]+fields['titl']+match[1]
     fields['desc'] = match[1]+fields['desc']+match[1]
-    fields['tags'] = re.sub('( )+', ' ', fields['tags'].upper()).split(' ')
+    fields['tags'] = re.sub('( )+', ' ', fields['tags']).split(' ')
     fields['tags'] = sorted(fields['tags'], key=str.lower)
     fields['tags'] = match[1]+match[1].join(fields['tags'])+match[1]
-    fields['catg'] = match[1]+fields['catg'].upper()+match[1]
-    fields['spec'] = match[1]+fields['spec'].upper()+match[1]
-    fields['gend'] = match[1]+fields['gend'].upper()+match[1]
-    fields['ratg'] = match[1]+fields['ratg'].upper()+match[1]
+    fields['catg'] = match[1]+fields['catg']+match[1]
+    fields['spec'] = match[1]+fields['spec']+match[1]
+    fields['gend'] = match[1]+fields['gend']+match[1]
+    fields['ratg'] = match[1]+fields['ratg']+match[1]
 
     t1 = time.time()
 
@@ -111,26 +116,26 @@ def search(Session, db, fields, regex=False, case=False):
             WHERE authorurl {match[0]} ? AND
             title {match[0]} ? AND
             description {match[0]} ? AND
-            UPPER(tags) {match[0]} ? AND
-            UPPER(category) {match[0]} ? AND
-            UPPER(species) {match[0]} ? AND
-            UPPER(gender) {match[0]} ? AND
-            UPPER(Rating) {match[0]} ?''', (match[1]+fields['user']+match[1],) + tuple(fields.values())[2:]).fetchall()
+            tags {match[0]} ? AND
+            category {match[0]} ? AND
+            species {match[0]} ? AND
+            gender {match[0]} ? AND
+            Rating {match[0]} ?''', (match[1]+fields['user']+match[1],) + tuple(fields.values())[2:]).fetchall()
     else:
         subs = db.execute(f'''SELECT author, udate, id, title FROM submissions
             WHERE title {match[0]} ? AND
             description {match[0]} ? AND
-            UPPER(tags) {match[0]} ? AND
-            UPPER(category) {match[0]} ? AND
-            UPPER(species) {match[0]} ? AND
-            UPPER(gender) {match[0]} ? AND
-            UPPER(Rating) {match[0]} ?''', tuple(fields.values())[2:]).fetchall()
+            tags {match[0]} ? AND
+            category {match[0]} ? AND
+            species {match[0]} ? AND
+            gender {match[0]} ? AND
+            Rating {match[0]} ?''', tuple(fields.values())[2:]).fetchall()
 
     subs = {s[2]: s for s in subs}
 
     if fields['user']:
         if not regex:
-            fields['user'] = re.sub('[^a-z0-9\-.]', '', fields['user'])
+            fields['user'] = re.sub('[^a-zA-Z0-9\-.]', '', fields['user'])
 
         users = db.execute(f'SELECT gallery, scraps, favorites, extras FROM users WHERE user {match[0]} ?', (match[1]+fields['user']+match[1],))
         users = users.fetchall()
@@ -253,5 +258,9 @@ def main(Session, db):
         raise
     finally:
         fatl.sigint_clear()
+        if case:
+            db.execute('PRAGMA case_sensitive_like=OFF')
+        else:
+            db.execute('PRAGMA case_sensitive_like=ON')
 
     return Session
