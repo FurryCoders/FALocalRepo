@@ -5,7 +5,7 @@ import FA_dl as fadl
 import FA_db as fadb
 import FA_tools as fatl
 
-def check_values(sub):
+def sub_check_values(sub):
     if None in sub:
         return False
     elif '' in (sub[1], sub[2], sub[4], sub[5], sub[7], sub[8], sub[9], sub[10], sub[13]):
@@ -17,7 +17,7 @@ def check_values(sub):
 
     return True
 
-def check_files(sub):
+def sub_check_files(sub):
     loc = 'FA.files/'+sub[13]
     if not os.path.isdir(loc):
         return False
@@ -30,7 +30,7 @@ def check_files(sub):
 
     return True
 
-def find_errors_sub(db):
+def sub_find_errors(db):
     subs = db.execute('SELECT * FROM submissions ORDER BY id ASC')
     subs = [[si for si in s] for s in subs.fetchall()]
 
@@ -47,16 +47,16 @@ def find_errors_sub(db):
             errs_id.append(s)
             continue
 
-        if not check_values(s):
+        if not sub_check_values(s):
             errs_vl.append(s)
             continue
 
-        if not check_files(s):
+        if not sub_check_files(s):
             errs_fl.append(s)
 
     return errs_id, errs_vl, errs_fl
 
-def check_folder(usr):
+def usr_check_folder(usr):
     if len(usr[3]) and 'g' not in usr[2]:
         return False
     elif len(usr[4]) and 's' not in usr[2]:
@@ -68,7 +68,7 @@ def check_folder(usr):
 
     return True
 
-def check_folder_dl(usr):
+def usr_check_folder_dl(usr):
     ret = []
     if 'g' in usr[2] and not len(usr[3]):
         if 'g!' not in usr[1]:
@@ -84,7 +84,7 @@ def check_folder_dl(usr):
 
     return ret
 
-def find_errors_usr(db):
+def usr_find_errors(db):
     usrs = db.execute('SELECT * FROM users ORDER BY user ASC')
     usrs = [[ui for ui in u] for u in usrs.fetchall()]
 
@@ -133,7 +133,7 @@ def find_errors_usr(db):
     i = 0
     while i < len(usrs):
         u = usrs[i]
-        if not check_folder(u):
+        if not usr_check_folder(u):
             errs_foldr.append(u)
             usrs = usrs[0:i] + usrs[i+1:]
             i -= 1
@@ -142,7 +142,7 @@ def find_errors_usr(db):
     i = 0
     while i < len(usrs):
         u = usrs[i]
-        u_d = check_folder_dl(u)
+        u_d = usr_check_folder_dl(u)
         if u_d:
             errs_fl_dl.append([u[0], u_d])
             usrs = usrs[0:i] + usrs[i+1:]
@@ -178,12 +178,12 @@ def repair_subs(Session, db, errs_id, errs_vl, errs_fl):
                 if sub[3] == None: sub[3] = ''
                 if sub[5] == None: sub[5] = ''
                 if sub[6] == None: sub[6] = ''
-                if check_values(sub):
+                if sub_check_values(sub):
                     db.execute(f'UPDATE submissions SET title = "{sub[3]}" WHERE id = {ID}')
                     db.execute(f'UPDATE submissions SET description = "{sub[5]}" WHERE id = {ID}')
                     db.execute(f'UPDATE submissions SET tags = "{sub[6]}" WHERE id = {ID}')
                     db.commit()
-                    if not check_files(sub) and sub[14]:
+                    if not sub_check_files(sub) and sub[14]:
                         errs_fl.append(sub)
                         errs_fl_mv += 1
                     continue
@@ -267,10 +267,10 @@ def repair_usrs(Session, db, errs_empty, errs_repet, errs_names, errs_namef, err
                 fadb.usr_up(db, u[0], u_new[3], 'SCRAPS')
                 fadb.usr_up(db, u[0], u_new[4], 'FAVORITES')
                 fadb.usr_up(db, u[0], u_new[5], 'EXTRAS')
-                if not check_folder(u_new):
+                if not usr_check_folder(u_new):
                     errs_foldr.append(u_new)
                 else:
-                    u_d = check_folder_dl(u)
+                    u_d = usr_check_folder_dl(u)
                     if len(u_d):
                         errs_fl_dl.append([u[0], u_d])
             print()
@@ -280,10 +280,10 @@ def repair_usrs(Session, db, errs_empty, errs_repet, errs_names, errs_namef, err
             for u in errs_names:
                 print(f' {u[0]}')
                 fadb.usr_rep(db, u[0], u[0], u[0].lower().replace('_',''), 'USER')
-                u_d = check_folder_dl(u)
+                u_d = usr_check_folder_dl(u)
                 if u[1].lower().replace('_','') != u[0]:
                     errs_namef.append(u)
-                elif not check_folder(u):
+                elif not usr_check_folder(u):
                     errs_foldr.append(u)
                 elif len(u_d):
                     errs_fl_dl.append([u[0], u_d])
@@ -310,8 +310,8 @@ def repair_usrs(Session, db, errs_empty, errs_repet, errs_names, errs_namef, err
                         u_fa = u[0]
                     print(f'- FA: {u_fa}')
                     fadb.usr_rep(db, u[0], u[1], u_fa, 'USERFULL')
-                u_d = check_folder_dl(u)
-                if not check_folder(u):
+                u_d = usr_check_folder_dl(u)
+                if not usr_check_folder(u):
                     errs_foldr.append(u)
                 elif len(u_d):
                     errs_fl_dl.append([u[0], u_d])
@@ -328,7 +328,7 @@ def repair_usrs(Session, db, errs_empty, errs_repet, errs_names, errs_namef, err
                     fadb.usr_up(db, u[0], 'f', 'FOLDERS')
                 if len(u[6]) and 'e' not in u[2] and 'E' not in u[2]:
                     fadb.usr_up(db, u[0], 'e', 'FOLDERS')
-                u_d = check_folder_dl(u)
+                u_d = usr_check_folder_dl(u)
                 if len(u_d):
                     errs_fl_dl.append([u[0], u_d])
             print()
@@ -352,7 +352,7 @@ def repair(Session, db):
     fatl.header('Repair database')
 
     print('Analyzing submissions database for errors ... ', end='', flush=True)
-    errs_id, errs_vl, errs_fl = find_errors_sub(db)
+    errs_id, errs_vl, errs_fl = sub_find_errors(db)
     print('Done')
     print(f'Found {len(errs_id)} id error{"s"*bool(len(errs_id) != 1)}')
     print(f'Found {len(errs_vl)} field values error{"s"*bool(len(errs_vl) != 1)}')
@@ -362,7 +362,7 @@ def repair(Session, db):
     fatl.sigint_clear()
 
     print('Analyzing users database for errors ... ', end='', flush=True)
-    errs_empty, errs_repet, errs_names, errs_namef, errs_foldr, errs_fl_dl = find_errors_usr(db)
+    errs_empty, errs_repet, errs_names, errs_namef, errs_foldr, errs_fl_dl = usr_find_errors(db)
     print('Done')
     print(f'Found {len(errs_empty)} empty user{"s"*bool(len(errs_id) != 1)}')
     print(f'Found {len(errs_repet)} repeated user{"s"*bool(len(errs_vl) != 1)}')
