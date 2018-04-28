@@ -147,7 +147,7 @@ def db_upgrade_v2_3v2_6():
     for s in subs_new:
         Ni += 1
         print(f'{Ni:0>{Nl}}/{N}', end='', flush=True)
-        if s[1]:
+        if s[1] != None:
             print('\b \b'+'\b \b'*(Nl*2), end='', flush=True)
             continue
         desc =  'FA.files/' + s[2] + '/description.html'
