@@ -7,8 +7,15 @@ import PythonRead as readkeys
 import FA_tools as fatl
 from FA_dl import session
 
-def regexp(pattern, input):
-    return bool(re.match(pattern, input))
+def mkregexp(case):
+    if case:
+        def regexp(pattern, input):
+            return bool(re.match(pattern, input))
+    else:
+        def regexp(pattern, input):
+            return bool(re.match(pattern, input, flags=re.IGNORECASE))
+
+    return regexp
 
 def search_web(Session, fields):
     Session = session(Session)
@@ -74,9 +81,10 @@ def search_web(Session, fields):
 
     return Session
 
-def search(Session, db, fields, regex=False):
+def search(Session, db, fields, regex=False, case=False):
     match = ('LIKE', '%')
     if regex:
+        regexp = mkregexp(case)
         db.create_function("REGEXP", 2, regexp)
         match = ('REGEXP', '(?:.)*')
 
@@ -218,14 +226,19 @@ def main(Session, db):
         break
 
     try:
+        regex = False
+        case = False
+        if 'regex' in options.lower():
+            regex = True
+        if 'case' in options.lower():
+            case = True
+
         fatl.sigint_ublock()
 
         if 'web' in options.lower():
             Session = search_web(Session, fields)
-        elif 'regex' in options.lower():
-            Session = search(Session, db, fields, regex=True)
         else:
-            Session = search(Session, db, fields)
+            Session = search(Session, db, fields, regex, case)
 
         print('\nPress any key to continue ', end='', flush=True)
         readkeys.getkey()
