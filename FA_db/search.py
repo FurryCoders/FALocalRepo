@@ -258,9 +258,6 @@ def main(Session, db):
         raise
     finally:
         fatl.sigint_clear()
-        if case:
-            db.execute('PRAGMA case_sensitive_like=OFF')
-        else:
-            db.execute('PRAGMA case_sensitive_like=ON')
+        db.execute('PRAGMA case_sensitive_like=ON')
 
     return Session
