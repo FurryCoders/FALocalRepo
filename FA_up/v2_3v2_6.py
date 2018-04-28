@@ -175,6 +175,7 @@ def db_upgrade_v2_3v2_6():
             sys.exit(0)
 
         print('\b \b'+'\b \b'*(Nl*2), end='', flush=True)
+    print('Done')
 
     print('Indexing tables ... ', end='', flush=True)
     fadb.mkindex(db_new)
@@ -182,7 +183,10 @@ def db_upgrade_v2_3v2_6():
 
     print('Updating VERSION to 2.6 ... ', end='', flush=True)
     db_new.execute(f"UPDATE infos SET value = '2.6' WHERE field = 'VERSION'")
+    db_new.commit()
     print('Done')
+
+    db_new.close()
 
     print('Backing up old database and renaming new one ... ', end='', flush=True)
     os.rename('FA.db', 'FA.v2_3.db')
