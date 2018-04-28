@@ -124,7 +124,7 @@ def search(Session, db, fields, regex=False):
         if not regex:
             fields['user'] = re.sub('[^a-z0-9\-.]', '', fields['user'])
 
-        users = db.execute(f'SELECT gallery, scraps, favorites, extras FROM users WHERE name {match[0]} ?', (match[1]+fields['user']+match[1],))
+        users = db.execute(f'SELECT gallery, scraps, favorites, extras FROM users WHERE user {match[0]} ?', (match[1]+fields['user']+match[1],))
         users = users.fetchall()
         if not len(users):
             users = [('','','','')]
