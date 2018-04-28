@@ -17,9 +17,7 @@ def temp_new():
 
     print('Copying INFOS data ... ', end='', flush=True)
     db_old.execute("CREATE TABLE IF NOT EXISTS db_new.INFOS AS SELECT * FROM main.INFOS")
-    db_new.execute(f"UPDATE infos SET value = '2.3' WHERE field = 'VERSION'")
     db_old.commit()
-    db_new.commit()
     print('Done')
 
     print('Copying SUBMISSIONS data ... ', end='', flush=True)
@@ -194,21 +192,25 @@ def db_upgrade_v2v2_3():
         print('\b \b'+'\b \b'*(Nl*2), end='', flush=True)
     print('Done')
 
-    db_new.close()
-
     if len(missing) > 0:
         print(f'Found {len(missing)} user/s no longer present on the website:')
         print(' '+'\n '.join(missing))
     if missing_db > 0:
         print(f'Found {missing_db} user/s not present in the database')
 
-    print()
-
     if missing_db > 0:
         print(f"{missing_db} user/s couldn't be updated")
         print('Update may be resumed later')
         print('Closing program')
         sys.exit(0)
+
+    print('Updating VERSION to 2.3 ... ', end='', flush=True)
+    db_new.execute(f"UPDATE infos SET value = '2.3' WHERE field = 'VERSION'")
+    db_new.commit()
+    db_new.close()
+    print('Done')
+
+    print()
 
     print('Backing up old database and renaming new one ... ', end='', flush=True)
     os.rename('FA.db', 'FA.v2.db')

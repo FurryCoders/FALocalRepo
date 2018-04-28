@@ -184,9 +184,10 @@ def db_upgrade_v2_3v2_6():
     print('Updating VERSION to 2.6 ... ', end='', flush=True)
     db_new.execute(f"UPDATE infos SET value = '2.6' WHERE field = 'VERSION'")
     db_new.commit()
+    db_new.close()
     print('Done')
 
-    db_new.close()
+    print()
 
     print('Backing up old database and renaming new one ... ', end='', flush=True)
     os.rename('FA.db', 'FA.v2_3.db')

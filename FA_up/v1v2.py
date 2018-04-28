@@ -211,10 +211,14 @@ def db_upgrade_v1v2():
     if missing > 0:
         print(f'Found {missing} submission/s no longer present on the website')
 
+    print('Adding VERSION 2.0 ... ', end='', flush=True)
     db_new.execute('INSERT INTO INFOS (FIELD, VALUE) VALUES ("VERSION", "2.0")')
+    db_new.commit()
     db_new.close()
+    print('Done')
 
     print()
+
     print('Backing up old database and renaming new one ... ', end='', flush=True)
     os.rename('FA.db', 'FA.v1.db')
     os.rename('FA.v1v2.db', 'FA.db')
