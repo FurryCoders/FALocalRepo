@@ -223,7 +223,7 @@ Full versions of users' nicknames will be collected from the submissions databas
 The older version of the database will be saved as 'FA.v2.db'
 * `2.3` &rarr; `2.6`<br>
 Two columns in the `USERS` will be renamed (`NAME`&rarr;`USER` and `NAMEFULL`&rarr;`USERFULL`) and descriptions will be moved inside the database. It is recommended to run `Repair` (See `Usage`&rarr;`Repair database` for details) with a version lower than 2.6 to make sure all description files are present. When the upgrade is completed indexes will be creared for all fields.<br>
-Size of the database will increase by about 1KB per submission (averaged on a database of over 230k submissions which increased by about 230MB).<br>
+Size of the database will increase by about 2,8KB per submission (averaged on a database of over 234k submissions which increased by about 653MB).<br>
 The older version of the database will be saved as 'FA.v2_3.db'
 
 At each update step the program will save a backup copy of the database.
