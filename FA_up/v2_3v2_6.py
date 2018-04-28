@@ -1,9 +1,8 @@
 import sqlite3
-import os
-import sys
+import sys, os
 from math import log10
 import PythonRead as readkeys
-import FA_db as fadb
+from FA_db import mkindex
 from FA_tools import sigint_check
 
 def temp_new():
@@ -83,7 +82,9 @@ def temp_new():
     db_new.commit()
     print('Done')
 
+    print('Editing list to save memory ... ', end='', flush=True)
     subs_new = [(s[0], 0, s[13]) for s in subs_new]
+    print('Done')
 
     db_new.close()
     return subs_new
@@ -103,19 +104,11 @@ def temp_import():
 
     db_old = sqlite3.connect('FA.db')
     subs_old = db_old.execute('SELECT id FROM submissions').fetchall()
-    subs_new = db_new.execute('SELECT id FROM submissions').fetchall()
+    subs_new = db_new.execute('SELECT id, description, location FROM submissions ORDER BY id ASC').fetchall()
     if len(subs_new) != len(subs_old):
         print('Submissions error')
         return False
 
-    print('Done')
-
-    print('Importing temporary data ... ', end='', flush=True)
-    subs_new1 = db_new.execute('SELECT id, location FROM submissions WHERE description IS NOT NULL ORDER BY id ASC').fetchall()
-    subs_new2 = db_new.execute('SELECT id, location FROM submissions WHERE description IS NULL ORDER BY id ASC').fetchall()
-    subs_new1 = [(s[0], 1, s[1]) for s in subs_new1]
-    subs_new2 = [(s[0], 0, s[1]) for s in subs_new2]
-    subs_new = subs_new1 + subs_new2
     print('Done')
 
     db_old.close()
@@ -178,7 +171,7 @@ def db_upgrade_v2_3v2_6():
     print('Done')
 
     print('Indexing tables ... ', end='', flush=True)
-    fadb.mkindex(db_new)
+    mkindex(db_new)
     print('Done')
 
     print('Updating VERSION to 2.6 ... ', end='', flush=True)

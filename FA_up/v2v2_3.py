@@ -69,6 +69,10 @@ def temp_new():
     db_new.commit()
     print('Done')
 
+    print('Editing list to save memory ... ', end='', flush=True)
+    usrs_new = [[u[0], u[1]] for u in usrs_new]
+    print('Done')
+
     db_new.close()
     return usrs_new
 
@@ -85,15 +89,9 @@ def temp_import():
         print('Tables error')
         return False
 
-    cols = db_new.execute('PRAGMA table_info(users)')
-    cols = [col[1] for col in cols.fetchall()]
-    if cols != ['NAME','NAMEFULL','FOLDERS','GALLERY','SCRAPS','FAVORITES','EXTRAS']:
-        print('Columns error')
-        return False
-
     db_old = sqlite3.connect('FA.db')
-    usrs_old = db_old.execute("SELECT * FROM users ORDER BY name ASC").fetchall()
-    usrs_new = db_new.execute("SELECT * FROM users ORDER BY name ASC").fetchall()
+    usrs_old = db_old.execute("SELECT name FROM users ORDER BY name ASC").fetchall()
+    usrs_new = db_new.execute("SELECT user, userfull FROM users ORDER BY name ASC").fetchall()
     if len(usrs_old) != len(usrs_new):
         print('Users error')
         return False

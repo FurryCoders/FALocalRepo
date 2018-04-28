@@ -50,7 +50,7 @@ def temp_new():
     db_old.commit()
     print('Done')
 
-    print('Finding all submissions ... ', end='', flush=True)
+    print('Grabbing SUBMISSIONS data ... ', end='', flush=True)
     subs_old = db_old.execute("SELECT * FROM submissions ORDER BY id ASC")
     subs_old = [[si for si in s] for s in subs_old.fetchall()]
     db_old.close()
@@ -96,6 +96,10 @@ def temp_new():
     db_new.commit()
     print('Done')
 
+    print('Editing list to save memory ... ', end='', flush=True)
+    subs_new = [[s[0], s[6]] for s in subs_new]
+    print('Done')
+
     db_new.close()
     return subs_new
 
@@ -112,15 +116,9 @@ def temp_import():
         print('Tables error')
         return False
 
-    cols = db_new.execute('PRAGMA table_info(submissions)')
-    cols = [col[1] for col in cols.fetchall()]
-    if cols != ['ID','AUTHOR','AUTHORURL','TITLE','UDATE','TAGS','CATEGORY','SPECIES','GENDER','RATING','FILELINK','FILENAME','LOCATION','SERVER']:
-        print('Columns error')
-        return False
-
     db_old = sqlite3.connect('FA.db')
-    subs_old = db_old.execute('SELECT * FROM submissions').fetchall()
-    subs_new = db_new.execute('SELECT * FROM submissions').fetchall()
+    subs_old = db_old.execute('SELECT id FROM submissions').fetchall()
+    subs_new = db_new.execute('SELECT id, category FROM submissions').fetchall()
     if len(subs_new) != len(subs_old):
         print('Submissions error')
         return False
@@ -174,7 +172,7 @@ def db_upgrade_v1v2():
     for s in subs_new:
         Ni += 1
         print(f'{Ni:0>{Nl}}/{N}', end='', flush=True)
-        if s[6] != 'NULL':
+        if s[1] != 'NULL':
             print('\b \b'+'\b \b'*(Nl*2), end='', flush=True)
             continue
         try:
