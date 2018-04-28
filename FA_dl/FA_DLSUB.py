@@ -152,7 +152,23 @@ def dl_sub(Session, ID, folder, db, quiet=False, check=False, speed=1):
         f.write(f'ID: {ID}\n')
         f.write(f'File: {link}\n')
 
-    sub_info = (ID, data[0], data[0].lower().replace('_', ''), data[1], data[2], data[3], data[4], data[5], data[6], data[7], link, subf, folder.split('/',1)[-1], 1)
+    sub_info = (
+        ID,                                 # ID
+        data[0],                            # authorurl
+        data[0].lower().replace('_', ''),   # author
+        data[1],                            # title
+        data[2],                            # udate
+        desc,                               # description
+        data[3],                            # tags
+        data[4],                            # category
+        data[5],                            # species
+        data[6],                            # gender
+        data[7],                            # rating
+        link,                               # filelink
+        subf,                               # filename
+        folder.split('/',1)[-1],            # location
+        1,                                  # server
+    )
     sub_ins(db, sub_info)
 
     if subf == False:

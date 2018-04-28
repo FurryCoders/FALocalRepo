@@ -34,6 +34,8 @@ def search_web(Session, fields):
         search_string += f"@title {fields['titl']} "
     if fields['tags']:
         search_string += f"@keywords {fields['tags']} "
+    if fields['desc']:
+        search_string += f"@message {fields['desc']} "
     search_string = search_string.strip()
 
     search_url = f'https://www.furaffinity.net/search/?q={search_string}&order-by=date&order-direction=asc'
@@ -93,6 +95,7 @@ def search(Session, db, fields, regex=False, case=False):
     fields['user'] = fields['user'].strip().lower()
     fields['sect'] = re.sub('[^gsfe]','', fields['sect'].lower())
     fields['titl'] = match[1]+fields['titl']+match[1]
+    fields['desc'] = match[1]+fields['desc']+match[1]
     fields['tags'] = re.sub('( )+', ' ', fields['tags'].upper()).split(' ')
     fields['tags'] = sorted(fields['tags'], key=str.lower)
     fields['tags'] = match[1]+match[1].join(fields['tags'])+match[1]
@@ -104,30 +107,32 @@ def search(Session, db, fields, regex=False, case=False):
     t1 = time.time()
 
     if fields['user'] and re.match('^[gs]+$', fields['sect']):
-        subs = db.execute(f'''SELECT * FROM submissions
+        subs = db.execute(f'''SELECT author, udate, id, title FROM submissions
             WHERE authorurl {match[0]} ? AND
             title {match[0]} ? AND
+            description {match[0]} ? AND
             UPPER(tags) {match[0]} ? AND
             UPPER(category) {match[0]} ? AND
             UPPER(species) {match[0]} ? AND
             UPPER(gender) {match[0]} ? AND
             UPPER(Rating) {match[0]} ?''', (match[1]+fields['user']+match[1],) + tuple(fields.values())[2:]).fetchall()
     else:
-        subs = db.execute(f'''SELECT * FROM submissions
+        subs = db.execute(f'''SELECT author, udate, id, title FROM submissions
             WHERE title {match[0]} ? AND
+            description {match[0]} ? AND
             UPPER(tags) {match[0]} ? AND
             UPPER(category) {match[0]} ? AND
             UPPER(species) {match[0]} ? AND
             UPPER(gender) {match[0]} ? AND
             UPPER(Rating) {match[0]} ?''', tuple(fields.values())[2:]).fetchall()
 
-    subs = {s[0]: s for s in subs}
+    subs = {s[2]: s for s in subs}
 
     if fields['user']:
         if not regex:
             fields['user'] = re.sub('[^a-z0-9\-.]', '', fields['user'])
 
-        users = db.execute(f'SELECT gallery, scraps, favorites, extras FROM users WHERE name {match[0]} ?', (match[1]+fields['user']+match[1],))
+        users = db.execute(f'SELECT gallery, scraps, favorites, extras FROM users WHERE user {match[0]} ?', (match[1]+fields['user']+match[1],))
         users = users.fetchall()
         if not len(users):
             users = [('','','','')]
@@ -171,10 +176,10 @@ def search(Session, db, fields, regex=False, case=False):
     str_cl = re.compile('[^\x00-\x7F]')
     for s in subs:
         if fields['user']:
-            print(f'({s[-1]}) {s[1][0:11]: ^{11}} |', end='', flush=True)
+            print(f'({s[-1]}) {s[0][0:11]: ^{11}} |', end='', flush=True)
         else:
-            print(f'{s[1][0:15]: <15} |', end='', flush=True)
-        print(f' {s[4]} {s[0]:0>10}', end='', flush=True)
+            print(f'{s[0][0:15]: <15} |', end='', flush=True)
+        print(f' {s[1]} {s[2]:0>10}', end='', flush=True)
         if os.get_terminal_size()[0] > 42:
             print(f' | {str_cl.sub("",s[3][0:os.get_terminal_size()[0]-45])}')
         else:
@@ -206,6 +211,7 @@ def main(Session, db):
             else:
                 fields['sect'] = ''
             fields['titl'] = readkeys.input('Title: "', '"')
+            fields['desc'] = readkeys.input('Description: "', '"')
             fields['tags'] = readkeys.input('Tags: "', '"')
             fields['catg'] = readkeys.input('Category: "', '"')
             fields['spec'] = readkeys.input('Species: "', '"')

@@ -290,7 +290,7 @@ def update(Session, db, users=[], sections=[], speed=2, force=0):
     print('USR PAGE SECT. |     ID     | TITLE -> RESULT')
     print('-'*47)
 
-    users_db = db.execute("SELECT name, folders FROM users ORDER BY name ASC")
+    users_db = db.execute("SELECT user, folders FROM users ORDER BY user ASC")
     t = int(time.time())
     fadb.info_up(db, 'LASTUP', t)
     fadb.info_up(db, 'LASTUPT', 0)
@@ -335,6 +335,10 @@ def update(Session, db, users=[], sections=[], speed=2, force=0):
 
     if not flag_download:
         print("No new submissions were downloaded")
+    else:
+        print('\nIndexing new entries ... ', end='', flush=True)
+        fadb.mkindex(db)
+        print('Done')
 
     t = int(time.time()) - t
     fadb.info_up(db, 'LASTUPT', t)
@@ -377,6 +381,7 @@ def download(Session, db, users, sections, sync, speed, force):
     print('Download')
     print('USR PAGE SECT. |     ID     | TITLE -> RESULT')
 
+    flag_download = False
     t = int(time.time())
     fadb.info_up(db, 'LASTDL', t)
     fadb.info_up(db, 'LASTDLT', 0)
@@ -395,6 +400,8 @@ def download(Session, db, users, sections, sync, speed, force):
                     fadb.usr_up(db, usr[0], sec, 'FOLDERS')
             elif dl_ret == 4:
                 fadb.usr_rep(db, usr[0], sec, sec+'!', 'FOLDERS')
+            if dl_ret in (0,1,2,5):
+                flag_download = True
             if dl_ret == 5:
                 break
             if i < len(usr[1])-1:
@@ -407,6 +414,11 @@ def download(Session, db, users, sections, sync, speed, force):
 
     t = int(time.time()) - t
     fadb.info_up(db, 'LASTDLT', t)
+
+    if flag_download:
+        print('\nIndexing new entries ... ', end='', flush=True)
+        fadb.mkindex(db)
+        print('Done')
 
 def download_main(Session, db):
     header('Download & Update')
@@ -464,6 +476,8 @@ def download_main(Session, db):
         download(Session, db, users, sections, sync, speed, force)
     fadb.info_up(db, 'USRN', fadb.table_n(db, 'USERS'))
     fadb.info_up(db, 'SUBN', fadb.table_n(db, 'SUBMISSIONS'))
+
+    print()
 
     if quit: sys.exit(0)
     return Session
