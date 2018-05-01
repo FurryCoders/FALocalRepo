@@ -153,6 +153,48 @@ def usr_find_errors(db):
 
     return errs_empty, errs_repet, errs_names, errs_namef, errs_foldr, errs_fl_dl
 
+def inf_find_errors(db):
+    infos = db.execute('SELECT FIELD, VALUE FROM INFOS').fetchall()
+
+    errs_reps = []
+    errs_vers = False
+    errs_name = False
+    errs_nums = False
+    errs_timu = False
+    errs_timd = False
+
+
+    for i in range(0, len(infos)):
+        for j in range(0, len(infos)):
+            if infos[i][0] == infos[j][0] and i != j:
+                errs_reps.append(infos[i])
+    infos = [i for i in infos if i not in errs_reps]
+
+    infos = {i[0]: i[1] for i in infos}
+
+    if 'VERSION' not in infos or infos['VERSION'] != '2.6':
+        errs_vers = True
+
+    if 'dbNAME' not in infos or infos['dbNAME'] != '':
+        errs_name = True
+
+    if 'USRN' not in infos or infos['USRN'] != '':
+        errs_nums = True
+    if 'SUBN' not in infos or infos['SUBN'] != '':
+        errs_nums = True
+
+    if 'LASTUP' not in infos or infos['LASTUP'] != '':
+        errs_timu = True
+    if 'LASTUPT' not in infos or infos['LASTUPT'] != '':
+        errs_timu = True
+
+    if 'LASTDL' not in infos or infos['LASTDL'] != '':
+        errs_timd = True
+    if 'LASTDLT' not in infos or infos['LASTDLT'] != '':
+        errs_timd = True
+
+    return errs_reps, errs_vers, errs_name, errs_nums, errs_timu, errs_timd
+
 def index(Session, db):
     print('Indexing new entries ... ', end='', flush=True)
     fadb.mkindex(db)
@@ -394,6 +436,10 @@ def repair_usrs(Session, db):
     vacuum()
 
     return Session
+
+def reapir_info(Session, db):
+    print('Analyzing infos database for errors ... ', end='', flush=True)
+    print('Done')
 
 def repair_all(Session, db):
     repair_subs(Session, db)
