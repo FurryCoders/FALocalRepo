@@ -313,6 +313,7 @@ def repair_usrs(Session, db):
     print(f'Found {len(errs_empty)} empty user{"s"*bool(len(errs_empty) != 1)}')
     print(f'Found {len(errs_repet)} repeated user{"s"*bool(len(errs_repet) != 1)}')
     print(f'Found {len(errs_names)} capitalized username{"s"*bool(len(errs_names) != 1)}')
+    print(f'Found {len(errs_namef)} incorrect full username{"s"*bool(len(errs_names) != 1)}')
     print(f'Found {len(errs_foldr)} empty folder{"s"*bool(len(errs_foldr) != 1)}')
     print(f'Found {len(errs_fl_dl)} empty folder download{"s"*bool(len(errs_fl_dl) != 1)}')
 
@@ -323,7 +324,7 @@ def repair_usrs(Session, db):
             print()
             print('Empty users')
             for u in errs_empty:
-                print(f' {u}')
+                print(f'{u}')
                 fadb.usr_rm(db, u, True)
 
         if len(errs_repet):
@@ -331,7 +332,7 @@ def repair_usrs(Session, db):
             print('Repeated users')
             while len(errs_repet):
                 u = errs_repet[0]
-                print(f' {u[0]}')
+                print(f'{u[0]}')
                 u_new = [u[0].lower(),'','','','','']
                 u_rep = [ur for ur in errs_repet if ur[0].lower() == u[0].lower()]
                 errs_repet = [ur for ur in errs_repet if ur[0].lower() != u[0].lower()]
@@ -362,7 +363,7 @@ def repair_usrs(Session, db):
             print()
             print('Capitalized usernames')
             for u in errs_names:
-                print(f' {u[0]}')
+                print(f'{u[0]}')
                 fadb.usr_rep(db, u[0], u[0], u[0].lower().replace('_',''), 'USER')
                 u_d = usr_check_folder_dl(u)
                 if u[1].lower().replace('_','') != u[0]:
@@ -380,7 +381,7 @@ def repair_usrs(Session, db):
                 print('Session error, will attempt manual repair')
             print('-'*47)
             for u in errs_namef:
-                print(f' {u[0]} ', end='', flush=True)
+                print(f'{u[0]} ', end='', flush=True)
                 u_db = db.execute(f'SELECT author FROM submissions WHERE authorurl = "{u[0]}"').fetchall()
                 if len(u_db):
                     u_db = u_db[0][0]
@@ -404,7 +405,7 @@ def repair_usrs(Session, db):
             print()
             print('Empty folders')
             for u in errs_foldr:
-                print(f' {u[0]}')
+                print(f'{u[0]}')
                 if len(u[3]):
                     fadb.usr_up(db, u[0], 'g', 'FOLDERS')
                 if len(u[4]):
