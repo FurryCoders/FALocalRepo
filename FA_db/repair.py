@@ -153,6 +153,20 @@ def usr_find_errors(db):
 
     return errs_empty, errs_repet, errs_names, errs_namef, errs_foldr, errs_fl_dl
 
+def index(Session, db):
+    print('Indexing new entries ... ', end='', flush=True)
+    fadb.mkindex(db)
+    print('Done\n')
+
+    return Session
+
+def vacuum(Session, db):
+    print('Optimizing database ... ', end='', flush=True)
+    db.execute("VACUUM")
+    print('Done\n')
+
+    return Session
+
 def repair_subs(Session, db):
     print('Analyzing submissions database for errors ... ', end='', flush=True)
     errs_id, errs_vl, errs_fl = sub_find_errors(db)
@@ -160,29 +174,31 @@ def repair_subs(Session, db):
     print(f'Found {len(errs_id)} id error{"s"*bool(len(errs_id) != 1)}')
     print(f'Found {len(errs_vl)} field values error{"s"*bool(len(errs_vl) != 1)}')
     print(f'Found {len(errs_fl)} files error{"s"*bool(len(errs_fl) != 1)}')
-    print()
 
     fatl.sigint_clear()
 
-    if any(len(errs) for errs in (errs_id, errs_vl, errs_fl)):
-        Session = fadl.session(Session)
+    while any(len(errs) for errs in (errs_id, errs_vl, errs_fl)):
         print()
+
+        Session = fadl.session(Session)
 
         if not Session:
             print('Session error')
             errs_id = errs_vl = errs_fl = ''
 
         if len(errs_id):
+            print()
             print('ID errors')
             for err in errs_id:
                 print(err[0:4])
 
         if len(errs_vl):
+            print()
             print('Fixing field values errors', end='')
             i, l, L = 0, len(str(len(errs_vl))), len(errs_vl)
             errs_fl_mv = 0
             for sub in errs_vl:
-                if fatl.sigint_check(): return Session
+                if fatl.sigint_check(): break
                 ID = sub[0]
                 i += 1
                 print(f'\n{i:0>{l}}/{L} - {ID:0>10}', end='', flush=True)
@@ -217,10 +233,11 @@ def repair_subs(Session, db):
                 print(f'{errs_fl_mv} new submission{"s"*bool(len(errs_fl_mv) != 1)} with files missing')
 
         if len(errs_fl):
+            print()
             print('Fixing missing files', end='')
             i, l, L = 0, len(str(len(errs_fl))), len(errs_fl)
             for sub in errs_fl:
-                if fatl.sigint_check(): return Session
+                if fatl.sigint_check(): break
                 ID = sub[0]
                 i += 1
                 print(f'\n{i:0>{l}}/{L} - {ID:0>10} {sub[13]}', end='', flush=True)
@@ -237,9 +254,12 @@ def repair_subs(Session, db):
                 db.execute(f'DELETE FROM submissions WHERE id = {ID}')
                 db.commit()
                 fadl.dl_sub(Session, str(ID), f'FA.files/{sub[13]}', db, True, False, 2)
-            print()
 
-        print()
+        break
+
+    print()
+    index()
+    vacuum()
 
     return Session
 
@@ -252,21 +272,19 @@ def repair_usrs(Session, db):
     print(f'Found {len(errs_names)} capitalized username{"s"*bool(len(errs_names) != 1)}')
     print(f'Found {len(errs_foldr)} empty folder{"s"*bool(len(errs_foldr) != 1)}')
     print(f'Found {len(errs_fl_dl)} empty folder download{"s"*bool(len(errs_fl_dl) != 1)}')
-    print()
 
     fatl.sigint_clear()
 
-    if any(len(errs) for errs in (errs_empty, errs_repet, errs_names, errs_names, errs_foldr, errs_fl_dl)):
-        print()
-
+    while any(len(errs) for errs in (errs_empty, errs_repet, errs_names, errs_names, errs_foldr, errs_fl_dl)):
         if len(errs_empty):
+            print()
             print('Empty users')
             for u in errs_empty:
                 print(f' {u}')
                 fadb.usr_rm(db, u, True)
-        print()
 
         if len(errs_repet):
+            print()
             print('Repeated users')
             while len(errs_repet):
                 u = errs_repet[0]
@@ -296,9 +314,9 @@ def repair_usrs(Session, db):
                     u_d = usr_check_folder_dl(u)
                     if len(u_d):
                         errs_fl_dl.append([u[0], u_d])
-            print()
 
         if len(errs_names):
+            print()
             print('Capitalized usernames')
             for u in errs_names:
                 print(f' {u[0]}')
@@ -310,9 +328,9 @@ def repair_usrs(Session, db):
                     errs_foldr.append(u)
                 elif len(u_d):
                     errs_fl_dl.append([u[0], u_d])
-            print()
 
         if len(errs_namef):
+            print()
             print('Incorrect full usernames')
             Session = fadl.session(Session)
             if not Session:
@@ -340,6 +358,7 @@ def repair_usrs(Session, db):
                     errs_fl_dl.append([u[0], u_d])
 
         if len(errs_foldr):
+            print()
             print('Empty folders')
             for u in errs_foldr:
                 print(f' {u[0]}')
@@ -354,9 +373,9 @@ def repair_usrs(Session, db):
                 u_d = usr_check_folder_dl(u)
                 if len(u_d):
                     errs_fl_dl.append([u[0], u_d])
-            print()
 
         if len(errs_fl_dl):
+            print()
             print('Missing submissions')
             Session = fadl.session(Session)
             if not Session:
@@ -367,7 +386,12 @@ def repair_usrs(Session, db):
             for u in errs_fl_dl:
                 for f in u[1]:
                     fadl.dl_usr(Session, u[0], f, db, False, 2, 0, False)
-            print()
+
+        break
+
+    print()
+    index()
+    vacuum()
 
     return Session
 
@@ -377,20 +401,6 @@ def repair_all(Session, db):
 
     repair_usrs(Session, db)
     fatl.sigint_clear()
-
-    return Session
-
-def index(Session, db):
-    print('Indexing new entries ... ', end='', flush=True)
-    fadb.mkindex(db)
-    print('Done\n')
-
-    return Session
-
-def vacuum(Session, db):
-    print('Optimizing database ... ', end='', flush=True)
-    db.execute("VACUUM")
-    print('Done\n')
 
     return Session
 
@@ -423,8 +433,8 @@ def repair(Session, db):
 
         if k == str(len(menu)):
             break
-        print()
         Session = menu[k][1](Session, db)
+        fatl.sigint_clear()
 
         print('-'*30+'\n')
 
