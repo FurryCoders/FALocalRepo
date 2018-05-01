@@ -196,7 +196,7 @@ def inf_find_errors(db):
     return errs_reps, errs_vers, errs_name, errs_nums, errs_timu, errs_timd
 
 def index(Session, db):
-    print('Indexing new entries ... ', end='', flush=True)
+    print('Indexing entries ... ', end='', flush=True)
     fadb.mkindex(db)
     print('Done\n')
 
