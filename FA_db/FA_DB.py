@@ -243,7 +243,7 @@ def mktable(db, table):
             db.execute('''CREATE TABLE INFOS
                 (FIELD CHAR,
                 VALUE CHAR);''')
-            db.execute('INSERT INTO INFOS (FIELD, VALUE) VALUES ("dbNAME", "")')
+            db.execute('INSERT INTO INFOS (FIELD, VALUE) VALUES ("DBNAME", "")')
             db.execute('INSERT INTO INFOS (FIELD, VALUE) VALUES ("VERSION", "2.3")')
             db.execute('INSERT INTO INFOS (FIELD, VALUE) VALUES ("USRN", 0)')
             db.execute('INSERT INTO INFOS (FIELD, VALUE) VALUES ("SUBN", 0)')

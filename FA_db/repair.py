@@ -175,7 +175,7 @@ def inf_find_errors(db):
     if 'VERSION' not in infos or infos['VERSION'] != '2.6':
         errs_vers = True
 
-    if 'dbNAME' not in infos or infos['dbNAME'] != '':
+    if 'DBNAME' not in infos or infos['DBNAME'] != '':
         errs_name = True
 
     if 'USRN' not in infos or not str(infos['USRN']).isdigit() :
@@ -444,7 +444,7 @@ def repair_info(Session, db):
     print('Done')
     print(f'Found {len(errs_reps)} repeated entr{"ies"*bool(len(errs_reps) != 1)}{"y"*bool(len(errs_reps) == 1)}')
     print(f'Found{" no"*(not errs_vers)} version error')
-    print(f'Found{" no"*(not errs_name)} dbNAME error')
+    print(f'Found{" no"*(not errs_name)} db name error')
     print(f'Found{" no"*(not errs_nums)} numbers error')
     print(f'Found{" no"*(not errs_timu)} update times error')
     print(f'Found{" no"*(not errs_timd)} download times error')
