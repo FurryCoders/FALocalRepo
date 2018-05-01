@@ -358,7 +358,7 @@ def download(Session, db, users, sections, sync, speed, force):
         page_check = check_page(Session, f'user/{usr_sec[i][0]}')
         if page_check:
             print('Found')
-            usr_full = page_check.lstrip('Userpage of ').rstrip(' -- Fur Affinity [dot] net').strip()
+            usr_full = page_check[11:-25].strip()
         else:
             print('Not found')
             usr_sec[i][1] = re.sub('[^eE]', '', usr_sec[i][1])
