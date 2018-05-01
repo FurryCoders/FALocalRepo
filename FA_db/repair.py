@@ -389,7 +389,7 @@ def repair_usrs(Session, db):
                 elif Session:
                     u_fa = fadl.check_page(Session, 'user/'+u[0])
                     if u_fa:
-                        u_fa = u_fa.lstrip('Userpage of ').rstrip(' -- Fur Affinity [dot] net').strip()
+                        u_fa = u_fa[11:-25].strip()
                     else:
                         u_fa = u[0]
                     print(f'- FA: {u_fa}')
