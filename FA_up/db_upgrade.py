@@ -1,10 +1,13 @@
 import sqlite3
+import sys
 import FA_tools as fatl
 from .v1v2 import db_upgrade_v1v2
 from .v2v2_3 import db_upgrade_v2v2_3
 from .v2_3v2_6 import db_upgrade_v2_3v2_6
 
 def db_upgrade_main():
+    current_version = '2.6'
+
     while True:
         db = sqlite3.connect('FA.db')
 
@@ -29,6 +32,12 @@ def db_upgrade_main():
             db_upgrade = db_upgrade_v2v2_3
         elif infos['VERSION'] < '2.6':
             db_upgrade = db_upgrade_v2_3v2_6
+        elif infos['VERSION'] > current_version:
+            print('Program is not up to date')
+            print(f'FA version: {current_version}')
+            print(f'DB version: {infos["VERSION"]}')
+            print('Use a program version equal or higher')
+            sys.exit(1)
 
 
         if db_upgrade:
