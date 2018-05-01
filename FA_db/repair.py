@@ -1,6 +1,7 @@
 import sqlite3
 import os, glob
 import re
+import PythonRead as readkeys
 import FA_dl as fadl
 import FA_db as fadb
 import FA_tools as fatl
@@ -152,26 +153,95 @@ def usr_find_errors(db):
 
     return errs_empty, errs_repet, errs_names, errs_namef, errs_foldr, errs_fl_dl
 
-def repair_subs(Session, db, errs_id, errs_vl, errs_fl):
-    if any(len(errs) for errs in (errs_id, errs_vl, errs_fl)):
-        Session = fadl.session(Session)
+def inf_find_errors(db):
+    infos = db.execute('SELECT FIELD, VALUE FROM INFOS').fetchall()
+
+    errs_reps = []
+    errs_vers = False
+    errs_name = False
+    errs_nums = False
+    errs_timu = False
+    errs_timd = False
+
+
+    for i in range(0, len(infos)):
+        for j in range(0, len(infos)):
+            if infos[i][0] == infos[j][0] and i != j:
+                errs_reps.append(infos[i])
+    infos = [i for i in infos if i not in errs_reps]
+
+    infos = {i[0]: i[1] for i in infos}
+
+    if 'VERSION' not in infos or infos['VERSION'] != '2.6':
+        errs_vers = True
+
+    if 'DBNAME' not in infos or infos['DBNAME'] != '':
+        errs_name = True
+
+    if 'USRN' not in infos or not str(infos['USRN']).isdigit() :
+        errs_nums = True
+    if 'SUBN' not in infos or not str(infos['SUBN']).isdigit() :
+        errs_nums = True
+
+    if 'LASTUP' not in infos or not str(infos['LASTUP']).isdigit() :
+        errs_timu = True
+    if 'LASTUPT' not in infos or not str(infos['LASTUPT']).isdigit() :
+        errs_timu = True
+
+    if 'LASTDL' not in infos or not str(infos['LASTDL']).isdigit() :
+        errs_timd = True
+    if 'LASTDLT' not in infos or not str(infos['LASTDLT']).isdigit() :
+        errs_timd = True
+
+    return errs_reps, errs_vers, errs_name, errs_nums, errs_timu, errs_timd
+
+def index(Session, db):
+    print('Indexing entries ... ', end='', flush=True)
+    fadb.mkindex(db)
+    print('Done\n')
+
+    return Session
+
+def vacuum(Session, db):
+    print('Optimizing database ... ', end='', flush=True)
+    db.execute("VACUUM")
+    db.commit()
+    print('Done\n')
+
+    return Session
+
+def repair_subs(Session, db):
+    print('Analyzing submissions database for errors ... ', end='', flush=True)
+    errs_id, errs_vl, errs_fl = sub_find_errors(db)
+    print('Done')
+    print(f'Found {len(errs_id)} id error{"s"*bool(len(errs_id) != 1)}')
+    print(f'Found {len(errs_vl)} field values error{"s"*bool(len(errs_vl) != 1)}')
+    print(f'Found {len(errs_fl)} files error{"s"*bool(len(errs_fl) != 1)}')
+
+    fatl.sigint_clear()
+
+    while any(len(errs) for errs in (errs_id, errs_vl, errs_fl)):
         print()
+
+        Session = fadl.session(Session)
 
         if not Session:
             print('Session error')
             errs_id = errs_vl = errs_fl = ''
 
         if len(errs_id):
+            print()
             print('ID errors')
             for err in errs_id:
                 print(err[0:4])
 
         if len(errs_vl):
+            print()
             print('Fixing field values errors', end='')
             i, l, L = 0, len(str(len(errs_vl))), len(errs_vl)
             errs_fl_mv = 0
             for sub in errs_vl:
-                if fatl.sigint_check(): return Session
+                if fatl.sigint_check(): break
                 ID = sub[0]
                 i += 1
                 print(f'\n{i:0>{l}}/{L} - {ID:0>10}', end='', flush=True)
@@ -206,10 +276,11 @@ def repair_subs(Session, db, errs_id, errs_vl, errs_fl):
                 print(f'{errs_fl_mv} new submission{"s"*bool(len(errs_fl_mv) != 1)} with files missing')
 
         if len(errs_fl):
+            print()
             print('Fixing missing files', end='')
             i, l, L = 0, len(str(len(errs_fl))), len(errs_fl)
             for sub in errs_fl:
-                if fatl.sigint_check(): return Session
+                if fatl.sigint_check(): break
                 ID = sub[0]
                 i += 1
                 print(f'\n{i:0>{l}}/{L} - {ID:0>10} {sub[13]}', end='', flush=True)
@@ -226,28 +297,42 @@ def repair_subs(Session, db, errs_id, errs_vl, errs_fl):
                 db.execute(f'DELETE FROM submissions WHERE id = {ID}')
                 db.commit()
                 fadl.dl_sub(Session, str(ID), f'FA.files/{sub[13]}', db, True, False, 2)
-            print()
 
-        print()
+        break
+
+    print()
+    index(Session, db)
+    vacuum(Session, db)
 
     return Session
 
-def repair_usrs(Session, db, errs_empty, errs_repet, errs_names, errs_namef, errs_foldr, errs_fl_dl):
-    if any(len(errs) for errs in (errs_empty, errs_repet, errs_names, errs_names, errs_foldr, errs_fl_dl)):
-        print()
+def repair_usrs(Session, db):
+    print('Analyzing users database for errors ... ', end='', flush=True)
+    errs_empty, errs_repet, errs_names, errs_namef, errs_foldr, errs_fl_dl = usr_find_errors(db)
+    print('Done')
+    print(f'Found {len(errs_empty)} empty user{"s"*bool(len(errs_empty) != 1)}')
+    print(f'Found {len(errs_repet)} repeated user{"s"*bool(len(errs_repet) != 1)}')
+    print(f'Found {len(errs_names)} capitalized username{"s"*bool(len(errs_names) != 1)}')
+    print(f'Found {len(errs_namef)} incorrect full username{"s"*bool(len(errs_names) != 1)}')
+    print(f'Found {len(errs_foldr)} empty folder{"s"*bool(len(errs_foldr) != 1)}')
+    print(f'Found {len(errs_fl_dl)} empty folder download{"s"*bool(len(errs_fl_dl) != 1)}')
 
+    fatl.sigint_clear()
+
+    while any(len(errs) for errs in (errs_empty, errs_repet, errs_names, errs_names, errs_foldr, errs_fl_dl)):
         if len(errs_empty):
+            print()
             print('Empty users')
             for u in errs_empty:
-                print(f' {u}')
+                print(f'{u}')
                 fadb.usr_rm(db, u, True)
-        print()
 
         if len(errs_repet):
+            print()
             print('Repeated users')
             while len(errs_repet):
                 u = errs_repet[0]
-                print(f' {u[0]}')
+                print(f'{u[0]}')
                 u_new = [u[0].lower(),'','','','','']
                 u_rep = [ur for ur in errs_repet if ur[0].lower() == u[0].lower()]
                 errs_repet = [ur for ur in errs_repet if ur[0].lower() != u[0].lower()]
@@ -273,12 +358,12 @@ def repair_usrs(Session, db, errs_empty, errs_repet, errs_names, errs_namef, err
                     u_d = usr_check_folder_dl(u)
                     if len(u_d):
                         errs_fl_dl.append([u[0], u_d])
-            print()
 
         if len(errs_names):
+            print()
             print('Capitalized usernames')
             for u in errs_names:
-                print(f' {u[0]}')
+                print(f'{u[0]}')
                 fadb.usr_rep(db, u[0], u[0], u[0].lower().replace('_',''), 'USER')
                 u_d = usr_check_folder_dl(u)
                 if u[1].lower().replace('_','') != u[0]:
@@ -287,16 +372,16 @@ def repair_usrs(Session, db, errs_empty, errs_repet, errs_names, errs_namef, err
                     errs_foldr.append(u)
                 elif len(u_d):
                     errs_fl_dl.append([u[0], u_d])
-            print()
 
         if len(errs_namef):
+            print()
             print('Incorrect full usernames')
             Session = fadl.session(Session)
             if not Session:
                 print('Session error, will attempt manual repair')
             print('-'*47)
             for u in errs_namef:
-                print(f' {u[0]} ', end='', flush=True)
+                print(f'{u[0]} ', end='', flush=True)
                 u_db = db.execute(f'SELECT author FROM submissions WHERE authorurl = "{u[0]}"').fetchall()
                 if len(u_db):
                     u_db = u_db[0][0]
@@ -305,7 +390,7 @@ def repair_usrs(Session, db, errs_empty, errs_repet, errs_names, errs_namef, err
                 elif Session:
                     u_fa = fadl.check_page(Session, 'user/'+u[0])
                     if u_fa:
-                        u_fa = u_fa.lstrip('Userpage of ').rstrip(' -- Fur Affinity [dot] net').strip()
+                        u_fa = u_fa[11:-25].strip()
                     else:
                         u_fa = u[0]
                     print(f'- FA: {u_fa}')
@@ -317,9 +402,10 @@ def repair_usrs(Session, db, errs_empty, errs_repet, errs_names, errs_namef, err
                     errs_fl_dl.append([u[0], u_d])
 
         if len(errs_foldr):
+            print()
             print('Empty folders')
             for u in errs_foldr:
-                print(f' {u[0]}')
+                print(f'{u[0]}')
                 if len(u[3]):
                     fadb.usr_up(db, u[0], 'g', 'FOLDERS')
                 if len(u[4]):
@@ -331,9 +417,9 @@ def repair_usrs(Session, db, errs_empty, errs_repet, errs_names, errs_namef, err
                 u_d = usr_check_folder_dl(u)
                 if len(u_d):
                     errs_fl_dl.append([u[0], u_d])
-            print()
 
         if len(errs_fl_dl):
+            print()
             print('Missing submissions')
             Session = fadl.session(Session)
             if not Session:
@@ -344,49 +430,130 @@ def repair_usrs(Session, db, errs_empty, errs_repet, errs_names, errs_namef, err
             for u in errs_fl_dl:
                 for f in u[1]:
                     fadl.dl_usr(Session, u[0], f, db, False, 2, 0, False)
+
+        break
+
+    print()
+    index(Session, db)
+    vacuum(Session, db)
+
+    return Session
+
+def repair_info(Session, db):
+    print('Analyzing infos database for errors ... ', end='', flush=True)
+    errs_reps, errs_vers, errs_name, errs_nums, errs_timu, errs_timd = inf_find_errors(db)
+    print('Done')
+    print(f'Found {len(errs_reps)} repeated entr{"ies"*bool(len(errs_reps) != 1)}{"y"*bool(len(errs_reps) == 1)}')
+    print(f'Found{" no"*(not errs_vers)} version error')
+    print(f'Found{" no"*(not errs_name)} db name error')
+    print(f'Found{" no"*(not errs_nums)} numbers error')
+    print(f'Found{" no"*(not errs_timu)} update times error')
+    print(f'Found{" no"*(not errs_timd)} download times error')
+
+    if any(err for err in (errs_reps, errs_vers, errs_name, errs_nums, errs_timu, errs_timd)):
+        if len(errs_reps):
             print()
+            print('Deleting repeated entries ... ', end='', flush=True)
+            for err in errs_reps:
+                db.execute(f'DELETE FROM infos WHERE field = "{err[0]}"')
+            print('Done')
+
+        if errs_vers:
+            print()
+            print('Fixing VERSION ... ', end='', flush=True)
+            db.execute(f'DELETE FROM infos WHERE field = "VERSION"')
+            db.execute('INSERT INTO INFOS (FIELD, VALUE) VALUES ("VERSION", "2.6")')
+            db.commit()
+            print('Done')
+
+        if errs_name:
+            print()
+            print('Fixing dbNAME ... ', end='', flush=True)
+            db.execute(f'DELETE FROM infos WHERE field = "dbNAME"')
+            db.execute('INSERT INTO INFOS (FIELD, VALUE) VALUES ("dbNAME", "")')
+            db.commit()
+            print('Done')
+
+        if errs_nums:
+            print()
+            print('Fixing numbers ... ', end='', flush=True)
+            db.execute(f'DELETE FROM infos WHERE field = "SUBN"')
+            db.execute(f'DELETE FROM infos WHERE field = "USRN"')
+            db.execute(f'INSERT INTO INFOS (FIELD, VALUE) VALUES ("USRN", {table_n(db, "USERS")})')
+            db.execute(f'INSERT INTO INFOS (FIELD, VALUE) VALUES ("USRN", {table_n(db, "SUBMISSIONS")})')
+            db.commit()
+            print('Done')
+
+        if errs_timu:
+            print()
+            print('Fixing update times ... ', end='', flush=True)
+            db.execute(f'DELETE FROM infos WHERE field = "LASTUP"')
+            db.execute(f'DELETE FROM infos WHERE field = "LASTUPT"')
+            db.execute('INSERT INTO INFOS (FIELD, VALUE) VALUES ("LASTUP", 0)')
+            db.execute('INSERT INTO INFOS (FIELD, VALUE) VALUES ("LASTUPT", 0)')
+            db.commit()
+            print('Done')
+
+        if errs_timd:
+            print()
+            print('Fixing download times ... ', end='', flush=True)
+            db.execute(f'DELETE FROM infos WHERE field = "LASTDL"')
+            db.execute(f'DELETE FROM infos WHERE field = "LASTDLT"')
+            db.execute('INSERT INTO INFOS (FIELD, VALUE) VALUES ("LASTDL", 0)')
+            db.execute('INSERT INTO INFOS (FIELD, VALUE) VALUES ("LASTDLT", 0)')
+            db.commit()
+            print('Done')
+
+    print()
+    vacuum(Session, db)
+
+    return Session
+
+def repair_all(Session, db):
+    repair_subs(Session, db)
+    fatl.sigint_clear()
+
+    repair_usrs(Session, db)
+    fatl.sigint_clear()
+
+    repair_info(Session, db)
+    fatl.sigint_clear()
 
     return Session
 
 def repair(Session, db):
-    fatl.header('Repair database')
+    menu = (
+        ('Submissions', repair_subs),
+        ('Users', repair_usrs),
+        ('Infos', repair_info),
+        ('All', repair_all),
+        ('Index', index),
+        ('Optimize', vacuum),
+        ('Return to menu', (lambda *x: x[0]))
+    )
+    menu = {str(k): mk for k, mk in enumerate(menu, 1)}
+    menu_l = [f'{i}) {menu[i][0]}' for i in menu]
 
-    print('Analyzing submissions database for errors ... ', end='', flush=True)
-    errs_id, errs_vl, errs_fl = sub_find_errors(db)
-    print('Done')
-    print(f'Found {len(errs_id)} id error{"s"*bool(len(errs_id) != 1)}')
-    print(f'Found {len(errs_vl)} field values error{"s"*bool(len(errs_vl) != 1)}')
-    print(f'Found {len(errs_fl)} files error{"s"*bool(len(errs_fl) != 1)}')
-    print()
+    while True:
+        fatl.sigint_clear()
 
-    fatl.sigint_clear()
+        fatl.header('Repair database')
 
-    print('Analyzing users database for errors ... ', end='', flush=True)
-    errs_empty, errs_repet, errs_names, errs_namef, errs_foldr, errs_fl_dl = usr_find_errors(db)
-    print('Done')
-    print(f'Found {len(errs_empty)} empty user{"s"*bool(len(errs_id) != 1)}')
-    print(f'Found {len(errs_repet)} repeated user{"s"*bool(len(errs_vl) != 1)}')
-    print(f'Found {len(errs_names)} capitalized username{"s"*bool(len(errs_fl) != 1)}')
-    print(f'Found {len(errs_foldr)} empty folder{"s"*bool(len(errs_fl) != 1)}')
-    print(f'Found {len(errs_fl_dl)} empty folder download{"s"*bool(len(errs_fl) != 1)}')
-    print()
+        print('\n'.join(menu_l))
+        print('\nChoose option: ', end='', flush=True)
+        k = '0'
+        while k not in menu:
+            k = readkeys.getkey()
+            k = k.replace('\x03', str(len(menu)))
+            k = k.replace('\x04', str(len(menu)))
+            k = k.replace('\x1b', str(len(menu)))
+        print(k+'\n')
 
-    fatl.sigint_clear()
+        if k == str(len(menu)):
+            break
+        Session = menu[k][1](Session, db)
+        fatl.sigint_clear()
 
-    Session = repair_subs(Session, db, errs_id, errs_vl, errs_fl)
-
-    fatl.sigint_clear()
-
-    Session = repair_usrs(Session, db, errs_empty, errs_repet, errs_names, errs_namef, errs_foldr, errs_fl_dl)
-
-    fatl.sigint_clear()
-
-    print('Indexing new entries ... ', end='', flush=True)
-    fadb.mkindex(db)
-    print('Done')
-    print('Optimizing database ... ', end='', flush=True)
-    db.execute("VACUUM")
-    print('Done')
-    print('\nAll done')
+        print('-'*30+'\n')
 
     return Session
