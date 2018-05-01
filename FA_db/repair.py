@@ -205,6 +205,7 @@ def index(Session, db):
 def vacuum(Session, db):
     print('Optimizing database ... ', end='', flush=True)
     db.execute("VACUUM")
+    db.commit()
     print('Done\n')
 
     return Session
@@ -300,8 +301,8 @@ def repair_subs(Session, db):
         break
 
     print()
-    index()
-    vacuum()
+    index(Session, db)
+    vacuum(Session, db)
 
     return Session
 
@@ -432,8 +433,8 @@ def repair_usrs(Session, db):
         break
 
     print()
-    index()
-    vacuum()
+    index(Session, db)
+    vacuum(Session, db)
 
     return Session
 
@@ -442,11 +443,11 @@ def repair_info(Session, db):
     errs_reps, errs_vers, errs_name, errs_nums, errs_timu, errs_timd = inf_find_errors(db)
     print('Done')
     print(f'Found {len(errs_reps)} repeated entr{"ies"*bool(len(errs_reps) != 1)}{"y"*bool(len(errs_reps) == 1)}')
-    print(f'Found {"no"*errs_vers} version error')
-    print(f'Found {"no"*errs_name} dbNAME error')
-    print(f'Found {"no"*errs_nums} numbers error')
-    print(f'Found {"no"*errs_timu} update times error')
-    print(f'Found {"no"*errs_timd} download times error')
+    print(f'Found{" no"*(not errs_vers)} version error')
+    print(f'Found{" no"*(not errs_name)} dbNAME error')
+    print(f'Found{" no"*(not errs_nums)} numbers error')
+    print(f'Found{" no"*(not errs_timu)} update times error')
+    print(f'Found{" no"*(not errs_timd)} download times error')
 
     if any(err for err in (errs_reps, errs_vers, errs_name, errs_nums, errs_timu, errs_timd)):
         if len(errs_reps):
@@ -461,6 +462,7 @@ def repair_info(Session, db):
             print('Fixing VERSION ... ', end='', flush=True)
             db.execute(f'DELETE FROM infos WHERE field = "VERSION"')
             db.execute('INSERT INTO INFOS (FIELD, VALUE) VALUES ("VERSION", "2.6")')
+            db.commit()
             print('Done')
 
         if errs_name:
@@ -468,6 +470,7 @@ def repair_info(Session, db):
             print('Fixing dbNAME ... ', end='', flush=True)
             db.execute(f'DELETE FROM infos WHERE field = "dbNAME"')
             db.execute('INSERT INTO INFOS (FIELD, VALUE) VALUES ("dbNAME", "")')
+            db.commit()
             print('Done')
 
         if errs_nums:
@@ -477,6 +480,7 @@ def repair_info(Session, db):
             db.execute(f'DELETE FROM infos WHERE field = "USRN"')
             db.execute(f'INSERT INTO INFOS (FIELD, VALUE) VALUES ("USRN", {table_n(db, "USERS")})')
             db.execute(f'INSERT INTO INFOS (FIELD, VALUE) VALUES ("USRN", {table_n(db, "SUBMISSIONS")})')
+            db.commit()
             print('Done')
 
         if errs_timu:
@@ -486,6 +490,7 @@ def repair_info(Session, db):
             db.execute(f'DELETE FROM infos WHERE field = "LASTUPT"')
             db.execute('INSERT INTO INFOS (FIELD, VALUE) VALUES ("LASTUP", 0)')
             db.execute('INSERT INTO INFOS (FIELD, VALUE) VALUES ("LASTUPT", 0)')
+            db.commit()
             print('Done')
 
         if errs_timd:
@@ -495,10 +500,11 @@ def repair_info(Session, db):
             db.execute(f'DELETE FROM infos WHERE field = "LASTDLT"')
             db.execute('INSERT INTO INFOS (FIELD, VALUE) VALUES ("LASTDL", 0)')
             db.execute('INSERT INTO INFOS (FIELD, VALUE) VALUES ("LASTDLT", 0)')
+            db.commit()
             print('Done')
 
     print()
-    vacuum()
+    vacuum(Session, db)
 
     return Session
 
