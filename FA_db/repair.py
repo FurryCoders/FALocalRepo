@@ -178,19 +178,19 @@ def inf_find_errors(db):
     if 'dbNAME' not in infos or infos['dbNAME'] != '':
         errs_name = True
 
-    if 'USRN' not in infos or infos['USRN'] != '':
+    if 'USRN' not in infos or not str(infos['USRN']).isdigit() :
         errs_nums = True
-    if 'SUBN' not in infos or infos['SUBN'] != '':
+    if 'SUBN' not in infos or not str(infos['SUBN']).isdigit() :
         errs_nums = True
 
-    if 'LASTUP' not in infos or infos['LASTUP'] != '':
+    if 'LASTUP' not in infos or not str(infos['LASTUP']).isdigit() :
         errs_timu = True
-    if 'LASTUPT' not in infos or infos['LASTUPT'] != '':
+    if 'LASTUPT' not in infos or not str(infos['LASTUPT']).isdigit() :
         errs_timu = True
 
-    if 'LASTDL' not in infos or infos['LASTDL'] != '':
+    if 'LASTDL' not in infos or not str(infos['LASTDL']).isdigit() :
         errs_timd = True
-    if 'LASTDLT' not in infos or infos['LASTDLT'] != '':
+    if 'LASTDLT' not in infos or not str(infos['LASTDLT']).isdigit() :
         errs_timd = True
 
     return errs_reps, errs_vers, errs_name, errs_nums, errs_timu, errs_timd
