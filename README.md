@@ -168,7 +168,7 @@ This will start the analysis and repair of the SUBMISSIONS table.
 Submissions, users and infos will all be checked and the database re-indexed and optimized.
 
 5. `Index`<br>
-Indexes will be deleted and done again.
+Indexes will be deleted and created again.
 
 6. `Optimize`<br>
 Database will be optimized with sqlite `VACUUM` function.
