@@ -13,6 +13,7 @@ This program was born with the desire to provide a relatively easy-to-use method
     1. [Download](#download-update)
     2. [Search](#search)
     3. [Repair database](#repair-database)
+    4. [Interrupt](#interrupt)
 2. [Database](#database)
 3. [Upgrade](#upgrading-from-earlier-versions)
 4. [Cookies](#cookies)
@@ -117,55 +118,62 @@ If no results can be found in the local database the program will prompt to run 
 \* *As shown on the submission page on the main site.*
 
 ### Repair database
-Selecting this entry will start the automatic database repair functions. These are divided into three steps:
-1. `Database analysis`<br>
-The program will analyze all submissions and users entries in the database for different types of errors:
+Selecting this entry will open the database repair menu. There are 6 possible choices.
+1. `Submissions`<br>
+This will start the analysis and repair of the SUBMISSIONS table.
     1. `ID`<br>
-    Missing IDs will be flagged.
-    2. `Fields`<br>
-    If the id passes the check then the other fields in the submission entry will be searched for misplaced empty strings, incorrect value types and incorrect location.
-    3. `Files`<br>
-    If the previous checks have passed then the program will check that all submission files are present.
-    1. `Empty users`<br>
-    Users with no folders and no submissions saved.
-    3. `Repeating users`<br>
-    User with multiple entries.
-    3. `Names`<br>
-    Usernames with capital letters or underscores.
-    4. `Full names`<br>
-    Full usernames that do not match with their url version.
-    5. `No folders`<br>
-    Users whose folders entry is empty or missing sections with saved submissions (See `Database`&rarr;`USERS`&rarr;`FOLDERS`).
-    6. `Empty sections`<br>
-    Users with folders but no submissions saved (e.g. `FOLDERS` contains `s` but the `SCRAPS` column is empty)
-
-Analysis of submissions and/or users database can be skipped with CTRL-C on Unix systems
-
-2. `Database repair`<br>
-If errors where found then the program will try to fix them accordingly:
-    1. `ID`<br>
+    Missing IDs will be flagged.<br>
     This error type doesn't have a fix yet as there is no clear way to identify the submission on FA. However the program cannot create this type of error.
     2. `Fields`<br>
+    If the id passes the check then the other fields in the submission entry will be searched for misplaced empty strings, incorrect value types and incorrect location.<br>
     The program will try and fix the errors in-place, replacing NULL values with empty strings. If the automatic fixes are successful then the submission will be checked for missing files, if any is missing then the submission will be passed to the next step. However if the automatic fixes do not work then the corrupted entry will be erased from the database, the files (if any present) deleted and the submission downloaded again, thus also fixing eventual missing files.
     3. `Files`<br>
+    If the previous checks have passed then the program will check that all submission files are present.<br>
     The program will simply erase the submission folder to remove any stray file (if any is present) and then download them again.
 
-    4. `Empty users`<br>
-    Empty user entries will be deleted
-    5. `Repeating users`<br>
-    Multiple entries of the same user will all be merged, the copies deleted and a new entry created. This new entry will be checked for incorrect `FOLDERS` and empty sections.
-    6. `Names`<br>
-    Usernames will be updated to remove capital letters and underscores.
-    7. `Full names`<br>
-    Full usernames that do not match the url version will be collected from the submissions database or the website. If both fail they will be substituted with the url version.
-    8. `No folders`<br>
-    Users whose `FOLDERS` column is missing sections containing submissions will be updated with said sections (e.g. user 'tiger' has submissions saved in the `GALLERY` and `FAVORITES` sections but the `FOLDERS` column only contains 'g' so 'g' will be added to `FOLDERS`).
-    9. `Empty sections`<br>
-    If a user's `FOLDERS` contains one or more sections empty of submissions (e.g. user 'mouse' has 'g' in their `FOLDERS` but the `GALLERY` column is empty) these will be redownloaded from FA (submissions already present in the database won't be downloaded again but simply added to the user's database entry).
+    Indexes will be redone and database optimized with sqlite `VACUUM` function.
 
-3. `Optimizing`<br>
-After all errors (if any are found) are fixed then the program will use the sqlite `VACUUM` function to optimize the database and clean it up.
+2. `Users`<br>
+    1. `Empty users`<br>
+    Users with no folders and no submissions saved will be deleted.
+    3. `Repeating users`<br>
+    Users with multiple entries.<br>
+    All the entries will be merged, the copies deleted and a new entry created. This new entry will be checked for incorrect `FOLDERS` and empty sections.
+    3. `Names`<br>
+    Usernames with capital letters or underscores will be updated to lowercase and the underscores removed.
+    4. `Full names`<br>
+    Full usernames that do not match with their url version will be collected from the submissions database or the website. If both fail they will be substituted with the url version.
+    5. `No folders`<br>
+    Users whose folders entry is empty or missing sections with saved submissions (See `Database`&rarr;`USERS`&rarr;`FOLDERS`) will be updated with said sections (e.g. user 'tiger' has submissions saved in the `GALLERY` and `FAVORITES` sections but the `FOLDERS` column only contains 'g' so 'g' will be added to `FOLDERS`).
+    6. `Empty sections`<br>
+    Users with folders but no submissions saved (e.g. `FOLDERS` contains `s` but the `SCRAPS` column is empty) will be redownloaded from FA (submissions already present in the database won't be downloaded again but simply added to the user's database entry).
 
+    Indexes will be redone and database optimized with sqlite `VACUUM` function.
+
+3. `Infos`<br>
+    1. `Repeated entries`<br>
+    Repeated entries will be deleted.
+    2. `Version error`<br>
+    If the database version is missing or incorrect it will be fixed.
+    3. `Database name`<br>
+    If the database name is not set to '' it will be fixed.
+    4. `Numbers errors`<br>
+    Missing or incorrect totals will be fixed.
+    5. `Update & Download time`<br>
+    Missing or incorrect epoch and duration of last update and download will be reset to 0.
+
+    Indexes will be redone and database optimized with sqlite `VACUUM` function.
+
+4. `All`<br>
+Submissions, users and infos will all be checked and the database re-indexed and optimized.
+
+5. `Index`<br>
+Indexes will be deleted and done again.
+
+6. `Optimize`<br>
+Database will be optimized with sqlite `VACUUM` function.
+
+### Interrupt
 If you run the program on Unix systems then you can use CTRL-C to interrupt the current operation safely. If a download is in progress it will complete the current operation and exit at the first safe point. Safe interrupt works in all sections of the program.<br>
 If you run the program on Windows systems however safe exit will **NOT** work. This is caused by the the completely different way in which Windows handles signals, specifically SIGINT, the interrupt signal sent by CTRL-C and used by this program. The functions are built to be relatively safe in how they handle database and download operations but it is suggested not to interrupt the program to avoid errors.
 
