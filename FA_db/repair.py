@@ -437,9 +437,70 @@ def repair_usrs(Session, db):
 
     return Session
 
-def reapir_info(Session, db):
+def repair_info(Session, db):
     print('Analyzing infos database for errors ... ', end='', flush=True)
+    errs_reps, errs_vers, errs_name, errs_nums, errs_timu, errs_timd = inf_find_errors(db)
     print('Done')
+    print(f'Found {len(errs_reps)} repeated entr{"ies"*bool(len(errs_reps) != 1)}{"y"*bool(len(errs_reps) == 1)}')
+    print(f'Found {"no"*errs_vers} version error')
+    print(f'Found {"no"*errs_name} dbNAME error')
+    print(f'Found {"no"*errs_nums} numbers error')
+    print(f'Found {"no"*errs_timu} update times error')
+    print(f'Found {"no"*errs_timd} download times error')
+
+    if any(err for err in (errs_reps, errs_vers, errs_name, errs_nums, errs_timu, errs_timd)):
+        if len(errs_reps):
+            print()
+            print('Deleting repeated entries ... ', end='', flush=True)
+            for err in errs_reps:
+                db.execute(f'DELETE FROM infos WHERE field = "{err[0]}"')
+            print('Done')
+
+        if errs_vers:
+            print()
+            print('Fixing VERSION ... ', end='', flush=True)
+            db.execute(f'DELETE FROM infos WHERE field = "VERSION"')
+            db.execute('INSERT INTO INFOS (FIELD, VALUE) VALUES ("VERSION", "2.6")')
+            print('Done')
+
+        if errs_name:
+            print()
+            print('Fixing dbNAME ... ', end='', flush=True)
+            db.execute(f'DELETE FROM infos WHERE field = "dbNAME"')
+            db.execute('INSERT INTO INFOS (FIELD, VALUE) VALUES ("dbNAME", "")')
+            print('Done')
+
+        if errs_nums:
+            print()
+            print('Fixing numbers ... ', end='', flush=True)
+            db.execute(f'DELETE FROM infos WHERE field = "SUBN"')
+            db.execute(f'DELETE FROM infos WHERE field = "USRN"')
+            db.execute(f'INSERT INTO INFOS (FIELD, VALUE) VALUES ("USRN", {table_n(db, "USERS")})')
+            db.execute(f'INSERT INTO INFOS (FIELD, VALUE) VALUES ("USRN", {table_n(db, "SUBMISSIONS")})')
+            print('Done')
+
+        if errs_timu:
+            print()
+            print('Fixing update times ... ', end='', flush=True)
+            db.execute(f'DELETE FROM infos WHERE field = "LASTUP"')
+            db.execute(f'DELETE FROM infos WHERE field = "LASTUPT"')
+            db.execute('INSERT INTO INFOS (FIELD, VALUE) VALUES ("LASTUP", 0)')
+            db.execute('INSERT INTO INFOS (FIELD, VALUE) VALUES ("LASTUPT", 0)')
+            print('Done')
+
+        if errs_timd:
+            print()
+            print('Fixing download times ... ', end='', flush=True)
+            db.execute(f'DELETE FROM infos WHERE field = "LASTDL"')
+            db.execute(f'DELETE FROM infos WHERE field = "LASTDLT"')
+            db.execute('INSERT INTO INFOS (FIELD, VALUE) VALUES ("LASTDL", 0)')
+            db.execute('INSERT INTO INFOS (FIELD, VALUE) VALUES ("LASTDLT", 0)')
+            print('Done')
+
+    print()
+    vacuum()
+
+    return Session
 
 def repair_all(Session, db):
     repair_subs(Session, db)
@@ -448,12 +509,16 @@ def repair_all(Session, db):
     repair_usrs(Session, db)
     fatl.sigint_clear()
 
+    repair_info(Session, db)
+    fatl.sigint_clear()
+
     return Session
 
 def repair(Session, db):
     menu = (
         ('Submissions', repair_subs),
         ('Users', repair_usrs),
+        ('Infos', repair_info),
         ('All', repair_all),
         ('Index', index),
         ('Optimize', vacuum),
