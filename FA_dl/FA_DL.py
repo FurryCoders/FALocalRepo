@@ -112,13 +112,13 @@ def dl_page(Session, user, section, db, page_i, page_p, sync=False, speed=1, for
         folder = f'FA.files/{tiers(ID)}/{ID:0>10}'
 
         if fadb.usr_src(db, user, ID.zfill(10), section_db[section]):
-            cols = os.get_terminal_size()[0] - 44
+            cols = os.get_terminal_size()[0] - 43
             if cols < 0: cols = 0
             titl = str_clean(sub.find_all('a')[1].string)
             if quiet and not force:
                 print('\r'+' '*30+'\r', end='', flush=True)
             else:
-                print(f'{titl[0:cols]} -> Repository')
+                print(f'[Repository] {titl[0:cols]}')
             if sync:
                 if force > 0 and page_i <= force: continue
                 if force == -1: continue
@@ -129,14 +129,6 @@ def dl_page(Session, user, section, db, page_i, page_p, sync=False, speed=1, for
         if sigint_check(): return 5
 
         s_ret = dl_sub(Session, ID, folder, db, False, True, speed)
-        if s_ret == 0:
-            print("\b"*5+" -> Downloaded")
-        elif s_ret == 1:
-            print("\b"*5+" -> File Error")
-        elif s_ret == 2:
-            print("\b"*5+" -> Repository")
-        elif s_ret == 3:
-            print("\b"*5+" -> Page Error")
 
         if s_ret != 3:
             fadb.usr_up(db, user, ID.zfill(10), section_db[section])
