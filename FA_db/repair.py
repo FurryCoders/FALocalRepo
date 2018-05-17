@@ -283,7 +283,7 @@ def repair_subs(Session, db):
                 if fatl.sigint_check(): break
                 ID = sub[0]
                 i += 1
-                print(f'\n{i:0>{l}}/{L} - {ID:0>10} {sub[13]}', end='', flush=True)
+                print(f'\n{i:0>{l}}/{L} - {ID:0>10}', end='', flush=True)
                 if not sub[14]:
                     print(' - Page Error', end='', flush=True)
                     continue
