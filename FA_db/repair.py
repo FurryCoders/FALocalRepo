@@ -5,6 +5,7 @@ import PythonRead as readkeys
 import FA_dl as fadl
 import FA_db as fadb
 import FA_tools as fatl
+import FA_var as favar
 
 def sub_check_values(sub):
     if None in sub:
@@ -19,7 +20,7 @@ def sub_check_values(sub):
     return True
 
 def sub_check_files(sub):
-    loc = 'FA.files/'+sub[13]
+    loc = favar.files_folder+'/'+sub[13]
     if not os.path.isdir(loc):
         return False
     elif not os.path.isfile(loc+'/info.txt'):
@@ -173,7 +174,7 @@ def inf_find_errors(db):
 
     infos = {i[0]: i[1] for i in infos}
 
-    if 'VERSION' not in infos or infos['VERSION'] != '2.7':
+    if 'VERSION' not in infos or infos['VERSION'] != favar.db_version:
         errs_vers = True
 
     if 'DBNAME' not in infos or infos['DBNAME'] != '':
@@ -270,11 +271,11 @@ def repair_subs(Session, db):
                     db.commit()
                     continue
                 if sub[13] == fatl.tiers(ID)+f'{ID:0>10}':
-                    for f in glob.glob(f'FA.files/{sub[13]}/*'):
+                    for f in glob.glob(f'{favar.files_folder}/{sub[13]}/*'):
                         os.remove(f)
                 db.execute(f'DELETE FROM submissions WHERE id = {ID}')
                 db.commit()
-                fadl.dl_sub(Session, str(ID), f'FA.files/{fatl.tiers(ID)}/{ID:0>10}', db, True, False, 2)
+                fadl.dl_sub(Session, str(ID), f'{favar.files_folder}/{fatl.tiers(ID)}/{ID:0>10}', db, True, False, 2)
             print()
             if errs_fl_mv:
                 print(f'{errs_fl_mv} new submission{"s"*bool(len(errs_fl_mv) != 1)} with files missing')
@@ -296,11 +297,11 @@ def repair_subs(Session, db):
                     db.execute(f'UPDATE submissions SET server = 0 WHERE id = {ID}')
                     db.commit()
                     continue
-                for f in glob.glob(f'FA.files/{sub[13]}/*'):
+                for f in glob.glob(f'{favar.files_folder}/{sub[13]}/*'):
                     os.remove(f)
                 db.execute(f'DELETE FROM submissions WHERE id = {ID}')
                 db.commit()
-                fadl.dl_sub(Session, str(ID), f'FA.files/{sub[13]}', db, True, False, 2)
+                fadl.dl_sub(Session, str(ID), f'{favar.files_folder}/{sub[13]}', db, True, False, 2)
 
         break
 
@@ -467,7 +468,7 @@ def repair_info(Session, db):
             print()
             print('Fixing VERSION ... ', end='', flush=True)
             db.execute(f'DELETE FROM infos WHERE field = "VERSION"')
-            db.execute('INSERT INTO INFOS (FIELD, VALUE) VALUES ("VERSION", "2.7")')
+            db.execute(f'INSERT INTO INFOS (FIELD, VALUE) VALUES ("VERSION", "{favar.db_version}")')
             db.commit()
             print('Done')
 

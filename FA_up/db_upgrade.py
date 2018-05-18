@@ -1,16 +1,15 @@
 import sqlite3
 import sys
 import FA_tools as fatl
+import FA_var as favar
 from .v1v2 import db_upgrade_v1v2
 from .v2v2_3 import db_upgrade_v2v2_3
 from .v2_3v2_6 import db_upgrade_v2_3v2_6
 from .v2_6v2_7 import db_upgrade_v2_6v2_7
 
 def db_upgrade_main():
-    current_version = '2.7'
-
     while True:
-        db = sqlite3.connect('FA.db')
+        db = sqlite3.connect(favar.db_file)
 
         tables = db.execute('SELECT name FROM sqlite_master WHERE type = "table"').fetchall()
         tables = [t[0] for t in tables]
@@ -35,9 +34,9 @@ def db_upgrade_main():
             db_upgrade = db_upgrade_v2_3v2_6
         elif infos['VERSION'] < '2.7':
             db_upgrade = db_upgrade_v2_6v2_7
-        elif infos['VERSION'] > current_version:
+        elif infos['VERSION'] > favar.fa_version:
             print('Program is not up to date')
-            print(f'FA version: {current_version}')
+            print(f'FA version: {favar.fa_version}')
             print(f'DB version: {infos["VERSION"]}')
             print('Use a program version equal or higher')
             sys.exit(1)
