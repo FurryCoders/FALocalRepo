@@ -275,7 +275,7 @@ def dl_usr(Session, user, section, db, sync=False, speed=1, force=0, quiet=False
     return dl_ret
 
 
-def update(Session, db, users=[], sections=[], speed=2, force=0):
+def update(Session, db, users, sections, speed, force, index):
     if sigint_check(): return
 
     print('Update')
@@ -327,15 +327,17 @@ def update(Session, db, users=[], sections=[], speed=2, force=0):
 
     if not flag_download:
         print("No new submissions were downloaded")
-    else:
+    elif index:
         print('\nIndexing new entries ... ', end='', flush=True)
         fadb.mkindex(db)
         print('Done')
+    elif not index:
+        fadb.info_up(db, 'INDEX', 0)
 
     t = int(time.time()) - t
     fadb.info_up(db, 'LASTUPT', t)
 
-def download(Session, db, users, sections, sync, speed, force):
+def download(Session, db, users, sections, sync, speed, force, index):
     if sigint_check(): return
 
     usr_sec = [[u, "".join(sections)] for u in users]
@@ -407,10 +409,14 @@ def download(Session, db, users, sections, sync, speed, force):
     t = int(time.time()) - t
     fadb.info_up(db, 'LASTDLT', t)
 
-    if flag_download:
+    if not flag_download:
+        print("No new submissions were downloaded")
+    elif index:
         print('\nIndexing new entries ... ', end='', flush=True)
         fadb.mkindex(db)
         print('Done')
+    elif not index:
+        fadb.info_up(db, 'INDEX', 0)
 
 def download_main(Session, db):
     header('Download & Update')
@@ -434,12 +440,13 @@ def download_main(Session, db):
 
         speed = 1 ; upd = False
         sync = False ; force = 0
-        quit = False
+        quit = False ; index = True
         if 'quick' in options: speed = 2
         if 'slow' in options: speed = 0
         if 'update' in options: upd = True
         if 'sync' in options: sync = True
         if 'all' in options: force = -1
+        if 'noindex' in options: index = False
         if re.search('force[0-9]+', options):
             force = re.search('force[0-9]+', options).group(0)
             force = re.sub('[^0-9]', '', force)
@@ -463,9 +470,9 @@ def download_main(Session, db):
     if sigint_check(): return Session
 
     if upd:
-        update(Session, db, users, sections, speed, force)
+        update(Session, db, users, sections, speed, force, index)
     else:
-        download(Session, db, users, sections, sync, speed, force)
+        download(Session, db, users, sections, sync, speed, force, index)
     fadb.info_up(db, 'USRN', fadb.table_n(db, 'USERS'))
     fadb.info_up(db, 'SUBN', fadb.table_n(db, 'SUBMISSIONS'))
 
