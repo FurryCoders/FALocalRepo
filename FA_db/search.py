@@ -5,6 +5,7 @@ import os
 import bs4
 import PythonRead as readkeys
 import FA_tools as fatl
+from FA_DB import info_read, mkindex
 from FA_dl import session
 
 def mkregexp(case):
@@ -240,6 +241,11 @@ def main(Session, db):
             regex = True
         if 'case' in options.lower():
             case = True
+
+        if info_read(db, 'INDEX') != '1':
+            print('Indexing entries before search ... ', end='', flush=True)
+            mkindex(db)
+            print('Done\n')
 
         fatl.sigint_ublock()
 

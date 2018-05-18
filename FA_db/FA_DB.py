@@ -151,6 +151,14 @@ def info_up(db, field, value):
     db.execute(f'UPDATE infos SET value = "{value}" WHERE field = "{field}"')
     db.commit()
 
+def info_read(db, field):
+    info = db.execute(f'SELECT value FROM infos WHERE field = "{field}"').fetchall()
+    if not len(info):
+        return None
+    else:
+        return info[0][0]
+
+
 def table_n(db, table):
     table_b = db.execute(f'SELECT EXISTS(SELECT name FROM sqlite_master WHERE type = "table" AND name = "{table}");')
     table_b = table_b.fetchall()[0][0]
@@ -208,6 +216,8 @@ def mkindex(db):
         finally:
             db.execute(f'CREATE INDEX {col} ON submissions ({col} ASC)')
 
+    info_up(db, 'INDEX', 1)
+
 def mktable(db, table):
     if table == 'submissions':
         db.execute('''CREATE TABLE IF NOT EXISTS SUBMISSIONS
@@ -251,6 +261,7 @@ def mktable(db, table):
             db.execute('INSERT INTO INFOS (FIELD, VALUE) VALUES ("LASTUPT", 0)')
             db.execute('INSERT INTO INFOS (FIELD, VALUE) VALUES ("LASTDL", 0)')
             db.execute('INSERT INTO INFOS (FIELD, VALUE) VALUES ("LASTDLT", 0)')
+            db.execute('INSERT INTO INFOS (FIELD, VALUE) VALUES ("INDEX", 0)')
             db.commit()
             info_up(db, 'USRN', table_n(db, 'USERS'))
             info_up(db, 'SUBN', table_n(db, 'SUBMISSIONS'))
