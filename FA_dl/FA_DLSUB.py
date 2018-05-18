@@ -90,10 +90,10 @@ def get_file(link, folder, quiet=False, speed=1):
     try:
         sub = requests.get(link, stream=True)
     except:
-        if not quiet: print(('\b'*10)+'File Error', end='', flush=True)
+        if not quiet: print(('\b'*11)+'File Error', end='', flush=True)
         return False
 
-    if not quiet: print('\b \b'*10, end='', flush=True)
+    if not quiet: print('\b'+'\b \b'*10, end='', flush=True)
 
     size = requests.head(link)
     size = size.headers
