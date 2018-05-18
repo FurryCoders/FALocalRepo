@@ -162,6 +162,7 @@ def inf_find_errors(db):
     errs_nums = False
     errs_timu = False
     errs_timd = False
+    errs_indx = False
 
 
     for i in range(0, len(infos)):
@@ -172,7 +173,7 @@ def inf_find_errors(db):
 
     infos = {i[0]: i[1] for i in infos}
 
-    if 'VERSION' not in infos or infos['VERSION'] != '2.6':
+    if 'VERSION' not in infos or infos['VERSION'] != '2.7':
         errs_vers = True
 
     if 'DBNAME' not in infos or infos['DBNAME'] != '':
@@ -192,6 +193,9 @@ def inf_find_errors(db):
         errs_timd = True
     if 'LASTDLT' not in infos or not str(infos['LASTDLT']).isdigit() :
         errs_timd = True
+
+    if 'INDEX' not in infos or infos['INDEX'] not in ('0','1'):
+        errs_indx = True
 
     return errs_reps, errs_vers, errs_name, errs_nums, errs_timu, errs_timd
 
@@ -441,7 +445,7 @@ def repair_usrs(Session, db):
 
 def repair_info(Session, db):
     print('Analyzing infos database for errors ... ', end='', flush=True)
-    errs_reps, errs_vers, errs_name, errs_nums, errs_timu, errs_timd = inf_find_errors(db)
+    errs_reps, errs_vers, errs_name, errs_nums, errs_timu, errs_timd, errs_indx = inf_find_errors(db)
     print('Done')
     print(f'Found {len(errs_reps)} repeated entr{"ies"*bool(len(errs_reps) != 1)}{"y"*bool(len(errs_reps) == 1)}')
     print(f'Found{" no"*(not errs_vers)} version error')
@@ -449,6 +453,7 @@ def repair_info(Session, db):
     print(f'Found{" no"*(not errs_nums)} numbers error')
     print(f'Found{" no"*(not errs_timu)} update times error')
     print(f'Found{" no"*(not errs_timd)} download times error')
+    print(f'Found{" no"*(not errs_indx)} index flag error')
 
     if any(err for err in (errs_reps, errs_vers, errs_name, errs_nums, errs_timu, errs_timd)):
         if len(errs_reps):
@@ -462,7 +467,7 @@ def repair_info(Session, db):
             print()
             print('Fixing VERSION ... ', end='', flush=True)
             db.execute(f'DELETE FROM infos WHERE field = "VERSION"')
-            db.execute('INSERT INTO INFOS (FIELD, VALUE) VALUES ("VERSION", "2.6")')
+            db.execute('INSERT INTO INFOS (FIELD, VALUE) VALUES ("VERSION", "2.7")')
             db.commit()
             print('Done')
 
@@ -501,6 +506,14 @@ def repair_info(Session, db):
             db.execute(f'DELETE FROM infos WHERE field = "LASTDLT"')
             db.execute('INSERT INTO INFOS (FIELD, VALUE) VALUES ("LASTDL", 0)')
             db.execute('INSERT INTO INFOS (FIELD, VALUE) VALUES ("LASTDLT", 0)')
+            db.commit()
+            print('Done')
+
+        if errs_indx:
+            print()
+            print('Fixing INDEX ... ', end='', flush=True)
+            db.execute(f'DELETE FROM infos WHERE field = "INDEX"')
+            db.execute('INSERT INTO INFOS (FIELD, VALUE) VALUES ("INDEX", 0)')
             db.commit()
             print('Done')
 

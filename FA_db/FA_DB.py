@@ -254,7 +254,7 @@ def mktable(db, table):
                 (FIELD CHAR,
                 VALUE CHAR);''')
             db.execute('INSERT INTO INFOS (FIELD, VALUE) VALUES ("DBNAME", "")')
-            db.execute('INSERT INTO INFOS (FIELD, VALUE) VALUES ("VERSION", "2.6")')
+            db.execute('INSERT INTO INFOS (FIELD, VALUE) VALUES ("VERSION", "2.7")')
             db.execute('INSERT INTO INFOS (FIELD, VALUE) VALUES ("USRN", 0)')
             db.execute('INSERT INTO INFOS (FIELD, VALUE) VALUES ("SUBN", 0)')
             db.execute('INSERT INTO INFOS (FIELD, VALUE) VALUES ("LASTUP", 0)')

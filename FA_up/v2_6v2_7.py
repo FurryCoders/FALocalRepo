@@ -36,9 +36,9 @@ def temp_new():
     return db_new
 
 def db_upgrade_v2_6v2_7():
-    print('The database needs to be upgraded to version 2.6')
+    print('The database needs to be upgraded to version 2.7')
     print('This procedure is required to continue using the program')
-    print('The current database will be saved in a backup file named FA.v2_3.db')
+    print('The current database will be saved in a backup file named FA.v2_6.db')
     print('WARNING: This update cannot be interrupted and resumed')
     print('This procedure can take a long time, do you want to continue? ', end='', flush=True)
     c = ''
