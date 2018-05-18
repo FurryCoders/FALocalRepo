@@ -150,7 +150,7 @@ def db_upgrade_v2_3v2_6():
         if s[1] != None:
             print('\b \b'+'\b \b'*(Nl*2), end='', flush=True)
             continue
-        desc =  'FA.files/' + s[2] + '/description.html'
+        desc =  f'FA.files/{s[2]}/description.html'
 
         if not os.path.isfile(desc):
             desc = ''
