@@ -5,8 +5,8 @@ import os
 import bs4
 import PythonRead as readkeys
 import FA_tools as fatl
-from FA_DB import info_read, mkindex
 from FA_dl import session
+from .FA_DB import info_read, mkindex
 
 def mkregexp(case):
     if case:
