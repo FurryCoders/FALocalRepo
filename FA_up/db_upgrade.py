@@ -7,7 +7,7 @@ from .v2_3v2_6 import db_upgrade_v2_3v2_6
 from .v2_6v2_7 import db_upgrade_v2_6v2_7
 
 def db_upgrade_main():
-    current_version = '2.6'
+    current_version = '2.7'
 
     while True:
         db = sqlite3.connect('FA.db')
