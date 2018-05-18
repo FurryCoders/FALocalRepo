@@ -392,7 +392,7 @@ def download(Session, db, users, sections, sync, speed, force):
                     fadb.usr_up(db, usr[0], sec, 'FOLDERS')
             elif dl_ret == 4:
                 fadb.usr_rep(db, usr[0], sec, sec+'!', 'FOLDERS')
-            if dl_ret in (0,1,2,5):
+            if dl_ret in (0,2,5):
                 flag_download = True
             if dl_ret == 5:
                 break
