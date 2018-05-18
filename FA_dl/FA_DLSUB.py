@@ -81,17 +81,44 @@ def get_desc(page):
 
     return desc
 
-def get_file(link, folder, speed=1):
+def get_file(link, folder, quiet=False, speed=1):
     if os.path.isfile(folder+'/submission.temp'):
         os.remove(folder+'/submission.temp')
 
-    try: sub = requests.get(link, stream=True)
-    except: return False
+    if not quiet: print('[Sizing Sub]', end='', flush=True)
+
+    try:
+        sub = requests.get(link, stream=True)
+    except:
+        if not quiet: print(('\b'*10)+'File Error', end='', flush=True)
+        return False
+
+    if not quiet: print('\b \b'*10, end='', flush=True)
+
+    size = requests.head(link)
+    size = size.headers
+    if "Content-Length" in size.keys():
+        size = size["Content-Length"]
+        size = int(size)
+    else:
+        if not quiet: print('Size Error', end='', flush=True)
+        size = 0
 
     with open(folder+'/submission.temp', 'wb') as f:
+        chunks = 0
+        bar = 1
         for chunk in sub.iter_content(chunk_size=1024):
-            if chunk: f.write(chunk)
-            if speed == 1: time.sleep(.01)
+            if not quiet and size and (chunks*1024) >= bar*(size/10.0):
+                print('=', end='', flush=True)
+                bar += 1
+            if chunk:
+                f.write(chunk)
+                chunks += 1
+            if speed == 1:
+                time.sleep(.01)
+        if not quiet and size: print('='*(10-bar+1), end='', flush=True)
+
+    if not quiet: print(('\b \b'*10)+'Saving Sub', end='', flush=True)
 
     if not os.path.isfile(folder+'/submission.temp'): return False
 
@@ -120,26 +147,33 @@ def str_clean(string):
 def dl_sub(Session, ID, folder, db, quiet=False, check=False, speed=1):
     if check and sub_exists(db, ID):
         if not quiet:
-            cols = os.get_terminal_size()[0] - 44
+            cols = os.get_terminal_size()[0] - 43
             if cols < 0: cols = 0
-            titl = str_clean(sub_read(db, ID, "title"))
-            print(f'{titl[0:cols]} ... ', end='', flush=True)
+            title = str_clean(sub_read(db, ID, "title"))[0:cols]
+            print(title+' '*(cols-len(title)+1)+'[Repository]')
         return 2
 
+    if not quiet: print('[Get Infos ]', end='', flush=True)
+
     page = get_page(Session, ID)
-    if page == None: return 3
+    if page == None:
+        print('\b'*11+'Page Error]')
+        return 3
     data = get_info(page)
     link = get_link(page)
     desc = get_desc(page)
 
     if not quiet:
-        cols = os.get_terminal_size()[0] - 44
+        cols = os.get_terminal_size()[0] - 43
         if cols < 0: cols = 0
-        print(f'{str_clean(data[1])[0:cols]} ... ', end='', flush=True)
+        title = str_clean(data[1])[0:cols]
+        print('\b \b'*12+title, end=' '*(cols-len(title)+1), flush=True)
 
     os.makedirs(folder, exist_ok=True)
 
-    subf = get_file(link, folder, speed)
+    subf = get_file(link, folder, quiet, speed)
+
+    if not quiet: print(('\b'*10)+'Saving DB ', end='', flush=True)
 
     with codecs.open(folder+'/description.html', encoding='utf-8', mode='w') as f:
         f.write(desc)
@@ -172,6 +206,8 @@ def dl_sub(Session, ID, folder, db, quiet=False, check=False, speed=1):
     sub_ins(db, sub_info)
 
     if subf == False:
+        if not quiet: print(('\b'*10)+'File Error')
         return 1
     else:
+        if not quiet: print(('\b'*10)+'Downloaded')
         return 0
