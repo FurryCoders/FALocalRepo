@@ -5,6 +5,7 @@ import FA_db as fadb
 import FA_dl as fadl
 import FA_tools as fatl
 import FA_up as faup
+import FA_var as favar
 
 def menu(db):
     menu = (
@@ -42,7 +43,7 @@ fatl.sigint_block()
 
 faup.db_upgrade()
 
-db = sqlite3.connect('FA.db')
+db = sqlite3.connect(favar.db_file)
 fadb.mktable(db, 'submissions')
 fadb.mktable(db, 'users')
 fadb.mktable(db, 'infos')

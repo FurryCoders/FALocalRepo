@@ -1,8 +1,10 @@
+import FA_var as favar
+
 def cookies_error():
     print('Analyzing cookies file for errors:')
     cookies_name = ['__cfduid', 'b', '_adb', '__qca', '__asc', '__auc', '__gads', 'a']
 
-    with open('FA.cookies.json', 'r') as f:
+    with open(favar.cookies_file, 'r') as f:
         cookies = json.load(f)
 
     missing_names = 0

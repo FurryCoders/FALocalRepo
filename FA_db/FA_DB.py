@@ -1,4 +1,5 @@
 import sqlite3
+import FA_var as favar
 
 # Entries guide - USERS
 # v0    v2.3        v2.6
@@ -254,7 +255,7 @@ def mktable(db, table):
                 (FIELD CHAR,
                 VALUE CHAR);''')
             db.execute('INSERT INTO INFOS (FIELD, VALUE) VALUES ("DBNAME", "")')
-            db.execute('INSERT INTO INFOS (FIELD, VALUE) VALUES ("VERSION", "2.7")')
+            db.execute(f'INSERT INTO INFOS (FIELD, VALUE) VALUES ("VERSION", "{favar.db_version}")')
             db.execute('INSERT INTO INFOS (FIELD, VALUE) VALUES ("USRN", 0)')
             db.execute('INSERT INTO INFOS (FIELD, VALUE) VALUES ("SUBN", 0)')
             db.execute('INSERT INTO INFOS (FIELD, VALUE) VALUES ("LASTUP", 0)')

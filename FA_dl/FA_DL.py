@@ -3,8 +3,9 @@ import os, sys, time
 import re
 import sqlite3
 import PythonRead as readkeys
-from FA_tools import sigint_check, tiers, header
 import FA_db as fadb
+import FA_var as favar
+from FA_tools import sigint_check, tiers, header
 from .FA_DLSUB import dl_sub, str_clean
 from .cookies import cookies_error
 
@@ -30,8 +31,9 @@ def ping(url):
     except:
         return False
 
-def session_make(cookies_file='FA.cookies.json'):
+def session_make():
     Session = cfscrape.create_scraper()
+    cookies_file = favar.cookies_file
 
     for name in ('FA.cookies'):
         if os.path.isfile(name) and not os.path.isfile(cookies_file):
@@ -109,7 +111,7 @@ def dl_page(Session, user, section, db, page_i, page_p, sync=False, speed=1, for
         sub_i += 1
         ID = sub.get('id')[4:]
         print(f'{user[0:5]: ^5} {page_i:0>3}/{sub_i:0>2} {section} | {ID:0>10} | ', end='', flush=True)
-        folder = f'FA.files/{tiers(ID)}/{ID:0>10}'
+        folder = f'{favar.files_folder}/{tiers(ID)}/{ID:0>10}'
 
         if fadb.usr_src(db, user, ID.zfill(10), section_db[section]):
             cols = os.get_terminal_size()[0] - 43
