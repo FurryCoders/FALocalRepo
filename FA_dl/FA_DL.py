@@ -114,11 +114,11 @@ def dl_page(Session, user, section, db, page_i, page_p, sync=False, speed=1, for
         if fadb.usr_src(db, user, ID.zfill(10), section_db[section]):
             cols = os.get_terminal_size()[0] - 43
             if cols < 0: cols = 0
-            titl = str_clean(sub.find_all('a')[1].string)
+            title = str_clean(sub.find_all('a')[1].string)[0:cols]
             if quiet and not force:
                 print('\r'+' '*30+'\r', end='', flush=True)
             else:
-                print(f'[Repository] {titl[0:cols]}')
+                print(title+' '*(cols-len(title)+1)+'[Repository]')
             if sync:
                 if force > 0 and page_i <= force: continue
                 if force == -1: continue

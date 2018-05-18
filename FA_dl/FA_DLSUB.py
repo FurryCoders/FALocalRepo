@@ -85,7 +85,7 @@ def get_file(link, folder, quiet=False, speed=1):
     if os.path.isfile(folder+'/submission.temp'):
         os.remove(folder+'/submission.temp')
 
-    if not quiet: print('Sizing Sub', end='', flush=True)
+    if not quiet: print('[Sizing Sub]', end='', flush=True)
 
     try:
         sub = requests.get(link, stream=True)
@@ -93,7 +93,7 @@ def get_file(link, folder, quiet=False, speed=1):
         if not quiet: print(('\b'*10)+'File Error', end='', flush=True)
         return False
 
-    if not quiet: print(('\b'*10)+' '*10, end='\b'*10, flush=True)
+    if not quiet: print('\b \b'*10, end='', flush=True)
 
     size = requests.head(link)
     size = size.headers
@@ -149,8 +149,8 @@ def dl_sub(Session, ID, folder, db, quiet=False, check=False, speed=1):
         if not quiet:
             cols = os.get_terminal_size()[0] - 43
             if cols < 0: cols = 0
-            titl = str_clean(sub_read(db, ID, "title"))
-            print(f'[Repository] {titl[0:cols]}')
+            title = str_clean(sub_read(db, ID, "title"))[0:cols]
+            print(title+' '*(cols-len(title)+1)+'[Repository]')
         return 2
 
     if not quiet: print('[Get Infos ]', end='', flush=True)
@@ -167,14 +167,13 @@ def dl_sub(Session, ID, folder, db, quiet=False, check=False, speed=1):
         cols = os.get_terminal_size()[0] - 43
         if cols < 0: cols = 0
         title = str_clean(data[1])[0:cols]
-        print(f' {title}', end='\b'*(len(title)+1+10+(len(title) < cols)), flush=True)
-
+        print('\b \b'*12+title, end=' '*(cols-len(title)+1), flush=True)
 
     os.makedirs(folder, exist_ok=True)
 
     subf = get_file(link, folder, quiet, speed)
 
-    if not quiet: print(('\b \b'*10)+'Saving DB ', end='', flush=True)
+    if not quiet: print(('\b'*10)+'Saving DB ', end='', flush=True)
 
     with codecs.open(folder+'/description.html', encoding='utf-8', mode='w') as f:
         f.write(desc)
