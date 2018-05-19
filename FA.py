@@ -1,3 +1,4 @@
+print('Readying program ... ', end='', flush=True)
 import sqlite3
 import sys
 import PythonRead as readkeys
@@ -40,6 +41,8 @@ def menu(db):
         print('-'*30+'\n')
 
 fatl.sigint_block()
+
+print('\b \b'*21, end='', flush=True)
 
 faup.db_upgrade()
 
