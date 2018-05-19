@@ -55,6 +55,8 @@ Last field is reserved for options. These can be:
     Prevents update and sync from stopping the download at the first already present submission. Download stops at the first downloaded submission from page N+1. Example: 'force4' will download the first 4 pages with no interruption and will allow the download to stop from page 5.
     * `all`<br>
     Like 'force' but it will prevent interrupting the download for the whole section (this means **ALL** pages from each user will be checked, only use for a limited amount of users).
+    * `noindex`<br>
+    Do not update indexes after completing the download.
     * `quit`<br>
     Quits the program when the current operation is completed.
 
@@ -111,6 +113,8 @@ There are two possible options:
     * `web`<br>
     Search on the website directly. Only user, title, tags, description and rating will be used.
 
+If indexes aren't up to date, and web option wasn't used, they will be updated.
+
 Results are ordered by username and date.<br>
 When turned on case sensitivity will be enabled for all fields, this means that, for example, 'tiger' won't match anything as the species is saved as 'Tiger' on FA.<br>
 If no results can be found in the local database the program will prompt to run the search on the website instead.
@@ -161,6 +165,8 @@ This will start the analysis and repair of the SUBMISSIONS table.
     Missing or incorrect totals will be fixed.
     5. `Update & Download time`<br>
     Missing or incorrect epoch and duration of last update and download will be reset to 0.
+    5. `Index flag`<br>
+    Missing or not 0/1 `INDEX` flag value.
 
     Indexes will be redone and database optimized with sqlite `VACUUM` function.
 
@@ -168,7 +174,7 @@ This will start the analysis and repair of the SUBMISSIONS table.
 Submissions, users and infos will all be checked and the database re-indexed and optimized.
 
 5. `Index`<br>
-Indexes will be deleted and created again.
+Indexes will be updated.
 
 6. `Optimize`<br>
 Database will be optimized with sqlite `VACUUM` function.
@@ -180,7 +186,24 @@ If you run the program on Windows systems however safe exit will **NOT** work. T
 ## Database
 The database (named 'FA.db') contains three tables:
 1. `INFOS`<br>
-This table contains general informations about the database, some of which are not in use at the moment. There is an entry for the database version (see 'Upgrading from earlier versions' below), one for the custom name of the database (not implemented yet), one for the number of users, one for the number of submissions, one specifying the time the last updates and downloads where started and how long they took.
+    * `DBNAME`<br>
+    Database custom name, unused at the moment.
+    * `VERSION`<br>
+    Database version, this can differ from the program version.
+    * `USERN`<br>
+    Number of users in `USERS` table.
+    * `SUBN`<br>
+    Number of submissions in the `SUBMISSIONS` table.
+    * `LASTUP`<br>
+    Time when the last update was started (epoch time, in seconds).
+    * `LASTUPT`<br>
+    Duration of last update (in seconds).
+    * `LASTDL`<br>
+    Time when the last download was started (epoch time).
+    * `LASTDLT`<br>
+    Duration of last download (in seconds).
+    * `INDEX`<br>
+    Boolean value indicating whether indexes were updated after the last download/update.
 
 2. `USERS`<br>
 The USERS table contains a list of all the users that have been download with the program. Each entry contains the following:
