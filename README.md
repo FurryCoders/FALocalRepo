@@ -256,6 +256,9 @@ The older version of the database will be saved as 'FA.v2.db'
 Two columns in the `USERS` will be renamed (`NAME`&rarr;`USER` and `NAMEFULL`&rarr;`USERFULL`) and descriptions will be moved inside the database. It is recommended to run `Repair` (See `Usage`&rarr;`Repair database` for details) with a version lower than 2.6 to make sure all description files are present. When the upgrade is completed indexes will be created for all fields.<br>
 Size of the database will increase by about 2,8KB per submission (averaged on a database of over 234k submissions which increased by about 653MB).<br>
 The older version of the database will be saved as 'FA.v2_3.db'
+* `2.6` &rarr; `2.7`<br>
+Entry `INDEX` will be added to `INFOS` table.
+This upgrade cannot be interrupted and resumed later, however it is very fast being mostly a copy-paste.
 
 At each update step the program will save a backup copy of the database.
 
