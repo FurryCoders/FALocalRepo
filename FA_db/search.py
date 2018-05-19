@@ -242,16 +242,15 @@ def main(Session, db):
         if 'case' in options.lower():
             case = True
 
-        if info_read(db, 'INDEX') != '1':
-            print('Indexing entries before search ... ', end='', flush=True)
-            mkindex(db)
-            print('Done\n')
-
-        fatl.sigint_ublock()
-
         if 'web' in options.lower():
+            fatl.sigint_ublock()
             Session = search_web(Session, fields)
         else:
+            if info_read(db, 'INDEX') != '1':
+                print('Indexing entries before search ... ', end='', flush=True)
+                mkindex(db)
+                print('Done\n')
+            fatl.sigint_ublock()
             Session = search(Session, db, fields, regex, case)
 
         print('\nPress any key to continue ', end='', flush=True)
