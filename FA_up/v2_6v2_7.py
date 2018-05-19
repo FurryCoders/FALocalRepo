@@ -28,7 +28,7 @@ def temp_new():
     print('Done')
 
     db_old.close()
-    print('Adding new INFOS entry ... ', end='', flush=True)
+    print('Adding new INDEX entry to INFOS ... ', end='', flush=True)
     db_new.execute('INSERT INTO INFOS (FIELD, VALUE) VALUES ("INDEX", 0)')
     db_new.commit()
     print('Done')
