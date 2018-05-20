@@ -51,8 +51,10 @@ if os.path.isfile(favar.db_file):
     db = sqlite3.connect(favar.db_file)
 else:
     db = sqlite3.connect(favar.db_file)
+    print('Creating database & tables ... ', end='', flush=True)
     fadb.mktable(db, 'submissions')
     fadb.mktable(db, 'users')
     fadb.mktable(db, 'infos')
+    print('\b \b'*31, end='', flush=True)
 
 menu(db)
