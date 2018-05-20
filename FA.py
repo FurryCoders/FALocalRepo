@@ -1,6 +1,6 @@
 print('Readying program ... ', end='', flush=True)
 import sqlite3
-import sys
+import sys, os
 import PythonRead as readkeys
 import FA_db as fadb
 import FA_dl as fadl
@@ -44,11 +44,15 @@ fatl.sigint_block()
 
 print('\b \b'*21, end='', flush=True)
 
-faup.db_upgrade()
+if os.path.isfile(favar.db_file):
+    faup.db_upgrade()
 
-db = sqlite3.connect(favar.db_file)
-fadb.mktable(db, 'submissions')
-fadb.mktable(db, 'users')
-fadb.mktable(db, 'infos')
+if os.path.isfile(favar.db_file):
+    db = sqlite3.connect(favar.db_file)
+else:
+    db = sqlite3.connect(favar.db_file)
+    fadb.mktable(db, 'submissions')
+    fadb.mktable(db, 'users')
+    fadb.mktable(db, 'infos')
 
 menu(db)
