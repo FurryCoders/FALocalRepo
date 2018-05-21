@@ -70,7 +70,7 @@ Last field is reserved for options. These can be:
     If all these steps are completed without errors then the program will proceed to download the targets. As a bonus feature the program will also handle filetypes to make sure the submission files have the correct extension.<br>
     If the the program cannot verify the cookies and connect to the forum then it will abort the download and check the cookies for some common errors.
 
-    The program also throttles download speed down to 100KB/sec to avoid taxing the forum's servers with a huge number of requests and downloads close to each other.
+    The program throttles download speed down to 100KB/sec to avoid taxing the forum's servers with a huge number of requests and downloads close to each other.
 
 ### Search
 This menu allows to search in the database using one or more among user (with or w/o sections), title, tags, category, species, gender and rating.<br>
