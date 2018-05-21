@@ -147,8 +147,10 @@ def str_clean(string):
 def dl_sub(Session, ID, folder, db, quiet=False, check=False, speed=1):
     if check and sub_exists(db, ID):
         if not quiet:
-            cols = os.get_terminal_size()[0] - 43
-            if sys.platform in ('win32', 'cygwin'): cols -= 1
+            if sys.platform in ('win32', 'cygwin'):
+                cols = os.get_terminal_size()[0] - 44
+            else:
+                cols = os.get_terminal_size()[0] - 43
             if cols < 0: cols = 0
             title = str_clean(sub_read(db, ID, "title"))[0:cols]
             print('[Repository]'+(' '+title)*bool(title))
@@ -165,11 +167,15 @@ def dl_sub(Session, ID, folder, db, quiet=False, check=False, speed=1):
     desc = get_desc(page)
 
     if not quiet:
-        cols = os.get_terminal_size()[0] - 43
-        if sys.platform in ('win32', 'cygwin'): cols -= 1
+        if sys.platform in ('win32', 'cygwin'):
+            cols = os.get_terminal_size()[0] - 44
+        else:
+            cols = os.get_terminal_size()[0] - 43
         if cols < 0: cols = 0
         title = str_clean(data[1])[0:cols]
         print((' '+title+('\b'*(len(title)+bool(cols-len(title)))))*bool(title), end='\b'*12, flush=True)
+        if sys.platform in ('win32', 'cygwin') and cols and cols == len(title):
+            print('\b', end='', flush=True)
 
     os.makedirs(folder, exist_ok=True)
 

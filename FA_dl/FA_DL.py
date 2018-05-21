@@ -114,7 +114,10 @@ def dl_page(Session, user, section, db, page_i, page_p, sync=False, speed=1, for
         folder = f'{favar.files_folder}/{tiers(ID)}/{ID:0>10}'
 
         if fadb.usr_src(db, user, ID.zfill(10), section_db[section]):
-            cols = os.get_terminal_size()[0] - 43
+            if sys.platform in ('win32', 'cygwin'):
+                cols = os.get_terminal_size()[0] - 44
+            else:
+                cols = os.get_terminal_size()[0] - 43
             if cols < 0: cols = 0
             title = str_clean(sub.find_all('a')[1].string)[0:cols]
             if quiet and not force:
