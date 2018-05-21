@@ -90,10 +90,10 @@ def get_file(link, folder, quiet=False, speed=1):
     try:
         sub = requests.get(link, stream=True)
     except:
-        if not quiet: print(('\b'*10)+'File Error', end='', flush=True)
+        if not quiet: print(('\b'*11)+'File Error', end='', flush=True)
         return False
 
-    if not quiet: print('\b \b'*10, end='', flush=True)
+    if not quiet: print('\b'+'\b \b'*10, end='', flush=True)
 
     size = requests.head(link)
     size = size.headers
@@ -148,16 +148,17 @@ def dl_sub(Session, ID, folder, db, quiet=False, check=False, speed=1):
     if check and sub_exists(db, ID):
         if not quiet:
             cols = os.get_terminal_size()[0] - 43
+            if sys.platform in ('win32', 'cygwin'): cols -= 1
             if cols < 0: cols = 0
             title = str_clean(sub_read(db, ID, "title"))[0:cols]
-            print(title+' '*(cols-len(title)+1)+'[Repository]')
+            print('[Repository]'+(' '+title)*bool(title))
         return 2
 
     if not quiet: print('[Get Infos ]', end='', flush=True)
 
     page = get_page(Session, ID)
     if page == None:
-        print('\b'*11+'Page Error]')
+        print('\b'*11+'Page Error')
         return 3
     data = get_info(page)
     link = get_link(page)
@@ -165,9 +166,10 @@ def dl_sub(Session, ID, folder, db, quiet=False, check=False, speed=1):
 
     if not quiet:
         cols = os.get_terminal_size()[0] - 43
+        if sys.platform in ('win32', 'cygwin'): cols -= 1
         if cols < 0: cols = 0
         title = str_clean(data[1])[0:cols]
-        print('\b \b'*12+title, end=' '*(cols-len(title)+1), flush=True)
+        print((' '+title+('\b'*(len(title)+bool(cols-len(title)))))*bool(title), end='\b'*12, flush=True)
 
     os.makedirs(folder, exist_ok=True)
 
