@@ -36,7 +36,16 @@ def menu(db):
             k = k.replace('\x1b', str(len(menu)))
         print(k+'\n')
 
-        Session = menu[k][1](Session, db)
+        try:
+            Session = menu[k][1](Session, db)
+        except SystemExit:
+            raise
+        except:
+            print('\nAn uknown error occurred:')
+            err = sys.exc_info()
+            for e in err:
+                print('  '+repr(e))
+sys.exit(1)
 
         print('-'*30+'\n')
 
