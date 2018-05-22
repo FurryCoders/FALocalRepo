@@ -39,7 +39,9 @@ def menu(db):
         try:
             Session = menu[k][1](Session, db)
         except SystemExit:
-            raise
+            sys.exit(0)
+        except KeyboardInterrupt:
+            sys.exit(130)
         except:
             if '--debug' in sys.argv[1:]:
                 raise
