@@ -18,6 +18,7 @@ This program was born with the desire to provide a relatively easy-to-use method
 3. [Upgrade](#upgrading-from-earlier-versions)
 4. [Cookies](#cookies)
 5. [Build instructions](#build-instructions)
+6. [Troubleshooting](#troubleshooting)
 6. [Appendix](#appendix)
 
 ## Usage
@@ -57,6 +58,8 @@ Last field is reserved for options. These can be:
     Like 'force' but it will prevent interrupting the download for the whole section (this means **ALL** pages from each user will be checked, only use for a limited amount of users).
     * `noindex`<br>
     Do not update indexes after completing the download.
+    * `dbonly`<br>
+    Do not save any file during download/update, save submissions only in the database.
     * `quit`<br>
     Quits the program when the current operation is completed.
 
@@ -173,10 +176,13 @@ This will start the analysis and repair of the SUBMISSIONS table.
 4. `All`<br>
 Submissions, users and infos will all be checked and the database re-indexed and optimized.
 
-5. `Index`<br>
+5. `Analyze`<br>
+Search for errors in all three tables but do not repair them.
+
+6. `Index`<br>
 Indexes will be updated.
 
-6. `Optimize`<br>
+7. `Optimize`<br>
 Database will be optimized with sqlite `VACUUM` function.
 
 ### Interrupt
@@ -330,6 +336,9 @@ The following modules are used but available by default:
 * [time](https://docs.python.org/3.1/library/time.html)
 
 Once these modules are installed (suggest using `pip`) then the program can be run through the Python 3.x interpreter or built using `pyinstaller` or any other software.
+
+## Troubleshooting
+The program is set up so that any unforeseen error interrupts the program after displaying the error details. To get more details the program can be run with the option `--debug` which will allow exceptions to raise normally.
 
 ## Appendix
 ### Unverified commits
