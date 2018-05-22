@@ -284,8 +284,8 @@ def update(Session, db, users, sections, speed, force, index):
     if sigint_check(): return
 
     print('Update')
-    print('USR PAGE SECT. |     ID     | [RESULT] TITLE')
-    print('-'*46)
+    print('USR PAGE SECT. |     ID     | [SUB STATUS] TITLE')
+    print('-'*50)
 
     users_db = db.execute("SELECT user, folders FROM users ORDER BY user ASC")
     t = int(time.time())
@@ -378,7 +378,7 @@ def download(Session, db, users, sections, sync, speed, force, index):
         print('Nothing to download')
         return
     print('Download')
-    print('USR PAGE SECT. |     ID     | [RESULT] TITLE')
+    print('USR PAGE SECT. |     ID     | [SUB STATUS] TITLE')
 
     flag_download = False
     t = int(time.time())
@@ -386,7 +386,7 @@ def download(Session, db, users, sections, sync, speed, force, index):
     fadb.info_up(db, 'LASTDLT', 0)
 
     for usr in usr_sec:
-        print('-'*46)
+        print('-'*50)
         for i in range(0, len(usr[1])):
             sec = usr[1][i]
             dl_ret = dl_usr(Session, usr[0], sec, db, sync, speed, force)
