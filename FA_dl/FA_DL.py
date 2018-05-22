@@ -438,8 +438,7 @@ def download_main(Session, db):
 
         users = re.sub('([^a-zA-Z0-9\-., ])', '', users)
         users = re.sub('( )+', ',', users.strip())
-        users = sorted(users.split(','))
-        users = list(set([u for u in users if u != '']))
+        users = sorted(set([u for u in users.split(',') if u != '']))
 
         sections = re.sub('[^gsfeE]', '', sections)
         sections = list(set(sections))
