@@ -137,6 +137,7 @@ def dl_page(Session, user, section, db, page_i, page_p, sync=False, speed=1, for
 
         if s_ret != 3:
             fadb.usr_up(db, user, ID.zfill(10), section_db[section])
+            if db_only: time.sleep(1)
 
         if sigint_check(): return 5
 
