@@ -41,11 +41,14 @@ def menu(db):
         except SystemExit:
             raise
         except:
-            print('\nAn uknown error occurred:')
-            err = sys.exc_info()
-            for e in err:
-                print('  '+repr(e))
-                sys.exit(1)
+            if '--debug' in sys.argv[1:]:
+                raise
+            else:
+                print('\nAn uknown error occurred:')
+                err = sys.exc_info()
+                for e in err:
+                    print('  '+repr(e))
+                    sys.exit(1)
 
         print('-'*30+'\n')
 
