@@ -103,7 +103,7 @@ def check_page(Session, url):
     return page_t
 
 
-def dl_page(Session, user, section, db, page_i, page_p, sync=False, speed=1, force=0, quiet=False):
+def dl_page(Session, user, section, db, page_i, page_p, sync=False, speed=1, force=0, quiet=False, db_only=False):
     sub_i = 0
     for sub in page_p.findAll('figure'):
         if sigint_check(): return 5
@@ -133,7 +133,7 @@ def dl_page(Session, user, section, db, page_i, page_p, sync=False, speed=1, for
 
         if sigint_check(): return 5
 
-        s_ret = dl_sub(Session, ID, folder, db, False, True, speed)
+        s_ret = dl_sub(Session, ID, folder, db, False, True, speed, db_only)
 
         if s_ret != 3:
             fadb.usr_up(db, user, ID.zfill(10), section_db[section])
@@ -142,7 +142,7 @@ def dl_page(Session, user, section, db, page_i, page_p, sync=False, speed=1, for
 
     return 0
 
-def dl_gs(Session, user, section, db, sync=False, speed=1, force=0, quiet=False):
+def dl_gs(Session, user, section, db, sync=False, speed=1, force=0, quiet=False, db_only=False):
     url = 'https://www.furaffinity.net/'
     url += f'{section_full[section]}/{user}/'
 
@@ -172,13 +172,13 @@ def dl_gs(Session, user, section, db, sync=False, speed=1, force=0, quiet=False)
 
         if sigint_check(): return 5
 
-        page_ret = dl_page(Session, user, section, db, page_i, page_p, sync, speed, force, quiet)
+        page_ret = dl_page(Session, user, section, db, page_i, page_p, sync, speed, force, quiet, db_only)
 
         if page_ret != 0: return page_ret
 
         if sigint_check(): return 5
 
-def dl_e(Session, user, section, db, sync=False, speed=1, force=0, quiet=False):
+def dl_e(Session, user, section, db, sync=False, speed=1, force=0, quiet=False, db_only=False):
     url = 'https://www.furaffinity.net/'
     if section == 'e':
         url += f'search/?q=( @message (":icon{user}:" | ":{user}icon:")) | ( @keywords ("{user}"))'
@@ -212,13 +212,13 @@ def dl_e(Session, user, section, db, sync=False, speed=1, force=0, quiet=False):
 
         if sigint_check(): return 5
 
-        page_ret = dl_page(Session, user, section, db, page_i, page_p, sync, speed, force, quiet)
+        page_ret = dl_page(Session, user, section, db, page_i, page_p, sync, speed, force, quiet, db_only)
 
         if page_ret != 0: return page_ret
 
         if sigint_check(): return 5
 
-def dl_f(Session, user, section, db, sync=False, speed=1, force=0, quiet=False):
+def dl_f(Session, user, section, db, sync=False, speed=1, force=0, quiet=False, db_only=False):
     url = f'https://www.furaffinity.net/favorites/{user}'
 
     page_i = 0
@@ -249,7 +249,7 @@ def dl_f(Session, user, section, db, sync=False, speed=1, force=0, quiet=False):
 
         if sigint_check(): return 5
 
-        page_ret = dl_page(Session, user, section, db, page_i, page_p, sync, speed, force, quiet)
+        page_ret = dl_page(Session, user, section, db, page_i, page_p, sync, speed, force, quiet, db_only)
 
         if page_ret != 0: return page_ret
 
@@ -262,14 +262,14 @@ def dl_f(Session, user, section, db, sync=False, speed=1, force=0, quiet=False):
         else:
             return 0
 
-def dl_usr(Session, user, section, db, sync=False, speed=1, force=0, quiet=False):
+def dl_usr(Session, user, section, db, sync=False, speed=1, force=0, quiet=False, db_only=False):
     print(f'{user[0:12]: ^12} {section}\r', end='', flush=True)
     if section in ('g', 's'):
-        dl_ret = dl_gs(Session, user, section, db, sync, speed, force, quiet)
+        dl_ret = dl_gs(Session, user, section, db, sync, speed, force, quiet, db_only)
     elif section in ('e', 'E'):
-        dl_ret = dl_e(Session, user, section, db, sync, speed, force, quiet)
+        dl_ret = dl_e(Session, user, section, db, sync, speed, force, quiet, db_only)
     elif section in ('f'):
-        dl_ret = dl_f(Session, user, section, db, sync, speed, force, quiet)
+        dl_ret = dl_f(Session, user, section, db, sync, speed, force, quiet, db_only)
 
     if dl_ret not in (1, 4):
         if section == 'e':
@@ -282,7 +282,7 @@ def dl_usr(Session, user, section, db, sync=False, speed=1, force=0, quiet=False
     return dl_ret
 
 
-def update(Session, db, users, sections, speed, force, index):
+def update(Session, db, users, sections, speed, force, index, db_only):
     if sigint_check(): return
 
     print('Update')
@@ -314,7 +314,7 @@ def update(Session, db, users, sections, speed, force, index):
 
             print(f'{u[0][0:12]: ^12} {s}\r', end='', flush=True)
 
-            dl_ret = dl_usr(Session, u[0], s, db, True, speed, force, quiet=True)
+            dl_ret = dl_usr(Session, u[0], s, db, True, speed, force, quiet, db_only)
             if dl_ret == 3:
                 print('\b \b'*os.get_terminal_size()[0], end='', flush=True)
             if dl_ret in (0,2,4):
@@ -344,7 +344,7 @@ def update(Session, db, users, sections, speed, force, index):
     t = int(time.time()) - t
     fadb.info_up(db, 'LASTUPT', t)
 
-def download(Session, db, users, sections, sync, speed, force, index):
+def download(Session, db, users, sections, sync, speed, force, index, db_only):
     if sigint_check(): return
 
     usr_sec = [[u, "".join(sections)] for u in users]
@@ -391,7 +391,7 @@ def download(Session, db, users, sections, sync, speed, force, index):
         print('-'*50)
         for i in range(0, len(usr[1])):
             sec = usr[1][i]
-            dl_ret = dl_usr(Session, usr[0], sec, db, sync, speed, force)
+            dl_ret = dl_usr(Session, usr[0], sec, db, sync, speed, force, False, db_only)
             if dl_ret in (0,1,2,3,5):
                 if sec == 'e':
                     fadb.usr_rep(db, usr[0], 'E', 'e', 'FOLDERS')
@@ -447,12 +447,14 @@ def download_main(Session, db):
         speed = 1 ; upd = False
         sync = False ; force = 0
         quit = False ; index = True
+        db_only = False
         if 'quick' in options: speed = 2
         if 'slow' in options: speed = 0
         if 'update' in options: upd = True
         if 'sync' in options: sync = True
         if 'all' in options: force = -1
         if 'noindex' in options: index = False
+        if 'dbonly' in options: db_only = True
         if re.search('force[0-9]+', options):
             force = re.search('force[0-9]+', options).group(0)
             force = re.sub('[^0-9]', '', force)
@@ -476,9 +478,9 @@ def download_main(Session, db):
     if sigint_check(): return Session
 
     if upd:
-        update(Session, db, users, sections, speed, force, index)
+        update(Session, db, users, sections, speed, force, index, db_only)
     else:
-        download(Session, db, users, sections, sync, speed, force, index)
+        download(Session, db, users, sections, sync, speed, force, index, db_only)
     fadb.info_up(db, 'USRN', fadb.table_n(db, 'USERS'))
     fadb.info_up(db, 'SUBN', fadb.table_n(db, 'SUBMISSIONS'))
 
