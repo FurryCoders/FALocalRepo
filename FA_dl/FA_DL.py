@@ -181,9 +181,11 @@ def dl_gs(Session, user, section, db, sync=False, speed=1, force=0, quiet=False)
 def dl_e(Session, user, section, db, sync=False, speed=1, force=0, quiet=False):
     url = 'https://www.furaffinity.net/'
     if section == 'e':
-        url += 'search/?q=( ":icon{0}:" | ":{0}icon:" ) ! ( @lower {0} )&order-by=date'.format(user)
+        url += f'search/?q=( @message (":icon{user}:" | ":{user}icon:") @keywords ("{user}") )'
     elif section == 'E':
-        url += 'search/?q=( ":icon{0}:" | ":{0}icon:" | "{0}" ) ! ( @lower {0} )&order-by=date'.format(user)
+        url += f'search/?q=( @message (":icon{user}:" | ":{user}icon:" | "{user}") @keywords ("{user}") )'
+    url += f' ! ( @lower {user} )'
+    url += '&order-by=date'
 
     page_i = 0
     while True:
