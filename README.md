@@ -39,9 +39,9 @@ Second field is reserved for sections. These can be:
     * `s` - Scraps
     * `f` - Favorites
     * `e` - Extras partial<br>
-    Searches submissions that contain ':iconusername:' OR ':usernameicon:' in the description AND NOT from username gallery/scraps.
+    Searches submissions that contain ':iconusername:' OR ':usernameicon:' in the description and keywords and are not from the user's gallery/scraps.
     * `E` - Extras full<br>
-    Like partial but also searches for 'username' in the descriptions.
+    Like partial but also searches for 'username' in the description and keywords.
 
     Sections can be omitted if 'update' option is used.
 
