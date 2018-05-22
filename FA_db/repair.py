@@ -215,7 +215,7 @@ def vacuum(Session, db):
 
     return Session
 
-def repair_subs(Session, db):
+def repair_subs(Session, db, repair=True):
     print('Analyzing submissions database for errors ... ', end='', flush=True)
     errs_id, errs_vl, errs_fl = sub_find_errors(db)
     print('Done')
@@ -224,6 +224,8 @@ def repair_subs(Session, db):
     print(f'Found {len(errs_fl)} files error{"s"*bool(len(errs_fl) != 1)}')
 
     fatl.sigint_clear()
+    if not repair:
+        return Session
 
     while any(len(errs) for errs in (errs_id, errs_vl, errs_fl)):
         print()
@@ -311,7 +313,7 @@ def repair_subs(Session, db):
 
     return Session
 
-def repair_usrs(Session, db):
+def repair_usrs(Session, db, repair=True):
     print('Analyzing users database for errors ... ', end='', flush=True)
     errs_empty, errs_repet, errs_names, errs_namef, errs_foldr, errs_fl_dl = usr_find_errors(db)
     print('Done')
@@ -323,6 +325,8 @@ def repair_usrs(Session, db):
     print(f'Found {len(errs_fl_dl)} empty folder download{"s"*bool(len(errs_fl_dl) != 1)}')
 
     fatl.sigint_clear()
+    if not repair:
+        return Session
 
     while any(len(errs) for errs in (errs_empty, errs_repet, errs_names, errs_names, errs_foldr, errs_fl_dl)):
         if len(errs_empty):
@@ -444,7 +448,7 @@ def repair_usrs(Session, db):
 
     return Session
 
-def repair_info(Session, db):
+def repair_info(Session, db, repair=True):
     print('Analyzing infos database for errors ... ', end='', flush=True)
     errs_reps, errs_vers, errs_name, errs_nums, errs_timu, errs_timd, errs_indx = inf_find_errors(db)
     print('Done')
@@ -455,6 +459,10 @@ def repair_info(Session, db):
     print(f'Found{" no"*(not errs_timu)} update times error')
     print(f'Found{" no"*(not errs_timd)} download times error')
     print(f'Found{" no"*(not errs_indx)} index flag error')
+
+    fatl.sigint_clear()
+    if not repair:
+        return Session
 
     if any(err for err in (errs_reps, errs_vers, errs_name, errs_nums, errs_timu, errs_timd)):
         if len(errs_reps):
@@ -523,15 +531,20 @@ def repair_info(Session, db):
 
     return Session
 
-def repair_all(Session, db):
-    repair_subs(Session, db)
+def repair_all(Session, db, repair=True):
+    Session = repair_subs(Session, db, repair)
     fatl.sigint_clear()
 
-    repair_usrs(Session, db)
+    Session = repair_usrs(Session, db, repair)
     fatl.sigint_clear()
 
-    repair_info(Session, db)
+    Session = repair_info(Session, db, repair)
     fatl.sigint_clear()
+
+    return Session
+
+def analyze_all(Session, db):
+    Session = repair_all(Session, db, False)
 
     return Session
 
@@ -541,6 +554,7 @@ def repair(Session, db):
         ('Users', repair_usrs),
         ('Infos', repair_info),
         ('All', repair_all),
+        ('Analyze', analyze_all),
         ('Index', index),
         ('Optimize', vacuum),
         ('Return to menu', (lambda *x: x[0]))
