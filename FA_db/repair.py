@@ -198,7 +198,7 @@ def inf_find_errors(db):
     if 'INDEX' not in infos or infos['INDEX'] not in ('0','1'):
         errs_indx = True
 
-    return errs_reps, errs_vers, errs_name, errs_nums, errs_timu, errs_timd
+    return errs_reps, errs_vers, errs_name, errs_nums, errs_timu, errs_timd, errs_indx
 
 def index(Session, db):
     print('Indexing entries ... ', end='', flush=True)
