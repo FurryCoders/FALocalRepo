@@ -144,7 +144,7 @@ def str_clean(string):
     return re.sub('[^\x00-\x7F]', '', string)
 
 
-def dl_sub(Session, ID, folder, db, quiet=False, check=False, speed=1):
+def dl_sub(Session, ID, folder, db, quiet=False, check=False, speed=1, db_only=False):
     if check and sub_exists(db, ID):
         if not quiet:
             if sys.platform in ('win32', 'cygwin'):
@@ -177,22 +177,26 @@ def dl_sub(Session, ID, folder, db, quiet=False, check=False, speed=1):
         if sys.platform in ('win32', 'cygwin') and cols and cols == len(title):
             print('\b', end='', flush=True)
 
-    os.makedirs(folder, exist_ok=True)
+    if not db_only:
+        os.makedirs(folder, exist_ok=True)
+        subf = get_file(link, folder, quiet, speed)
+    else:
+        if not quiet: print('[          ]', end='\b', flush=True)
+        subf = 0
 
-    subf = get_file(link, folder, quiet, speed)
+    if not quiet: print('\b'*10+'Saving DB ', end='', flush=True)
 
-    if not quiet: print(('\b'*10)+'Saving DB ', end='', flush=True)
+    if not db_only:
+        with codecs.open(folder+'/description.html', encoding='utf-8', mode='w') as f:
+            f.write(desc)
 
-    with codecs.open(folder+'/description.html', encoding='utf-8', mode='w') as f:
-        f.write(desc)
-
-    with open(folder+'/info.txt', 'w') as f:
-        f.write(f'Author: {data[0]}\n')
-        f.write(f'Title: {data[1]}\n')
-        f.write(f'Upload date: {data[2]}\n')
-        f.write(f'Keywords: {data[3]}\n')
-        f.write(f'ID: {ID}\n')
-        f.write(f'File: {link}\n')
+        with open(folder+'/info.txt', 'w') as f:
+            f.write(f'Author: {data[0]}\n')
+            f.write(f'Title: {data[1]}\n')
+            f.write(f'Upload date: {data[2]}\n')
+            f.write(f'Keywords: {data[3]}\n')
+            f.write(f'ID: {ID}\n')
+            f.write(f'File: {link}\n')
 
     sub_info = (
         ID,                                 # ID
