@@ -133,7 +133,11 @@ def dl_page(Session, user, section, db, page_i, page_p, sync=False, speed=1, for
 
         if sigint_check(): return 5
 
+        t1 = time.time()
         s_ret = dl_sub(Session, ID, folder, db, False, True, speed, db_only)
+        t2 = time.time()
+        if speed == 0 and t2-t1 < 1.5 and t2-t1 > 0:
+            time.sleep(t2-t1)
 
         if s_ret != 3:
             fadb.usr_up(db, user, ID.zfill(10), section_db[section])
