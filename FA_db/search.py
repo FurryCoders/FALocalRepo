@@ -165,9 +165,7 @@ def search(Session, db, fields, regex=False, case=False):
     else:
         subs = list(subs.values())
 
-    subs.sort(key=lambda x: x[0])
-    subs.sort(key=lambda x: x[2])
-
+    subs.sort(key=lambda x: (x[0], x[2]))
     t2 = time.time()
 
     if fields['user']:
