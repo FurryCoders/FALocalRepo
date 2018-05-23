@@ -190,16 +190,16 @@ def dl_gs(Session, user, section, db, sync=False, speed=1, force=0, quiet=False,
         page_p = page_p.find('section', id="gallery-gallery")
 
         if page_p == None:
-            fatl.log(f'DOWNLOAD {section_db[section]} -> user:{user} section:{section} page:{page_i} empty')
+            fatl.log(f'DOWNLOAD {section_db[section]} -> user:{user} page:{page_i} empty')
             if page_i == 1:
-                fatl.log(f'DOWNLOAD {section_db[section]} -> user:{user} section:{section} disabled section')
+                fatl.log(f'DOWNLOAD {section_db[section]} -> user:{user} disabled section')
                 print(f"{user[0:12]: ^12} {section} | Section disabled for user")
                 return 4
             else:
                 return 0
 
         if page_p.find('figure') is None:
-            fatl.log(f'DOWNLOAD {section_db[section]} -> user:{user} section:{section} page:{page_i} no subs')
+            fatl.log(f'DOWNLOAD {section_db[section]} -> user:{user} page:{page_i} no subs')
             if page_i == 1:
                 if not quiet:
                     print(f"{user[0:5]: ^5} 001/01 {section} | No submissions to download")
@@ -236,14 +236,14 @@ def dl_e(Session, user, section, db, sync=False, speed=1, force=0, quiet=False, 
         page_p = page_p.find('section', id="gallery-search-results")
 
         if page_p == None:
-            fatl.log(f'DOWNLOAD {section_db[section]} -> user:{user} section:{section} page:{page_i} empty')
+            fatl.log(f'DOWNLOAD {section_db[section]} -> user:{user} page:{page_i} empty')
             if page_i == 1:
                 return 1
             else:
                 return 0
 
         if page_p.find('figure') is None:
-            fatl.log(f'DOWNLOAD {section_db[section]} -> user:{user} section:{section} page:{page_i} no subs')
+            fatl.log(f'DOWNLOAD {section_db[section]} -> user:{user} page:{page_i} no subs')
             if page_i == 1:
                 if not quiet:
                     print(f"{user[0:5]: ^5} 001/01 {section} | No submissions to download")
@@ -276,16 +276,16 @@ def dl_f(Session, user, section, db, sync=False, speed=1, force=0, quiet=False, 
         page_p = page_p.find('section', id="gallery-favorites")
 
         if page_p == None:
-            fatl.log(f'DOWNLOAD {section_db[section]} -> user:{user} section:{section} page:{page_i} empty')
+            fatl.log(f'DOWNLOAD {section_db[section]} -> user:{user} page:{page_i} empty')
             if page_i == 1:
-                fatl.log(f'DOWNLOAD {section_db[section]} -> user:{user} section:{section} disabled section')
+                fatl.log(f'DOWNLOAD {section_db[section]} -> user:{user} disabled section')
                 print(f"{user[0:12]: ^12} {section} | Section disabled for user")
                 return 4
             else:
                 return 0
 
         if page_p.find('figure') is None:
-            fatl.log(f'DOWNLOAD {section_db[section]} -> user:{user} section:{section} page:{page_i} no subs')
+            fatl.log(f'DOWNLOAD {section_db[section]} -> user:{user} page:{page_i} no subs')
             if page_i == 1:
                 if not quiet:
                     print(f"{user[0:5]: ^5} 001/01 {section} | No submissions to download")
