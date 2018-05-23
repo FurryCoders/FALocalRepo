@@ -283,7 +283,7 @@ def dl_usr(Session, user, section, db, sync=False, speed=1, force=0, quiet=False
     return dl_ret
 
 
-def update(Session, db, users, sections, speed, force, index, db_only):
+def update(Session, db, users, sections, speed, force, index, quiet, db_only):
     if sigint_check(): return
 
     print('Update')
