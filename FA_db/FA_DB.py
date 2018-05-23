@@ -141,8 +141,11 @@ def sub_up(db, ID, new_value, column):
 
 def sub_read(db, ID, column):
     col = db.execute(f"SELECT {column} FROM submissions WHERE id = '{ID}'")
-    col = col.fetchall()[0]
-    return col[0]
+    col = col.fetchall()
+    if not len(col):
+        return ''
+    else:
+        return col[0][0]
 
 def sub_exists(db, ID):
     exists = db.execute(f'SELECT EXISTS(SELECT id FROM submissions WHERE id = "{ID}" LIMIT 1);')
