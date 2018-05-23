@@ -50,7 +50,7 @@ def menu(db):
                 err = sys.exc_info()
                 for e in err:
                     print('  '+repr(e))
-                    sys.exit(1)
+                sys.exit(1)
 
         print('-'*30+'\n')
 
