@@ -580,7 +580,6 @@ def repair(Session, db):
         if k == str(len(menu)):
             break
         Session = menu[k][1](Session, db)
-        fatl.sigint_clear()
 
         print('-'*30+'\n')
 
