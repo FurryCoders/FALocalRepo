@@ -2,7 +2,7 @@ import signal
 from .log import log
 
 def sigint_block(logb=True):
-    if log: log('SIGNAL -> sigint block')
+    if logb: log('SIGNAL -> sigint block')
     signal.pthread_sigmask(signal.SIG_BLOCK, {signal.SIGINT})
 
 def sigint_ublock(logb=True):
