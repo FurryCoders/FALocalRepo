@@ -10,7 +10,7 @@ import FA_var as favar
 def sub_check_values(sub):
     if None in sub:
         return False
-    elif '' in (sub[1], sub[2], sub[4], sub[5], sub[7], sub[8], sub[9], sub[10], sub[13]):
+    elif '' in (sub[1], sub[2], sub[4], sub[7], sub[8], sub[9], sub[10]):
         return False
     elif sub[12] != '0' and sub[11] == '':
         return False
