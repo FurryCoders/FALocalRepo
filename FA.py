@@ -59,12 +59,12 @@ def menu(db):
 
         print('-'*30+'\n')
 
+fatl.log_start()
+fatl.log('PROGRAM START')
+
 fatl.sigint_block()
 
 print('\b \b'*21, end='', flush=True)
-
-fatl.log_start()
-fatl.log('PROGRAM START')
 
 if os.path.isfile(favar.log_file):
     print('Trimming log file ... ', end='', flush=True)
