@@ -56,6 +56,8 @@ Last field is reserved for options. These can be:
     Prevents update and sync from stopping the download at the first already present submission. Download stops at the first downloaded submission from page N+1. Example: 'force4' will download the first 4 pages with no interruption and will allow the download to stop from page 5.
     * `all`<br>
     Like 'force' but it will prevent interrupting the download for the whole section (this means **ALL** pages from each user will be checked, only use for a limited amount of users).
+    * `slow`<br>
+    Use lowest possible download speed and make sure each submission doesn't take less than 1.5 seconds.
     * `noindex`<br>
     Do not update indexes after completing the download.
     * `dbonly`<br>
