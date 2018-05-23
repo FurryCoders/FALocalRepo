@@ -37,17 +37,22 @@ def menu(db):
         print(k+'\n')
 
         try:
+            fatl.log('MAIN MENU -> '+menu[k][0])
             Session = menu[k][1](Session, db)
         except SystemExit:
+            fatl.log('PROGRAM END')
             sys.exit(0)
         except KeyboardInterrupt:
+            fatl.log('PROGRAM END')
             sys.exit(130)
         except:
+            err = sys.exc_info()
+            fatl.log('ERROR EXIT -> '+repr(err))
+            fatl.log('PROGRAM END')
             if '--debug' in sys.argv[1:]:
                 raise
             else:
                 print('\nAn uknown error occurred:')
-                err = sys.exc_info()
                 for e in err:
                     print('  '+repr(e))
                     sys.exit(1)
@@ -57,6 +62,8 @@ def menu(db):
 fatl.sigint_block()
 
 print('\b \b'*21, end='', flush=True)
+
+fatl.log('PROGRAM START')
 
 if os.path.isfile(favar.log_file):
     print('Trimming log file ... ', end='', flush=True)
@@ -68,6 +75,7 @@ if os.path.isfile(favar.db_file):
 
 if os.path.isfile(favar.db_file):
     db = sqlite3.connect(favar.db_file)
+    fatl.log('DB -> connected')
 else:
     db = sqlite3.connect(favar.db_file)
     print('Creating database & tables ... ', end='', flush=True)
@@ -75,5 +83,6 @@ else:
     fadb.mktable(db, 'users')
     fadb.mktable(db, 'infos')
     print('\b \b'*31, end='', flush=True)
+    fatl.log('DB -> created')
 
 menu(db)
