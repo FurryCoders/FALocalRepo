@@ -43,7 +43,7 @@ def menu(db):
         except KeyboardInterrupt:
             sys.exit(130)
         except:
-            if '--debug' in sys.argv[1:]:
+            if '--raise' in sys.argv[1:]:
                 raise
             else:
                 print('\nAn uknown error occurred:')
