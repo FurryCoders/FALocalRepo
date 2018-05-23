@@ -1,4 +1,5 @@
 from .tools import *
+from .log import *
 
 from sys import platform
 if platform not in ('win32', 'cygwin'):
