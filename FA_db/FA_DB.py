@@ -1,4 +1,5 @@
 import sqlite3
+import FA_tools as fatl
 import FA_var as favar
 
 # Entries guide - USERS
@@ -30,6 +31,7 @@ import FA_var as favar
 #  9    13  14  SERVER
 
 def usr_ins(db, user, user_full=''):
+    fatl.log(f'DB USER NEW -> user:{[user, user_full]}')
     if user_full.lower().replace('_','') != user:
         user_full = user
     exists = db.execute(f'SELECT EXISTS(SELECT user FROM users WHERE user = "{user}" LIMIT 1);')
@@ -47,6 +49,7 @@ def usr_ins(db, user, user_full=''):
         db.commit()
 
 def usr_rm(db, user, isempty=False):
+    fatl.log(f'DB USER REMOVE -> user:{user} isempty:{isempty}')
     try:
         if isempty:
             db.execute(f'DELETE FROM users WHERE user = "{user}" AND folders = "" AND gallery = "" AND scraps = "" AND favorites = "" AND extras = ""')
@@ -58,6 +61,7 @@ def usr_rm(db, user, isempty=False):
         db.commit()
 
 def usr_up(db, user, to_add, column):
+    fatl.log(f'DB USER ADD -> user:{user} add:{to_add} column:{column}')
     col = db.execute(f"SELECT {column} FROM users WHERE user = '{user}'")
     col = col.fetchall()
     if not len(col):
@@ -75,6 +79,7 @@ def usr_up(db, user, to_add, column):
     db.commit()
 
 def usr_rep(db, user, find, replace, column):
+    fatl.log(f'DB USER REPLACE -> user:{user} find:{find} replace:{replace} column:{column}')
     col = db.execute(f"SELECT {column} FROM users WHERE user = '{user}'")
     col = col.fetchall()
     if not len(col):
@@ -94,6 +99,7 @@ def usr_rep(db, user, find, replace, column):
     db.commit()
 
 def usr_src(db, user, find, column):
+    fatl.log(f'DB USER SEARCH -> user:{user} search:{find}')
     col = db.execute(f"SELECT {column} FROM users WHERE user = '{user}'")
     col = col.fetchall()[0]
     col = "".join(col).split(',')
@@ -101,11 +107,14 @@ def usr_src(db, user, find, column):
     else: return False
 
 def usr_isempty(db, user):
+    fatl.log(f'DB USER IS EMPTY -> user:{user}')
     usr = db.execute(f"SELECT user FROM users WHERE user = '{user}' AND folders = '' AND gallery = '' AND scraps = '' AND favorites = '' AND extras = ''")
     usr = usr.fetchall()
+    fatl.log(f'DB USER IS EMPTY -> user:{user} {bool(len(usr))}')
     return bool(len(usr))
 
 def sub_ins(db, infos):
+    fatl.log(f'DB SUB NEW -> infos:{[infos[0], infos[1], infos[3]]}')
     try:
         db.execute(f'''INSERT INTO SUBMISSIONS
             (ID,AUTHOR,AUTHORURL,TITLE,UDATE,DESCRIPTION,TAGS,CATEGORY,SPECIES,GENDER,RATING,FILELINK,FILENAME,LOCATION, SERVER)
@@ -118,6 +127,7 @@ def sub_ins(db, infos):
         db.commit()
 
 def sub_up(db, ID, new_value, column):
+    fatl.log(f'DB SUB UPDATE -> ID:{ID} new value:{new_value} column:{column}')
     if type(new_value) != list:
         new_value = [new_value]
     if type(column) != list:
@@ -140,19 +150,23 @@ def sub_up(db, ID, new_value, column):
     return True
 
 def sub_read(db, ID, column):
+    fatl.log(f'DB SUB READ -> ID:{ID} column:{column}')
     col = db.execute(f"SELECT {column} FROM submissions WHERE id = '{ID}'")
     col = col.fetchall()[0]
     return col[0]
 
 def sub_exists(db, ID):
+    fatl.log(f'DB SUB EXISTS -> ID:{ID}')
     exists = db.execute(f'SELECT EXISTS(SELECT id FROM submissions WHERE id = "{ID}" LIMIT 1);')
     return exists.fetchall()[0][0]
 
 def info_up(db, field, value):
+    fatl.log(f'DB INFO UPDATE -> entry:{field} value:{value}')
     db.execute(f'UPDATE infos SET value = "{value}" WHERE field = "{field}"')
     db.commit()
 
 def info_read(db, field):
+    fatl.log(f'DB INFO READ -> entry:{field}')
     info = db.execute(f'SELECT value FROM infos WHERE field = "{field}"').fetchall()
     if not len(info):
         return None
@@ -161,6 +175,7 @@ def info_read(db, field):
 
 
 def table_n(db, table):
+    fatl.log(f'DB TABLE TOTAL -> table:{table}')
     table_b = db.execute(f'SELECT EXISTS(SELECT name FROM sqlite_master WHERE type = "table" AND name = "{table}");')
     table_b = table_b.fetchall()[0][0]
 
@@ -169,6 +184,7 @@ def table_n(db, table):
         return len(num.fetchall())
 
 def mkindex(db):
+    fatl.log('DB INDEX')
     col_usrs = (
         'USER',
         'USERFULL',
@@ -198,6 +214,7 @@ def mkindex(db):
     )
 
     for col in col_usrs:
+        fatl.log(f'DB INDEX -> index:{col}')
         try:
             db.execute(f'DROP INDEX {col}')
         except sqlite3.OperationalError:
@@ -208,6 +225,7 @@ def mkindex(db):
             db.execute(f'CREATE INDEX {col} ON users ({col} ASC)')
 
     for col in col_subs:
+        fatl.log(f'DB INDEX -> index:{col}')
         try:
             db.execute(f'DROP INDEX {col}')
         except sqlite3.OperationalError:
@@ -220,6 +238,7 @@ def mkindex(db):
     info_up(db, 'INDEX', 1)
 
 def mktable(db, table):
+    fatl.log(f'DB TABLE MAKE -> {table}')
     if table == 'submissions':
         db.execute('''CREATE TABLE IF NOT EXISTS SUBMISSIONS
             (ID INT UNIQUE PRIMARY KEY NOT NULL,
