@@ -23,7 +23,7 @@ months = {
     }
 
 def get_page(Session, ID):
-    fatl.log.normal(f'DOWNLOAD SUBMISSION -> ID:{ID} get page')
+    fatl.log.verbose(f'DOWNLOAD SUBMISSION -> ID:{ID} get page')
     url = 'https://www.furaffinity.net/view/'+ID
     page = Session.get(url)
     page = bs4.BeautifulSoup(page.text, 'lxml')
@@ -33,18 +33,18 @@ def get_page(Session, ID):
 def get_info(page, ID):
     data = []
 
-    fatl.log.normal(f'DOWNLOAD SUBMISSION -> ID:{ID} get author')
+    fatl.log.verbose(f'DOWNLOAD SUBMISSION -> ID:{ID} get author')
     author = page.find('div', 'submission-artist-container')
     author = author.find('h2').string
     data.append(author)
 
-    fatl.log.normal(f'DOWNLOAD SUBMISSION -> ID:{ID} get title')
+    fatl.log.verbose(f'DOWNLOAD SUBMISSION -> ID:{ID} get title')
     title = page.find('h2', 'submission-title-header')
     title = title.string
     if title == None: title = ''
     data.append(title)
 
-    fatl.log.normal(f'DOWNLOAD SUBMISSION -> ID:{ID} get date')
+    fatl.log.verbose(f'DOWNLOAD SUBMISSION -> ID:{ID} get date')
     date_r = page.find('meta', {"name":"twitter:data1"})
     date_r = date_r.get('content').replace(',', '')
     date_r = date_r.split(' ')
@@ -52,20 +52,20 @@ def get_info(page, ID):
     date[1] = months.get(date_r[0])
     data.append("-".join(date))
 
-    fatl.log.normal(f'DOWNLOAD SUBMISSION -> ID:{ID} get keywords')
+    fatl.log.verbose(f'DOWNLOAD SUBMISSION -> ID:{ID} get keywords')
     keyw = []
     for k in page.find_all('span', 'tags'): keyw.append(k.string)
     keyw = keyw[0:int(len(keyw)/2)]
     keyw.sort(key = str.lower)
     data.append(" ".join(keyw))
 
-    fatl.log.normal(f'DOWNLOAD SUBMISSION -> ID:{ID} get category, species, gender')
+    fatl.log.verbose(f'DOWNLOAD SUBMISSION -> ID:{ID} get category, species, gender')
     extras = [str(e) for e in page.find('div', 'sidebar-section-no-bottom').find_all('div')]
     extras = [e.rstrip('</div>') for e in extras]
     extras = [re.sub('.*> ', '', e).replace('&gt;', '>') for e in extras]
     data += extras # [category, species, gender]
 
-    fatl.log.normal(f'DOWNLOAD SUBMISSION -> ID:{ID} get rating')
+    fatl.log.verbose(f'DOWNLOAD SUBMISSION -> ID:{ID} get rating')
     rating = page.find('meta', {"name":"twitter:data2"})
     rating = rating.get('content').lower()
     data.append(rating)
@@ -73,14 +73,14 @@ def get_info(page, ID):
     return data
 
 def get_link(page, ID):
-    fatl.log.normal(f'DOWNLOAD SUBMISSION -> ID:{ID} get link')
+    fatl.log.verbose(f'DOWNLOAD SUBMISSION -> ID:{ID} get link')
     link = page.find('a', 'button download-logged-in')
     link = "https:" + link.get('href')
 
     return link
 
 def get_desc(page, ID):
-    fatl.log.normal(f'DOWNLOAD SUBMISSION -> ID:{ID} get description')
+    fatl.log.verbose(f'DOWNLOAD SUBMISSION -> ID:{ID} get description')
     desc = page.find('div', 'submission-description-container')
     desc = str(desc)
     desc = desc.split('</div>', 1)[-1]
@@ -90,11 +90,11 @@ def get_desc(page, ID):
     return desc
 
 def get_file(link, folder, ID, quiet=False, speed=1):
-    fatl.log.normal(f'DOWNLOAD SUBMISSION -> ID:{ID} get file')
+    fatl.log.verbose(f'DOWNLOAD SUBMISSION -> ID:{ID} get file')
     if os.path.isfile(folder+'/submission.temp'):
         os.remove(folder+'/submission.temp')
 
-    fatl.log.normal(f'DOWNLOAD SUBMISSION -> ID:{ID} remote file check & size')
+    fatl.log.verbose(f'DOWNLOAD SUBMISSION -> ID:{ID} remote file check & size')
     if not quiet: print('[Sizing Sub]', end='', flush=True)
     try:
         sub = requests.get(link, stream=True)
@@ -115,7 +115,7 @@ def get_file(link, folder, ID, quiet=False, speed=1):
         size = 0
 
     with open(folder+'/submission.temp', 'wb') as f:
-        fatl.log.normal(f'DOWNLOAD SUBMISSION -> ID:{ID} remote file download')
+        fatl.log.verbose(f'DOWNLOAD SUBMISSION -> ID:{ID} remote file download')
         chunks = 0
         bar = 1
         for chunk in sub.iter_content(chunk_size=1024):
@@ -132,7 +132,7 @@ def get_file(link, folder, ID, quiet=False, speed=1):
     if not quiet: print(('\b \b'*10)+'Saving Sub', end='', flush=True)
 
     if not os.path.isfile(folder+'/submission.temp'):
-        fatl.log.normal(f'DOWNLOAD SUBMISSION -> ID:{ID} remote file download error')
+        fatl.log.verbose(f'DOWNLOAD SUBMISSION -> ID:{ID} remote file download error')
         return False
 
     ext = filetype.guess_extension(folder+'/submission.temp')
@@ -142,7 +142,7 @@ def get_file(link, folder, ID, quiet=False, speed=1):
     elif ext == 'zip':
         ext = link.split('.')[-1]
         if ext == link.split('/')[-1]: ext = None
-    fatl.log.normal(f'DOWNLOAD SUBMISSION -> ID:{ID} downloaded file extension:{ext}')
+    fatl.log.verbose(f'DOWNLOAD SUBMISSION -> ID:{ID} downloaded file extension:{ext}')
     if os.path.isfile(folder+'/submission.'+str(ext)):
         os.remove(folder+'/submission.'+str(ext))
     os.rename(folder+'/submission.temp', folder+'/submission.'+str(ext))
@@ -194,7 +194,7 @@ def dl_sub(Session, ID, folder, db, quiet=False, check=False, speed=1, db_only=F
             print('\b', end='', flush=True)
 
     if not db_only:
-        fatl.log.normal(f'DOWNLOAD SUBMISSION -> ID:{ID} create folder \"{folder}\"')
+        fatl.log.verbose(f'DOWNLOAD SUBMISSION -> ID:{ID} create folder \"{folder}\"')
         os.makedirs(folder, exist_ok=True)
         subf = get_file(link, folder, ID, quiet, speed)
     else:
@@ -204,7 +204,7 @@ def dl_sub(Session, ID, folder, db, quiet=False, check=False, speed=1, db_only=F
     if not quiet: print('\b'*10+'Saving DB ', end='', flush=True)
 
     if not db_only:
-        fatl.log.normal(f'DOWNLOAD SUBMISSION -> ID:{ID} save description and informations')
+        fatl.log.verbose(f'DOWNLOAD SUBMISSION -> ID:{ID} save description and informations')
         with codecs.open(folder+'/description.html', encoding='utf-8', mode='w') as f:
             f.write(desc)
 
