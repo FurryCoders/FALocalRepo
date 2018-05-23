@@ -1,3 +1,4 @@
+import sys
 from datetime import datetime
 import FA_var as favar
 
@@ -17,5 +18,7 @@ def log_start(file=favar.log_file):
         log.write('*'*44+'\n')
 
 def log(data='', file=favar.log_file):
+    if '--log' not in sys.argv[1:]:
+        return
     with open(file, 'a')as log:
         log.write(f'{str(datetime.now())} | {data}\n')
