@@ -1,12 +1,12 @@
 import signal
 from .log import log
 
-def sigint_block():
-    log('SIGNAL -> sigint block')
+def sigint_block(log=True):
+    if log: log('SIGNAL -> sigint block')
     signal.pthread_sigmask(signal.SIG_BLOCK, {signal.SIGINT})
 
-def sigint_ublock():
-    log('SIGNAL -> sigint unblock')
+def sigint_ublock(log=True):
+    if log: log('SIGNAL -> sigint unblock')
     signal.pthread_sigmask(signal.SIG_UNBLOCK, {signal.SIGINT})
 
 def sigint_check():
@@ -20,8 +20,8 @@ def sigint_clear():
     log('SIGNAL -> sigint clear')
     while True:
         try:
-            sigint_ublock()
+            sigint_ublock(log=False)
             break
         except:
             pass
-    sigint_block()
+    sigint_block(log=False)
