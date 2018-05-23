@@ -19,14 +19,14 @@ def mkregexp(case):
     return regexp
 
 def search_web(Session, fields):
-    fatl.log('SEARCH WEB')
+    fatl.log.normal('SEARCH WEB')
     Session = session(Session)
     if not Session:
         print("Couldn't establish connection, search aborted")
         return
     print()
 
-    fatl.log('SEARCH WEB -> url creation')
+    fatl.log.normal('SEARCH WEB -> url creation')
     for k in fields:
         fields[k] = fields[k].strip()
 
@@ -52,7 +52,7 @@ def search_web(Session, fields):
 
     print(f'{page_i:03d}', end='', flush=True)
 
-    fatl.log('SEARCH WEB -> get results')
+    fatl.log.normal('SEARCH WEB -> get results')
     page = Session.get(f'{search_url}&page={page_i}')
     page = bs4.BeautifulSoup(page.text, 'lxml')
     page = page.find('section', id="gallery-search-results")
@@ -84,12 +84,12 @@ def search_web(Session, fields):
 
     print('\r   \r', end='', flush=True)
     print('\n'*bool(n) + f'{n} results found')
-    fatl.log(f'SEARCH WEB -> {n} results')
+    fatl.log.normal(f'SEARCH WEB -> {n} results')
 
     return Session
 
 def search(Session, db, fields, regex=False, case=False):
-    fatl.log('SEARCH DB')
+    fatl.log.normal('SEARCH DB')
     match = ('LIKE', '%')
     if regex:
         regexp = mkregexp(case)
@@ -117,7 +117,7 @@ def search(Session, db, fields, regex=False, case=False):
 
     t1 = time.time()
 
-    fatl.log('SEARCH DB -> SUBMISSIONS query')
+    fatl.log.normal('SEARCH DB -> SUBMISSIONS query')
     if fields['user'] and re.match('^[gs]+$', fields['sect']):
         subs = db.execute(f'''SELECT author, udate, id, title FROM submissions
             WHERE authorurl {match[0]} ? AND
@@ -141,7 +141,7 @@ def search(Session, db, fields, regex=False, case=False):
     subs = {s[2]: s for s in subs}
 
     if fields['user']:
-        fatl.log('SEARCH DB -> USERS query')
+        fatl.log.normal('SEARCH DB -> USERS query')
         users = db.execute(f'SELECT gallery, scraps, favorites, extras FROM users WHERE user {match[0]} ?', (match[1]+fields['user']+match[1],))
         users = users.fetchall()
         if not len(users):
@@ -168,7 +168,7 @@ def search(Session, db, fields, regex=False, case=False):
             else:
                 subs_u += u[0] + u[1] + u[2] + u[3]
 
-        fatl.log('SEARCH DB -> filter USERS and SUBMISSIONS results')
+        fatl.log.normal('SEARCH DB -> filter USERS and SUBMISSIONS results')
         subs = [subs.get(i[0]) + (i[1],) for i in subs_u if subs.get(i[0]) != None]
     else:
         subs = list(subs.values())
@@ -196,7 +196,7 @@ def search(Session, db, fields, regex=False, case=False):
         else:
             print()
 
-    fatl.log(f'SEARCH DB -> {len(subs)} results')
+    fatl.log.normal(f'SEARCH DB -> {len(subs)} results')
 
     print('\n'*bool(len(subs)) + f'{len(subs)} results found in {t2-t1:.3f} seconds')
     if not len(subs):
@@ -245,16 +245,16 @@ def main(Session, db):
         break
 
     try:
-        fatl.log('SEARCH -> fields:{} options:"{}"'.format({k: fields[k] for k in fields if fields[k]}, options))
+        fatl.log.normal('SEARCH -> fields:{} options:"{}"'.format({k: fields[k] for k in fields if fields[k]}, options))
 
         regex = False
         case = False
         if 'regex' in options.lower():
             regex = True
-            fatl.log('SEARCH -> Turn on regex')
+            fatl.log.normal('SEARCH -> Turn on regex')
         if 'case' in options.lower():
             case = True
-            fatl.log('SEARCH -> Turn on case-sensitivity')
+            fatl.log.normal('SEARCH -> Turn on case-sensitivity')
 
 
         if 'web' in options.lower():

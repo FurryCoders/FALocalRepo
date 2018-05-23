@@ -8,7 +8,7 @@ import FA_tools as fatl
 import FA_var as favar
 
 def sub_check_values(sub):
-    fatl.log(f'REPAIR SUB -> check values ID:{sub[0]}')
+    fatl.log.normal(f'REPAIR SUB -> check values ID:{sub[0]}')
     if None in sub:
         return False
     elif '' in (sub[1], sub[2], sub[4], sub[7], sub[8], sub[9], sub[10]):
@@ -21,7 +21,7 @@ def sub_check_values(sub):
     return True
 
 def sub_check_files(sub):
-    fatl.log(f'REPAIR SUB -> check files ID:{sub[0]}')
+    fatl.log.normal(f'REPAIR SUB -> check files ID:{sub[0]}')
     loc = favar.files_folder+'/'+sub[13]
     if not os.path.isdir(loc):
         return False
@@ -35,7 +35,7 @@ def sub_check_files(sub):
     return True
 
 def sub_find_errors(db):
-    fatl.log('REPAIR SUB -> find errors')
+    fatl.log.normal('REPAIR SUB -> find errors')
     subs = db.execute('SELECT * FROM submissions ORDER BY id ASC')
     subs = [[si for si in s] for s in subs.fetchall()]
 
@@ -62,7 +62,7 @@ def sub_find_errors(db):
     return errs_id, errs_vl, errs_fl
 
 def usr_check_folder(usr):
-    fatl.log(f'REPAIR USER -> check folders user:{usr[0]}')
+    fatl.log.normal(f'REPAIR USER -> check folders user:{usr[0]}')
     if len(usr[3]) and 'g' not in usr[2]:
         return False
     elif len(usr[4]) and 's' not in usr[2]:
@@ -75,7 +75,7 @@ def usr_check_folder(usr):
     return True
 
 def usr_check_folder_dl(usr):
-    fatl.log(f'REPAIR USER -> check sections user:{usr[0]}')
+    fatl.log.normal(f'REPAIR USER -> check sections user:{usr[0]}')
     ret = []
     if 'g' in usr[2] and not len(usr[3]):
         if 'g!' not in usr[1]:
@@ -92,7 +92,7 @@ def usr_check_folder_dl(usr):
     return ret
 
 def usr_find_errors(db):
-    fatl.log('REPAIR USER -> find errors')
+    fatl.log.normal('REPAIR USER -> find errors')
     usrs = db.execute('SELECT * FROM users ORDER BY user ASC')
     usrs = [[ui for ui in u] for u in usrs.fetchall()]
 
@@ -161,7 +161,7 @@ def usr_find_errors(db):
     return errs_empty, errs_repet, errs_names, errs_namef, errs_foldr, errs_fl_dl
 
 def inf_find_errors(db):
-    fatl.log('REPAIR INFO -> find errors')
+    fatl.log.normal('REPAIR INFO -> find errors')
     infos = db.execute('SELECT FIELD, VALUE FROM INFOS').fetchall()
 
     errs_reps = []
@@ -216,7 +216,7 @@ def index(Session, db):
 
 def vacuum(Session, db):
     print('Optimizing database ... ', end='', flush=True)
-    fatl.log('DB -> vacuum')
+    fatl.log.normal('DB -> vacuum')
     db.execute("VACUUM")
     db.commit()
     print('Done\n')
@@ -224,7 +224,7 @@ def vacuum(Session, db):
     return Session
 
 def repair_subs(Session, db, repair=True):
-    fatl.log('REPAIR SUB')
+    fatl.log.normal('REPAIR SUB')
     print('Analyzing submissions database for errors ... ', end='', flush=True)
     errs_id, errs_vl, errs_fl = sub_find_errors(db)
     print('Done')
@@ -323,7 +323,7 @@ def repair_subs(Session, db, repair=True):
     return Session
 
 def repair_usrs(Session, db, repair=True):
-    fatl.log('REPAIR USER')
+    fatl.log.normal('REPAIR USER')
     print('Analyzing users database for errors ... ', end='', flush=True)
     errs_empty, errs_repet, errs_names, errs_namef, errs_foldr, errs_fl_dl = usr_find_errors(db)
     print('Done')
@@ -459,7 +459,7 @@ def repair_usrs(Session, db, repair=True):
     return Session
 
 def repair_info(Session, db, repair=True):
-    fatl.log('REPAIR INFO')
+    fatl.log.normal('REPAIR INFO')
     print('Analyzing infos database for errors ... ', end='', flush=True)
     errs_reps, errs_vers, errs_name, errs_nums, errs_timu, errs_timd, errs_indx = inf_find_errors(db)
     print('Done')
@@ -588,7 +588,7 @@ def repair(Session, db):
             k = k.replace('\x1b', str(len(menu)))
         print(k+'\n')
 
-        fatl.log(f'REPAIR MENU -> {menu[k][0]}')
+        fatl.log.normal(f'REPAIR MENU -> {menu[k][0]}')
         if k == str(len(menu)):
             break
         Session = menu[k][1](Session, db)

@@ -37,18 +37,18 @@ def menu(db):
         print(k+'\n')
 
         try:
-            fatl.log('MAIN MENU -> '+menu[k][0])
+            fatl.log.normal('MAIN MENU -> '+menu[k][0])
             Session = menu[k][1](Session, db)
         except SystemExit:
-            fatl.log('PROGRAM END')
+            fatl.log.normal('PROGRAM END')
             sys.exit(0)
         except KeyboardInterrupt:
-            fatl.log('PROGRAM END')
+            fatl.log.normal('PROGRAM END')
             sys.exit(130)
         except:
             err = sys.exc_info()
-            fatl.log('ERROR EXIT -> '+repr(err))
-            fatl.log('PROGRAM END')
+            fatl.log.normal('ERROR EXIT -> '+repr(err))
+            fatl.log.normal('PROGRAM END')
             if '--debug' in sys.argv[1:]:
                 raise
             else:
@@ -60,7 +60,7 @@ def menu(db):
         print('-'*30+'\n')
 
 fatl.log_start()
-fatl.log('PROGRAM START')
+fatl.log.normal('PROGRAM START')
 
 fatl.sigint_block()
 
@@ -76,7 +76,7 @@ if os.path.isfile(favar.db_file):
 
 if os.path.isfile(favar.db_file):
     db = sqlite3.connect(favar.db_file)
-    fatl.log('DB -> connected')
+    fatl.log.normal('DB -> connected')
 else:
     db = sqlite3.connect(favar.db_file)
     print('Creating database & tables ... ', end='', flush=True)
@@ -84,6 +84,6 @@ else:
     fadb.mktable(db, 'users')
     fadb.mktable(db, 'infos')
     print('\b \b'*31, end='', flush=True)
-    fatl.log('DB -> created')
+    fatl.log.normal('DB -> created')
 
 menu(db)

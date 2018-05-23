@@ -8,7 +8,7 @@ from .v2_3v2_6 import db_upgrade_v2_3v2_6
 from .v2_6v2_7 import db_upgrade_v2_6v2_7
 
 def db_upgrade_main():
-    fatl.log('DB UPGRADE -> start')
+    fatl.log.normal('DB UPGRADE -> start')
     print('Checking database file ... ', end='', flush=True)
 
     db = sqlite3.connect(favar.db_file)
@@ -54,16 +54,16 @@ def db_upgrade_main():
             print(f'FA version: {favar.fa_version}')
             print(f'DB version: {infos["VERSION"]}')
             print('Use a program version equal or higher')
-            fatl.log(f'DB UPGRADE -> version error FA:{favar.fa_version} DB:{infos["VERSION"]}')
-            fatl.log('PROGRAM END')
+            fatl.log.normal(f'DB UPGRADE -> version error FA:{favar.fa_version} DB:{infos["VERSION"]}')
+            fatl.log.normal('PROGRAM END')
             sys.exit(1)
 
         if db_upgrade:
-            fatl.log('DB UPGRADE -> '+db_upgrade.__name__)
+            fatl.log.normal('DB UPGRADE -> '+db_upgrade.__name__)
             fatl.header('Database version upgrade')
             db_upgrade()
             print()
         else:
             break
 
-    fatl.log('DB UPGRADE -> end')
+    fatl.log.normal('DB UPGRADE -> end')
