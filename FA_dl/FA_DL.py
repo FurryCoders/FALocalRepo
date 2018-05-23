@@ -4,8 +4,8 @@ import re
 import sqlite3
 import PythonRead as readkeys
 import FA_db as fadb
+import FA_tools as fatl
 import FA_var as favar
-from FA_tools import sigint_check, tiers, header
 from .FA_DLSUB import dl_sub, str_clean
 from .cookies import cookies_error
 
@@ -106,12 +106,12 @@ def check_page(Session, url):
 def dl_page(Session, user, section, db, page_i, page_p, sync=False, speed=1, force=0, quiet=False, db_only=False):
     sub_i = 0
     for sub in page_p.findAll('figure'):
-        if sigint_check(): return 5
+        if fatl.sigint_check(): return 5
 
         sub_i += 1
         ID = sub.get('id')[4:]
         print(f'{user[0:5]: ^5} {page_i:0>3}/{sub_i:0>2} {section} | {ID:0>10} | ', end='', flush=True)
-        folder = f'{favar.files_folder}/{tiers(ID)}/{ID:0>10}'
+        folder = f'{favar.files_folder}/{fatl.tiers(ID)}/{ID:0>10}'
 
         if fadb.usr_src(db, user, ID.zfill(10), section_db[section]):
             if sys.platform in ('win32', 'cygwin'):
@@ -131,7 +131,7 @@ def dl_page(Session, user, section, db, page_i, page_p, sync=False, speed=1, for
                 else: return 2
             continue
 
-        if sigint_check(): return 5
+        if fatl.sigint_check(): return 5
 
         t1 = time.time()
         s_ret = dl_sub(Session, ID, folder, db, False, True, speed, db_only)
@@ -143,7 +143,7 @@ def dl_page(Session, user, section, db, page_i, page_p, sync=False, speed=1, for
             fadb.usr_up(db, user, ID.zfill(10), section_db[section])
             if db_only: time.sleep(1)
 
-        if sigint_check(): return 5
+        if fatl.sigint_check(): return 5
 
     return 0
 
@@ -153,7 +153,7 @@ def dl_gs(Session, user, section, db, sync=False, speed=1, force=0, quiet=False,
 
     page_i = 0
     while True:
-        if sigint_check(): return 5
+        if fatl.sigint_check(): return 5
 
         page_i += 1
         page_r = Session.get(url+str(page_i))
@@ -175,13 +175,13 @@ def dl_gs(Session, user, section, db, sync=False, speed=1, force=0, quiet=False,
             else:
                 return 0
 
-        if sigint_check(): return 5
+        if fatl.sigint_check(): return 5
 
         page_ret = dl_page(Session, user, section, db, page_i, page_p, sync, speed, force, quiet, db_only)
 
         if page_ret != 0: return page_ret
 
-        if sigint_check(): return 5
+        if fatl.sigint_check(): return 5
 
 def dl_e(Session, user, section, db, sync=False, speed=1, force=0, quiet=False, db_only=False):
     url = 'https://www.furaffinity.net/'
@@ -194,7 +194,7 @@ def dl_e(Session, user, section, db, sync=False, speed=1, force=0, quiet=False, 
 
     page_i = 0
     while True:
-        if sigint_check(): return 5
+        if fatl.sigint_check(): return 5
 
         page_i += 1
         page_r = Session.get(f'{url}&page={page_i}')
@@ -215,13 +215,13 @@ def dl_e(Session, user, section, db, sync=False, speed=1, force=0, quiet=False, 
             else:
                 return 0
 
-        if sigint_check(): return 5
+        if fatl.sigint_check(): return 5
 
         page_ret = dl_page(Session, user, section, db, page_i, page_p, sync, speed, force, quiet, db_only)
 
         if page_ret != 0: return page_ret
 
-        if sigint_check(): return 5
+        if fatl.sigint_check(): return 5
 
 def dl_f(Session, user, section, db, sync=False, speed=1, force=0, quiet=False, db_only=False):
     url = f'https://www.furaffinity.net/favorites/{user}'
@@ -229,7 +229,7 @@ def dl_f(Session, user, section, db, sync=False, speed=1, force=0, quiet=False, 
     page_i = 0
     url_i = ''
     while True:
-        if sigint_check(): return 5
+        if fatl.sigint_check(): return 5
 
         page_i += 1
         page_r = Session.get(url+url_i)
@@ -252,13 +252,13 @@ def dl_f(Session, user, section, db, sync=False, speed=1, force=0, quiet=False, 
             else:
                 return 0
 
-        if sigint_check(): return 5
+        if fatl.sigint_check(): return 5
 
         page_ret = dl_page(Session, user, section, db, page_i, page_p, sync, speed, force, quiet, db_only)
 
         if page_ret != 0: return page_ret
 
-        if sigint_check(): return 5
+        if fatl.sigint_check(): return 5
 
         if page_next:
             page_next = page_next['href']
@@ -288,7 +288,7 @@ def dl_usr(Session, user, section, db, sync=False, speed=1, force=0, quiet=False
 
 
 def update(Session, db, users, sections, speed, force, index, db_only):
-    if sigint_check(): return
+    if fatl.sigint_check(): return
 
     print('Update')
     print('USR PAGE SECT. |     ID     | [SUB STATUS] TITLE')
@@ -301,7 +301,7 @@ def update(Session, db, users, sections, speed, force, index, db_only):
     flag_download = False
 
     for u in users_db:
-        if sigint_check(): break
+        if fatl.sigint_check(): break
         flag_download_u = False
 
         if users and u[0] not in users:
@@ -309,7 +309,7 @@ def update(Session, db, users, sections, speed, force, index, db_only):
 
         for s in u[1].split(','):
             dl_ret = 0
-            if sigint_check():
+            if fatl.sigint_check():
                 dl_ret = 5
                 break
             if len(sections) and s not in sections:
@@ -326,11 +326,11 @@ def update(Session, db, users, sections, speed, force, index, db_only):
                 flag_download_u = True
             if dl_ret == 4:
                 fadb.usr_rep(db, u[0], s, s+'!', 'FOLDERS')
-            if dl_ret == 5 or sigint_check():
+            if dl_ret == 5 or fatl.sigint_check():
                 dl_ret = 5
                 break
 
-        if sigint_check(): break
+        if fatl.sigint_check(): break
         if dl_ret == 5:
             break
 
@@ -350,13 +350,13 @@ def update(Session, db, users, sections, speed, force, index, db_only):
     fadb.info_up(db, 'LASTUPT', t)
 
 def download(Session, db, users, sections, sync, speed, force, index, db_only):
-    if sigint_check(): return
+    if fatl.sigint_check(): return
 
     usr_sec = [[u, "".join(sections)] for u in users]
     print('Checking users:')
     i = -1
     while True:
-        if sigint_check(): return
+        if fatl.sigint_check(): return
         i += 1
         if i == len(usr_sec): break
         print(f'  {usr_sec[i][0]} ... ', end='', flush=True)
@@ -377,7 +377,7 @@ def download(Session, db, users, sections, sync, speed, force, index, db_only):
 
         fadb.usr_ins(db, usr_sec[i][0], usr_full)
 
-    if sigint_check(): return
+    if fatl.sigint_check(): return
 
     print()
 
@@ -431,7 +431,7 @@ def download(Session, db, users, sections, sync, speed, force, index, db_only):
         fadb.info_up(db, 'INDEX', 0)
 
 def download_main(Session, db):
-    header('Download & Update')
+    fatl.header('Download & Update')
 
     while True:
         try:
@@ -480,7 +480,7 @@ def download_main(Session, db):
         print('Session error')
         return None
 
-    if sigint_check(): return Session
+    if fatl.sigint_check(): return Session
 
     if upd:
         update(Session, db, users, sections, speed, force, index, db_only)
