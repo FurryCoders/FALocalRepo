@@ -287,7 +287,7 @@ def dl_usr(Session, user, section, db, sync=False, speed=1, force=0, quiet=False
     return dl_ret
 
 
-def update(Session, db, users, sections, speed, force, index, quiet, db_only):
+def update(Session, db, users, sections, speed, force, index, db_only):
     if sigint_check(): return
 
     print('Update')
@@ -319,7 +319,7 @@ def update(Session, db, users, sections, speed, force, index, quiet, db_only):
 
             print(f'{u[0][0:12]: ^12} {s}\r', end='', flush=True)
 
-            dl_ret = dl_usr(Session, u[0], s, db, True, speed, force, quiet, db_only)
+            dl_ret = dl_usr(Session, u[0], s, db, True, speed, force, True, db_only)
             if dl_ret == 3:
                 print('\b \b'*os.get_terminal_size()[0], end='', flush=True)
             if dl_ret in (0,2,4):
