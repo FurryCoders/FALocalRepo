@@ -54,6 +54,8 @@ def db_upgrade_main():
         else:
             db_version = db_version[0][0]
 
+        fatl.log.normal(f'DB UPGRADE -> DB version:{db_version}')
+
         db_upgrade = False
         print('\b \b'*34, end='', flush=True)
 
