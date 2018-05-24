@@ -229,8 +229,10 @@ def main(Session, db):
             fields['gend'] = readkeys.input('Gender: "', '"')
             fields['ratg'] = readkeys.input('Rating: "', '"')
             options = readkeys.input('Options: ')
-        except:
+        except KeyboardInterrupt:
             return
+        except:
+            raise
         finally:
             fatl.sigint_clear()
 
@@ -269,6 +271,8 @@ def main(Session, db):
         print('\nPress any key to continue ', end='', flush=True)
         readkeys.getkey()
         print('\b \b'*26, end='')
+    except KeyboardInterrupt:
+        return
     except:
         raise
     finally:
