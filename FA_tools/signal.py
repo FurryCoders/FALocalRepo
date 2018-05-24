@@ -12,7 +12,7 @@ def sigint_block():
 
 def sigint_ublock():
     log.normal('SIGNAL -> unblock sigint')
-    sigbloc.unblock(signal.SIGINT)
+    sigblock.unblock(signal.SIGINT)
 
 def sigint_check():
     if sigblock.pending(signal.SIGINT):
