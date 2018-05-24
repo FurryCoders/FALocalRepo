@@ -18,12 +18,25 @@ This program was born with the desire to provide a relatively easy-to-use method
 3. [Upgrade](#upgrading-from-earlier-versions)
 4. [Cookies](#cookies)
 5. [Build instructions](#build-instructions)
-6. [Troubleshooting](#troubleshooting)
-6. [Appendix](#appendix)
+6. [Troubleshooting](#troubleshooting-logging)
+    1. [Opening Issues](#opening-issues)
+7. [Appendix](#appendix)
 
 ## Usage
-Use the provided binaries or build your own (build instructions at the end).
+Use the provided binaries or build your own (build instructions at the end) and run from the command line on Linux or double click on Windows.<br>
+`[FA|FA.exe] [options]`
 
+Options:
+* `--raise`<br>
+Allow exceptions to raise without special handling, useful for troubleshooting
+* `--log`<br>
+Log major program operations to a file named 'FA.log'
+* `--logv`<br>
+Log all operations (including sub-steps)
+
+To always use specific options please consult a guide on how to modify default arguments for your operative system.
+
+<br>
 When the program starts a simple menu will appear, type the indicated number or key to select an option, there is no need to press ENTER.
 
 ### Download & Update
@@ -316,7 +329,7 @@ Only 'name' and 'value' are needed for each cookie so the file can also be compo
 ```
 
 ## Build Instructions
-This program is coded with Python 3.x in mind, Python 2.x will **NOT** work.
+This program is written with Python 3.x, Python 2.x will **NOT** work.
 
 To run and/or build the program you will need the following pypi modules:
 * [requests](https://github.com/requests/requests)
@@ -325,8 +338,9 @@ To run and/or build the program you will need the following pypi modules:
 * [lxml](https://github.com/lxml/lxml/)
 * [filetype](https://github.com/h2non/filetype.py)
 
-And the following non-pypi modules:
-* [PythonRead](https://github.com/MatteoCampinoti94/PythonRead) (Already included in this repo as a submodule)
+The following non-pypi modules (already included in this repo as submodules):
+* [PythonRead](https://github.com/MatteoCampinoti94/PythonRead)
+* [SignalBlock](https://github.com/MatteoCampinoti94/PythonSignalBlocking-CrossPlatform)
 
 The following modules are used but available by default:
 * [json](https://docs.python.org/3/library/json.html)
@@ -339,9 +353,13 @@ The following modules are used but available by default:
 
 Once these modules are installed (suggest using `pip`) then the program can be run through the Python 3.x interpreter or built using `pyinstaller` or any other software.
 
-## Troubleshooting
-The program is set up so that any unforeseen error interrupts the program after displaying the error details. To get more details the program can be run with the option `--raise` which will allow exceptions to raise normally.<br>
-To get details of all operations the program can be run with '--log' or '--logv' as arguments. Details will be saved in a file named 'FA.log' with the format: "`YYYY-MM-DD hh:mm:ss.ssssss | OPERATION -> detail`". Using '--log' will only log major passages; '--logv' will log all operations to file.
+## Troubleshooting & Logging
+The program is set up so that any unforeseen error interrupts the program after displaying the error details. To get extra information the program can be run with the `--raise` argument which will allow exceptions to raise normally.
+
+To get details of all operations the program can be run with '--log' or '--logv' arguments. Details will be saved in a file named 'FA.log' with the format: "`YYYY-MM-DD hh:mm:ss.ssssss | OPERATION -> detail`". Using '--log' will only log major passages; '--logv' will log all operations to file.
+
+### Opening issues
+Before opening an issue please run the program with '--raise' and '--logv' arguments and copy the resulting log and exception/s details printed on screen.
 
 ## Appendix
 ### Unverified commits
