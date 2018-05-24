@@ -52,9 +52,9 @@ def db_upgrade_main():
         elif db_version > favar.fa_version:
             print('Program is not up to date')
             print(f'FA version: {favar.fa_version}')
-            print(f'DB version: {infos["VERSION"]}')
+            print(f'DB version: {db_version}')
             print('Use a program version equal or higher')
-            fatl.log.normal(f'DB UPGRADE -> version error FA:{favar.fa_version} DB:{infos["VERSION"]}')
+            fatl.log.normal(f'DB UPGRADE -> version error FA:{favar.fa_version} DB:{db_version}')
             fatl.log.normal('PROGRAM END')
             sys.exit(1)
 
