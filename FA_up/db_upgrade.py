@@ -7,6 +7,22 @@ from .v2v2_3 import db_upgrade_v2v2_3
 from .v2_3v2_6 import db_upgrade_v2_3v2_6
 from .v2_6v2_7 import db_upgrade_v2_6v2_7
 
+def version_compare(a, b):
+    a = [int(n) for n in a.split('.')]
+    a += [0]*(3-len(a))
+
+    b = [int(n) for n in b.split('.')]
+    b += [0]*(3-len(b))
+
+    for i in (0,1,2):
+        if a[i] > b[i]:
+            return True
+        if a[i] < b[i]:
+            return False
+
+    return False
+
+
 def db_upgrade_main():
     fatl.log.normal('DB UPGRADE -> start')
     print('Checking database file ... ', end='', flush=True)
@@ -49,7 +65,7 @@ def db_upgrade_main():
             db_upgrade = db_upgrade_v2_3v2_6
         elif db_version < '2.7':
             db_upgrade = db_upgrade_v2_6v2_7
-        elif db_version > favar.fa_version:
+        elif version_compare(db_version, favar.fa_version):
             print('Program is not up to date')
             print(f'FA version: {favar.fa_version}')
             print(f'DB version: {db_version}')
