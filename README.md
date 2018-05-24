@@ -340,7 +340,8 @@ The following modules are used but available by default:
 Once these modules are installed (suggest using `pip`) then the program can be run through the Python 3.x interpreter or built using `pyinstaller` or any other software.
 
 ## Troubleshooting
-The program is set up so that any unforeseen error interrupts the program after displaying the error details. To get more details the program can be run with the option `--debug` which will allow exceptions to raise normally.
+The program is set up so that any unforeseen error interrupts the program after displaying the error details. To get more details the program can be run with the option `--raise` which will allow exceptions to raise normally.<br>
+To get details of all operations the program can be run with '--log' or '--logv' as arguments. Details will be saved in a file named 'FA.log' with the format: "`YYYY-MM-DD hh:mm:ss.ssssss | OPERATION -> detail`". Using '--log' will only log major passages; '--logv' will log all operations to file.
 
 ## Appendix
 ### Unverified commits
