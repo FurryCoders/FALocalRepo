@@ -1,6 +1,8 @@
+import FA_tools as fatl
 import FA_var as favar
 
 def cookies_error():
+    fatl.log.normal('COOKIES -> analysis')
     print('Analyzing cookies file for errors:')
     cookies_name = ['__cfduid', 'b', '_adb', '__qca', '__asc', '__auc', '__gads', 'a']
 

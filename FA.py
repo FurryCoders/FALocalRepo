@@ -37,32 +37,46 @@ def menu(db):
         print(k+'\n')
 
         try:
+            fatl.log.normal('MAIN MENU -> '+menu[k][0])
             Session = menu[k][1](Session, db)
         except SystemExit:
+            fatl.log.normal('PROGRAM END')
             sys.exit(0)
         except KeyboardInterrupt:
+            fatl.log.normal('PROGRAM END')
             sys.exit(130)
         except:
+            err = sys.exc_info()
+            fatl.log.normal('ERROR EXIT -> '+repr(err))
+            fatl.log.normal('PROGRAM END')
             if '--raise' in sys.argv[1:]:
                 raise
             else:
                 print('\nAn uknown error occurred:')
-                err = sys.exc_info()
                 for e in err:
                     print('  '+repr(e))
                 sys.exit(1)
 
         print('-'*30+'\n')
 
+fatl.log_start()
+fatl.log.normal('PROGRAM START')
+
 fatl.sigint_block()
 
 print('\b \b'*21, end='', flush=True)
+
+if os.path.isfile(favar.log_file):
+    print('Trimming log file ... ', end='', flush=True)
+    fatl.log_trim()
+    print('\b \b'*22, end='', flush=True)
 
 if os.path.isfile(favar.db_file):
     faup.db_upgrade()
 
 if os.path.isfile(favar.db_file):
     db = sqlite3.connect(favar.db_file)
+    fatl.log.normal('DB -> connected')
 else:
     db = sqlite3.connect(favar.db_file)
     print('Creating database & tables ... ', end='', flush=True)
@@ -70,5 +84,6 @@ else:
     fadb.mktable(db, 'users')
     fadb.mktable(db, 'infos')
     print('\b \b'*31, end='', flush=True)
+    fatl.log.normal('DB -> created')
 
 menu(db)

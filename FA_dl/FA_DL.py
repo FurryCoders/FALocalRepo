@@ -4,8 +4,8 @@ import re
 import sqlite3
 import PythonRead as readkeys
 import FA_db as fadb
+import FA_tools as fatl
 import FA_var as favar
-from FA_tools import sigint_check, tiers, header
 from .FA_DLSUB import dl_sub, str_clean
 from .cookies import cookies_error
 
@@ -25,22 +25,28 @@ section_db = {
     }
 
 def ping(url):
+    fatl.log.normal(f'PING -> url:{url}')
     try:
         requests.get(url, stream=True)
+        fatl.log.normal(f'PING -> OK')
         return True
     except:
+        fatl.log.normal(f'PING -> NO')
         return False
 
 def session_make():
+    fatl.log.normal('SESSION MAKE')
     Session = cfscrape.create_scraper()
     cookies_file = favar.cookies_file
 
     for name in ('FA.cookies'):
         if os.path.isfile(name) and not os.path.isfile(cookies_file):
+            fatl.log.normal(f'SESSION MAKE -> cookies rename \"{name}\" to \"{cookies_file}\"')
             os.rename(name, cookies_file)
             break
 
     try:
+        fatl.log.normal('SESSION MAKE -> load cookies file')
         with open(cookies_file) as f:
             cookies = json.load(f)
     except FileNotFoundError:
@@ -48,25 +54,31 @@ def session_make():
     except:
         raise
 
+    fatl.log.normal('SESSION MAKE -> load cookies in Session')
     for cookie in cookies: Session.cookies.set(cookie['name'], cookie['value'])
 
     return Session
 
 def check_cookies(Session):
+    fatl.log.normal('COOKIES -> check')
     check_r = Session.get('https://www.furaffinity.net/controls/settings/')
     check_p = bs4.BeautifulSoup(check_r.text, 'lxml')
 
     if check_p.find('a', id='my-username') is None:
+        fatl.log.normal('COOKIES -> check:False')
         return False
     else:
+        fatl.log.normal('COOKIES -> check:True')
         return True
 
 def session(Session=None):
+    fatl.log.normal('SESSION')
     print('Checking connection ... ', end='', flush=True)
     if ping('http://www.furaffinity.net'):
         print('Done')
     else:
         print('Failed')
+        fatl.log.normal('SESSION -> fail')
         return False
 
     if not Session:
@@ -76,9 +88,11 @@ def session(Session=None):
             print('Done')
         except FileNotFoundError:
             print('Failed - Missing Cookies File')
+            fatl.log.normal('SESSION -> fail')
             return False
         except:
             print('Failed - Unknown Error')
+            fatl.log.normal('SESSION -> fail')
             return False
 
 
@@ -87,33 +101,45 @@ def session(Session=None):
             print('Done')
         else:
             print('Failed')
+            fatl.log.normal('SESSION -> fail')
             cookies_error()
             return False
 
+    fatl.log.normal('SESSION -> success')
     return Session
 
 def check_page(Session, url):
+    fatl.log.normal(f'CHECK PAGE -> url:{url}')
     page_r = Session.get('https://www.furaffinity.net/'+url)
     page_t = bs4.BeautifulSoup(page_r.text, 'lxml').title.string
 
-    if page_t == 'System Error': return False
-    elif page_t == 'Account disabled. -- Fur Affinity [dot] net': return False
-    elif page_r.status_code == 404: return False
+    if page_t == 'System Error':
+        fatl.log.normal(f'CHECK PAGE -> fail')
+        return False
+    elif page_t == 'Account disabled. -- Fur Affinity [dot] net':
+        fatl.log.normal(f'CHECK PAGE -> fail')
+        return False
+    elif page_r.status_code == 404:
+        fatl.log.normal(f'CHECK PAGE -> fail')
+        return False
 
+    fatl.log.normal(f'CHECK PAGE -> success')
     return page_t
 
 
 def dl_page(Session, user, section, db, page_i, page_p, sync=False, speed=1, force=0, quiet=False, db_only=False):
+    fatl.log.normal(f'DOWNLOAD PAGE -> user:{user} section:{section} page:{page_i}')
     sub_i = 0
     for sub in page_p.findAll('figure'):
-        if sigint_check(): return 5
+        if fatl.sigint_check(): return 5
 
         sub_i += 1
         ID = sub.get('id')[4:]
         print(f'{user[0:5]: ^5} {page_i:0>3}/{sub_i:0>2} {section} | {ID:0>10} | ', end='', flush=True)
-        folder = f'{favar.files_folder}/{tiers(ID)}/{ID:0>10}'
+        folder = f'{favar.files_folder}/{fatl.tiers(ID)}/{ID:0>10}'
 
         if fadb.usr_src(db, user, ID.zfill(10), section_db[section]):
+            fatl.log.normal(f'DOWNLOAD PAGE -> ID:{ID} found in USERS database')
             if sys.platform in ('win32', 'cygwin'):
                 cols = os.get_terminal_size()[0] - 44
             else:
@@ -131,43 +157,49 @@ def dl_page(Session, user, section, db, page_i, page_p, sync=False, speed=1, for
                 else: return 2
             continue
 
-        if sigint_check(): return 5
+        if fatl.sigint_check(): return 5
 
         t1 = time.time()
         s_ret = dl_sub(Session, ID, folder, db, False, True, speed, db_only)
         t2 = time.time()
         if speed == 0 and t2-t1 < 1.5 and t2-t1 > 0:
+            fatl.log.normal(f'DOWNLOAD PAGE -> waiting {t2-t1} seconds')
             time.sleep(t2-t1)
 
         if s_ret != 3:
             fadb.usr_up(db, user, ID.zfill(10), section_db[section])
             if db_only: time.sleep(1)
 
-        if sigint_check(): return 5
+        if fatl.sigint_check(): return 5
 
     return 0
 
 def dl_gs(Session, user, section, db, sync=False, speed=1, force=0, quiet=False, db_only=False):
+    fatl.log.normal(f'DOWNLOAD {section_db[section]} -> user:{user}')
     url = 'https://www.furaffinity.net/'
     url += f'{section_full[section]}/{user}/'
 
     page_i = 0
     while True:
-        if sigint_check(): return 5
+        if fatl.sigint_check(): return 5
 
         page_i += 1
+        fatl.log.normal(f'DOWNLOAD {section_db[section]} -> user:{user} page:{page_i}')
         page_r = Session.get(url+str(page_i))
         page_p = bs4.BeautifulSoup(page_r.text, 'lxml')
         page_p = page_p.find('section', id="gallery-gallery")
 
         if page_p == None:
+            fatl.log.normal(f'DOWNLOAD {section_db[section]} -> user:{user} page:{page_i} empty')
             if page_i == 1:
+                fatl.log.normal(f'DOWNLOAD {section_db[section]} -> user:{user} disabled section')
                 print(f"{user[0:12]: ^12} {section} | Section disabled for user")
                 return 4
             else:
                 return 0
 
         if page_p.find('figure') is None:
+            fatl.log.normal(f'DOWNLOAD {section_db[section]} -> user:{user} page:{page_i} no subs')
             if page_i == 1:
                 if not quiet:
                     print(f"{user[0:5]: ^5} 001/01 {section} | No submissions to download")
@@ -175,15 +207,16 @@ def dl_gs(Session, user, section, db, sync=False, speed=1, force=0, quiet=False,
             else:
                 return 0
 
-        if sigint_check(): return 5
+        if fatl.sigint_check(): return 5
 
         page_ret = dl_page(Session, user, section, db, page_i, page_p, sync, speed, force, quiet, db_only)
 
         if page_ret != 0: return page_ret
 
-        if sigint_check(): return 5
+        if fatl.sigint_check(): return 5
 
 def dl_e(Session, user, section, db, sync=False, speed=1, force=0, quiet=False, db_only=False):
+    fatl.log.normal(f'DOWNLOAD {section_db[section]} -> user:{user}')
     url = 'https://www.furaffinity.net/'
     if section == 'e':
         url += f'search/?q=( @message (":icon{user}:" | ":{user}icon:")) | ( @keywords ("{user}"))'
@@ -194,20 +227,23 @@ def dl_e(Session, user, section, db, sync=False, speed=1, force=0, quiet=False, 
 
     page_i = 0
     while True:
-        if sigint_check(): return 5
+        if fatl.sigint_check(): return 5
 
         page_i += 1
+        fatl.log.normal(f'DOWNLOAD {section_db[section]} -> user:{user} page:{page_i}')
         page_r = Session.get(f'{url}&page={page_i}')
         page_p = bs4.BeautifulSoup(page_r.text, 'lxml')
         page_p = page_p.find('section', id="gallery-search-results")
 
         if page_p == None:
+            fatl.log.normal(f'DOWNLOAD {section_db[section]} -> user:{user} page:{page_i} empty')
             if page_i == 1:
                 return 1
             else:
                 return 0
 
         if page_p.find('figure') is None:
+            fatl.log.normal(f'DOWNLOAD {section_db[section]} -> user:{user} page:{page_i} no subs')
             if page_i == 1:
                 if not quiet:
                     print(f"{user[0:5]: ^5} 001/01 {section} | No submissions to download")
@@ -215,36 +251,41 @@ def dl_e(Session, user, section, db, sync=False, speed=1, force=0, quiet=False, 
             else:
                 return 0
 
-        if sigint_check(): return 5
+        if fatl.sigint_check(): return 5
 
         page_ret = dl_page(Session, user, section, db, page_i, page_p, sync, speed, force, quiet, db_only)
 
         if page_ret != 0: return page_ret
 
-        if sigint_check(): return 5
+        if fatl.sigint_check(): return 5
 
 def dl_f(Session, user, section, db, sync=False, speed=1, force=0, quiet=False, db_only=False):
+    fatl.log.normal(f'DOWNLOAD {section_db[section]} -> user:{user}')
     url = f'https://www.furaffinity.net/favorites/{user}'
 
     page_i = 0
     url_i = ''
     while True:
-        if sigint_check(): return 5
+        if fatl.sigint_check(): return 5
 
         page_i += 1
+        fatl.log.normal(f'DOWNLOAD {section_db[section]} -> user:{user} page:{page_i}')
         page_r = Session.get(url+url_i)
         page_p = bs4.BeautifulSoup(page_r.text, 'lxml')
         page_next = page_p.find('a', {"class": "button mobile-button right"})
         page_p = page_p.find('section', id="gallery-favorites")
 
         if page_p == None:
+            fatl.log.normal(f'DOWNLOAD {section_db[section]} -> user:{user} page:{page_i} empty')
             if page_i == 1:
+                fatl.log.normal(f'DOWNLOAD {section_db[section]} -> user:{user} disabled section')
                 print(f"{user[0:12]: ^12} {section} | Section disabled for user")
                 return 4
             else:
                 return 0
 
         if page_p.find('figure') is None:
+            fatl.log.normal(f'DOWNLOAD {section_db[section]} -> user:{user} page:{page_i} no subs')
             if page_i == 1:
                 if not quiet:
                     print(f"{user[0:5]: ^5} 001/01 {section} | No submissions to download")
@@ -252,13 +293,13 @@ def dl_f(Session, user, section, db, sync=False, speed=1, force=0, quiet=False, 
             else:
                 return 0
 
-        if sigint_check(): return 5
+        if fatl.sigint_check(): return 5
 
         page_ret = dl_page(Session, user, section, db, page_i, page_p, sync, speed, force, quiet, db_only)
 
         if page_ret != 0: return page_ret
 
-        if sigint_check(): return 5
+        if fatl.sigint_check(): return 5
 
         if page_next:
             page_next = page_next['href']
@@ -268,6 +309,7 @@ def dl_f(Session, user, section, db, sync=False, speed=1, force=0, quiet=False, 
             return 0
 
 def dl_usr(Session, user, section, db, sync=False, speed=1, force=0, quiet=False, db_only=False):
+    fatl.log.normal(f'DOWNLOAD USER -> user:{user} section:{section}')
     print(f'{user[0:12]: ^12} {section}\r', end='', flush=True)
     if section in ('g', 's'):
         dl_ret = dl_gs(Session, user, section, db, sync, speed, force, quiet, db_only)
@@ -288,7 +330,8 @@ def dl_usr(Session, user, section, db, sync=False, speed=1, force=0, quiet=False
 
 
 def update(Session, db, users, sections, speed, force, index, db_only):
-    if sigint_check(): return
+    fatl.log.normal('UPDATE -> start')
+    if fatl.sigint_check(): return
 
     print('Update')
     print('USR PAGE SECT. |     ID     | [SUB STATUS] TITLE')
@@ -300,8 +343,10 @@ def update(Session, db, users, sections, speed, force, index, db_only):
     fadb.info_up(db, 'LASTUPT', 0)
     flag_download = False
 
+    fatl.log.normal(f'UPDATE -> db_users:{len(users_db)}')
+
     for u in users_db:
-        if sigint_check(): break
+        if fatl.sigint_check(): break
         flag_download_u = False
 
         if users and u[0] not in users:
@@ -309,7 +354,7 @@ def update(Session, db, users, sections, speed, force, index, db_only):
 
         for s in u[1].split(','):
             dl_ret = 0
-            if sigint_check():
+            if fatl.sigint_check():
                 dl_ret = 5
                 break
             if len(sections) and s not in sections:
@@ -326,11 +371,11 @@ def update(Session, db, users, sections, speed, force, index, db_only):
                 flag_download_u = True
             if dl_ret == 4:
                 fadb.usr_rep(db, u[0], s, s+'!', 'FOLDERS')
-            if dl_ret == 5 or sigint_check():
+            if dl_ret == 5 or fatl.sigint_check():
                 dl_ret = 5
                 break
 
-        if sigint_check(): break
+        if fatl.sigint_check(): break
         if dl_ret == 5:
             break
 
@@ -350,13 +395,14 @@ def update(Session, db, users, sections, speed, force, index, db_only):
     fadb.info_up(db, 'LASTUPT', t)
 
 def download(Session, db, users, sections, sync, speed, force, index, db_only):
-    if sigint_check(): return
+    fatl.log.normal('DOWNLOAD -> start')
+    if fatl.sigint_check(): return
 
     usr_sec = [[u, "".join(sections)] for u in users]
     print('Checking users:')
     i = -1
     while True:
-        if sigint_check(): return
+        if fatl.sigint_check(): return
         i += 1
         if i == len(usr_sec): break
         print(f'  {usr_sec[i][0]} ... ', end='', flush=True)
@@ -377,9 +423,11 @@ def download(Session, db, users, sections, sync, speed, force, index, db_only):
 
         fadb.usr_ins(db, usr_sec[i][0], usr_full)
 
-    if sigint_check(): return
+    if fatl.sigint_check(): return
 
     print()
+
+    fatl.log.normal(f'DOWNLOAD -> users, sections:{usr_sec}')
 
     if len(usr_sec) == 0:
         print('Nothing to download')
@@ -431,7 +479,7 @@ def download(Session, db, users, sections, sync, speed, force, index, db_only):
         fadb.info_up(db, 'INDEX', 0)
 
 def download_main(Session, db):
-    header('Download & Update')
+    fatl.header('Download & Update')
 
     while True:
         try:
@@ -440,6 +488,8 @@ def download_main(Session, db):
             options = readkeys.input('Insert options: ').lower()
         except:
             return
+
+        fatl.log.normal(f'DOWNLOAD MAIN -> users:"{users}" sections:"{sections}" options:"{options}"')
 
         users = re.sub('([^a-zA-Z0-9\-., ])', '', users)
         users = re.sub('( )+', ',', users.strip())
@@ -467,6 +517,8 @@ def download_main(Session, db):
         if 'quit' in options: quit = True
         if force != 0: speed = 1
 
+        fatl.log.normal(f'DOWNLOAD MAIN -> upd:{upd} sync:{sync} force:{force} speed:{speed} index:{index} dbonly:{db_only} quit:{quit}')
+
         if upd or (len(users) > 0 and len(sections) > 0):
             break
         else:
@@ -480,7 +532,7 @@ def download_main(Session, db):
         print('Session error')
         return None
 
-    if sigint_check(): return Session
+    if fatl.sigint_check(): return Session
 
     if upd:
         update(Session, db, users, sections, speed, force, index, db_only)
@@ -491,5 +543,7 @@ def download_main(Session, db):
 
     print()
 
-    if quit: sys.exit(0)
+    if quit:
+        fatl.log.normal('DOWNLOAD MAIN -> quit')
+        sys.exit(0)
     return Session
