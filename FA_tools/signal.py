@@ -3,6 +3,7 @@ from SignalBlock import sigblock
 from .log import log
 
 def signal_handler(signum, frame):
+    log.verbose('SIGNAL -> caught SIGINT')
     sigblock._pending += (signum,)
     print('\b\b  \b\b', end='', flush=True)
 
