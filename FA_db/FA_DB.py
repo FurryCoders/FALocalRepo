@@ -217,7 +217,7 @@ def mkindex(db):
     )
 
     for col in col_usrs:
-        fatl.log.normal(f'DB INDEX -> index:{col}')
+        fatl.log.verbose(f'DB INDEX -> index:{col}')
         try:
             db.execute(f'DROP INDEX {col}')
         except sqlite3.OperationalError:
@@ -228,7 +228,7 @@ def mkindex(db):
             db.execute(f'CREATE INDEX {col} ON users ({col} ASC)')
 
     for col in col_subs:
-        fatl.log.normal(f'DB INDEX -> index:{col}')
+        fatl.log.verbose(f'DB INDEX -> index:{col}')
         try:
             db.execute(f'DROP INDEX {col}')
         except sqlite3.OperationalError:
