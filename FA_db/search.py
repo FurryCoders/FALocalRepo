@@ -234,6 +234,7 @@ def main(Session, db):
         except:
             raise
         finally:
+            fatl.sigint_block()
             fatl.sigint_clear()
 
         print()
@@ -276,6 +277,7 @@ def main(Session, db):
     except:
         raise
     finally:
+        fatl.sigint_block()
         fatl.sigint_clear()
         db.execute('PRAGMA case_sensitive_like=ON')
 
