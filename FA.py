@@ -75,15 +75,16 @@ if os.path.isfile(favar.db_file):
     faup.db_upgrade()
 
 if os.path.isfile(favar.db_file):
+    fatl.log.normal('DB -> connect')
     db = sqlite3.connect(favar.db_file)
-    fatl.log.normal('DB -> connected')
 else:
+    fatl.log.normal('DB -> connect')
     db = sqlite3.connect(favar.db_file)
     print('Creating database & tables ... ', end='', flush=True)
+    fatl.log.normal('DB -> create')
     fadb.mktable(db, 'submissions')
     fadb.mktable(db, 'users')
     fadb.mktable(db, 'infos')
     print('\b \b'*31, end='', flush=True)
-    fatl.log.normal('DB -> created')
 
 menu(db)
