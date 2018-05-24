@@ -10,7 +10,7 @@ This program was born with the desire to provide a relatively easy-to-use method
 
 ## Contents
 1. [Usage](#usage)
-    1. [Download & Update](#download-update)
+    1. [Download & Update](#download--update)
     2. [Search](#search)
     3. [Repair database](#repair-database)
     4. [Interrupt](#interrupt)
@@ -18,7 +18,7 @@ This program was born with the desire to provide a relatively easy-to-use method
 3. [Upgrade](#upgrading-from-earlier-versions)
 4. [Cookies](#cookies)
 5. [Build instructions](#build-instructions)
-6. [Troubleshooting & Logging](#troubleshooting-logging)
+6. [Troubleshooting & Logging](#troubleshooting--logging)
     1. [Opening Issues](#opening-issues)
 7. [Appendix](#appendix)
 
