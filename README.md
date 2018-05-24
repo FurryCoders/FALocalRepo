@@ -3,7 +3,7 @@ Pure Python program to download any user's gallery/scraps/favorites and more fro
 
 **Warning**: A cookie file named FA.cookies.json in json format is needed.<br>
 **Warning**: You need to set the theme to 'beta' on FurAffinity<br>
-**Warning**: On windows safe exit does NOT work
+**Warning**: On Windows safe interruption does NOT work prior to version 2.10
 
 ## Introduction
 This program was born with the desire to provide a relatively easy-to-use method for FA users to download submissions that they care about from the forum. At the moment its a little more than a text interface in a terminal window with only basic search functionality, a GUI will be hopefully added in the near future.
@@ -188,8 +188,8 @@ Indexes will be updated.
 Database will be optimized with sqlite `VACUUM` function.
 
 ### Interrupt
-If you run the program on Unix systems then you can use CTRL-C to interrupt the current operation safely. If a download is in progress it will complete the current operation and exit at the first safe point. Safe interrupt works in all sections of the program.<br>
-If you run the program on Windows systems however safe exit will **NOT** work. This is caused by the the completely different way in which Windows handles signals, specifically SIGINT, the interrupt signal sent by CTRL-C and used by this program. The functions are built to be relatively safe in how they handle database and download operations but it is suggested not to interrupt the program to avoid errors.
+While the program is running you can use CTRL-C to interrupt the current operation safely. If a download is in progress it will complete the current submission and exit at the first safe point. Safe interrupt works in all sections of the program.<br>
+If you're using a version of the program lower than 2.10 safe interruption won't work on Windows systems.
 
 ## Database
 The database (named 'FA.db') contains three tables:
