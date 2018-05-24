@@ -337,7 +337,7 @@ def update(Session, db, users, sections, speed, force, index, db_only):
     print('USR PAGE SECT. |     ID     | [SUB STATUS] TITLE')
     print('-'*50)
 
-    users_db = db.execute("SELECT user, folders FROM users ORDER BY user ASC")
+    users_db = db.execute("SELECT user, folders FROM users ORDER BY user ASC").fetchall()
     t = int(time.time())
     fadb.info_up(db, 'LASTUP', t)
     fadb.info_up(db, 'LASTUPT', 0)
