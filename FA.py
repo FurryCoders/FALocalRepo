@@ -59,17 +59,13 @@ def menu(db):
 
         print('-'*30+'\n')
 
-fatl.log_start()
+fatl.log.log_trim()
+fatl.log.log_start()
 fatl.log.normal('PROGRAM START')
 
 fatl.sigint_block()
 
 print('\b \b'*21, end='', flush=True)
-
-if os.path.isfile(favar.log_file):
-    print('Trimming log file ... ', end='', flush=True)
-    fatl.log_trim()
-    print('\b \b'*22, end='', flush=True)
 
 if os.path.isfile(favar.db_file):
     faup.db_upgrade()

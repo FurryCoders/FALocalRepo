@@ -1,21 +1,6 @@
-import sys
+import os, sys
 from datetime import datetime
 import FA_var as favar
-
-def log_trim(file=favar.log_file, lines=10000):
-    with open(file, 'r') as f:
-        log = f.readlines()
-
-    if len(log) <= lines:
-        return
-    log = log[-lines:]
-
-    with open(file, 'w') as f:
-        for l in log: f.write(l)
-
-def log_start(file=favar.log_file):
-    with open(file, 'a')as log:
-        log.write('*'*44+'\n')
 
 class log:
     _normal = '--log' in sys.argv[1:] or '--logv' in sys.argv[1:]
@@ -23,20 +8,41 @@ class log:
     _file = favar.log_file
 
     @classmethod
+    def log_start(cls):
+        if not cls._normal:
+            return
+        with open(cls._file, 'a') as logf:
+            logf.write('*'*44+'\n')
+
+    @classmethod
+    def log_trim(cls, lines=10000):
+        if not cls._normal or not os.path.isfile(cls._file):
+            return
+
+        with open(cls._file, 'r') as logf:
+            logl = logf.readlines()
+
+        if len(logl) <= lines:
+            return
+
+        with open(cls._file, 'w') as logf:
+            for l in logl[-lines:]: logf.write(l)
+
+    @classmethod
     def normal(cls, data=''):
         if not cls._normal:
             return
-        with open(cls._file, 'a') as log:
-            log.write(f'{str(datetime.now())} | N | {data}\n')
+        with open(cls._file, 'a') as logf:
+            logf.write(f'{str(datetime.now())} | N | {data}\n')
 
     @classmethod
     def verbose(cls, data=''):
         if not cls._verbose:
             return
-        with open(cls._file, 'a') as log:
-            log.write(f'{str(datetime.now())} | V | {data}\n')
+        with open(cls._file, 'a') as logf:
+            logf.write(f'{str(datetime.now())} | V | {data}\n')
 
     @classmethod
     def warning(cls, data=''):
-        with open(cls._file, 'a') as log:
-            log.write(f'{str(datetime.now())} | W | {data}\n')
+        with open(cls._file, 'a') as logf:
+            logf.write(f'{str(datetime.now())} | W | {data}\n')
