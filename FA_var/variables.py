@@ -1,5 +1,5 @@
 db_version = '2.7'
-fa_version = '2.10.1'
+fa_version = '2.10.2'
 
 db_file = 'FA.db'
 cookies_file = 'FA.cookies.json'
