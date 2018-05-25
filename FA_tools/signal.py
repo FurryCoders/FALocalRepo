@@ -20,6 +20,7 @@ def sigint_check():
         log.normal('SIGNAL -> check sigint:True')
         return True
     else:
+        log.normal('SIGNAL -> check sigint:False')
         return False
 
 def sigint_clear():
