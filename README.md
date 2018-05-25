@@ -53,9 +53,9 @@ Second field is reserved for sections. These can be:
     * `s` - Scraps
     * `f` - Favorites
     * `e` - Extras partial<br>
-    Searches submissions that contain ':iconusername:' OR ':usernameicon:' in the description and keywords and are not from the user's gallery/scraps.
+    Searches submissions that contain ':iconusername:' OR ':usernameicon:' in the description and are not from the user's gallery/scraps.
     * `E` - Extras full<br>
-    Like partial but also searches for 'username' in the description and keywords.
+    Like partial but also searches for 'username' in the description, keywords and title.
 
     Sections can be omitted if 'update' option is used.
 
@@ -356,7 +356,7 @@ Once these modules are installed (suggest using `pip`) then the program can be r
 ## Troubleshooting & Logging
 The program is set up so that any unforeseen error interrupts the program after displaying the error details. To get extra information the program can be run with the `--raise` argument which will allow exceptions to raise normally.
 
-To get details of all operations the program can be run with '--log' or '--logv' arguments. Details will be saved in a file named 'FA.log' with the format: "`YYYY-MM-DD hh:mm:ss.ssssss | OPERATION -> detail`". Using '--log' will only log major passages; '--logv' will log all operations to file.
+To get details of all operations the program can be run with '--log' or '--logv' arguments, warning and errors are saved regardless of the settings. Details will be saved in a file named 'FA.log' with the format: "`YYYY-MM-DD hh:mm:ss.ssssss | LOG TYPE [N|V|W] | OPERATION -> detail`". Using '--log' will only log major passages; '--logv' will log all operations to file.
 
 ### Opening issues
 Before opening an issue please run the program with '--raise' and '--logv' arguments and copy the resulting log and exception/s details printed on screen.
