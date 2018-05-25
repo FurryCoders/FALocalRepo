@@ -503,14 +503,14 @@ def download_main(Session, db):
 
         speed = 1 ; upd = False
         sync = False ; force = 0
-        quit = False ; index = True
+        quit = False ; index = False
         db_only = False
         if 'quick' in options: speed = 2
         if 'slow' in options: speed = 0
         if 'update' in options: upd = True
         if 'sync' in options: sync = True
         if 'all' in options: force = -1
-        if 'noindex' in options: index = False
+        if 'index' in options: index = True
         if 'dbonly' in options: db_only = True
         if re.search('force[0-9]+', options):
             force = re.search('force[0-9]+', options).group(0)
