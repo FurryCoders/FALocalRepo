@@ -47,12 +47,12 @@ def menu(db):
             sys.exit(130)
         except:
             err = sys.exc_info()
-            fatl.log.normal('ERROR EXIT -> '+repr(err))
-            fatl.log.normal('PROGRAM END')
+            fatl.log.warning('ERROR EXIT -> '+repr(err))
+            fatl.log.warning('PROGRAM END')
             if '--raise' in sys.argv[1:]:
                 raise
             else:
-                print('\nAn uknown error occurred:')
+                print('\nAn unknown error occurred:')
                 for e in err:
                     print('  '+repr(e))
                 sys.exit(1)
