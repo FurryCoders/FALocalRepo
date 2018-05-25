@@ -187,10 +187,8 @@ def table_n(db, table):
         return len(num.fetchall())
 
 def mkindex(db):
-    fatl.log.normal('DB INDEX')
     col_usrs = (
         'USER',
-        'USERFULL',
         'FOLDERS',
         'GALLERY',
         'SCRAPS',
@@ -199,8 +197,6 @@ def mkindex(db):
     )
 
     col_subs = (
-        'ID',
-        'AUTHOR',
         'AUTHORURL',
         'TITLE',
         'UDATE',
@@ -210,33 +206,34 @@ def mkindex(db):
         'SPECIES',
         'GENDER',
         'RATING',
-        'FILELINK',
-        'FILENAME',
-        'LOCATION',
-        'SERVER',
-    )
+        )
 
+    fatl.log.normal('DB INDEX -> drop indexes')
+    info_up(db, 'INDEX', 0)
+    indexes = db.execute('SELECT name FROM sqlite_master WHERE type = "index"').fetchall()
+    indexes = [indx[0] for indx in indexes if 'autoindex' not in indx[0]]
+    fatl.log.verbose(f'DB INDEX -> indexes:{indexes}')
+    for indx in indexes:
+        if fatl.sigint_check():
+            return
+        fatl.log.verbose(f'DB INDEX -> drop index:{indx}')
+        db.execute(f'DROP INDEX {indx}')
+    db.commit()
+
+    fatl.log.normal('DB INDEX -> create indexes')
     for col in col_usrs:
-        fatl.log.verbose(f'DB INDEX -> index:{col}')
-        try:
-            db.execute(f'DROP INDEX {col}')
-        except sqlite3.OperationalError:
-            pass
-        except:
-            raise
-        finally:
-            db.execute(f'CREATE INDEX {col} ON users ({col} ASC)')
+        if fatl.sigint_check():
+            return
+        fatl.log.verbose(f'DB INDEX -> create index:{col}')
+        db.execute(f'CREATE INDEX {col} ON users ({col} ASC)')
+        db.commit()
 
     for col in col_subs:
-        fatl.log.verbose(f'DB INDEX -> index:{col}')
-        try:
-            db.execute(f'DROP INDEX {col}')
-        except sqlite3.OperationalError:
-            pass
-        except:
-            raise
-        finally:
-            db.execute(f'CREATE INDEX {col} ON submissions ({col} ASC)')
+        if fatl.sigint_check():
+            return
+        fatl.log.verbose(f'DB INDEX -> create index:{col}')
+        db.execute(f'CREATE INDEX {col} ON submissions ({col} ASC)')
+        db.commit()
 
     info_up(db, 'INDEX', 1)
 
