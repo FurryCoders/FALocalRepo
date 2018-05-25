@@ -221,7 +221,7 @@ def dl_e(Session, user, section, db, sync=False, speed=1, force=0, quiet=False, 
     if section == 'e':
         url += f'search/?q=@message (":icon{user}:" | ":{user}icon:")'
     elif section == 'E':
-        url += f'search/?q=( @message (":icon{user}:" | ":{user}icon:" | "{user}")) | ( @keywords ("{user}")) | ( @title ("{user}")))'
+        url += f'search/?q=( @message (":icon{user}:" | ":{user}icon:" | "{user}")) | ( @keywords ("{user}")) | ( @title ("{user}"))'
     url += f' ! ( @lower {user} )'
     url += '&order-by=date'
 
