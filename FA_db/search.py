@@ -5,6 +5,7 @@ import os
 import bs4
 import PythonRead as readkeys
 import FA_tools as fatl
+import FA_var as favar
 from FA_dl import session
 from .FA_DB import info_read, mkindex
 
@@ -18,10 +19,10 @@ def mkregexp(case):
 
     return regexp
 
-def search_web(Session, fields):
+def search_web(fields):
     fatl.log.normal('SEARCH WEB')
-    Session = session(Session)
-    if not Session:
+    session()
+    if not favar.variables.Session:
         print("Couldn't establish connection, search aborted")
         return
     print()
@@ -53,7 +54,7 @@ def search_web(Session, fields):
     print(f'{page_i:03d}', end='', flush=True)
 
     fatl.log.normal('SEARCH WEB -> get results')
-    page = Session.get(f'{search_url}&page={page_i}')
+    page = favar.variables.Session.get(f'{search_url}&page={page_i}')
     page = bs4.BeautifulSoup(page.text, 'lxml')
     page = page.find('section', id="gallery-search-results")
 
@@ -78,7 +79,7 @@ def search_web(Session, fields):
         page_i += 1
         print(f'\r{page_i:03d}', end='', flush=True)
 
-        page = Session.get(f'{search_url}&page={page_i}')
+        page = favar.variables.Session.get(f'{search_url}&page={page_i}')
         page = bs4.BeautifulSoup(page.text, 'lxml')
         page = page.find('section', id="gallery-search-results")
 
@@ -86,20 +87,18 @@ def search_web(Session, fields):
     print('\n'*bool(n) + f'{n} results found')
     fatl.log.normal(f'SEARCH WEB -> {n} results')
 
-    return Session
-
-def search(Session, db, fields, regex=False, case=False):
+def search(fields, regex=False, case=False):
     fatl.log.normal('SEARCH DB')
     match = ('LIKE', '%')
     if regex:
         regexp = mkregexp(case)
-        db.create_function("REGEXP", 2, regexp)
+        favar.variables.db.create_function("REGEXP", 2, regexp)
         match = ('REGEXP', '(?:.)*')
 
     if case:
-        db.execute('PRAGMA case_sensitive_like=ON')
+        favar.variables.db.execute('PRAGMA case_sensitive_like=ON')
     else:
-        db.execute('PRAGMA case_sensitive_like=OFF')
+        favar.variables.db.execute('PRAGMA case_sensitive_like=OFF')
 
     fields_o = {k: v for k,v in fields.items()}
 
@@ -119,7 +118,7 @@ def search(Session, db, fields, regex=False, case=False):
 
     fatl.log.normal('SEARCH DB -> SUBMISSIONS query')
     if fields['user'] and re.match('^[gs]+$', fields['sect']):
-        subs = db.execute(f'''SELECT author, udate, id, title FROM submissions
+        subs = favar.variables.db.execute(f'''SELECT author, udate, id, title FROM submissions
             WHERE authorurl {match[0]} ? AND
             title {match[0]} ? AND
             description {match[0]} ? AND
@@ -129,7 +128,7 @@ def search(Session, db, fields, regex=False, case=False):
             gender {match[0]} ? AND
             Rating {match[0]} ?''', (match[1]+fields['user']+match[1],) + tuple(fields.values())[2:]).fetchall()
     else:
-        subs = db.execute(f'''SELECT author, udate, id, title FROM submissions
+        subs = favar.variables.db.execute(f'''SELECT author, udate, id, title FROM submissions
             WHERE title {match[0]} ? AND
             description {match[0]} ? AND
             tags {match[0]} ? AND
@@ -142,7 +141,7 @@ def search(Session, db, fields, regex=False, case=False):
 
     if fields['user']:
         fatl.log.normal('SEARCH DB -> USERS query')
-        users = db.execute(f'SELECT gallery, scraps, favorites, extras FROM users WHERE user {match[0]} ?', (match[1]+fields['user']+match[1],))
+        users = favar.variables.db.execute(f'SELECT gallery, scraps, favorites, extras FROM users WHERE user {match[0]} ?', (match[1]+fields['user']+match[1],))
         users = users.fetchall()
         if not len(users):
             users = [('','','','')]
@@ -206,9 +205,9 @@ def search(Session, db, fields, regex=False, case=False):
 
         if c == 'y':
             print()
-            Session = search_web(Session, fields_o)
+            search_web(fields_o)
 
-def main(Session, db):
+def main():
     fatl.header('Search')
 
     while True:
@@ -260,14 +259,14 @@ def main(Session, db):
 
         if 'web' in options.lower():
             fatl.sigint_ublock()
-            Session = search_web(Session, fields)
+            search_web(fields)
         else:
-            if info_read(db, 'INDEX') != '1':
+            if info_read('INDEX') != '1':
                 print('Indexing entries before search ... ', end='', flush=True)
-                mkindex(db)
+                mkindex()
                 print('Done\n')
             fatl.sigint_ublock()
-            Session = search(Session, db, fields, regex, case)
+            search(fields, regex, case)
 
         print('\nPress any key to continue ', end='', flush=True)
         readkeys.getkey()
@@ -279,6 +278,4 @@ def main(Session, db):
     finally:
         fatl.sigint_block()
         fatl.sigint_clear()
-        db.execute('PRAGMA case_sensitive_like=ON')
-
-    return Session
+        favar.variables.db.execute('PRAGMA case_sensitive_like=ON')

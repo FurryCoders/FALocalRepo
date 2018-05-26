@@ -5,7 +5,7 @@ import FA_var as favar
 class log:
     _normal = '--log' in sys.argv[1:] or '--logv' in sys.argv[1:]
     _verbose = '--logv' in sys.argv[1:]
-    _file = favar.log_file
+    _file = 'FA.log'
 
     @classmethod
     def log_start(cls):

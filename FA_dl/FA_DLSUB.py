@@ -5,6 +5,7 @@ import time
 import filetype
 import codecs
 import FA_tools as fatl
+import FA_var as favar
 from FA_db import sub_exists, sub_read, sub_ins
 
 months = {
@@ -22,10 +23,10 @@ months = {
     'December' : '12'
     }
 
-def get_page(Session, ID):
+def get_page(ID):
     fatl.log.verbose(f'DOWNLOAD SUBMISSION -> ID:{ID} get page')
     url = 'https://www.furaffinity.net/view/'+ID
-    page = Session.get(url)
+    page = favar.variables.Session.get(url)
     page = bs4.BeautifulSoup(page.text, 'lxml')
 
     return page
@@ -89,7 +90,7 @@ def get_desc(page, ID):
 
     return desc
 
-def get_file(link, folder, ID, quiet=False, speed=1):
+def get_file(link, folder, ID, quiet, speed):
     fatl.log.verbose(f'DOWNLOAD SUBMISSION -> ID:{ID} get file')
     if os.path.isfile(folder+'/submission.temp'):
         os.remove(folder+'/submission.temp')
@@ -158,9 +159,9 @@ def str_clean(string):
     return re.sub('[^\x00-\x7F]', '', string)
 
 
-def dl_sub(Session, ID, folder, db, quiet=False, check=False, speed=1, db_only=False):
+def dl_sub(ID, quiet, check, speed, db_only):
     fatl.log.normal(f'DOWNLOAD SUBMISSION -> ID:{ID}')
-    if check and sub_exists(db, ID):
+    if check and sub_exists(ID):
         fatl.log.normal(f'DOWNLOAD SUBMISSION -> ID:{ID} found in SUBMISSIONS database')
         if not quiet:
             if sys.platform in ('win32', 'cygwin'):
@@ -174,7 +175,8 @@ def dl_sub(Session, ID, folder, db, quiet=False, check=False, speed=1, db_only=F
 
     if not quiet: print('[Get Infos ]', end='', flush=True)
 
-    page = get_page(Session, ID)
+    folder = f'{favar.variables.files_folder}/{fatl.tiers(ID)}/{ID:0>10}'
+    page = get_page(ID)
     if page == None:
         print('\b'*11+'Page Error')
         return 3
@@ -233,7 +235,7 @@ def dl_sub(Session, ID, folder, db, quiet=False, check=False, speed=1, db_only=F
         folder.split('/',1)[-1],            # location
         1,                                  # server
     )
-    sub_ins(db, sub_info)
+    sub_ins(sub_info)
 
     if subf == False:
         if not quiet: print(('\b'*10)+'File Error')

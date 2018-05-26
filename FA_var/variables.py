@@ -1,8 +1,17 @@
-db_version = '2.7'
-fa_version = '2.10.2'
+class variables:
+    # database
+    db = None
 
-db_file = 'FA.db'
-cookies_file = 'FA.cookies.json'
-log_file = 'FA.log'
+    # Session
+    Session = None
 
-files_folder = 'FA.files'
+    # version
+    db_version = '2.7'
+    fa_version = '2.10.2'
+
+    # files
+    db_file = 'FA.db'
+    cookies_file = 'FA.cookies.json'
+
+    # download folder
+    files_folder = 'FA.files'
