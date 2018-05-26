@@ -98,10 +98,7 @@ def check_page(url):
     page_r = favar.variables.Session.get('https://www.furaffinity.net/'+url)
     page_t = bs4.BeautifulSoup(page_r.text, 'lxml').title.string
 
-    if page_t == 'System Error':
-        fatl.log.normal(f'CHECK PAGE -> fail')
-        return False
-    elif page_t == 'Account disabled. -- Fur Affinity [dot] net':
+    if page_t in ('System Error', 'Account disabled. -- Fur Affinity [dot] net'):
         fatl.log.normal(f'CHECK PAGE -> fail')
         return False
     elif page_r.status_code == 404:
