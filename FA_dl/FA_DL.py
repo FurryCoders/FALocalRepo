@@ -250,13 +250,13 @@ def dl_f(user, section, sync, speed, force, quiet, db_only):
     url = f'https://www.furaffinity.net/favorites/{user}'
 
     page_i = 0
-    url_i = ''
+    page_next = ''
     while True:
         if fatl.sigint_check(): return 5
 
         page_i += 1
         fatl.log.normal(f'DOWNLOAD {section_db[section]} -> user:{user} page:{page_i}')
-        page_r = favar.variables.Session.get(url+url_i)
+        page_r = favar.variables.Session.get(url+page_next)
         page_p = bs4.BeautifulSoup(page_r.text, 'lxml')
         page_next = page_p.find('a', {"class": "button mobile-button right"})
         page_p = page_p.find('section', id="gallery-favorites")
@@ -290,7 +290,6 @@ def dl_f(user, section, sync, speed, force, quiet, db_only):
         if page_next:
             page_next = page_next['href']
             page_next = page_next.split(user)[-1]
-            page_i += 1
         else:
             return 0
 
