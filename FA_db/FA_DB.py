@@ -30,15 +30,15 @@ import FA_var as favar
 #  8    12  13  LOCATION
 #  9    13  14  SERVER
 
-def usr_ins(db, user, user_full=''):
+def usr_ins(user, user_full=''):
     fatl.log.normal(f'DB USER NEW -> user:{[user, user_full]}')
     if user_full.lower().replace('_','') != user:
         user_full = user
-    exists = db.execute(f'SELECT EXISTS(SELECT user FROM users WHERE user = "{user}" LIMIT 1);')
+    exists = favar.variables.db.execute(f'SELECT EXISTS(SELECT user FROM users WHERE user = "{user}" LIMIT 1);')
     if exists.fetchall()[0][0]:
         return
     try:
-        db.execute(f'''INSERT INTO USERS
+        favar.variables.db.execute(f'''INSERT INTO USERS
             (USER,USERFULL,FOLDERS,GALLERY,SCRAPS,FAVORITES,EXTRAS)
             VALUES ("{user}", "{user_full}", "", "", "", "", "")''')
     except sqlite3.IntegrityError:
@@ -46,23 +46,23 @@ def usr_ins(db, user, user_full=''):
     except:
         raise
     finally:
-        db.commit()
+        favar.variables.db.commit()
 
-def usr_rm(db, user, isempty=False):
+def usr_rm(user, isempty=False):
     fatl.log.normal(f'DB USER REMOVE -> user:{user} isempty:{isempty}')
     try:
         if isempty:
-            db.execute(f'DELETE FROM users WHERE user = "{user}" AND folders = "" AND gallery = "" AND scraps = "" AND favorites = "" AND extras = ""')
+            favar.variables.db.execute(f'DELETE FROM users WHERE user = "{user}" AND folders = "" AND gallery = "" AND scraps = "" AND favorites = "" AND extras = ""')
         else:
-            db.execute(f'DELETE FROM users WHERE user = "{user}"')
+            favar.variables.db.execute(f'DELETE FROM users WHERE user = "{user}"')
     except:
         pass
     finally:
-        db.commit()
+        favar.variables.db.commit()
 
-def usr_up(db, user, to_add, column):
+def usr_up(user, to_add, column):
     fatl.log.normal(f'DB USER ADD -> user:{user} add:{to_add} column:{column}')
-    col = db.execute(f"SELECT {column} FROM users WHERE user = '{user}'")
+    col = favar.variables.db.execute(f"SELECT {column} FROM users WHERE user = '{user}'")
     col = col.fetchall()
     if not len(col):
         raise sqlite3.IntegrityError
@@ -75,12 +75,12 @@ def usr_up(db, user, to_add, column):
         col.append(to_add)
     col.sort(key=str.lower)
     col = ",".join(col)
-    db.execute(f"UPDATE users SET {column} = '{col}' WHERE user = '{user}'")
-    db.commit()
+    favar.variables.db.execute(f"UPDATE users SET {column} = '{col}' WHERE user = '{user}'")
+    favar.variables.db.commit()
 
-def usr_rep(db, user, find, replace, column):
+def usr_rep(user, find, replace, column):
     fatl.log.normal(f'DB USER REPLACE -> user:{user} find:{find} replace:{replace} column:{column}')
-    col = db.execute(f"SELECT {column} FROM users WHERE user = '{user}'")
+    col = favar.variables.db.execute(f"SELECT {column} FROM users WHERE user = '{user}'")
     col = col.fetchall()
     if not len(col):
         raise sqlite3.IntegrityError
@@ -95,28 +95,28 @@ def usr_rep(db, user, find, replace, column):
         col = [e.replace(find, replace) for e in col]
     col.sort(key=str.lower)
     col = ",".join(col)
-    db.execute(f"UPDATE users SET {column} = '{col}' WHERE user = '{user}'")
-    db.commit()
+    favar.variables.db.execute(f"UPDATE users SET {column} = '{col}' WHERE user = '{user}'")
+    favar.variables.db.commit()
 
-def usr_src(db, user, find, column):
+def usr_src(user, find, column):
     fatl.log.normal(f'DB USER SEARCH -> user:{user} search:{find}')
-    col = db.execute(f"SELECT {column} FROM users WHERE user = '{user}'")
+    col = favar.variables.db.execute(f"SELECT {column} FROM users WHERE user = '{user}'")
     col = col.fetchall()[0]
     col = "".join(col).split(',')
     if find in col: return True
     else: return False
 
-def usr_isempty(db, user):
+def usr_isempty(user):
     fatl.log.normal(f'DB USER IS EMPTY -> user:{user}')
-    usr = db.execute(f"SELECT user FROM users WHERE user = '{user}' AND folders = '' AND gallery = '' AND scraps = '' AND favorites = '' AND extras = ''")
+    usr = favar.variables.db.execute(f"SELECT user FROM users WHERE user = '{user}' AND folders = '' AND gallery = '' AND scraps = '' AND favorites = '' AND extras = ''")
     usr = usr.fetchall()
     fatl.log.normal(f'DB USER IS EMPTY -> user:{user} {bool(len(usr))}')
     return bool(len(usr))
 
-def sub_ins(db, infos):
+def sub_ins(infos):
     fatl.log.normal(f'DB SUB NEW -> infos:{[infos[0], infos[1], infos[3]]}')
     try:
-        db.execute(f'''INSERT INTO SUBMISSIONS
+        favar.variables.db.execute(f'''INSERT INTO SUBMISSIONS
             (ID,AUTHOR,AUTHORURL,TITLE,UDATE,DESCRIPTION,TAGS,CATEGORY,SPECIES,GENDER,RATING,FILELINK,FILENAME,LOCATION, SERVER)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)''', infos)
     except sqlite3.IntegrityError:
@@ -124,9 +124,9 @@ def sub_ins(db, infos):
     except:
         raise
     finally:
-        db.commit()
+        favar.variables.db.commit()
 
-def sub_up(db, ID, new_value, column):
+def sub_up(ID, new_value, column):
     fatl.log.normal(f'DB SUB UPDATE -> ID:{ID} new value:{new_value} column:{column}')
     if type(new_value) != list:
         new_value = [new_value]
@@ -137,56 +137,56 @@ def sub_up(db, ID, new_value, column):
 
     cols = []
     for i in range(0, len(column)):
-        col = db.execute(f"SELECT {column[i]} FROM submissions WHERE id = '{ID}'")
+        col = favar.variables.db.execute(f"SELECT {column[i]} FROM submissions WHERE id = '{ID}'")
         cols.append(col.fetchall())
     if any(len(col) == 0 for col in cols):
         return False
 
     cols = [col[0][0] for col in cols]
     for i in range(0, len(new_value)):
-        db.execute(f"UPDATE submissions SET {column[i]} = '{new_value[i]}' WHERE id = '{ID}'")
-    db.commit()
+        favar.variables.db.execute(f"UPDATE submissions SET {column[i]} = '{new_value[i]}' WHERE id = '{ID}'")
+    favar.variables.db.commit()
 
     return True
 
-def sub_read(db, ID, column):
+def sub_read(ID, column):
     fatl.log.normal(f'DB SUB READ -> ID:{ID} column:{column}')
-    col = db.execute(f"SELECT {column} FROM submissions WHERE id = '{ID}'")
+    col = favar.variables.db.execute(f"SELECT {column} FROM submissions WHERE id = '{ID}'")
     col = col.fetchall()
     if not len(col):
         return ''
     else:
         return col[0][0]
 
-def sub_exists(db, ID):
+def sub_exists(ID):
     fatl.log.normal(f'DB SUB EXISTS -> ID:{ID}')
-    exists = db.execute(f'SELECT EXISTS(SELECT id FROM submissions WHERE id = "{ID}" LIMIT 1);')
+    exists = favar.variables.db.execute(f'SELECT EXISTS(SELECT id FROM submissions WHERE id = "{ID}" LIMIT 1);')
     return exists.fetchall()[0][0]
 
-def info_up(db, field, value):
+def info_up(field, value):
     fatl.log.normal(f'DB INFO UPDATE -> entry:{field} value:{value}')
-    db.execute(f'UPDATE infos SET value = "{value}" WHERE field = "{field}"')
-    db.commit()
+    favar.variables.db.execute(f'UPDATE infos SET value = "{value}" WHERE field = "{field}"')
+    favar.variables.db.commit()
 
-def info_read(db, field):
+def info_read(field):
     fatl.log.normal(f'DB INFO READ -> entry:{field}')
-    info = db.execute(f'SELECT value FROM infos WHERE field = "{field}"').fetchall()
+    info = favar.variables.db.execute(f'SELECT value FROM infos WHERE field = "{field}"').fetchall()
     if not len(info):
         return None
     else:
         return info[0][0]
 
 
-def table_n(db, table):
+def table_n(table):
     fatl.log.normal(f'DB TABLE TOTAL -> table:{table}')
-    table_b = db.execute(f'SELECT EXISTS(SELECT name FROM sqlite_master WHERE type = "table" AND name = "{table}");')
+    table_b = favar.variables.db.execute(f'SELECT EXISTS(SELECT name FROM sqlite_master WHERE type = "table" AND name = "{table}");')
     table_b = table_b.fetchall()[0][0]
 
     if table_b:
-        num = db.execute(f'SELECT * FROM {table}')
+        num = favar.variables.db.execute(f'SELECT * FROM {table}')
         return len(num.fetchall())
 
-def mkindex(db):
+def mkindex():
     col_usrs = (
         'USER',
         'FOLDERS',
@@ -209,38 +209,38 @@ def mkindex(db):
         )
 
     fatl.log.normal('DB INDEX -> drop indexes')
-    info_up(db, 'INDEX', 0)
-    indexes = db.execute('SELECT name FROM sqlite_master WHERE type = "index"').fetchall()
+    info_up('INDEX', 0)
+    indexes = favar.variables.db.execute('SELECT name FROM sqlite_master WHERE type = "index"').fetchall()
     indexes = [indx[0] for indx in indexes if 'autoindex' not in indx[0]]
     fatl.log.verbose(f'DB INDEX -> indexes:{indexes}')
     for indx in indexes:
         if fatl.sigint_check():
             return
         fatl.log.verbose(f'DB INDEX -> drop index:{indx}')
-        db.execute(f'DROP INDEX {indx}')
-    db.commit()
+        favar.variables.db.execute(f'DROP INDEX {indx}')
+    favar.variables.db.commit()
 
     fatl.log.normal('DB INDEX -> create indexes')
     for col in col_usrs:
         if fatl.sigint_check():
             return
         fatl.log.verbose(f'DB INDEX -> create index:{col}')
-        db.execute(f'CREATE INDEX {col} ON users ({col} ASC)')
-        db.commit()
+        favar.variables.db.execute(f'CREATE INDEX {col} ON users ({col} ASC)')
+        favar.variables.db.commit()
 
     for col in col_subs:
         if fatl.sigint_check():
             return
         fatl.log.verbose(f'DB INDEX -> create index:{col}')
-        db.execute(f'CREATE INDEX {col} ON submissions ({col} ASC)')
-        db.commit()
+        favar.variables.db.execute(f'CREATE INDEX {col} ON submissions ({col} ASC)')
+        favar.variables.db.commit()
 
-    info_up(db, 'INDEX', 1)
+    info_up('INDEX', 1)
 
-def mktable(db, table):
+def mktable(table):
     fatl.log.normal(f'DB TABLE MAKE -> {table}')
     if table == 'submissions':
-        db.execute('''CREATE TABLE IF NOT EXISTS SUBMISSIONS
+        favar.variables.db.execute('''CREATE TABLE IF NOT EXISTS SUBMISSIONS
             (ID INT UNIQUE PRIMARY KEY NOT NULL,
             AUTHOR TEXT NOT NULL,
             AUTHORURL TEXT NOT NULL,
@@ -257,7 +257,7 @@ def mktable(db, table):
             LOCATION TEXT NOT NULL,
             SERVER INT);''')
     elif table == 'users':
-        db.execute('''CREATE TABLE IF NOT EXISTS USERS
+        favar.variables.db.execute('''CREATE TABLE IF NOT EXISTS USERS
             (USER TEXT UNIQUE PRIMARY KEY NOT NULL,
             USERFULL TEXT NOT NULL,
             FOLDERS TEXT NOT NULL,
@@ -266,22 +266,22 @@ def mktable(db, table):
             FAVORITES TEXT,
             EXTRAS TEXT);''')
     elif table == 'infos':
-        infos = db.execute('SELECT EXISTS(SELECT name FROM sqlite_master WHERE type = "table" AND name = "INFOS")')
+        infos = favar.variables.db.execute('SELECT EXISTS(SELECT name FROM sqlite_master WHERE type = "table" AND name = "INFOS")')
         infos = infos.fetchall()[0][0]
 
         if not infos:
-            db.execute('''CREATE TABLE INFOS
+            favar.variables.db.execute('''CREATE TABLE INFOS
                 (FIELD CHAR,
                 VALUE CHAR);''')
-            db.execute('INSERT INTO INFOS (FIELD, VALUE) VALUES ("DBNAME", "")')
-            db.execute(f'INSERT INTO INFOS (FIELD, VALUE) VALUES ("VERSION", "{favar.db_version}")')
-            db.execute('INSERT INTO INFOS (FIELD, VALUE) VALUES ("USRN", 0)')
-            db.execute('INSERT INTO INFOS (FIELD, VALUE) VALUES ("SUBN", 0)')
-            db.execute('INSERT INTO INFOS (FIELD, VALUE) VALUES ("LASTUP", 0)')
-            db.execute('INSERT INTO INFOS (FIELD, VALUE) VALUES ("LASTUPT", 0)')
-            db.execute('INSERT INTO INFOS (FIELD, VALUE) VALUES ("LASTDL", 0)')
-            db.execute('INSERT INTO INFOS (FIELD, VALUE) VALUES ("LASTDLT", 0)')
-            db.execute('INSERT INTO INFOS (FIELD, VALUE) VALUES ("INDEX", 0)')
-            db.commit()
-            info_up(db, 'USRN', table_n(db, 'USERS'))
-            info_up(db, 'SUBN', table_n(db, 'SUBMISSIONS'))
+            favar.variables.db.execute('INSERT INTO INFOS (FIELD, VALUE) VALUES ("DBNAME", "")')
+            favar.variables.db.execute(f'INSERT INTO INFOS (FIELD, VALUE) VALUES ("VERSION", "{favar.variables.db_version}")')
+            favar.variables.db.execute('INSERT INTO INFOS (FIELD, VALUE) VALUES ("USRN", 0)')
+            favar.variables.db.execute('INSERT INTO INFOS (FIELD, VALUE) VALUES ("SUBN", 0)')
+            favar.variables.db.execute('INSERT INTO INFOS (FIELD, VALUE) VALUES ("LASTUP", 0)')
+            favar.variables.db.execute('INSERT INTO INFOS (FIELD, VALUE) VALUES ("LASTUPT", 0)')
+            favar.variables.db.execute('INSERT INTO INFOS (FIELD, VALUE) VALUES ("LASTDL", 0)')
+            favar.variables.db.execute('INSERT INTO INFOS (FIELD, VALUE) VALUES ("LASTDLT", 0)')
+            favar.variables.db.execute('INSERT INTO INFOS (FIELD, VALUE) VALUES ("INDEX", 0)')
+            favar.variables.db.commit()
+            info_up('USRN', table_n('USERS'))
+            info_up('SUBN', table_n('SUBMISSIONS'))
