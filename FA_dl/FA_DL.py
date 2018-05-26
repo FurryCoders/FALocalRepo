@@ -34,78 +34,64 @@ def ping(url):
         fatl.log.normal(f'PING -> NO')
         return False
 
-def session_make():
-    fatl.log.normal('SESSION MAKE')
-    Session = cfscrape.create_scraper()
-    cookies_file = favar.variables.cookies_file
-
-    for name in ('FA.cookies'):
-        if os.path.isfile(name) and not os.path.isfile(cookies_file):
-            fatl.log.normal(f'SESSION MAKE -> cookies rename \"{name}\" to \"{cookies_file}\"')
-            os.rename(name, cookies_file)
-            break
-
-    try:
-        fatl.log.normal('SESSION MAKE -> load cookies file')
-        with open(cookies_file) as f:
-            cookies = json.load(f)
-    except FileNotFoundError:
-        raise
-    except:
-        raise
-
-    fatl.log.normal('SESSION MAKE -> load cookies in Session')
-    for cookie in cookies: Session.cookies.set(cookie['name'], cookie['value'])
-
-    return Session
-
-def check_cookies():
-    fatl.log.normal('COOKIES -> check')
-    check_r = favar.variables.Session.get('https://www.furaffinity.net/controls/settings/')
-    check_p = bs4.BeautifulSoup(check_r.text, 'lxml')
-
-    if check_p.find('a', id='my-username') is None:
-        fatl.log.normal('COOKIES -> check:False')
-        return False
-    else:
-        fatl.log.normal('COOKIES -> check:True')
-        return True
-
 def session():
-    fatl.log.normal('SESSION')
+    fatl.log.normal('SESSION MAKE -> start')
     print('Checking connection ... ', end='', flush=True)
     if ping('http://www.furaffinity.net'):
         print('Done')
     else:
+        fatl.log.normal('SESSION MAKE -> fail')
         print('Failed')
-        fatl.log.normal('SESSION -> fail')
         return
 
-    if not favar.variables.Session:
-        print('Creating session & adding cookies ... ', end='', flush=True)
+    if favar.variables.Session:
+        fatl.log.normal('SESSION MAKE -> ready')
+        return
+
+    print('Creating session & adding cookies ... ', end='', flush=True)
+    fatl.log.normal('SESSION MAKE -> create Session object')
+    Session = cfscrape.create_scraper()
+
+    if not os.path.isfile(favar.variables.cookies_file):
+        fatl.log.warning('SESSION MAKE -> missing cookies file')
+        fatl.log.normal('SESSION MAKE -> fail')
+        print('Failed - Missing Cookies File')
+        return
+
+    fatl.log.normal('SESSION MAKE -> load cookies file')
+    with open(favar.variables.cookies_file) as f:
         try:
-            favar.variables.Session = session_make()
-            print('Done')
-        except FileNotFoundError:
-            print('Failed - Missing Cookies File')
-            fatl.log.normal('SESSION -> fail')
-            return
+            cookies = json.load(f)
         except:
-            print('Failed - Unknown Error')
-            fatl.log.normal('SESSION -> fail')
+            fatl.log.warning('SESSION MAKE -> cookies format error')
+            fatl.log.normal('SESSION MAKE -> fail')
+            print('Failed - Error in the cookies file format')
             return
 
+    for cookie in cookies:
+        Session.cookies.set(cookie['name'], cookie['value'])
 
-        print('Checking cookies & bypassing cloudflare ... ', end='', flush=True)
-        if check_cookies():
-            print('Done')
-        else:
-            favar.variables.Session = None
-            print('Failed')
-            fatl.log.normal('SESSION -> fail')
-            cookies_error()
+    fatl.log.verbose('SESSION MAKE -> successful cookies load')
+    print('Done')
 
-    fatl.log.normal('SESSION -> success')
+
+    print('Checking cookies & bypassing cloudflare ... ', end='', flush=True)
+    fatl.log.normal('COOKIES CHECK')
+    check_r = Session.get('https://www.furaffinity.net/controls/settings/')
+    check_p = bs4.BeautifulSoup(check_r.text, 'lxml')
+
+    if check_p.find('a', id='my-username') is None:
+        fatl.log.normal('COOKIES CHECK -> fail')
+        fatl.log.normal('SESSION MAKE -> fail')
+        print('Failed')
+        cookies_error()
+        return
+    else:
+        fatl.log.normal('COOKIES CHECK -> success')
+        print('Done')
+
+    favar.variables.Session = Session
+    fatl.log.normal('SESSION MAKE -> success')
 
 def check_page(url):
     fatl.log.normal(f'CHECK PAGE -> url:{url}')
