@@ -120,6 +120,7 @@ def dl_page(user, section, page_i, page_p, sync, speed, force, quiet, db_only):
 
         sub_i += 1
         ID = sub.get('id')[4:]
+        fatl.log.verbose(f'DOWNLOAD PAGE -> user:{user} section:{section} page:{page_i} sub:{sub_i} ID:{ID}')
         print(f'{user[0:5]: ^5} {page_i:0>3}/{sub_i:0>2} {section} | {ID:0>10} | ', end='', flush=True)
 
         if fadb.usr_src(user, ID.zfill(10), section_db[section]):
