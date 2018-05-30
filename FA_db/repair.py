@@ -233,6 +233,7 @@ def repair_subs(repair=True):
         return
 
     while any(len(errs) for errs in (errs_id, errs_vl, errs_fl)):
+        fadb.info_up('INDEX', 0)
         print()
 
         fadl.session()
@@ -331,6 +332,8 @@ def repair_usrs(repair=True):
         return
 
     while any(len(errs) for errs in (errs_empty, errs_repet, errs_names, errs_names, errs_foldr, errs_fl_dl)):
+        fadb.info_up('INDEX', 0)
+
         if len(errs_empty):
             print()
             print('Empty users')
