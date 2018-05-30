@@ -313,8 +313,6 @@ def repair_subs(repair=True):
         break
 
     print()
-    index()
-    vacuum()
 
 def repair_usrs(repair=True):
     fatl.log.normal('REPAIR USER')
@@ -447,8 +445,6 @@ def repair_usrs(repair=True):
         break
 
     print()
-    index()
-    vacuum()
 
 def repair_info(repair=True):
     fatl.log.normal('REPAIR INFO')
@@ -530,7 +526,6 @@ def repair_info(repair=True):
             print('Done')
 
     print()
-    vacuum()
 
 def repair_all(repair=True):
     repair_subs(repair)
