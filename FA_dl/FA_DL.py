@@ -329,10 +329,12 @@ def update(users, sections, speed, force, index, db_only):
     fatl.log.normal(f'UPDATE -> db_users:{len(users_db)}')
 
     for u in users_db:
+        fatl.log.normal(f'UPDATE -> user:"{u[0]}" sections:"{u[1]}"')
         if fatl.sigint_check(): break
         flag_download_u = False
 
         if users and u[0] not in users:
+            fatl.log.verbose(f'UPDATE -> user:"{u[0]}" skip')
             continue
 
         for s in u[1].split(','):
@@ -341,6 +343,7 @@ def update(users, sections, speed, force, index, db_only):
                 dl_ret = 5
                 break
             if len(sections) and s not in sections:
+                fatl.log.verbose(f'UPDATE -> user:"{u[0]}" section:"{s}" skip')
                 continue
             if s[-1] == '!' and s[0] not in sections:
                 continue
