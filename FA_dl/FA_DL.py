@@ -333,6 +333,10 @@ def update(users, sections, speed, force, index, db_only):
         if fatl.sigint_check(): break
         flag_download_u = False
 
+        if u[1] == '':
+            fatl.log.warning(f'UPDATE -> user:"{u[0]}" empty FOLDERS')
+            continue
+
         if users and u[0] not in users:
             fatl.log.verbose(f'UPDATE -> user:"{u[0]}" skip')
             continue
