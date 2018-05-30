@@ -142,7 +142,7 @@ def dl_page(user, section, page_i, page_p, sync, speed, force, quiet, db_only):
         if fatl.sigint_check(): return 5
 
         t1 = time.time()
-        s_ret = dl_sub(ID, quiet, True, speed, db_only)
+        s_ret = dl_sub(ID, False, True, speed, db_only)
         t2 = time.time()
         if speed == 0 and t2-t1 < 1.5 and t2-t1 > 0:
             fatl.log.normal(f'DOWNLOAD PAGE -> waiting {t2-t1} seconds')
