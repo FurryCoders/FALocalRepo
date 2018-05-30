@@ -169,7 +169,7 @@ def dl_sub(ID, quiet, check, speed, db_only):
             else:
                 cols = os.get_terminal_size()[0] - 43
             if cols < 0: cols = 0
-            title = str_clean(sub_read(db, ID, "title"))[0:cols]
+            title = str_clean(sub_read(ID, "title"))[0:cols]
             print('[Repository]'+(' '+title)*bool(title))
         return 2
 
