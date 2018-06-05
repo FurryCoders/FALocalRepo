@@ -1,6 +1,6 @@
 [submodule "PythonRead"]
 	path = PythonRead
-	url = https://github.com/MatteoCampinoti94/PythonRead.git
+	url = https://gitlab.com/MatteoCampinoti94/PythonRead.git
 [submodule "PythonSignalBlocking-CrossPlatform"]
 	path = SignalBlock
-	url = https://github.com/MatteoCampinoti94/PythonSignalBlocking-CrossPlatform
+	url = https://gitlab.com/MatteoCampinoti94/PythonSignalBlocking-CrossPlatform
