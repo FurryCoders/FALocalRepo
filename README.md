@@ -339,8 +339,8 @@ To run and/or build the program you will need the following pypi modules:
 * [filetype](https://github.com/h2non/filetype.py)
 
 The following non-pypi modules (already included in this repo as submodules):
-* [PythonRead](https://github.com/MatteoCampinoti94/PythonRead)
-* [SignalBlock](https://github.com/MatteoCampinoti94/PythonSignalBlocking-CrossPlatform)
+* [PythonRead](https://gitlab.com/MatteoCampinoti94/PythonRead)
+* [SignalBlock](https://gitlab.com/MatteoCampinoti94/PythonSignalBlocking-CrossPlatform)
 
 The following modules are used but available by default:
 * [json](https://docs.python.org/3/library/json.html)
