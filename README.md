@@ -364,3 +364,6 @@ Before opening an issue please run the program with '--raise' and '--logv' argum
 ## Appendix
 ### Unverified commits
 All commits before the 27th of January 2018 show as unverified because I accidentally revoked my old gpg key before adding a new one. They have all been added by me and can vouch for their authenticity.
+
+### Early releases
+Release binaries before and including v2.10.2 can be found on GitHub -> [Releases](https://github.com/MatteoCampinoti94/FALocalRepo/releases)
