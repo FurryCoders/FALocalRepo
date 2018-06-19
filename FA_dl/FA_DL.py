@@ -357,7 +357,7 @@ def update(users, sections, speed, force, index, db_only):
             dl_ret = dl_usr(u[0], s, True, speed, force, True, db_only)
             if dl_ret == 3:
                 print('\b \b'*os.get_terminal_size()[0], end='', flush=True)
-            if dl_ret in (0,2,4):
+            if dl_ret in (0,2,4,5):
                 flag_download_u = True
             if dl_ret == 4:
                 fadb.usr_rep(u[0], s, s+'!', 'FOLDERS')
@@ -365,12 +365,10 @@ def update(users, sections, speed, force, index, db_only):
                 dl_ret = 5
                 break
 
-        if fatl.sigint_check(): break
-        if dl_ret == 5:
-            break
-
         if flag_download_u:
             flag_download = True
+        if fatl.sigint_check() or dl_ret == 5:
+            break
 
     if not flag_download:
         print("No new submissions were downloaded")
