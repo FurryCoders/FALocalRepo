@@ -159,7 +159,7 @@ def str_clean(string):
     return re.sub('[^\x00-\x7F]', '', string)
 
 
-def dl_sub(ID, quiet, check, speed, db_only):
+def dl_sub(ID, quiet, check, speed, db_only, overwrite=False):
     fatl.log.normal(f'DOWNLOAD SUBMISSION -> ID:{ID}')
     if check and sub_exists(ID):
         fatl.log.normal(f'DOWNLOAD SUBMISSION -> ID:{ID} found in SUBMISSIONS database')
@@ -235,7 +235,7 @@ def dl_sub(ID, quiet, check, speed, db_only):
         folder.split('/',1)[-1],            # location
         1,                                  # server
     )
-    sub_ins(sub_info)
+    sub_ins(sub_info, overwrite)
 
     if subf == False:
         if not quiet: print(('\b'*10)+'File Error')

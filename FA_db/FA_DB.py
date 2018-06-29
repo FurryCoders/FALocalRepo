@@ -113,18 +113,23 @@ def usr_isempty(user):
     fatl.log.normal(f'DB USER IS EMPTY -> user:{user} {bool(len(usr))}')
     return bool(len(usr))
 
-def sub_ins(infos):
+def sub_ins(infos, overwrite=False):
     fatl.log.normal(f'DB SUB NEW -> infos:{[infos[0], infos[1], infos[3]]}')
+
+    if overwrite:
+        fatl.log.normal(f'DB SUB OVERWRITE -> infos:{[infos[0], infos[1], infos[3]]}')
+        favar.variables.db.execute(f'DELETE FROM submissions WHERE id = {ID}')
+        favar.variables.db.commit()
+
     try:
         favar.variables.db.execute(f'''INSERT INTO SUBMISSIONS
             (ID,AUTHOR,AUTHORURL,TITLE,UDATE,DESCRIPTION,TAGS,CATEGORY,SPECIES,GENDER,RATING,FILELINK,FILENAME,LOCATION, SERVER)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)''', infos)
+        favar.variables.db.commit()
     except sqlite3.IntegrityError:
         pass
     except:
         raise
-    finally:
-        favar.variables.db.commit()
 
 def sub_up(ID, new_value, column):
     fatl.log.normal(f'DB SUB UPDATE -> ID:{ID} new value:{new_value} column:{column}')
