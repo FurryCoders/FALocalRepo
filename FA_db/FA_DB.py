@@ -118,7 +118,7 @@ def sub_ins(infos, overwrite=False):
 
     if overwrite:
         fatl.log.normal(f'DB SUB OVERWRITE -> infos:{[infos[0], infos[1], infos[3]]}')
-        favar.variables.db.execute(f'DELETE FROM submissions WHERE id = {ID}')
+        favar.variables.db.execute(f'DELETE FROM submissions WHERE id = {infos[0]}')
         favar.variables.db.commit()
 
     try:
