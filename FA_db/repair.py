@@ -315,6 +315,39 @@ def repair_subs(repair=True):
 
     print()
 
+def repair_subs_files(repair=True):
+    fatl.log.normal('REPAIR SUB FILES')
+    print('Analyzing submissions database for missing submission files ... ', end='', flush=True)
+    fatl.log.normal('REPAIR SUB FILES -> find submissions')
+    subs = favar.variables.db.execute('SELECT * FROM submissions WHERE filename = 0 AND server = 1 ORDER BY id ASC')
+    subs = [[si for si in s] for s in subs.fetchall()]
+    print('Done')
+    print(f'Found {len(subs)} missing files{"s"*bool(len(subs) != 1)}')
+
+    fatl.sigint_clear()
+    if not repair or not len(subs):
+        return
+
+    print('\nFixing missing submission files\n')
+
+    fadl.session()
+    print()
+    if not favar.variables.Session:
+        fatl.log.normal('REPAIR SUB FILES -> session error')
+        print('Session error')
+        return
+
+    fadb.info_up('INDEX', 0)
+
+    l, L = len(str(len(subs))), len(subs)
+    for i in range(0, len(subs)):
+        print(f'{i:0{l}}/{L} - {subs[i][0]:010} {subs[i][2]}', end='', flush=True)
+        dl_ret = fadl.dl_sub(str(subs[i][0]), True, False, 2, False, True)
+        if dl_ret == 3:
+            print(' - missing')
+            fadb.sub_up(subs[i][0], 0, 'SERVER')
+        print()
+
 def repair_usrs(repair=True):
     fatl.log.normal('REPAIR USER')
     print('Analyzing users database for errors ... ', end='', flush=True)
@@ -546,6 +579,7 @@ def analyze_all():
 def repair():
     menu = (
         ('Submissions', repair_subs),
+        ('Submissions files', repair_subs_files),
         ('Users', repair_usrs),
         ('Infos', repair_info),
         ('All', repair_all),
