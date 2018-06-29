@@ -114,12 +114,12 @@ def usr_isempty(user):
     return bool(len(usr))
 
 def sub_ins(infos, overwrite=False):
-    fatl.log.normal(f'DB SUB NEW -> infos:{[infos[0], infos[1], infos[3]]}')
-
     if overwrite:
         fatl.log.normal(f'DB SUB OVERWRITE -> infos:{[infos[0], infos[1], infos[3]]}')
         favar.variables.db.execute(f'DELETE FROM submissions WHERE id = {infos[0]}')
         favar.variables.db.commit()
+    else:
+        fatl.log.normal(f'DB SUB NEW -> infos:{[infos[0], infos[1], infos[3]]}')
 
     try:
         favar.variables.db.execute(f'''INSERT INTO SUBMISSIONS
