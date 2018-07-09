@@ -73,8 +73,8 @@ except SystemExit:
     raise
 except:
     err = traceback.format_exception(*sys.exc_info())
-    for e in err:
-        fatl.log.warning('ERROR EXIT -> '+' = '.join([ei.strip() for ei in e.split('\n') if ei.strip()]))
+    err = ['ERROR EXIT -> '+e.strip().replace('\n', ' =') for e in err]
+    fatl.log.warning(err)
     fatl.log.warning('PROGRAM END')
     if '--raise' in sys.argv[1:]:
         raise
