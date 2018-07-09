@@ -33,6 +33,7 @@ wheels/
 
 # nuitka
 *build/
+*dist/
 *.exe
 
 # Installer logs
