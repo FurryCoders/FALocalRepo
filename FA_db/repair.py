@@ -319,10 +319,12 @@ def repair_subs_files(repair=True):
     fatl.log.normal('REPAIR SUB FILES')
     print('Analyzing submissions database for missing submission files ... ', end='', flush=True)
     fatl.log.normal('REPAIR SUB FILES -> find submissions')
-    subs = favar.variables.db.execute('SELECT * FROM submissions WHERE filename = 0 AND server = 1 ORDER BY id ASC')
+    subs = favar.variables.db.execute('SELECT * FROM submissions WHERE filename = 0 AND server = 1 ORDER BY AUTHORURL ASC, id ASC')
     subs = [[si for si in s] for s in subs.fetchall()]
     print('Done')
-    print(f'Found {len(subs)} missing files{"s"*bool(len(subs) != 1)}')
+    print(f'Found {len(subs)} missing file{"s"*bool(len(subs) != 1)}')
+
+    if fatl.sigint_check(): return
 
     fatl.sigint_clear()
     if not repair or not len(subs):
@@ -341,12 +343,21 @@ def repair_subs_files(repair=True):
 
     l, L = len(str(len(subs))), len(subs)
     for i in range(0, len(subs)):
-        print(f'{i:0{l}}/{L} - {subs[i][0]:010} {subs[i][2]}', end='', flush=True)
+        if fatl.sigint_check(): return
+
+        fatl.log.verbose(f'REPAIR SUB FILES -> ID:{subs[i][0]:010}')
+        print(f'{i:0{l}}/{L} - {subs[i][2][:10]: <10} {subs[i][0]:010}', end='', flush=True)
         dl_ret = fadl.dl_sub(str(subs[i][0]), True, False, 2, False, True)
-        if dl_ret == 3:
-            print(' - missing')
+
+        if dl_ret == 1:
+            fatl.log.verbose(f'REPAIR SUB FILES -> ID:{subs[i][0]:010} file error')
+            print(' - fail')
+        elif dl_ret == 3:
+            fatl.log.verbose(f'REPAIR SUB FILES -> ID:{subs[i][0]:010} not found')
+            print(' - fail')
             fadb.sub_up(subs[i][0], 0, 'SERVER')
-        print()
+        else:
+            print(' - done')
 
 def repair_usrs(repair=True):
     fatl.log.normal('REPAIR USER')
