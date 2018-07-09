@@ -73,7 +73,6 @@ def get_info(page, ID):
 
     fatl.log.verbose(f'DOWNLOAD SUBMISSION -> ID:{ID} get category, species, gender')
     extras_raw = [str(e) for e in page.find('div', 'sidebar-section-no-bottom').find_all('div')]
-    extras_raw = [str(e) for e in page.find('div', 'sidebar-section-no-bottom').find_all('div')]
 
     extras = {}
     for e in extras_raw:
