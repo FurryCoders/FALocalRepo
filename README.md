@@ -3,7 +3,8 @@ Pure Python program to download any user's gallery/scraps/favorites and more fro
 
 **Warning**: A cookie file named FA.cookies.json in json format is needed.<br>
 **Warning**: You need to set the theme to 'beta' on FurAffinity<br>
-**Warning**: On Windows safe interruption does NOT work prior to version 2.10
+**Warning**: On Windows safe interruption does NOT work prior to version 2.10<br>
+**Warning**: On Unix system the provided binaries require installing the pypi modules used in this software (See `Build instructions`)
 
 ## Introduction
 This program was born with the desire to provide a relatively easy-to-use method for FA users to download submissions that they care about from the forum. At the moment its a little more than a text interface in a terminal window with only basic search functionality, a GUI will be hopefully added in the near future.
