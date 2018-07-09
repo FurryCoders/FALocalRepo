@@ -29,6 +29,17 @@ def get_page(ID):
     page = favar.variables.Session.get(url)
     page = bs4.BeautifulSoup(page.text, 'lxml')
 
+    if not page.find('div', 'submission-artist-container'):
+        page = None
+    elif not page.find('h2', 'submission-title-header'):
+        page = None
+    elif not page.find('meta', {"name":"twitter:data1"}):
+        page = None
+    elif not page.find('span', 'tags'):
+        page = None
+    elif not page.find('div', 'sidebar-section-no-bottom'):
+        page = None
+
     return page
 
 def get_info(page, ID):
