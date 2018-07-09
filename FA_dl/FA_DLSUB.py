@@ -61,10 +61,20 @@ def get_info(page, ID):
     data.append(" ".join(keyw))
 
     fatl.log.verbose(f'DOWNLOAD SUBMISSION -> ID:{ID} get category, species, gender')
-    extras = [str(e) for e in page.find('div', 'sidebar-section-no-bottom').find_all('div')]
-    extras = [e.rstrip('</div>') for e in extras]
-    extras = [re.sub('.*> ', '', e).replace('&gt;', '>') for e in extras]
-    data += extras # [category, species, gender]
+    extras_raw = [str(e) for e in page.find('div', 'sidebar-section-no-bottom').find_all('div')]
+    extras_raw = [str(e) for e in page.find('div', 'sidebar-section-no-bottom').find_all('div')]
+
+    extras = {}
+    for e in extras_raw:
+        e_typ = re.sub(':</strong>.*', '', e)
+        e_typ = re.sub('.*<strong>', '', e_typ)
+        e_typ = e_typ.lower()
+
+        e_val = re.sub('.*</strong>( )*', '', e)
+        e_val = re.sub('</div>.*', '', e_val)
+
+        extras[e_typ] = e_val.replace('&gt;', '>')
+    data += [extras.get('category', 'All > All'), extras.get('species', 'Unspecified / Any'), extras.get('gender', 'Any')]
 
     fatl.log.verbose(f'DOWNLOAD SUBMISSION -> ID:{ID} get rating')
     rating = page.find('meta', {"name":"twitter:data2"})
