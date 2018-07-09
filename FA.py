@@ -1,6 +1,7 @@
 print('Readying program ... ', end='', flush=True)
 import sqlite3
 import sys, os
+import traceback
 import PythonRead as readkeys
 import FA_db as fadb
 import FA_dl as fadl
@@ -71,13 +72,13 @@ except SystemExit:
     fatl.log.normal('PROGRAM END')
     raise
 except:
-    err = sys.exc_info()
-    fatl.log.warning('ERROR EXIT -> '+repr(err))
+    err = traceback.format_exception(*sys.exc_info())
+    for e in err:
+        fatl.log.warning('ERROR EXIT -> '+' = '.join([ei.strip() for ei in e.split('\n') if ei.strip()]))
     fatl.log.warning('PROGRAM END')
     if '--raise' in sys.argv[1:]:
         raise
     else:
         print('\nAn unknown error occurred:')
-        for e in err:
-            print('  '+repr(e))
+        print('See FA.log for details')
         sys.exit(1)
