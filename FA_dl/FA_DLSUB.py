@@ -198,7 +198,7 @@ def dl_sub(ID, quiet, check, speed, db_only, overwrite=False):
     folder = f'{favar.variables.files_folder}/{fatl.tiers(ID)}/{ID:0>10}'
     page = get_page(ID)
     if page == None:
-        print('\b'*11+'Page Error')
+        if not quiet: print('\b'*11+'Page Error')
         return 3
     data = get_info(page, ID)
     link = get_link(page, ID)
