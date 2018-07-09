@@ -33,16 +33,31 @@ class log:
         if not cls._normal:
             return
         with open(cls._file, 'a') as logf:
-            logf.write(f'{str(datetime.now())} | N | {data}\n')
+            time = str(datetime.now())
+            if type(data) in (list, tuple):
+                for d in data:
+                    logf.write(f'{time} | N | {d}\n')
+            else:
+                logf.write(f'{time} | N | {data}\n')
 
     @classmethod
     def verbose(cls, data=''):
         if not cls._verbose:
             return
         with open(cls._file, 'a') as logf:
-            logf.write(f'{str(datetime.now())} | V | {data}\n')
+            time = str(datetime.now())
+            if type(data) in (list, tuple):
+                for d in data:
+                    logf.write(f'{time} | V | {d}\n')
+            else:
+                logf.write(f'{time} | V | {data}\n')
 
     @classmethod
     def warning(cls, data=''):
         with open(cls._file, 'a') as logf:
-            logf.write(f'{str(datetime.now())} | W | {data}\n')
+            time = str(datetime.now())
+            if type(data) in (list, tuple):
+                for d in data:
+                    logf.write(f'{time} | W | {d}\n')
+            else:
+                logf.write(f'{time} | W | {data}\n')
