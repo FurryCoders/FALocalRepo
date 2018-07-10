@@ -38,9 +38,6 @@ def get_page(ID):
     elif not page.find('meta', {"name":"twitter:data1"}):
         fatl.log.verbose(f'DOWNLOAD SUBMISSION -> ID:{ID} get page error "twitter:data1"')
         page = None
-    elif not page.find('span', 'tags'):
-        fatl.log.verbose(f'DOWNLOAD SUBMISSION -> ID:{ID} get page error "tags"')
-        page = None
     elif not page.find('div', 'sidebar-section-no-bottom'):
         fatl.log.verbose(f'DOWNLOAD SUBMISSION -> ID:{ID} get page error "sidebar-section-no-bottom"')
         page = None
