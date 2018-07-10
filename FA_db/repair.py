@@ -357,6 +357,7 @@ def repair_subs_files(repair=True):
             print(' - fail')
             fadb.sub_up(subs[i][0], 0, 'SERVER')
         else:
+            fatl.log.verbose(f'REPAIR SUB FILES -> ID:{subs[i][0]:010} sucess')
             print(' - done')
 
 def repair_usrs(repair=True):
