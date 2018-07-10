@@ -366,6 +366,7 @@ Before opening an issue please run the program with '--raise' and '--logv' argum
 ### Unverified commits
 All commits before the 27th of January 2018 show as unverified because I accidentally revoked my old GPG key before adding a new one. They have all been added by me and can vouch for their authenticity.<br>
 Some commits before e76e993b show as unverified, these were done with GitHub's editor and thus their GPG signature cannot be verified by GitLab.
+Commits 96143db5-7d40880b (09-10/07/2018) are unverified because of an error with the GPG key.
 
 ### Early releases
 Release binaries before and including v2.10.2 can be found on GitHub -> [Releases](https://github.com/MatteoCampinoti94/FALocalRepo/releases)
