@@ -578,6 +578,9 @@ def repair_all(repair=True):
     repair_subs(repair)
     fatl.sigint_clear()
 
+    repair_subs_files(repair)
+    fatl.sigint_clear()
+
     repair_usrs(repair)
     fatl.sigint_clear()
 
