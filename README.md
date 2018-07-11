@@ -194,7 +194,7 @@ This missing submission files will be downloaded from scratch again.
     Indexes will be redone and database optimized with sqlite `VACUUM` function.
 
 4. `All`<br>
-Submissions, users and infos will all be checked and the database re-indexed and optimized.
+Submissions, submission files, users and infos will all be checked and the database re-indexed and optimized.
 
 5. `Analyze`<br>
 Search for errors in all three tables but do not repair them.
