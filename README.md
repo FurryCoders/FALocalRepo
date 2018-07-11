@@ -156,7 +156,11 @@ This will start the analysis and repair of the SUBMISSIONS table.
 
     Indexes will be redone and database optimized with sqlite `VACUUM` function.
 
-2. `Users`<br>
+2. `Submission files`<br>
+This will start the analysis of the submission table in search of submissions whose `FILENAME` column was set to 0 (i.e. an error during the download or in the file itself) and whose `SERVER` column is not 0 (i.e. that are still present on the main website as far the database knows).<br>
+This missing submission files will be downloaded from scratch again.
+
+3. `Users`<br>
     1. `Empty users`<br>
     Users with no folders and no submissions saved will be deleted.
     3. `Repeating users`<br>
@@ -173,7 +177,7 @@ This will start the analysis and repair of the SUBMISSIONS table.
 
     Indexes will be redone and database optimized with sqlite `VACUUM` function.
 
-3. `Infos`<br>
+4. `Infos`<br>
     1. `Repeated entries`<br>
     Repeated entries will be deleted.
     2. `Version error`<br>
