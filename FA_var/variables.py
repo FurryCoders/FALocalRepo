@@ -7,7 +7,7 @@ class variables:
 
     # version
     db_version = '2.7'
-    fa_version = '2.11'
+    fa_version = '2.11.1'
 
     # files
     db_file = 'FA.db'
