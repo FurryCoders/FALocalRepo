@@ -125,10 +125,8 @@ The rating can be 'general', 'mature' or 'adult'.
 There are two possible options:
     * `regex`<br>
     Use regular expressions to search the database. Full regex syntax is supported in all fields.
-
     * `case`<br>
     Turn on case sensitivity on ALL fields. This works in both normal and regex mode.
-
     * `web`<br>
     Search on the website directly. Only user, title, tags, description and rating will be used.
 
