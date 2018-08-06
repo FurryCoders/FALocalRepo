@@ -148,7 +148,7 @@ def get_file(link, folder, ID, quiet, speed):
             if chunk:
                 f.write(chunk)
                 chunks += 1
-            if speed == 1:
+            if speed < 2:
                 time.sleep(.01)
         if not quiet and size: print('='*(10-bar+1), end='', flush=True)
 
