@@ -479,7 +479,7 @@ def download_main():
 
         fatl.log.normal(f'DOWNLOAD MAIN -> users:"{users}" sections:"{sections}" options:"{options}"')
 
-        users = re.sub('([^a-zA-Z0-9\-., ])', '', users)
+        users = re.sub('([^a-zA-Z0-9\-.~, ])', '', users)
         users = re.sub('( )+', ',', users.strip())
         users = sorted(set([u for u in users.split(',') if u != '']))
 
