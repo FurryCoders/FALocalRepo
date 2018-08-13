@@ -471,9 +471,9 @@ def download_main():
 
     while True:
         try:
-            users = readkeys.input('Insert username: ').lower()
+            users    = readkeys.input('Insert username: ').lower()
             sections = readkeys.input('Insert sections: ')
-            options = readkeys.input('Insert options: ').lower()
+            options  = readkeys.input('Insert options: ').lower()
         except:
             return
 
@@ -487,23 +487,24 @@ def download_main():
         sections = list(set(sections))
         sections = [s for s in ('g','s','f','e','E') if s in sections]
 
-        speed = 1 ; upd = False
-        sync = False ; force = 0
-        quit = False ; index = False
+        speed   = 1     ; upd   = False
+        sync    = False ; force = 0
+        quit    = False ; index = False
         db_only = False
-        if 'quick' in options: speed = 2
-        if 'slow' in options: speed = 0
-        if 'update' in options: upd = True
-        if 'sync' in options: sync = True
-        if 'all' in options: force = -1
-        if 'index' in options: index = True
-        if 'dbonly' in options: db_only = True
+
         if re.search('force[0-9]+', options):
             force = re.search('force[0-9]+', options).group(0)
             force = re.sub('[^0-9]', '', force)
             force = int(force)
-        if 'quit' in options: quit = True
-        if force != 0: speed = 1
+        speed   = 2    if 'quick'  in options else speed
+        speed   = 0    if 'slow'   in options else speed
+        upd     = True if 'update' in options else upd
+        sync    = True if 'sync'   in options else sync
+        force   = -1   if 'all'    in options else force
+        index   = True if 'index'  in options else index
+        db_only = True if 'dbonly' in options else db_only
+        quit    = True if 'quit'   in options else quit
+        speed   = 1    if force != 0 else speed
 
         fatl.log.normal(f'DOWNLOAD MAIN -> upd:{upd} sync:{sync} force:{force} speed:{speed} index:{index} dbonly:{db_only} quit:{quit}')
 
