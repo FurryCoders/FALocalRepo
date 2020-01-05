@@ -9,116 +9,125 @@ import FA_var as favar
 from FA_dl import session
 from .FA_DB import info_read, mkindex
 
+
 def mkregexp(case):
     if case:
+
         def regexp(pattern, input):
             return bool(re.match(pattern, input))
+
     else:
+
         def regexp(pattern, input):
             return bool(re.match(pattern, input, flags=re.IGNORECASE))
 
     return regexp
 
+
 def search_web(fields):
-    fatl.log.normal('SEARCH WEB')
+    fatl.log.normal("SEARCH WEB")
     session()
     if not favar.variables.Session:
         print("Couldn't establish connection, search aborted")
         return
     print()
 
-    fatl.log.normal('SEARCH WEB -> url creation')
+    fatl.log.normal("SEARCH WEB -> url creation")
     for k in fields:
         fields[k] = fields[k].strip()
 
-    search_string = ''
-    if fields['user']:
+    search_string = ""
+    if fields["user"]:
         search_string += f"@lower {fields['user'].lower()} "
-    if fields['titl']:
+    if fields["titl"]:
         search_string += f"@title {fields['titl']} "
-    if fields['tags']:
+    if fields["tags"]:
         search_string += f"@keywords {fields['tags']} "
-    if fields['desc']:
+    if fields["desc"]:
         search_string += f"@message {fields['desc']} "
     search_string = search_string.strip()
 
-    search_url = f'https://www.furaffinity.net/search/?q={search_string}&order-by=date&order-direction=asc'
+    search_url = f"https://www.furaffinity.net/search/?q={search_string}&order-by=date&order-direction=asc"
     page_i = 1
-    re_id = re.compile('[^0-9]')
-    str_cl = re.compile('[^\x00-\x7F]')
+    re_id = re.compile("[^0-9]")
+    str_cl = re.compile("[^\x00-\x7F]")
     n = 0
 
-    print('USER               |     ID     | TITLE'[0:os.get_terminal_size()[0]])
-    print(('-'*41)[0:os.get_terminal_size()[0]])
+    print("USER               |     ID     | TITLE"[0 : os.get_terminal_size()[0]])
+    print(("-" * 41)[0 : os.get_terminal_size()[0]])
 
-    print(f'{page_i:03d}', end='', flush=True)
+    print(f"{page_i:03d}", end="", flush=True)
 
-    fatl.log.normal('SEARCH WEB -> get results')
-    page = favar.variables.Session.get(f'{search_url}&page={page_i}')
-    page = bs4.BeautifulSoup(page.text, 'lxml')
-    page = page.find('section', id="gallery-search-results")
+    fatl.log.normal("SEARCH WEB -> get results")
+    page = favar.variables.Session.get(f"{search_url}&page={page_i}")
+    page = bs4.BeautifulSoup(page.text, "lxml")
+    page = page.find("section", id="gallery-search-results")
 
-    while page and page.find('figure'):
-        results = page.findAll('figure')
+    while page and page.find("figure"):
+        results = page.findAll("figure")
 
         for r in results:
-            ratg = r.get('class')[0].lstrip('r-')
-            if fields['ratg'] and fields['ratg'].lower() != ratg:
+            ratg = r.get("class")[0].lstrip("r-")
+            if fields["ratg"] and fields["ratg"].lower() != ratg:
                 continue
-            s_id = re_id.sub('', r.get('id')).zfill(10)
-            user = r.findAll('a')[2].string
-            titl = r.findAll('a')[1].string
+            s_id = re_id.sub("", r.get("id")).zfill(10)
+            user = r.findAll("a")[2].string
+            titl = r.findAll("a")[1].string
 
             n += 1
 
-            print(f'\r{user[0:18]: <18} | {s_id}', end='', flush=True)
+            print(f"\r{user[0:18]: <18} | {s_id}", end="", flush=True)
             if os.get_terminal_size()[0] > 33:
-                print(f' | {str_cl.sub("",titl[0:os.get_terminal_size()[0]-33])}', end='')
+                print(
+                    f' | {str_cl.sub("",titl[0:os.get_terminal_size()[0]-33])}', end=""
+                )
             print()
 
         page_i += 1
-        print(f'\r{page_i:03d}', end='', flush=True)
+        print(f"\r{page_i:03d}", end="", flush=True)
 
-        page = favar.variables.Session.get(f'{search_url}&page={page_i}')
-        page = bs4.BeautifulSoup(page.text, 'lxml')
-        page = page.find('section', id="gallery-search-results")
+        page = favar.variables.Session.get(f"{search_url}&page={page_i}")
+        page = bs4.BeautifulSoup(page.text, "lxml")
+        page = page.find("section", id="gallery-search-results")
 
-    print('\r   \r', end='', flush=True)
-    print('\n'*bool(n) + f'{n} results found')
-    fatl.log.normal(f'SEARCH WEB -> {n} results')
+    print("\r   \r", end="", flush=True)
+    print("\n" * bool(n) + f"{n} results found")
+    fatl.log.normal(f"SEARCH WEB -> {n} results")
+
 
 def search(fields, regex=False, case=False):
-    fatl.log.normal('SEARCH DB')
-    match = ('LIKE', '%')
+    fatl.log.normal("SEARCH DB")
+    match = ("LIKE", "%")
     if regex:
         regexp = mkregexp(case)
         favar.variables.db.create_function("REGEXP", 2, regexp)
-        match = ('REGEXP', '(?:.)*')
+        match = ("REGEXP", "(?:.)*")
 
     if case:
-        favar.variables.db.execute('PRAGMA case_sensitive_like=ON')
+        favar.variables.db.execute("PRAGMA case_sensitive_like=ON")
     else:
-        favar.variables.db.execute('PRAGMA case_sensitive_like=OFF')
+        favar.variables.db.execute("PRAGMA case_sensitive_like=OFF")
 
-    fields_o = {k: v for k,v in fields.items()}
+    fields_o = {k: v for k, v in fields.items()}
 
-    fields['user'] = fields['user'].strip()
-    fields['sect'] = re.sub('[^gsfe]','', fields['sect'].lower())
-    fields['titl'] = match[1]+fields['titl']+match[1]
-    fields['desc'] = match[1]+fields['desc']+match[1]
-    fields['tags'] = re.sub('( )+', ' ', fields['tags']).split(' ')
-    fields['tags'] = sorted(fields['tags'], key=str.lower)
-    fields['tags'] = match[1]+match[1].join(fields['tags'])+match[1]
-    fields['catg'] = match[1]+fields['catg']+match[1]
-    fields['spec'] = match[1]+fields['spec']+match[1]
-    fields['gend'] = match[1]+fields['gend']+match[1]
-    fields['ratg'] = match[1]+fields['ratg']+match[1]
+    fields["user"] = fields["user"].strip()
+    fields["sect"] = re.sub("[^gsfe]", "", fields["sect"].lower())
+    fields["titl"] = match[1] + fields["titl"] + match[1]
+    fields["desc"] = match[1] + fields["desc"] + match[1]
+    fields["tags"] = re.sub("( )+", " ", fields["tags"]).split(" ")
+    fields["tags"] = sorted(fields["tags"], key=str.lower)
+    fields["tags"] = match[1] + match[1].join(fields["tags"]) + match[1]
+    fields["catg"] = match[1] + fields["catg"] + match[1]
+    fields["spec"] = match[1] + fields["spec"] + match[1]
+    fields["gend"] = match[1] + fields["gend"] + match[1]
+    fields["ratg"] = match[1] + fields["ratg"] + match[1]
 
     t1 = time.time()
 
-    fatl.log.normal('SEARCH DB -> SUBMISSIONS query')
-    if fields['user'] and re.match('^[gs]+$', fields['sect']):
-        subs = favar.variables.db.execute(f'''SELECT author, udate, id, title FROM submissions
+    fatl.log.normal("SEARCH DB -> SUBMISSIONS query")
+    if fields["user"] and re.match("^[gs]+$", fields["sect"]):
+        subs = favar.variables.db.execute(
+            f"""SELECT author, udate, id, title FROM submissions
             WHERE authorurl {match[0]} ? AND
             title {match[0]} ? AND
             description {match[0]} ? AND
@@ -126,48 +135,56 @@ def search(fields, regex=False, case=False):
             category {match[0]} ? AND
             species {match[0]} ? AND
             gender {match[0]} ? AND
-            Rating {match[0]} ?''', (match[1]+fields['user']+match[1],) + tuple(fields.values())[2:]).fetchall()
+            Rating {match[0]} ?""",
+            (match[1] + fields["user"] + match[1],) + tuple(fields.values())[2:],
+        ).fetchall()
     else:
-        subs = favar.variables.db.execute(f'''SELECT author, udate, id, title FROM submissions
+        subs = favar.variables.db.execute(
+            f"""SELECT author, udate, id, title FROM submissions
             WHERE title {match[0]} ? AND
             description {match[0]} ? AND
             tags {match[0]} ? AND
             category {match[0]} ? AND
             species {match[0]} ? AND
             gender {match[0]} ? AND
-            Rating {match[0]} ?''', tuple(fields.values())[2:]).fetchall()
+            Rating {match[0]} ?""",
+            tuple(fields.values())[2:],
+        ).fetchall()
 
     subs = {s[2]: s for s in subs}
 
-    if fields['user']:
-        fatl.log.normal('SEARCH DB -> USERS query')
-        users = favar.variables.db.execute(f'SELECT gallery, scraps, favorites, extras FROM users WHERE user {match[0]} ?', (match[1]+fields['user']+match[1],))
+    if fields["user"]:
+        fatl.log.normal("SEARCH DB -> USERS query")
+        users = favar.variables.db.execute(
+            f"SELECT gallery, scraps, favorites, extras FROM users WHERE user {match[0]} ?",
+            (match[1] + fields["user"] + match[1],),
+        )
         users = users.fetchall()
         if not len(users):
-            users = [('','','','')]
+            users = [("", "", "", "")]
         subs_u = []
 
         for u in users:
-            u = [[int(si) for si in s.split(',') if si != ''] for s in u]
+            u = [[int(si) for si in s.split(",") if si != ""] for s in u]
 
-            u[0] = [[i, 'g'] for i in u[0]]
-            u[1] = [[i, 's'] for i in u[1]]
-            u[2] = [[i, 'f'] for i in u[2]]
-            u[3] = [[i, 'e'] for i in u[3]]
+            u[0] = [[i, "g"] for i in u[0]]
+            u[1] = [[i, "s"] for i in u[1]]
+            u[2] = [[i, "f"] for i in u[2]]
+            u[3] = [[i, "e"] for i in u[3]]
 
-            if fields['sect']:
-                if 'g' in fields['sect']:
+            if fields["sect"]:
+                if "g" in fields["sect"]:
                     subs_u += u[0]
-                if 's' in fields['sect']:
+                if "s" in fields["sect"]:
                     subs_u += u[1]
-                if 'f' in fields['sect']:
+                if "f" in fields["sect"]:
                     subs_u += u[2]
-                if 'e' in fields['sect']:
+                if "e" in fields["sect"]:
                     subs_u += u[3]
             else:
                 subs_u += u[0] + u[1] + u[2] + u[3]
 
-        fatl.log.normal('SEARCH DB -> filter USERS and SUBMISSIONS results')
+        fatl.log.normal("SEARCH DB -> filter USERS and SUBMISSIONS results")
         subs = [subs.get(i[0]) + (i[1],) for i in subs_u if subs.get(i[0]) != None]
     else:
         subs = list(subs.values())
@@ -175,59 +192,72 @@ def search(fields, regex=False, case=False):
     subs.sort(key=lambda x: (x[0], x[2]))
     t2 = time.time()
 
-    if fields['user']:
-        print('(SECTION) USER  |    DATE        ID     | TITLE'[0:os.get_terminal_size()[0]])
+    if fields["user"]:
+        print(
+            "(SECTION) USER  |    DATE        ID     | TITLE"[
+                0 : os.get_terminal_size()[0]
+            ]
+        )
     else:
-        print('USER            |    DATE        ID     | TITLE'[0:os.get_terminal_size()[0]])
-    print(('-'*49)[0:os.get_terminal_size()[0]])
+        print(
+            "USER            |    DATE        ID     | TITLE"[
+                0 : os.get_terminal_size()[0]
+            ]
+        )
+    print(("-" * 49)[0 : os.get_terminal_size()[0]])
 
-    str_cl = re.compile('[^\x00-\x7F]')
+    str_cl = re.compile("[^\x00-\x7F]")
     for s in subs:
-        if fields['user']:
-            print(f'({s[-1]}) {s[0][0:11]: ^{11}} |', end='', flush=True)
+        if fields["user"]:
+            print(f"({s[-1]}) {s[0][0:11]: ^{11}} |", end="", flush=True)
         else:
-            print(f'{s[0][0:15]: <15} |', end='', flush=True)
-        print(f' {s[1]} {s[2]:0>10}', end='', flush=True)
+            print(f"{s[0][0:15]: <15} |", end="", flush=True)
+        print(f" {s[1]} {s[2]:0>10}", end="", flush=True)
         if os.get_terminal_size()[0] > 42:
             print(f' | {str_cl.sub("",s[3][0:os.get_terminal_size()[0]-45])}')
         else:
             print()
 
-    fatl.log.normal(f'SEARCH DB -> {len(subs)} results')
+    fatl.log.normal(f"SEARCH DB -> {len(subs)} results")
 
-    print('\n'*bool(len(subs)) + f'{len(subs)} results found in {t2-t1:.3f} seconds')
+    print("\n" * bool(len(subs)) + f"{len(subs)} results found in {t2-t1:.3f} seconds")
     if not len(subs):
-        print('\nNo results found in the local database\nDo you want to search online (y/n)? ', end='', flush=True)
-        c = ''
-        while c not in ('y','n'):
+        print(
+            "\nNo results found in the local database\nDo you want to search online (y/n)? ",
+            end="",
+            flush=True,
+        )
+        c = ""
+        while c not in ("y", "n"):
             c = readkeys.getkey().lower()
         print(c)
 
-        if c == 'y':
+        if c == "y":
             print()
             search_web(fields_o)
 
+
 def main():
-    fatl.header('Search')
+    fatl.header("Search")
 
     while True:
         fields = {}
 
         try:
             fatl.sigint_ublock()
-            fields['user'] = readkeys.input('User: "', '"')
-            if fields['user']:
-                fields['sect'] = readkeys.input('Section: "', '"')
+            fields["user"] = readkeys.input('User: "', '"')
+            if fields["user"]:
+                fields["sect"] = readkeys.input('Section: "', '"')
             else:
-                fields['sect'] = ''
-            fields['titl'] = readkeys.input('Title: "', '"')
-            fields['desc'] = readkeys.input('Description: "', '"')
-            fields['tags'] = readkeys.input('Tags: "', '"')
-            fields['catg'] = readkeys.input('Category: "', '"')
-            fields['spec'] = readkeys.input('Species: "', '"')
-            fields['gend'] = readkeys.input('Gender: "', '"')
-            fields['ratg'] = readkeys.input('Rating: "', '"')
-            options = readkeys.input('Options: ')
+                fields["sect"] = ""
+            fields["titl"] = readkeys.input('Title: "', '"')
+            fields["desc"] = readkeys.input('Description: "', '"')
+            fields["tags"] = readkeys.input('Tags: "', '"')
+            fields["catg"] = readkeys.input('Category: "', '"')
+            fields["spec"] = readkeys.input('Species: "', '"')
+            fields["gend"] = readkeys.input('Gender: "', '"')
+            fields["ratg"] = readkeys.input('Rating: "', '"')
+            options = readkeys.input("Options: ")
         except KeyboardInterrupt:
             return
         except:
@@ -237,40 +267,43 @@ def main():
             fatl.sigint_clear()
 
         print()
-        if all(v == '' for v in fields.values()):
-            print('At least one field needs to be used')
+        if all(v == "" for v in fields.values()):
+            print("At least one field needs to be used")
             print()
             continue
 
         break
 
     try:
-        fatl.log.normal('SEARCH -> fields:{} options:"{}"'.format({k: fields[k] for k in fields if fields[k]}, options))
+        fatl.log.normal(
+            'SEARCH -> fields:{} options:"{}"'.format(
+                {k: fields[k] for k in fields if fields[k]}, options
+            )
+        )
 
         regex = False
         case = False
-        if 'regex' in options.lower():
+        if "regex" in options.lower():
             regex = True
-            fatl.log.normal('SEARCH -> Turn on regex')
-        if 'case' in options.lower():
+            fatl.log.normal("SEARCH -> Turn on regex")
+        if "case" in options.lower():
             case = True
-            fatl.log.normal('SEARCH -> Turn on case-sensitivity')
+            fatl.log.normal("SEARCH -> Turn on case-sensitivity")
 
-
-        if 'web' in options.lower():
+        if "web" in options.lower():
             fatl.sigint_ublock()
             search_web(fields)
         else:
-            if info_read('INDEX') != '1':
-                print('Indexing entries before search ... ', end='', flush=True)
+            if info_read("INDEX") != "1":
+                print("Indexing entries before search ... ", end="", flush=True)
                 mkindex()
-                print('Done\n')
+                print("Done\n")
             fatl.sigint_ublock()
             search(fields, regex, case)
 
-        print('\nPress any key to continue ', end='', flush=True)
+        print("\nPress any key to continue ", end="", flush=True)
         readkeys.getkey()
-        print('\b \b'*26, end='')
+        print("\b \b" * 26, end="")
     except KeyboardInterrupt:
         return
     except:
@@ -278,4 +311,4 @@ def main():
     finally:
         fatl.sigint_block()
         fatl.sigint_clear()
-        favar.variables.db.execute('PRAGMA case_sensitive_like=ON')
+        favar.variables.db.execute("PRAGMA case_sensitive_like=ON")

@@ -7,14 +7,15 @@ from .v2v2_3 import db_upgrade_v2v2_3
 from .v2_3v2_6 import db_upgrade_v2_3v2_6
 from .v2_6v2_7 import db_upgrade_v2_6v2_7
 
+
 def version_compare(a, b):
-    a = [int(n) for n in a.split('.')]
-    a += [0]*(3-len(a))
+    a = [int(n) for n in a.split(".")]
+    a += [0] * (3 - len(a))
 
-    b = [int(n) for n in b.split('.')]
-    b += [0]*(3-len(b))
+    b = [int(n) for n in b.split(".")]
+    b += [0] * (3 - len(b))
 
-    for i in (0,1,2):
+    for i in (0, 1, 2):
         if a[i] > b[i]:
             return True
         if a[i] < b[i]:
@@ -24,64 +25,70 @@ def version_compare(a, b):
 
 
 def db_upgrade_main():
-    fatl.log.normal('DB UPGRADE -> start')
-    print('Checking database file ... ', end='', flush=True)
+    fatl.log.normal("DB UPGRADE -> start")
+    print("Checking database file ... ", end="", flush=True)
 
     db = sqlite3.connect(favar.variables.db_file)
-    tables = db.execute('''SELECT name FROM sqlite_master
+    tables = db.execute(
+        """SELECT name FROM sqlite_master
         WHERE type = "table" AND
             (
             name = "SUBMISSIONS" OR
             name = "USERS" OR
             name = "INFOS"
-            )''').fetchall()
+            )"""
+    ).fetchall()
     db.close()
 
-    print('\b \b'*27, end='', flush=True)
+    print("\b \b" * 27, end="", flush=True)
 
     if len(tables) != 3:
         os.remove(favar.variables.db_file)
         return
 
     while True:
-        print('Checking database for upgrade ... ', end='', flush=True)
+        print("Checking database for upgrade ... ", end="", flush=True)
         db = sqlite3.connect(favar.variables.db_file)
-        db_version = db.execute('SELECT value FROM infos WHERE field = "VERSION"').fetchall()
+        db_version = db.execute(
+            'SELECT value FROM infos WHERE field = "VERSION"'
+        ).fetchall()
         db.close()
 
         if len(db_version) == 0:
-            db_version = '1.0'
+            db_version = "1.0"
         else:
             db_version = db_version[0][0]
 
-        fatl.log.normal(f'DB UPGRADE -> DB version:{db_version}')
+        fatl.log.normal(f"DB UPGRADE -> DB version:{db_version}")
 
         db_upgrade = False
-        print('\b \b'*34, end='', flush=True)
+        print("\b \b" * 34, end="", flush=True)
 
-        if db_version < '2.0':
+        if db_version < "2.0":
             db_upgrade = db_upgrade_v1v2
-        elif db_version < '2.3':
+        elif db_version < "2.3":
             db_upgrade = db_upgrade_v2v2_3
-        elif db_version < '2.6':
+        elif db_version < "2.6":
             db_upgrade = db_upgrade_v2_3v2_6
-        elif db_version < '2.7':
+        elif db_version < "2.7":
             db_upgrade = db_upgrade_v2_6v2_7
         elif version_compare(db_version, favar.variables.fa_version):
-            print('Program is not up to date')
-            print(f'FA version: {favar.variables.fa_version}')
-            print(f'DB version: {db_version}')
-            print('Use a program version equal or higher')
-            fatl.log.normal(f'DB UPGRADE -> version error FA:{favar.variables.fa_version} DB:{db_version}')
-            fatl.log.normal('PROGRAM END')
+            print("Program is not up to date")
+            print(f"FA version: {favar.variables.fa_version}")
+            print(f"DB version: {db_version}")
+            print("Use a program version equal or higher")
+            fatl.log.normal(
+                f"DB UPGRADE -> version error FA:{favar.variables.fa_version} DB:{db_version}"
+            )
+            fatl.log.normal("PROGRAM END")
             sys.exit(1)
 
         if db_upgrade:
-            fatl.log.normal('DB UPGRADE -> '+db_upgrade.__name__)
-            fatl.header('Database version upgrade')
+            fatl.log.normal("DB UPGRADE -> " + db_upgrade.__name__)
+            fatl.header("Database version upgrade")
             db_upgrade()
             print()
         else:
             break
 
-    fatl.log.normal('DB UPGRADE -> end')
+    fatl.log.normal("DB UPGRADE -> end")
