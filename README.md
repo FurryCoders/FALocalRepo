@@ -1,6 +1,8 @@
 # FALocalRepo
 Pure Python program to download any user's gallery/scraps/favorites and more from FurAffinity forum in an easily handled database.
 
+**Warning:** New version under development in pre-alpha stage. Current version 2.11.2 does not work.
+
 **Warning**: A cookie file named FA.cookies.json in json format is needed.<br>
 **Warning**: You need to set the theme to 'beta' on FurAffinity<br>
 **Warning**: On Windows safe interruption does NOT work prior to version 2.10<br>
