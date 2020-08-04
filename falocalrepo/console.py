@@ -1,4 +1,5 @@
-from argparse import ArgumentParser, Namespace
+from argparse import ArgumentParser
+from argparse import Namespace
 from os.path import basename
 from os.path import isdir
 from shutil import move
@@ -14,32 +15,28 @@ from .settings import setting_write
 
 def help_message(args: List[str]) -> str:
     if not args[1:] or (args[1] == "help" and not args[2:]):
-        return "\n".join([
-            f"{basename(args[0])} version {__version__}",
-            "\nUSAGE",
-            f"    {basename(args[0])} [-h] [-v] <command> [<arg1>] ... [<argN>]",
-            "\nARGUMENTS",
-            "    <command>       The command to execute",
-            "    <arg>           The arguments of the command",
-            "\nGLOBAL OPTIONS",
-            "    -h, --help      Display this help message",
-            "    -v, --version   Display version",
-            "\nAVAILABLE COMMANDS",
-            "    help            Display the manual of a command",
-            "    interactive     Run in interactive mode",
-            "    config          Manage settings",
-        ])
+        return f"""{basename(args[0])} version {__version__}
+            \r\nUSAGE
+            \r    {basename(args[0])} [-h] [-v] <command> [<arg1>] ... [<argN>]
+            \r\nARGUMENTS
+            \r    <command>       The command to execute
+            \r    <arg>           The arguments of the command
+            \r\nGLOBAL OPTIONS
+            \r    -h, --help      Display this help message
+            \r    -v, --version   Display version
+            \r\nAVAILABLE COMMANDS"
+            \r    help            Display the manual of a command
+            \r    interactive     Run in interactive mode
+            \r    config          Manage settings"""
     if args[2] == "config":
-        return "\n".join([
-            "USAGE",
-            f"    {basename(args[0])} config <setting> [<value1>] ... [<valueN>]",
-            "\nARGUMENTS",
-            "    <setting>       Setting to read/edit",
-            "    <value>         New setting value",
-            "\nAVAILABLE SETTINGS",
-            "    cookies         Cookies for the API",
-            "    files-folder    Files download folder",
-        ])
+        return f"""USAGE
+            \r    {basename(args[0])} config <setting> [<value1>] ... [<valueN>]
+            \r\nARGUMENTS
+            \r    <setting>       Setting to read/edit
+            \r    <value>         New setting value
+            \r\nAVAILABLE SETTINGS
+            \r    cookies         Cookies for the API
+            \r    files-folder    Files download folder"""
 
 
 def config(workdir: str, db: Connection, args: List[str]):
