@@ -10,7 +10,7 @@ from .database import connect_database
 from .menu import menu
 
 
-def download(api: FAAPI, db: Connection):
+def download_menu(api: FAAPI, db: Connection):
     dl_menu: List[str] = [
         "Exit",
     ]
@@ -20,7 +20,7 @@ def download(api: FAAPI, db: Connection):
             break
 
 
-def database(db: Connection):
+def database_menu(db: Connection):
     db_menu: List[str] = [
         "Exit",
     ]
@@ -30,14 +30,33 @@ def database(db: Connection):
             break
 
 
-def settings(db: Connection):
-    s_menu: List[str] = [
+def settings_menu(db: Connection):
+    menu_items: List[str] = [
         "Exit",
     ]
 
-    while choice := menu(s_menu):
-        if choice == len(s_menu):
+    while choice := menu(menu_items):
+        if choice == len(menu_items):
             break
+
+
+def main_menu(workdir: str, api: FAAPI, db: Connection):
+    menu_items: List[str] = [
+        "Download",
+        "Database",
+        "Settings",
+        "Exit"
+    ]
+
+    while choice := menu(menu_items):
+        if choice == len(menu_items):
+            break
+        elif choice == 1:
+            download_menu(api, db)
+        elif choice == 2:
+            database_menu(db)
+        elif choice == 3:
+            settings_menu(db)
 
 
 def main(workdir: str = abspath(getcwd())):
@@ -45,19 +64,4 @@ def main(workdir: str = abspath(getcwd())):
     api: FAAPI = FAAPI()
     db: Connection = connect_database(path_join(workdir, "FA.db"))
 
-    main_menu: List[str] = [
-        "Download",
-        "Database",
-        "Settings",
-        "Exit"
-    ]
-
-    while choice := menu(main_menu):
-        if choice == len(main_menu):
-            break
-        elif choice == 1:
-            download(api, db)
-        elif choice == 2:
-            database(db)
-        elif choice == 3:
-            settings(db)
+    main_menu(workdir, api, db)
