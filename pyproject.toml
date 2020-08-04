@@ -17,7 +17,7 @@ classifiers = [
     "Topic :: Internet :: WWW/HTTP :: Indexing/Search",
 ]
 
-[tool.poetry.scrips]
+[tool.poetry.scripts]
 falocalrepo = "falocalrepo.main:main"
 
 [tool.poetry.dependencies]
