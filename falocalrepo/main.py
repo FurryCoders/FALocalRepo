@@ -65,7 +65,7 @@ def main_menu(workdir: str, api: FAAPI, db: Connection):
         elif choice == 2:
             database_menu(db)
         elif choice == 3:
-            settings_menu(db)
+            settings_menu(api, db)
 
 
 def main():
