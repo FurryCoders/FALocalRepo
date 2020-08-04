@@ -1,3 +1,4 @@
+from os.path import join as path_join
 from sqlite3 import Connection
 from sqlite3 import connect as sqlite3_connect
 from typing import List
@@ -47,6 +48,16 @@ keys_users: List[str] = [
     "GALLERY", "SCRAPS",
     "FAVORITES", "EXTRAS"
 ]
+
+
+def tiered_path(id_: int, t1: int = 10000000, t2: int = 1000000, t3: int = 1000) -> str:
+    assert isinstance(id_, int)
+
+    tier1 = id_ // t1
+    tier2 = (id_ - (t1 * tier1)) // t2
+    tier3 = ((id_ - (t1 * tier1)) - (t2 * tier2)) // t3
+
+    return path_join(str(tier1), str(tier2), f"{tier3:03d}")
 
 
 def connect_database(db_name: str) -> Connection:
