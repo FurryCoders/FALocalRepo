@@ -17,6 +17,9 @@ classifiers = [
     "Topic :: Internet :: WWW/HTTP :: Indexing/Search",
 ]
 
+[tool.poetry.scrips]
+fa = "fa.main:main"
+
 [tool.poetry.dependencies]
 python = "^3.8"
 faapi = "^2.3.4"
