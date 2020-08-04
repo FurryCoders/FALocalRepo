@@ -25,7 +25,7 @@ def main():
     if argv[1:] and argv[1] == "interactive":
         main_menu(workdir, db)
     else:
-        main_console(workdir, db, argv[1:])
+        main_console(workdir, db, argv)
 
     # Close database
     db.commit()

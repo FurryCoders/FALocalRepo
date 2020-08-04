@@ -41,7 +41,7 @@ def main_console(workdir: str, db: Connection, args: List[str]):
     if not args:
         return
 
-    if args[0] == "config":
-        config(workdir, db, args[1:])
+    if args[1] == "config":
+        config(workdir, db, args[2:])
     else:
-        raise Exception(f"Unknown {args[0]} command.")
+        raise Exception(f"Unknown {args[1]} command.")
