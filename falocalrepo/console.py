@@ -19,6 +19,8 @@ def config(workdir: str, db: Connection, args: List[str]):
             print("cookie b:", cookie_b)
         elif args[1] == "files-folder":
             print("files folder:", setting_read(db, "FILESLOCATION"))
+        else:
+            raise Exception(f"Unknown setting {args[1]}")
     elif args[0] == "set":
         if args[1] == "cookies":
             cookie_a: str = args[2]
@@ -30,6 +32,10 @@ def config(workdir: str, db: Connection, args: List[str]):
             print("Moving files to new location... ", end="", flush=True)
             move(path_join(workdir, folder_old), path_join(workdir, args[1]))
             print("Done")
+        else:
+            raise Exception(f"Unknown setting {args[1]}")
+    else:
+        raise Exception(f"Unknown {args[0]} command for config.")
 
 
 def main_console(workdir: str, api: FAAPI, db: Connection, args: List[str]):
@@ -38,3 +44,5 @@ def main_console(workdir: str, api: FAAPI, db: Connection, args: List[str]):
 
     if args[0] == "config":
         config(workdir, db, args[1:])
+    else:
+        raise Exception(f"Unknown {args[0]} command.")
