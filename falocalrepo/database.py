@@ -30,7 +30,7 @@ from .__version__ import __version__
 # 9   GENDER        RATING
 # 10  RATING        FILELINK
 # 11  FILELINK      FILENAME
-# 12  FILENAME      LOCATION
+# 12  FILENAME
 # 13  LOCATION
 # 14  SERVER
 
@@ -39,8 +39,7 @@ keys_submissions: List[str] = [
     "ID", "AUTHOR", "TITLE",
     "UDATE", "DESCRIPTION", "TAGS",
     "CATEGORY", "SPECIES", "GENDER",
-    "RATING", "FILE_LINK", "FILE_NAME",
-    "LOCATION",
+    "RATING", "FILELINK", "FILENAME",
 ]
 
 keys_users: List[str] = [
