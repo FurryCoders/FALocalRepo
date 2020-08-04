@@ -1,6 +1,7 @@
-from typing import Dict
-from typing import List
+from os import getcwd
+from os.path import abspath
 from os.path import join as path_join
+from typing import List
 
 from faapi import FAAPI
 
@@ -39,7 +40,7 @@ def settings(db: Connection):
             break
 
 
-def main(workdir: str):
+def main(workdir: str = abspath(getcwd())):
     # Initialise api and database
     api: FAAPI = FAAPI()
     db: Connection = connect_database(path_join(workdir, "FA.db"))
