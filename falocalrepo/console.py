@@ -4,6 +4,9 @@ from os.path import basename
 from os.path import isdir
 from shutil import move
 from typing import List
+from typing import Optional
+
+from faapi import FAAPI
 
 from .__version__ import __version__
 from .database import Connection
@@ -74,6 +77,8 @@ def main_console(workdir: str, db: Connection, args: List[str]):
 
     global_options: List[str] = [arg for arg in args[1:] if arg.startswith("-")]
     args_parsed: Namespace = args_parser.parse_args(global_options)
+
+    api: Optional[FAAPI] = None
 
     if args_parsed.help:
         print(help_message([args[0], "help"]))
