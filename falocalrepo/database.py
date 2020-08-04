@@ -49,14 +49,17 @@ keys_users: List[str] = [
 ]
 
 
-def tiered_path(id_: int, t1: int = 10000000, t2: int = 1000000, t3: int = 1000) -> str:
-    assert isinstance(id_, int)
+def tiered_path(id_: Union[int, str], tiers: int = 5, depth: int = 2) -> str:
+    assert isinstance(id_, int) or (isinstance(id_, str) and id_.isdigit())
+    assert isinstance(tiers, int)
+    assert isinstance(depth, int)
 
-    tier1 = id_ // t1
-    tier2 = (id_ - (t1 * tier1)) // t2
-    tier3 = ((id_ - (t1 * tier1)) - (t2 * tier2)) // t3
+    id_str: str = str(id_).strip("0").zfill(tiers * depth)
+    id_tiered: List[str] = []
+    for n in range(0, tiers * depth, depth):
+        id_tiered.append(id_str[n:n + depth])
 
-    return path_join(str(tier1), str(tier2), f"{tier3:03d}")
+    return path_join(*id_tiered)
 
 
 def connect_database(db_name: str) -> Connection:
