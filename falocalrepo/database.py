@@ -27,8 +27,8 @@ from .__version__ import __version__
 # 7   CATEGORY      SPECIES
 # 8   SPECIES       GENDER
 # 9   GENDER        RATING
-# 10  RATING        FILE_LINK
-# 11  FILELINK      FILE_NAME
+# 10  RATING        FILELINK
+# 11  FILELINK      FILENAME
 # 12  FILENAME      LOCATION
 # 13  LOCATION
 # 14  SERVER
@@ -83,8 +83,8 @@ def make_database(db: Connection):
         SPECIES TEXT,
         GENDER TEXT,
         RATING TEXT,
-        FILE_LINK TEXT,
-        FILE_NAME TEXT,
+        FILELINK TEXT,
+        FILENAME TEXT,
         PRIMARY KEY (ID ASC));"""
     )
 
@@ -119,7 +119,7 @@ def make_database(db: Connection):
     write(db, "SETTINGS", ["SETTING", "SVALUE"], ["LASTSTART", "0"], False)
     write(db, "SETTINGS", ["SETTING", "SVALUE"], ["COOKIES", "{}"], False)
     write(db, "SETTINGS", ["SETTING", "SVALUE"], ["USERNAME", ""], False)
-    write(db, "SETTINGS", ["SETTING", "SVALUE"], ["FILESLOCATION", "FA.files"], False)
+    write(db, "SETTINGS", ["SETTING", "SVALUE"], ["FILESFOLDER", "FA.files"], False)
     write(db, "SETTINGS", ["SETTING", "SVALUE"], ["VERSION", str(__version__)], False)
 
     db.commit()
