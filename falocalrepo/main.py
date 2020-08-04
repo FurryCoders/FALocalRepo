@@ -6,6 +6,7 @@ from sys import argv
 
 from faapi import FAAPI
 
+from .console import main_console
 from .database import Connection
 from .database import connect_database
 from .database import make_database
@@ -29,7 +30,7 @@ def main():
     if argv[1:] and argv[1] == "interactive":
         main_menu(workdir, api, db)
     else:
-        print("Console mode")
+        main_console(workdir, api, db, argv[1:])
 
     # Close database
     db.commit()
