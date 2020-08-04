@@ -1,11 +1,23 @@
 from json import dumps as json_dumps
 from json import loads as json_loads
 from typing import Dict
+from typing import Optional
 from typing import Tuple
 
 from .database import Connection
-from .database import setting_read
-from .database import setting_write
+from .database import read
+from .database import write
+
+
+def setting_write(db: Connection, key: str, value: str, replace: bool = True):
+    write(db, "SETTINGS", ["SETTING", "SVALUE"], [key, value], replace)
+    db.commit()
+
+
+def setting_read(db: Connection, key: str) -> Optional[str]:
+    setting = read(db, "SETTINGS", ["SVALUE"], "SETTING", key)
+
+    return None if not setting else setting[0][0]
 
 
 def cookies_load(db: Connection) -> Tuple[str, str]:

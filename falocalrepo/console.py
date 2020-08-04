@@ -4,10 +4,10 @@ from typing import List
 from faapi import FAAPI
 
 from .database import Connection
-from .database import setting_read
-from .database import setting_write
 from .settings import cookies_change
 from .settings import cookies_load
+from .settings import setting_read
+from .settings import setting_write
 
 
 def main_console(workdir: str, api: FAAPI, db: Connection, args: List[str]):

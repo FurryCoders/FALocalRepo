@@ -1,7 +1,6 @@
 from sqlite3 import Connection
 from sqlite3 import connect as sqlite3_connect
 from typing import List
-from typing import Optional
 
 
 def connect_database(db_name: str) -> Connection:
@@ -22,17 +21,6 @@ def read(db: Connection, table: str, select: List[str], key: str, key_value: str
         f'''SELECT ({",".join(select)}) FROM {table} WHERE {key} = ?''',
         (key_value,)
     ).fetchall()
-
-
-def setting_write(db: Connection, key: str, value: str, replace: bool = True):
-    write(db, "SETTINGS", ["SETTING", "SVALUE"], [key, value], replace)
-    db.commit()
-
-
-def setting_read(db: Connection, key: str) -> Optional[str]:
-    setting = read(db, "SETTINGS", ["SVALUE"], "SETTING", key)
-
-    return None if not setting else setting[0][0]
 
 
 def make_database(db: Connection):
@@ -78,11 +66,14 @@ def make_database(db: Connection):
     db.commit()
 
     # Add settings
-    setting_write(db, "USRN", "0", replace=False)
-    setting_write(db, "SUBN", "0", replace=False)
-    setting_write(db, "LASTUPDATE", "0", replace=False)
-    setting_write(db, "LASTDOWNLOAD", "0", replace=False)
-    setting_write(db, "LASTSTART", "0", replace=False)
-    setting_write(db, "COOKIES", "{}", replace=False)
-    setting_write(db, "USERNAME", "", replace=False)
-    setting_write(db, "FILESLOCATION", "FA.files", replace=False)
+    write(db, "SETTINGS", ["SETTING", "SVALUE"], ["USRN", "0"], True)
+    write(db, "SETTINGS", ["SETTING", "SVALUE"], ["USRN", "0"], True)
+    write(db, "SETTINGS", ["SETTING", "SVALUE"], ["SUBN", "0"], True)
+    write(db, "SETTINGS", ["SETTING", "SVALUE"], ["LASTUPDATE", "0"], True)
+    write(db, "SETTINGS", ["SETTING", "SVALUE"], ["LASTDOWNLOAD", "0"], True)
+    write(db, "SETTINGS", ["SETTING", "SVALUE"], ["LASTSTART", "0"], True)
+    write(db, "SETTINGS", ["SETTING", "SVALUE"], ["COOKIES", "{}"], True)
+    write(db, "SETTINGS", ["SETTING", "SVALUE"], ["USERNAME", ""], True)
+    write(db, "SETTINGS", ["SETTING", "SVALUE"], ["FILESLOCATION", "FA.files"], True)
+
+    db.commit()

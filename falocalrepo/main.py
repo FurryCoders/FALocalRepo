@@ -10,8 +10,8 @@ from .console import main_console
 from .database import Connection
 from .database import connect_database
 from .database import make_database
-from .database import setting_write
 from .interactive import main_menu
+from .settings import setting_write
 
 
 def main():
