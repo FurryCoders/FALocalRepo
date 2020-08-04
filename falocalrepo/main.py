@@ -1,3 +1,4 @@
+from datetime import datetime
 from os import getcwd
 from os.path import abspath
 from os.path import join as path_join
@@ -7,6 +8,8 @@ from faapi import FAAPI
 
 from .database import Connection
 from .database import connect_database
+from .database import make_database
+from .database import setting_write
 from .menu import menu
 
 
@@ -64,4 +67,9 @@ def main(workdir: str = abspath(getcwd())):
     api: FAAPI = FAAPI()
     db: Connection = connect_database(path_join(workdir, "FA.db"))
 
+    # Prepare database
+    make_database(db)
+    setting_write(db, "LASTSTART", str(datetime.now().timestamp()))
+
+    # Run main program
     main_menu(workdir, api, db)
