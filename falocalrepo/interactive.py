@@ -13,6 +13,9 @@ from .settings import setting_write
 
 def download_menu(api: FAAPI, db: Connection):
     dl_menu: List[str] = [
+        "Users",
+        "Submissions",
+        "Update",
         "Exit",
     ]
 
@@ -23,6 +26,9 @@ def download_menu(api: FAAPI, db: Connection):
 
 def database_menu(db: Connection):
     db_menu: List[str] = [
+        "Search",
+        "Manual Entry"
+        "Check for Errors",
         "Exit",
     ]
 
