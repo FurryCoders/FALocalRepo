@@ -5,6 +5,35 @@ from typing import List
 from .__version__ import __version__
 
 
+# Entries guide - USERS
+# v2.6      v3.0
+# USER      USERNAME
+# USERFULL  FOLDERS
+# FOLDERS   GALLERY
+# GALLERY   SCRAPS
+# SCRAPS    FAVORITES
+# FAVORITES EXTRAS
+# EXTRAS
+
+# Entries guide - SUBMISSIONS
+# v2.6              v3.0
+# 0   ID            ID
+# 1   AUTHOR        AUTHOR
+# 2   AUTHORURL     TITLE
+# 3   TITLE         UDATE
+# 4   UDATE         DESCRIPTION
+# 5   DESCRIPTION   TAGS
+# 6   TAGS          CATEGORY
+# 7   CATEGORY      SPECIES
+# 8   SPECIES       GENDER
+# 9   GENDER        RATING
+# 10  RATING        FILELINK
+# 11  FILELINK      FILENAME
+# 12  FILENAME      LOCATION
+# 13  LOCATION
+# 14  SERVER
+
+
 def connect_database(db_name: str) -> Connection:
     return sqlite3_connect(db_name)
 
@@ -48,7 +77,6 @@ def make_database(db: Connection):
     db.execute(
         """CREATE TABLE IF NOT EXISTS USERS
         (USERNAME TEXT UNIQUE NOT NULL,
-        USERFULL TEXT NOT NULL,
         FOLDERS TEXT NOT NULL,
         GALLERY TEXT,
         SCRAPS TEXT,
