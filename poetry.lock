@@ -46,7 +46,7 @@ description = "Python module to implement API-like functionality for the FurAffi
 name = "faapi"
 optional = false
 python-versions = ">=3.8,<4.0"
-version = "2.3.4"
+version = "2.4.0"
 
 [package.dependencies]
 beautifulsoup4 = ">=4.9.1,<5.0.0"
@@ -159,8 +159,8 @@ chardet = [
     {file = "chardet-3.0.4.tar.gz", hash = "sha256:84ab92ed1c4d4f16916e05906b6b75a6c0fb5db821cc65e70cbd64a3e2a5eaae"},
 ]
 faapi = [
-    {file = "faapi-2.3.4-py3-none-any.whl", hash = "sha256:a4fc34c283269ce17a37153fbf6af3e5aafc351a73e76d31152684d72b9cbe50"},
-    {file = "faapi-2.3.4.tar.gz", hash = "sha256:8c96d86f9d76d3f7fe52d103af8bcb0e398fa2892ad29861ec924b0f02ac00a6"},
+    {file = "faapi-2.4.0-py3-none-any.whl", hash = "sha256:6ec5c6f28d47137c967e2b13fad49000df31c11840563effd0c0eb59d7ab4f1c"},
+    {file = "faapi-2.4.0.tar.gz", hash = "sha256:688f7bf77a5b97f56bb2965170e24b86916c505999d25b90fe0361a13693bb22"},
 ]
 idna = [
     {file = "idna-2.10-py2.py3-none-any.whl", hash = "sha256:b97d804b1e9b523befed77c48dacec60e6dcb0b5391d57af6a65a312a90648c0"},
