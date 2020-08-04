@@ -5,7 +5,7 @@ from faapi import FAAPI
 
 from .database import Connection
 from .menu import menu
-from .settings import change_cookies
+from .settings import cookies_change, cookies_load
 
 
 def download_menu(api: FAAPI, db: Connection):
@@ -38,8 +38,17 @@ def settings_menu(api: FAAPI, db: Connection):
         if choice == len(menu_items):
             break
         elif choice == 1:
-            cookies_new: Dict[str, str] = change_cookies(db)
-            api.load_cookies([{"name": k, "value": v} for k, v in cookies_new.items()])
+            print("Insert new values for cookies 'a' and 'b'.")
+            print("Leave empty to keep previous value.\n")
+
+            cookie_a_old, cookie_b_old = cookies_load(db)
+
+            cookie_a: str = input(f"[{cookie_a_old}]\na: ")
+            cookie_b: str = input(f"[{cookie_b_old}]\nb: ")
+
+            if cookie_a or cookie_b:
+                cookies_change(db, cookie_a, cookie_b)
+                api.load_cookies([{"name": "a", "value": cookie_a}, {"name": "b", "value": cookie_b}])
 
 
 def main_menu(workdir: str, api: FAAPI, db: Connection):
