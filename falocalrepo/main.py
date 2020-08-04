@@ -68,7 +68,10 @@ def main_menu(workdir: str, api: FAAPI, db: Connection):
             settings_menu(db)
 
 
-def main(workdir: str = abspath(getcwd())):
+def main():
+    # Get current work directory
+    workdir: str = abspath(getcwd())
+
     # Initialise api and database
     api: FAAPI = FAAPI()
     db: Connection = connect_database(path_join(workdir, "FA.db"))
