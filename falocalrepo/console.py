@@ -21,7 +21,7 @@ def help_message(args: List[str]) -> str:
             "    <command>   The command to execute",
             "    <arg>       The arguments of the command",
             "\nAVAILABLE COMMANDS",
-            "    help        Show this help message",
+            "    help        Display the manual of a command",
             "    interactive Run in interactive mode",
             "    config      Manage settings",
         ])
