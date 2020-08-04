@@ -2,6 +2,8 @@ from sqlite3 import Connection
 from sqlite3 import connect as sqlite3_connect
 from typing import List
 
+from .__version__ import __version__
+
 
 def connect_database(db_name: str) -> Connection:
     return sqlite3_connect(db_name)
@@ -75,5 +77,6 @@ def make_database(db: Connection):
     write(db, "SETTINGS", ["SETTING", "SVALUE"], ["COOKIES", "{}"], False)
     write(db, "SETTINGS", ["SETTING", "SVALUE"], ["USERNAME", ""], False)
     write(db, "SETTINGS", ["SETTING", "SVALUE"], ["FILESLOCATION", "FA.files"], False)
+    write(db, "SETTINGS", ["SETTING", "SVALUE"], ["VERSION", str(__version__)], False)
 
     db.commit()
