@@ -1,4 +1,5 @@
 from json import dumps as json_dumps
+from os import makedirs
 from os.path import join as path_join
 
 from faapi import FAAPI
@@ -49,12 +50,13 @@ def submission_download(api: FAAPI, db: Connection, sub_id: int) -> bool:
             sub_ext_tmp = None
 
     sub_ext: str = "" if sub_ext_tmp is None else f".{str(sub_ext_tmp)}"
-    sub_folder: str = tiered_path(sub.id)
-    sub_file_path: str = path_join(setting_read(db, "FILESFOLDER"), sub_folder, "submission" + sub_ext)
+    sub_folder: str = path_join(setting_read(db, "FILESFOLDER"), tiered_path(sub.id))
 
     submission_save(db, sub, sub_ext.strip("."))
 
-    with open(sub_file_path, "wb") as f:
+    makedirs(sub_folder, exist_ok=True)
+
+    with open(path_join(sub_folder, "submission" + sub_ext), "wb") as f:
         f.write(sub_file)
 
     return True
