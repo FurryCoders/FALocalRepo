@@ -50,7 +50,7 @@ def submission_download(api: FAAPI, db: Connection, sub_id: int) -> bool:
             sub_ext_tmp = None
 
     sub_ext: str = "" if sub_ext_tmp is None else f".{str(sub_ext_tmp)}"
-    sub_folder: str = path_join(setting_read(db, "FILESFOLDER"), tiered_path(sub.id), str(sub_id).zfill(10))
+    sub_folder: str = path_join(setting_read(db, "FILESFOLDER"), tiered_path(sub.id))
 
     submission_save(db, sub, sub_ext.strip("."))
 
