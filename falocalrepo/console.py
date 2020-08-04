@@ -78,8 +78,6 @@ def main_console(workdir: str, db: Connection, args: List[str]):
     global_options: List[str] = [arg for arg in args[1:] if arg.startswith("-")]
     args_parsed: Namespace = args_parser.parse_args(global_options)
 
-    api: Optional[FAAPI] = None
-
     if args_parsed.help:
         print(help_message([args[0], "help"]))
     elif args_parsed.version:
