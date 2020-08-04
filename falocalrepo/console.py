@@ -14,7 +14,7 @@ from .settings import setting_write
 def help_message(args: List[str]) -> str:
     if not args[1:] or (args[1] == "help" and not args[2:]):
         return "\n".join([
-            f"{basename(args[0])} version {__version__}\n",
+            f"{basename(args[0])} version {__version__}",
             "\nUSAGE",
             f"    {basename(args[0])} <command> [<arg1>] ... [<argN>]",
             "\nARGUMENTS",
