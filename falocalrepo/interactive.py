@@ -1,11 +1,14 @@
-from typing import Dict
+from shutil import move
 from typing import List
 
 from faapi import FAAPI
 
 from .database import Connection
 from .menu import menu
-from .settings import cookies_change, cookies_load
+from .settings import cookies_change
+from .settings import cookies_load
+from .settings import setting_read
+from .settings import setting_write
 
 
 def download_menu(api: FAAPI, db: Connection):
@@ -31,6 +34,7 @@ def database_menu(db: Connection):
 def settings_menu(api: FAAPI, db: Connection):
     menu_items: List[str] = [
         "Cookies",
+        "Files Folder",
         "Exit",
     ]
 
@@ -49,6 +53,18 @@ def settings_menu(api: FAAPI, db: Connection):
             if cookie_a or cookie_b:
                 cookies_change(db, cookie_a, cookie_b)
                 api.load_cookies([{"name": "a", "value": cookie_a}, {"name": "b", "value": cookie_b}])
+        elif choice == 2:
+            print("Insert new files folder.")
+            print("Leave empty to keep previous value.\n")
+
+            folder_old: str = setting_read(db, "FILESLOCATION")
+            folder: str = input(f"[{folder_old}]\n:folder: ")
+
+            if folder:
+                setting_write(db, "FILESLOCATION", folder)
+                print("Moving files to new location... ", end="", flush=True)
+                move(folder_old, folder)
+                print("Done")
 
 
 def main_menu(workdir: str, api: FAAPI, db: Connection):
