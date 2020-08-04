@@ -1,4 +1,4 @@
-from os.path import join as path_join, isdir
+from os.path import isdir
 from shutil import move
 from typing import List
 
@@ -27,9 +27,9 @@ def config(workdir: str, db: Connection, args: List[str]):
         elif args[1] == "files-folder":
             folder_old: str = setting_read(db, "FILESLOCATION")
             setting_write(db, "FILESLOCATION", args[1])
-            if isdir(path_join(folder_old)):
+            if isdir(folder_old):
                 print("Moving files to new location... ", end="", flush=True)
-                move(path_join(workdir, folder_old), path_join(workdir, args[1]))
+                move(folder_old, args[1])
                 print("Done")
         else:
             raise Exception(f"Unknown setting {args[1]}")
