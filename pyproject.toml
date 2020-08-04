@@ -18,7 +18,7 @@ classifiers = [
 ]
 
 [tool.poetry.scrips]
-fa = "fa.main:main"
+falocalrepo = "falocalrepo.main:main"
 
 [tool.poetry.dependencies]
 python = "^3.8"
