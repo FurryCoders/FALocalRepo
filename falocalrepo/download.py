@@ -19,14 +19,13 @@ def load_cookies(api: FAAPI, cookie_a: str, cookie_b: str):
     ])
 
 
-def submission_save(db: Connection, sub: Sub, sub_filename: str, sub_folder: str):
+def submission_save(db: Connection, sub: Sub, sub_ext: str):
     write(db, "SUBMISSIONS",
           keys_submissions,
           [sub.id, sub.author, sub.title,
            sub.date, sub.description, json_dumps(sub.tags),
            sub.category, sub.species, sub.gender,
-           sub.rating, sub.file_url, sub_filename,
-           sub_folder],
+           sub.rating, sub.file_url, sub_ext],
           replace=True)
 
     db.commit()
@@ -53,7 +52,7 @@ def submission_download(api: FAAPI, db: Connection, sub_id: int) -> bool:
     sub_folder: str = tiered_path(sub.id)
     sub_file_path: str = path_join(setting_read(db, "FILESFOLDER"), sub_folder, "submission" + sub_ext)
 
-    submission_save(db, sub, "submission" + sub_ext, sub_folder)
+    submission_save(db, sub, sub_ext.strip("."))
 
     with open(sub_file_path, "wb") as f:
         f.write(sub_file)
