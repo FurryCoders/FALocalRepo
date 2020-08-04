@@ -39,9 +39,9 @@ def settings(db: Connection):
             break
 
 
-def main(workdir: str, cookies: List[Dict[str, str]]):
+def main(workdir: str):
     # Initialise api and database
-    api: FAAPI = FAAPI(cookies)
+    api: FAAPI = FAAPI()
     db: Connection = connect_database(path_join(workdir, "FA.db"))
 
     main_menu: List[str] = [
