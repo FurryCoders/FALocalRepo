@@ -56,10 +56,10 @@ def config(workdir: str, db: Connection, args: List[str]):
             raise Exception("Malformed command: cookies needs two arguments")
     elif args[0] == "files-folder":
         if not args[1:]:
-            print("files folder:", setting_read(db, "FILESLOCATION"))
+            print("files folder:", setting_read(db, "FILESFOLDER"))
         elif len(args[1:]) == 1:
-            folder_old: str = setting_read(db, "FILESLOCATION")
-            setting_write(db, "FILESLOCATION", args[1])
+            folder_old: str = setting_read(db, "FILESFOLDER")
+            setting_write(db, "FILESFOLDER", args[1])
             if isdir(folder_old):
                 print("Moving files to new location... ", end="", flush=True)
                 move(folder_old, args[1])

@@ -63,11 +63,11 @@ def settings_menu(api: FAAPI, db: Connection):
             print("Insert new files folder.")
             print("Leave empty to keep previous value.\n")
 
-            folder_old: str = setting_read(db, "FILESLOCATION")
+            folder_old: str = setting_read(db, "FILESFOLDER")
             folder: str = input(f"[{folder_old}]\n:folder: ")
 
             if folder:
-                setting_write(db, "FILESLOCATION", folder)
+                setting_write(db, "FILESFOLDER", folder)
                 print("Moving files to new location... ", end="", flush=True)
                 move(folder_old, folder)
                 print("Done")
