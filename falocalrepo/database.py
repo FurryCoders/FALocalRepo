@@ -27,8 +27,8 @@ from .__version__ import __version__
 # 7   CATEGORY      SPECIES
 # 8   SPECIES       GENDER
 # 9   GENDER        RATING
-# 10  RATING        FILELINK
-# 11  FILELINK      FILENAME
+# 10  RATING        FILE_LINK
+# 11  FILELINK      FILE_NAME
 # 12  FILENAME      LOCATION
 # 13  LOCATION
 # 14  SERVER
