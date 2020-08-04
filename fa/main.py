@@ -1,5 +1,6 @@
 from typing import Dict
 from typing import List
+from os.path import join as path_join
 
 from faapi import FAAPI
 
@@ -41,7 +42,7 @@ def settings(db: Connection):
 def main(workdir: str, cookies: List[Dict[str, str]]):
     # Initialise api and database
     api: FAAPI = FAAPI(cookies)
-    db: Connection = connect_database("FA.db")
+    db: Connection = connect_database(path_join(workdir, "FA.db"))
 
     main_menu: List[str] = [
         "Download",
