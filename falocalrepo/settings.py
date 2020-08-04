@@ -20,7 +20,7 @@ def setting_read(db: Connection, key: str) -> Optional[str]:
     return None if not setting else setting[0][0]
 
 
-def cookies_load(db: Connection) -> Tuple[str, str]:
+def cookies_read(db: Connection) -> Tuple[str, str]:
     cookies: Dict[str, str] = json_loads(setting_read(db, "COOKIES"))
     return cookies.get("a", ""), cookies.get("b", "")
 

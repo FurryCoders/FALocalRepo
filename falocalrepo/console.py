@@ -11,7 +11,7 @@ from faapi import FAAPI
 from .__version__ import __version__
 from .database import Connection
 from .settings import cookies_change
-from .settings import cookies_load
+from .settings import cookies_read
 from .settings import setting_read
 from .settings import setting_write
 
@@ -45,7 +45,7 @@ def help_message(args: List[str]) -> str:
 def config(workdir: str, db: Connection, args: List[str]):
     if args[0] == "cookies":
         if not args[1:]:
-            cookie_a, cookie_b = cookies_load(db)
+            cookie_a, cookie_b = cookies_read(db)
             print("cookie a:", cookie_a)
             print("cookie b:", cookie_b)
         elif len(args[1:]) == 2:

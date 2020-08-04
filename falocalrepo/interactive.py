@@ -6,10 +6,10 @@ from faapi import FAAPI
 from .database import Connection
 from .menu import menu
 from .settings import cookies_change
-from .settings import cookies_load
+from .settings import cookies_read
 from .settings import setting_read
 from .settings import setting_write
-from .download import load_cookies
+from .download import load_cookies, submission_download
 
 
 def download_menu(api: FAAPI, db: Connection):
@@ -52,7 +52,7 @@ def settings_menu(api: FAAPI, db: Connection):
             print("Insert new values for cookies 'a' and 'b'.")
             print("Leave empty to keep previous value.\n")
 
-            cookie_a_old, cookie_b_old = cookies_load(db)
+            cookie_a_old, cookie_b_old = cookies_read(db)
 
             cookie_a: str = input(f"[{cookie_a_old}]\na: ")
             cookie_b: str = input(f"[{cookie_b_old}]\nb: ")
