@@ -1,3 +1,4 @@
+from argparse import ArgumentParser, Namespace
 from os.path import basename
 from os.path import isdir
 from shutil import move
@@ -16,14 +17,17 @@ def help_message(args: List[str]) -> str:
         return "\n".join([
             f"{basename(args[0])} version {__version__}",
             "\nUSAGE",
-            f"    {basename(args[0])} <command> [<arg1>] ... [<argN>]",
+            f"    {basename(args[0])} [-h] [-v] <command> [<arg1>] ... [<argN>]",
             "\nARGUMENTS",
-            "    <command>   The command to execute",
-            "    <arg>       The arguments of the command",
+            "    <command>       The command to execute",
+            "    <arg>           The arguments of the command",
+            "\nGLOBAL OPTIONS",
+            "    -h, --help      Display this help message",
+            "    -v, --version   Display version",
             "\nAVAILABLE COMMANDS",
-            "    help        Display the manual of a command",
-            "    interactive Run in interactive mode",
-            "    config      Manage settings",
+            "    help            Display the manual of a command",
+            "    interactive     Run in interactive mode",
+            "    config          Manage settings",
         ])
     if args[2] == "config":
         return "\n".join([
@@ -67,7 +71,18 @@ def config(workdir: str, db: Connection, args: List[str]):
 
 
 def main_console(workdir: str, db: Connection, args: List[str]):
-    if not args or args[1] == "help":
+    args_parser: ArgumentParser = ArgumentParser(add_help=False)
+    args_parser.add_argument("-h, --help", dest="help", action="store_true", default=False)
+    args_parser.add_argument("-v, --version", dest="version", action="store_true", default=False)
+
+    global_options: List[str] = [arg for arg in args[1:] if arg.startswith("-")]
+    args_parsed: Namespace = args_parser.parse_args(global_options)
+
+    if args_parsed.help:
+        print(help_message([args[0], "help"]))
+    elif args_parsed.version:
+        print(__version__)
+    elif not args or args[1] == "help":
         print(help_message(args))
     elif args[1] == "config":
         config(workdir, db, args[2:])
