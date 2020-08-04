@@ -10,21 +10,21 @@ from .settings import setting_write
 
 
 def config(workdir: str, db: Connection, args: List[str]):
-    if args[0] == "get":
-        if args[1] == "cookies":
+    if args[0] == "cookies":
+        if not args[1:]:
             cookie_a, cookie_b = cookies_load(db)
             print("cookie a:", cookie_a)
             print("cookie b:", cookie_b)
-        elif args[1] == "files-folder":
-            print("files folder:", setting_read(db, "FILESLOCATION"))
-        else:
-            raise Exception(f"Unknown setting {args[1]}")
-    elif args[0] == "set":
-        if args[1] == "cookies":
-            cookie_a: str = args[2]
-            cookie_b: str = args[3]
+        elif len(args[1:]) == 2:
+            cookie_a: str = args[1]
+            cookie_b: str = args[2]
             cookies_change(db, cookie_a, cookie_b)
-        elif args[1] == "files-folder":
+        else:
+            raise Exception("Malformed command: cookies needs two arguments")
+    elif args[0] == "files-folder":
+        if not args[1:]:
+            print("files folder:", setting_read(db, "FILESLOCATION"))
+        elif len(args[1:]) == 1:
             folder_old: str = setting_read(db, "FILESLOCATION")
             setting_write(db, "FILESLOCATION", args[1])
             if isdir(folder_old):
@@ -32,9 +32,9 @@ def config(workdir: str, db: Connection, args: List[str]):
                 move(folder_old, args[1])
                 print("Done")
         else:
-            raise Exception(f"Unknown setting {args[1]}")
+            raise Exception("Malformed command: files-folder needs one argument")
     else:
-        raise Exception(f"Unknown {args[0]} command for config.")
+        raise Exception(f"Unknown setting {args[0]}")
 
 
 def main_console(workdir: str, db: Connection, args: List[str]):
