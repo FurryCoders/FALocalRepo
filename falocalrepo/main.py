@@ -2,6 +2,7 @@ from datetime import datetime
 from os import getcwd
 from os.path import abspath
 from os.path import join as path_join
+from typing import Dict
 from typing import List
 
 from faapi import FAAPI
@@ -11,6 +12,7 @@ from .database import connect_database
 from .database import make_database
 from .database import setting_write
 from .menu import menu
+from .settings import change_cookies
 
 
 def download_menu(api: FAAPI, db: Connection):
@@ -33,14 +35,18 @@ def database_menu(db: Connection):
             break
 
 
-def settings_menu(db: Connection):
+def settings_menu(api: FAAPI, db: Connection):
     menu_items: List[str] = [
+        "Cookies",
         "Exit",
     ]
 
     while choice := menu(menu_items):
         if choice == len(menu_items):
             break
+        elif choice == 1:
+            cookies_new: Dict[str, str] = change_cookies(db)
+            api.load_cookies([{"name": k, "value": v} for k, v in cookies_new.items()])
 
 
 def main_menu(workdir: str, api: FAAPI, db: Connection):
