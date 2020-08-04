@@ -57,6 +57,14 @@ requests = ">=2.24.0,<3.0.0"
 
 [[package]]
 category = "main"
+description = "Infer file type and MIME type of any file/buffer. No external dependencies."
+name = "filetype"
+optional = false
+python-versions = "*"
+version = "1.0.7"
+
+[[package]]
+category = "main"
 description = "Internationalized Domain Names in Applications (IDNA)"
 name = "idna"
 optional = false
@@ -136,7 +144,7 @@ secure = ["certifi", "cryptography (>=1.3.4)", "idna (>=2.0.0)", "pyOpenSSL (>=0
 socks = ["PySocks (>=1.5.6,<1.5.7 || >1.5.7,<2.0)"]
 
 [metadata]
-content-hash = "29e6b28cc62c737cddb0d03bb2f37f158ec79e9a07f94b2f8b20b1c743ca6fdc"
+content-hash = "477788a4303777a90ee2c213298672cb44676efb5c7bf90ee36d66c851e7c452"
 lock-version = "1.0"
 python-versions = "^3.8"
 
@@ -161,6 +169,10 @@ chardet = [
 faapi = [
     {file = "faapi-2.4.0-py3-none-any.whl", hash = "sha256:6ec5c6f28d47137c967e2b13fad49000df31c11840563effd0c0eb59d7ab4f1c"},
     {file = "faapi-2.4.0.tar.gz", hash = "sha256:688f7bf77a5b97f56bb2965170e24b86916c505999d25b90fe0361a13693bb22"},
+]
+filetype = [
+    {file = "filetype-1.0.7-py2.py3-none-any.whl", hash = "sha256:353369948bb1c09b8b3ea3d78390b5586e9399bff9aab894a1dff954e31a66f6"},
+    {file = "filetype-1.0.7.tar.gz", hash = "sha256:da393ece8d98b47edf2dd5a85a2c8733e44b769e32c71af4cd96ed8d38d96aa7"},
 ]
 idna = [
     {file = "idna-2.10-py2.py3-none-any.whl", hash = "sha256:b97d804b1e9b523befed77c48dacec60e6dcb0b5391d57af6a65a312a90648c0"},
