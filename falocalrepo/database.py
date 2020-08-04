@@ -85,3 +85,4 @@ def make_database(db: Connection):
     setting_write(db, "LASTSTART", "0", replace=False)
     setting_write(db, "COOKIES", "{}", replace=False)
     setting_write(db, "USERNAME", "", replace=False)
+    setting_write(db, "FILESLOCATION", "FA.files", replace=False)
