@@ -1,12 +1,41 @@
+from os.path import basename
 from os.path import isdir
 from shutil import move
 from typing import List
 
+from .__version__ import __version__
 from .database import Connection
 from .settings import cookies_change
 from .settings import cookies_load
 from .settings import setting_read
 from .settings import setting_write
+
+
+def help_message(args: List[str]) -> str:
+    if not args[1:] or (args[1] == "help" and not args[2:]):
+        return "\n".join([
+            f"{basename(args[0])} version {__version__}\n",
+            "\nUSAGE",
+            f"    {basename(args[0])} <command> [<arg1>] ... [<argN>]",
+            "\nARGUMENTS",
+            "    <command>   The command to execute",
+            "    <arg>       The arguments of the command",
+            "\nAVAILABLE COMMANDS",
+            "    help        Show this help message",
+            "    interactive Run in interactive mode",
+            "    config      Manage settings",
+        ])
+    if args[2] == "config":
+        return "\n".join([
+            "USAGE",
+            f"    {basename(args[0])} config <setting> [<value1>] ... [<valueN>]",
+            "\nARGUMENTS",
+            "    <setting>       Setting to read/edit",
+            "    <value>         New setting value",
+            "\nAVAILABLE SETTINGS",
+            "    cookies         Cookies for the API",
+            "    files-folder    Files download folder",
+        ])
 
 
 def config(workdir: str, db: Connection, args: List[str]):
@@ -38,10 +67,9 @@ def config(workdir: str, db: Connection, args: List[str]):
 
 
 def main_console(workdir: str, db: Connection, args: List[str]):
-    if not args:
-        return
-
-    if args[1] == "config":
+    if not args or args[1] == "help":
+        print(help_message(args))
+    elif args[1] == "config":
         config(workdir, db, args[2:])
     else:
         raise Exception(f"Unknown {args[1]} command.")
