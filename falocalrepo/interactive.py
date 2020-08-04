@@ -5,7 +5,7 @@ from faapi import FAAPI
 
 from .database import Connection
 from .menu import menu
-from .settings import cookies_change
+from .settings import cookies_write
 from .settings import cookies_read
 from .settings import setting_read
 from .settings import setting_write
@@ -58,7 +58,7 @@ def settings_menu(api: FAAPI, db: Connection):
             cookie_b: str = input(f"[{cookie_b_old}]\nb: ")
 
             if cookie_a or cookie_b:
-                cookies_change(db, cookie_a, cookie_b)
+                cookies_write(db, cookie_a, cookie_b)
                 load_cookies(api, cookie_a, cookie_b)
         elif choice == 2:
             print("Insert new files folder.")

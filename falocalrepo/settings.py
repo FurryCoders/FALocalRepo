@@ -25,5 +25,5 @@ def cookies_read(db: Connection) -> Tuple[str, str]:
     return cookies.get("a", ""), cookies.get("b", "")
 
 
-def cookies_change(db: Connection, a: str, b: str):
+def cookies_write(db: Connection, a: str, b: str):
     setting_write(db, "COOKIES", json_dumps({"a": a, "b": b}))

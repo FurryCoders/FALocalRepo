@@ -10,7 +10,7 @@ from faapi import FAAPI
 
 from .__version__ import __version__
 from .database import Connection
-from .settings import cookies_change
+from .settings import cookies_write
 from .settings import cookies_read
 from .settings import setting_read
 from .settings import setting_write
@@ -51,7 +51,7 @@ def config(workdir: str, db: Connection, args: List[str]):
         elif len(args[1:]) == 2:
             cookie_a: str = args[1]
             cookie_b: str = args[2]
-            cookies_change(db, cookie_a, cookie_b)
+            cookies_write(db, cookie_a, cookie_b)
         else:
             raise Exception("Malformed command: cookies needs two arguments")
     elif args[0] == "files-folder":
