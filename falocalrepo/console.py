@@ -2,8 +2,6 @@ from os.path import join as path_join
 from shutil import move
 from typing import List
 
-from faapi import FAAPI
-
 from .database import Connection
 from .settings import cookies_change
 from .settings import cookies_load
