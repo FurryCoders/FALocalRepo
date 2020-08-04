@@ -30,3 +30,7 @@ def main():
         main_menu(workdir, api, db)
     else:
         print("Console mode")
+
+    # Close database
+    db.commit()
+    db.close()
