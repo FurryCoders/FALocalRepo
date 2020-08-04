@@ -4,14 +4,15 @@ from os.path import basename
 from os.path import isdir
 from shutil import move
 from typing import List
-from typing import Optional
 
 from faapi import FAAPI
 
 from .__version__ import __version__
 from .database import Connection
-from .settings import cookies_write
+from .download import load_cookies
+from .download import submission_download
 from .settings import cookies_read
+from .settings import cookies_write
 from .settings import setting_read
 from .settings import setting_write
 
@@ -70,6 +71,22 @@ def config(workdir: str, db: Connection, args: List[str]):
         raise Exception(f"Unknown setting {args[0]}")
 
 
+def download(db: Connection, args: List[str]):
+    api: FAAPI = FAAPI()
+    load_cookies(api, *cookies_read(db))
+
+    if args[0] == "users":
+        pass
+    elif args[0] == "submissions":
+        sub_ids: List[str] = list(filter(len, args[1:]))
+        if sub_ids_fail := list(filter(lambda i: not i.isdigit(), sub_ids)):
+            print("The following ID's are not correct:", *sub_ids_fail)
+        for sub_id in map(int, filter(lambda i: i.isdigit(), sub_ids)):
+            print(f"Downloading {sub_id}... ", end="", flush=True)
+            submission_download(api, db, sub_id)
+            print("Done")
+
+
 def main_console(workdir: str, db: Connection, args: List[str]):
     args_parser: ArgumentParser = ArgumentParser(add_help=False)
     args_parser.add_argument("-h, --help", dest="help", action="store_true", default=False)
@@ -86,5 +103,7 @@ def main_console(workdir: str, db: Connection, args: List[str]):
         print(help_message(args))
     elif args[1] == "config":
         config(workdir, db, args[2:])
+    elif args[1] == "download":
+        download(db, args[2:])
     else:
         raise Exception(f"Unknown {args[1]} command.")
