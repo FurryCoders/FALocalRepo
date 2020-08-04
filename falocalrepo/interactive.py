@@ -76,6 +76,7 @@ def settings_menu(api: FAAPI, db: Connection):
 
 def main_menu(workdir: str, db: Connection):
     api: FAAPI = FAAPI()
+    load_cookies(api, *cookies_read(db))
 
     menu_items: List[str] = [
         "Download",
