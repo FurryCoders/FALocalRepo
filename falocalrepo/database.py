@@ -4,7 +4,6 @@ from typing import List
 
 from .__version__ import __version__
 
-
 # Entries guide - USERS
 # v2.6      v3.0
 # USER      USERNAME
@@ -32,6 +31,21 @@ from .__version__ import __version__
 # 12  FILENAME      LOCATION
 # 13  LOCATION
 # 14  SERVER
+
+
+keys_submissions: List[str] = [
+    "ID", "AUTHOR", "TITLE",
+    "UDATE", "DESCRIPTION", "TAGS",
+    "CATEGORY", "SPECIES", "GENDER",
+    "RATING", "FILE_LINK", "FILE_NAME",
+    "LOCATION",
+]
+
+keys_users: List[str] = [
+    "USERNAME", "FOLDERS",
+    "GALLERY", "SCRAPS",
+    "FAVORITES", "EXTRAS"
+]
 
 
 def connect_database(db_name: str) -> Connection:
