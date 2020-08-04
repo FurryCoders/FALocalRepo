@@ -144,7 +144,7 @@ secure = ["certifi", "cryptography (>=1.3.4)", "idna (>=2.0.0)", "pyOpenSSL (>=0
 socks = ["PySocks (>=1.5.6,<1.5.7 || >1.5.7,<2.0)"]
 
 [metadata]
-content-hash = "477788a4303777a90ee2c213298672cb44676efb5c7bf90ee36d66c851e7c452"
+content-hash = "89a2d5b20cd3f8278aae7e8acaa48108a666d72b02f22c03a45e47ef443b735c"
 lock-version = "1.0"
 python-versions = "^3.8"
 
