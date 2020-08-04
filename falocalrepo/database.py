@@ -66,14 +66,14 @@ def make_database(db: Connection):
     db.commit()
 
     # Add settings
-    write(db, "SETTINGS", ["SETTING", "SVALUE"], ["USRN", "0"], True)
-    write(db, "SETTINGS", ["SETTING", "SVALUE"], ["USRN", "0"], True)
-    write(db, "SETTINGS", ["SETTING", "SVALUE"], ["SUBN", "0"], True)
-    write(db, "SETTINGS", ["SETTING", "SVALUE"], ["LASTUPDATE", "0"], True)
-    write(db, "SETTINGS", ["SETTING", "SVALUE"], ["LASTDOWNLOAD", "0"], True)
-    write(db, "SETTINGS", ["SETTING", "SVALUE"], ["LASTSTART", "0"], True)
-    write(db, "SETTINGS", ["SETTING", "SVALUE"], ["COOKIES", "{}"], True)
-    write(db, "SETTINGS", ["SETTING", "SVALUE"], ["USERNAME", ""], True)
-    write(db, "SETTINGS", ["SETTING", "SVALUE"], ["FILESLOCATION", "FA.files"], True)
+    write(db, "SETTINGS", ["SETTING", "SVALUE"], ["USRN", "0"], False)
+    write(db, "SETTINGS", ["SETTING", "SVALUE"], ["USRN", "0"], False)
+    write(db, "SETTINGS", ["SETTING", "SVALUE"], ["SUBN", "0"], False)
+    write(db, "SETTINGS", ["SETTING", "SVALUE"], ["LASTUPDATE", "0"], False)
+    write(db, "SETTINGS", ["SETTING", "SVALUE"], ["LASTDOWNLOAD", "0"], False)
+    write(db, "SETTINGS", ["SETTING", "SVALUE"], ["LASTSTART", "0"], False)
+    write(db, "SETTINGS", ["SETTING", "SVALUE"], ["COOKIES", "{}"], False)
+    write(db, "SETTINGS", ["SETTING", "SVALUE"], ["USERNAME", ""], False)
+    write(db, "SETTINGS", ["SETTING", "SVALUE"], ["FILESLOCATION", "FA.files"], False)
 
     db.commit()
