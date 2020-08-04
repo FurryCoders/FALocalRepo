@@ -67,7 +67,9 @@ def settings_menu(api: FAAPI, db: Connection):
                 print("Done")
 
 
-def main_menu(workdir: str, api: FAAPI, db: Connection):
+def main_menu(workdir: str, db: Connection):
+    api: FAAPI = FAAPI()
+
     menu_items: List[str] = [
         "Download",
         "Database",

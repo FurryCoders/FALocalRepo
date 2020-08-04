@@ -38,7 +38,7 @@ def config(workdir: str, db: Connection, args: List[str]):
         raise Exception(f"Unknown {args[0]} command for config.")
 
 
-def main_console(workdir: str, api: FAAPI, db: Connection, args: List[str]):
+def main_console(workdir: str, db: Connection, args: List[str]):
     if not args:
         return
 
