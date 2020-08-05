@@ -38,31 +38,42 @@ def submission_save(db: Connection, sub: Sub, sub_ext: str):
 
 
 def submission_download(api: FAAPI, db: Connection, sub_id: int) -> bool:
-    sub, sub_file = api.get_sub(sub_id, True)
+    sub, _ = api.get_sub(sub_id, False)
+    sub_file: bytes = bytes()
+
+    try:
+        sub_file = api.get_sub_file(sub)
+    except KeyboardInterrupt:
+        raise
+    except (Exception, BaseException):
+        pass
 
     if not sub.id:
         return False
 
-    if (sub_ext_tmp := guess_extension(sub_file)) is None:
-        sub_filename = sub.file_url.split("/")[-1]
-        if "." in sub_filename:
-            sub_ext_tmp = sub.file_url.split(".")[-1]
-    elif str(sub_ext_tmp) == "zip":
-        sub_filename = sub.file_url.split("/")[-1]
-        if "." in sub_filename:
-            sub_ext_tmp = sub.file_url.split(".")[-1]
-        else:
-            sub_ext_tmp = None
+    if sub_file:
+        if (sub_ext_tmp := guess_extension(sub_file)) is None:
+            sub_filename = sub.file_url.split("/")[-1]
+            if "." in sub_filename:
+                sub_ext_tmp = sub.file_url.split(".")[-1]
+        elif str(sub_ext_tmp) == "zip":
+            sub_filename = sub.file_url.split("/")[-1]
+            if "." in sub_filename:
+                sub_ext_tmp = sub.file_url.split(".")[-1]
+            else:
+                sub_ext_tmp = None
 
-    sub_ext: str = "" if sub_ext_tmp is None else f".{str(sub_ext_tmp)}"
-    sub_folder: str = path_join(setting_read(db, "FILESFOLDER"), tiered_path(sub.id))
+        sub_ext: str = "" if sub_ext_tmp is None else f".{str(sub_ext_tmp)}"
+        sub_folder: str = path_join(setting_read(db, "FILESFOLDER"), tiered_path(sub.id))
 
-    submission_save(db, sub, sub_ext.strip("."))
+        submission_save(db, sub, sub_ext.strip("."))
 
-    makedirs(sub_folder, exist_ok=True)
+        makedirs(sub_folder, exist_ok=True)
 
-    with open(path_join(sub_folder, "submission" + sub_ext), "wb") as f:
-        f.write(sub_file)
+        with open(path_join(sub_folder, "submission" + sub_ext), "wb") as f:
+            f.write(sub_file)
+    else:
+        submission_save(db, sub, sub.file_url.split(".")[-1] if "." in sub.file_url.split("/")[-1] else "")
 
     return True
 
