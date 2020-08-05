@@ -1,9 +1,14 @@
 from json import dumps as json_dumps
 from os import makedirs
 from os.path import join as path_join
+from typing import Callable
+from typing import List
+from typing import Tuple
+from typing import Union
 
 from faapi import FAAPI
 from faapi import Sub
+from faapi import SubPartial
 from filetype import guess_extension
 
 from .database import Connection
@@ -60,3 +65,30 @@ def submission_download(api: FAAPI, db: Connection, sub_id: int) -> bool:
         f.write(sub_file)
 
     return True
+
+
+def user_download(api: FAAPI, db: Connection, user: str, folder: str) -> Tuple[int, int]:
+    subs_total: int = 0
+    subs_failed: int = 0
+    page: Union[int, str] = 1
+    page_n: int = 0
+
+    downloader: Callable[[str, Union[str, int]], Tuple[List[SubPartial], Union[int, str]]] = lambda *x: ([], 0)
+    if folder == "gallery":
+        downloader = api.gallery
+    elif folder == "scraps":
+        downloader = api.scraps
+    elif folder == "favorites":
+        page = "next"
+        downloader = api.favorites
+
+    while page:
+        page_n += 1
+        user_subs, page = downloader(user, page)
+        for i, sub in enumerate(user_subs, 1):
+            if not sub.id:
+                subs_failed += 1
+            elif submission_download(api, db, sub.id):
+                subs_total += 1
+
+    return subs_total, subs_failed
