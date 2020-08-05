@@ -34,7 +34,7 @@ def help_message(args: List[str]) -> str:
             \r    config          Manage settings"""
     if args[2] == "config":
         return f"""USAGE
-            \r    {basename(args[0])} config <setting> [<value1>] ... [<valueN>]
+            \r    {basename(args[0])} config [<setting>] [<value1>] ... [<valueN>]
             \r\nARGUMENTS
             \r    <setting>       Setting to read/edit
             \r    <value>         New setting value
