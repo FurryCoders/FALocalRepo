@@ -4,12 +4,14 @@ from typing import List
 from faapi import FAAPI
 
 from .database import Connection
+from .download import load_cookies
+from .download import submission_download
+from .download import user_download
 from .menu import menu
-from .settings import cookies_write
 from .settings import cookies_read
+from .settings import cookies_write
 from .settings import setting_read
 from .settings import setting_write
-from .download import load_cookies, submission_download
 
 
 def download_menu(api: FAAPI, db: Connection):
@@ -23,6 +25,16 @@ def download_menu(api: FAAPI, db: Connection):
     while choice := menu(dl_menu):
         if choice == len(dl_menu):
             break
+        if choice == 1:
+            print("Insert space-separated usernames.")
+            users: List[str] = input("Users: ").split(" ")
+            print("Insert space-separated folders (gallery, scraps or favorites).")
+            folders: List[str] = input("Folders: ").lower().split(" ")
+            for user, folder in ((u, f) for u in users for f in folders):
+                print(f"Downloading: {user}/{folder}")
+                tot, fail = user_download(api, db, user, folder)
+                print("Submissions downloaded:", tot)
+                print("Submissions failed:", fail)
         elif choice == 2:
             print("Insert space-separated submission ID's.\nLeave empty to cancel.")
             sub_ids: List[str] = input("ID: ").split()
