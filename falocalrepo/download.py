@@ -1,8 +1,10 @@
 from json import dumps as json_dumps
 from os import makedirs
 from os.path import join as path_join
+from time import sleep
 from typing import Callable
 from typing import List
+from typing import Optional
 from typing import Tuple
 from typing import Union
 
@@ -37,12 +39,45 @@ def submission_save(db: Connection, sub: Sub, sub_ext: str):
     db.commit()
 
 
+def submission_download_file(api: FAAPI, sub_file_url: str, speed: int = 100) -> Optional[bytes]:
+    bar_length: int = 10
+    bar_pos: int = 0
+    print("[" + (" " * bar_length) + "]", end=("\b" * bar_length) + "\b", flush=True)
+
+    try:
+        if not (file_stream := api.session.get(sub_file_url, stream=True)).ok:
+            file_stream.raise_for_status()
+
+        size: int = int(file_stream.headers.get("Content-Length", 0))
+        file_binary = bytes()
+
+        for chunk in file_stream.iter_content(chunk_size=1024):
+            file_binary += chunk
+            if size and len(file_binary) > (size / bar_length) * (bar_pos + 1):
+                bar_pos += 1
+                print("#", end="", flush=True)
+            sleep(1 / speed) if speed > 0 else None
+
+        print(("\b \b" * bar_pos) + "#" * bar_length, end="", flush=True)
+
+        file_stream.close()
+
+        return file_binary
+    except KeyboardInterrupt:
+        print("\b\b  \b\b", end="")
+        print(("\b \b" * bar_pos) + f"{'CANCELLED':^{bar_length}}", end="", flush=True)
+        raise
+    except (Exception, BaseException):
+        print(("\b \b" * bar_pos) + f"{'FAILED':^{bar_length}}", end="", flush=True)
+        return None
+
+
 def submission_download(api: FAAPI, db: Connection, sub_id: int) -> bool:
     sub, _ = api.get_sub(sub_id, False)
     sub_file: bytes = bytes()
 
     try:
-        sub_file = api.get_sub_file(sub)
+        sub_file = submission_download_file(api, sub.file_url)
     except KeyboardInterrupt:
         raise
     except (Exception, BaseException):
@@ -95,11 +130,18 @@ def user_download(api: FAAPI, db: Connection, user: str, folder: str) -> Tuple[i
 
     while page:
         page_n += 1
+        print(f"{page_n:02d}    {user[:37]} ...", end="", flush=True)
         user_subs, page = downloader(user, page)
+        if not user_subs:
+            print("\r" + (" " * 31), end="\r", flush=True)
         for i, sub in enumerate(user_subs, 1):
+            print(f"\r{page_n:02d}/{i:02d} {sub.id:010d} {sub.title[:26]:<26s} ", end="",
+                  flush=True)
             if not sub.id:
                 subs_failed += 1
+                print("[ ID ERROR ]")
             elif submission_download(api, db, sub.id):
                 subs_total += 1
+                print()
 
     return subs_total, subs_failed
