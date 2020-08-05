@@ -43,7 +43,7 @@ def help_message(args: List[str]) -> str:
             \r    files-folder    Files download folder"""
 
 
-def config(workdir: str, db: Connection, args: List[str]):
+def config(db: Connection, args: List[str]):
     if not args:
         cookie_a, cookie_b = cookies_read(db)
         folder: str = setting_read(db, "FILESFOLDER")
@@ -95,7 +95,7 @@ def download(db: Connection, args: List[str]):
             print("Done")
 
 
-def main_console(workdir: str, db: Connection, args: List[str]):
+def main_console(db: Connection, args: List[str]):
     args_parser: ArgumentParser = ArgumentParser(add_help=False)
     args_parser.add_argument("-h, --help", dest="help", action="store_true", default=False)
     args_parser.add_argument("-v, --version", dest="version", action="store_true", default=False)
@@ -110,7 +110,7 @@ def main_console(workdir: str, db: Connection, args: List[str]):
     elif not args or args[1] == "help":
         print(help_message(args))
     elif args[1] == "config":
-        config(workdir, db, args[2:])
+        config(db, args[2:])
     elif args[1] == "download":
         download(db, args[2:])
     else:

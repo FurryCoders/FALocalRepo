@@ -13,19 +13,16 @@ from .settings import setting_write
 
 
 def main():
-    # Get current work directory
-    workdir: str = abspath(getcwd())
-
     # Initialise and prepare database
-    db: Connection = connect_database(path_join(workdir, "FA.db"))
+    db: Connection = connect_database(path_join(abspath(getcwd()), "FA.db"))
     make_database(db)
     setting_write(db, "LASTSTART", str(datetime.now().timestamp()))
 
     # Run main program
     if argv[1:] and argv[1] == "interactive":
-        main_menu(workdir, db)
+        main_menu(db)
     else:
-        main_console(workdir, db, argv)
+        main_console(db, argv)
 
     # Close database
     db.commit()
