@@ -24,6 +24,7 @@ falocalrepo = "falocalrepo.main:main"
 python = "^3.8"
 faapi = "2.4.0"
 filetype = "1.0.7"
+readkeys = "1.0.2"
 
 [tool.poetry.dev-dependencies]
 
