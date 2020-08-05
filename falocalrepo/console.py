@@ -11,6 +11,7 @@ from .__version__ import __version__
 from .database import Connection
 from .download import load_cookies
 from .download import submission_download
+from .download import user_download
 from .settings import cookies_read
 from .settings import cookies_write
 from .settings import setting_read
@@ -84,7 +85,13 @@ def download(db: Connection, args: List[str]):
     load_cookies(api, *cookies_read(db))
 
     if args[0] == "users":
-        pass
+        users: List[str] = list(map(lambda s: s.strip(), args[1].split(",")))
+        folders: List[str] = list(map(lambda s: s.strip(), args[2].split(",")))
+        for user, folder in ((u, f) for u in users for f in folders):
+            print(f"Downloading: {user}/{folder}")
+            tot, fail = user_download(api, db, user, folder)
+            print("Submissions downloaded:", tot)
+            print("Submissions failed:", fail)
     elif args[0] == "submissions":
         sub_ids: List[str] = list(filter(len, args[1:]))
         if sub_ids_fail := list(filter(lambda i: not i.isdigit(), sub_ids)):
