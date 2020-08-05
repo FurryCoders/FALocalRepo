@@ -1,6 +1,6 @@
 from typing import List
 
-from PythonRead import getkey
+from readkeys import getkey
 
 
 def menu(options: List[str]) -> int:
