@@ -82,6 +82,19 @@ def select(db: Connection, table: str, select_fields: List[str], key: str, key_v
     ).fetchall()
 
 
+def update(db: Connection, table: str, fields: List[str], values: List[Union[int, str]], key: str, key_value: str):
+    assert len(fields) == len(values) and len(fields) > 0
+
+    update_values: List[str] = [f"{u} = ?" for u in fields]
+
+    db.execute(
+        f"""UPDATE {table}
+        SET {",".join(update_values)}
+        WHERE {key} = ?""",
+        (*values, key_value,)
+    )
+
+
 def make_database(db: Connection):
     # Create submissions table
     db.execute(
