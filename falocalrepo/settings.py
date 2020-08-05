@@ -5,17 +5,17 @@ from typing import Optional
 from typing import Tuple
 
 from .database import Connection
-from .database import read
-from .database import write
+from .database import select
+from .database import insert
 
 
 def setting_write(db: Connection, key: str, value: str, replace: bool = True):
-    write(db, "SETTINGS", ["SETTING", "SVALUE"], [key, value], replace)
+    insert(db, "SETTINGS", ["SETTING", "SVALUE"], [key, value], replace)
     db.commit()
 
 
 def setting_read(db: Connection, key: str) -> Optional[str]:
-    setting = read(db, "SETTINGS", ["SVALUE"], "SETTING", key)
+    setting = select(db, "SETTINGS", ["SVALUE"], "SETTING", key)
 
     return None if not setting else setting[0][0]
 

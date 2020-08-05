@@ -66,7 +66,7 @@ def connect_database(db_name: str) -> Connection:
     return sqlite3_connect(db_name)
 
 
-def write(db: Connection, table: str, keys: List[str], values: List[Union[int, str]], replace: bool = True):
+def insert(db: Connection, table: str, keys: List[str], values: List[Union[int, str]], replace: bool = True):
     db.execute(
         f"""INSERT OR {"REPLACE" if replace else "IGNORE"} INTO {table}
         ({",".join(keys)})
@@ -75,9 +75,9 @@ def write(db: Connection, table: str, keys: List[str], values: List[Union[int, s
     )
 
 
-def read(db: Connection, table: str, select: List[str], key: str, key_value: str) -> List[tuple]:
+def select(db: Connection, table: str, select_fields: List[str], key: str, key_value: str) -> List[tuple]:
     return db.execute(
-        f'''SELECT ({",".join(select)}) FROM {table} WHERE {key} = ?''',
+        f'''SELECT ({",".join(select_fields)}) FROM {table} WHERE {key} = ?''',
         (key_value,)
     ).fetchall()
 
@@ -124,15 +124,15 @@ def make_database(db: Connection):
     db.commit()
 
     # Add settings
-    write(db, "SETTINGS", ["SETTING", "SVALUE"], ["USRN", "0"], False)
-    write(db, "SETTINGS", ["SETTING", "SVALUE"], ["USRN", "0"], False)
-    write(db, "SETTINGS", ["SETTING", "SVALUE"], ["SUBN", "0"], False)
-    write(db, "SETTINGS", ["SETTING", "SVALUE"], ["LASTUPDATE", "0"], False)
-    write(db, "SETTINGS", ["SETTING", "SVALUE"], ["LASTDOWNLOAD", "0"], False)
-    write(db, "SETTINGS", ["SETTING", "SVALUE"], ["LASTSTART", "0"], False)
-    write(db, "SETTINGS", ["SETTING", "SVALUE"], ["COOKIES", "{}"], False)
-    write(db, "SETTINGS", ["SETTING", "SVALUE"], ["USERNAME", ""], False)
-    write(db, "SETTINGS", ["SETTING", "SVALUE"], ["FILESFOLDER", "FA.files"], False)
-    write(db, "SETTINGS", ["SETTING", "SVALUE"], ["VERSION", str(__version__)], False)
+    insert(db, "SETTINGS", ["SETTING", "SVALUE"], ["USRN", "0"], False)
+    insert(db, "SETTINGS", ["SETTING", "SVALUE"], ["USRN", "0"], False)
+    insert(db, "SETTINGS", ["SETTING", "SVALUE"], ["SUBN", "0"], False)
+    insert(db, "SETTINGS", ["SETTING", "SVALUE"], ["LASTUPDATE", "0"], False)
+    insert(db, "SETTINGS", ["SETTING", "SVALUE"], ["LASTDOWNLOAD", "0"], False)
+    insert(db, "SETTINGS", ["SETTING", "SVALUE"], ["LASTSTART", "0"], False)
+    insert(db, "SETTINGS", ["SETTING", "SVALUE"], ["COOKIES", "{}"], False)
+    insert(db, "SETTINGS", ["SETTING", "SVALUE"], ["USERNAME", ""], False)
+    insert(db, "SETTINGS", ["SETTING", "SVALUE"], ["FILESFOLDER", "FA.files"], False)
+    insert(db, "SETTINGS", ["SETTING", "SVALUE"], ["VERSION", str(__version__)], False)
 
     db.commit()

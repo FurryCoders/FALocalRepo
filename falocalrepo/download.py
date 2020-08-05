@@ -16,7 +16,7 @@ from filetype import guess_extension
 from .database import Connection
 from .database import keys_submissions
 from .database import tiered_path
-from .database import write
+from .database import insert
 from .settings import setting_read
 
 
@@ -28,13 +28,13 @@ def load_cookies(api: FAAPI, cookie_a: str, cookie_b: str):
 
 
 def submission_save(db: Connection, sub: Sub, sub_ext: str):
-    write(db, "SUBMISSIONS",
-          keys_submissions,
-          [sub.id, sub.author, sub.title,
+    insert(db, "SUBMISSIONS",
+           keys_submissions,
+           [sub.id, sub.author, sub.title,
            sub.date, sub.description, json_dumps(sub.tags),
            sub.category, sub.species, sub.gender,
            sub.rating, sub.file_url, sub_ext],
-          replace=True)
+           replace=True)
 
     db.commit()
 
