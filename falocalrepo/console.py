@@ -10,8 +10,7 @@ from faapi import FAAPI
 from .__version__ import __version__
 from .database import Connection
 from .download import load_cookies
-from .download import submission_download
-from .download import user_download
+from .download import submission_download, user_download
 from .settings import cookies_read
 from .settings import cookies_write
 from .settings import setting_read
@@ -97,9 +96,8 @@ def download(db: Connection, args: List[str]):
         if sub_ids_fail := list(filter(lambda i: not i.isdigit(), sub_ids)):
             print("The following ID's are not correct:", *sub_ids_fail)
         for sub_id in map(int, filter(lambda i: i.isdigit(), sub_ids)):
-            print(f"Downloading {sub_id}... ", end="", flush=True)
+            print(f"Downloading {sub_id:010} ", end="", flush=True)
             submission_download(api, db, sub_id)
-            print("Done")
 
 
 def main_console(db: Connection, args: List[str]):

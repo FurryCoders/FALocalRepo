@@ -42,9 +42,8 @@ def download_menu(api: FAAPI, db: Connection):
             if sub_ids_fail := list(filter(lambda i: not i.isdigit(), sub_ids)):
                 print("The following ID's are not correct:", *sub_ids_fail)
             for sub_id in map(int, filter(lambda i: i.isdigit(), sub_ids)):
-                print(f"Downloading {sub_id}... ", end="", flush=True)
+                print(f"Downloading {sub_id:010} ", end="", flush=True)
                 submission_download(api, db, sub_id)
-                print("Done")
 
 
 def database_menu(db: Connection):
