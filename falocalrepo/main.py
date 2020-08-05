@@ -19,10 +19,15 @@ def main():
     setting_write(db, "LASTSTART", str(datetime.now().timestamp()))
 
     # Run main program
-    if argv[1:] and argv[1] == "interactive":
-        main_menu(db)
-    else:
-        main_console(db, argv)
+    try:
+        if argv[1:] and argv[1] == "interactive":
+            main_menu(db)
+        else:
+            main_console(db, argv)
+    except KeyboardInterrupt:
+        pass
+    except (Exception, BaseException) as err:
+        print("\nERROR:", repr(err))
 
     # Close database
     db.commit()
