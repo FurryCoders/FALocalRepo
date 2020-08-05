@@ -1,6 +1,7 @@
 from json import dumps as json_dumps
 from os import makedirs
 from os.path import join as path_join
+from re import sub as re_sub
 from time import sleep
 from typing import Callable
 from typing import List
@@ -14,9 +15,12 @@ from faapi import SubPartial
 from filetype import guess_extension
 
 from .database import Connection
-from .database import keys_submissions
-from .database import tiered_path
 from .database import insert
+from .database import keys_submissions
+from .database import keys_users
+from .database import select
+from .database import tiered_path
+from .database import update
 from .settings import setting_read
 
 
@@ -27,13 +31,34 @@ def load_cookies(api: FAAPI, cookie_a: str, cookie_b: str):
     ])
 
 
+def user_clean_name(user: str) -> str:
+    return str(re_sub(r"[^a-zA-Z0-9\-.~, ]", "", user))
+
+
+def user_add(db: Connection, user: str, field: str, add_value: str):
+    field_old: List[str] = select(db, "USERS", [field], "USERNAME", user)[0][0].split(",")
+    field_old = list(filter(len, field_old))
+
+    if add_value in field_old:
+        return
+
+    update(db, "USERS", [field], [",".join(field_old + [add_value])], "USERNAME", user)
+
+    db.commit()
+
+
+def user_new(db: Connection, user: str):
+    insert(db, "USERS", keys_users, [user] + [""] * (len(keys_users) - 1), replace=False)
+    db.commit()
+
+
 def submission_save(db: Connection, sub: Sub, sub_ext: str):
     insert(db, "SUBMISSIONS",
            keys_submissions,
            [sub.id, sub.author, sub.title,
-           sub.date, sub.description, json_dumps(sub.tags),
-           sub.category, sub.species, sub.gender,
-           sub.rating, sub.file_url, sub_ext],
+            sub.date, sub.description, json_dumps(sub.tags),
+            sub.category, sub.species, sub.gender,
+            sub.rating, sub.file_url, sub_ext],
            replace=True)
 
     db.commit()
@@ -118,6 +143,7 @@ def user_download(api: FAAPI, db: Connection, user: str, folder: str) -> Tuple[i
     subs_failed: int = 0
     page: Union[int, str] = 1
     page_n: int = 0
+    user = user_clean_name(user)
 
     downloader: Callable[[str, Union[str, int]], Tuple[List[SubPartial], Union[int, str]]] = lambda *x: ([], 0)
     if folder == "gallery":
@@ -127,6 +153,9 @@ def user_download(api: FAAPI, db: Connection, user: str, folder: str) -> Tuple[i
     elif folder == "favorites":
         page = "next"
         downloader = api.favorites
+
+    user_new(db, user)
+    user_add(db, user, "FOLDERS", folder[0])
 
     while page:
         page_n += 1
@@ -141,6 +170,7 @@ def user_download(api: FAAPI, db: Connection, user: str, folder: str) -> Tuple[i
                 subs_failed += 1
                 print("[ ID ERROR ]")
             elif submission_download(api, db, sub.id):
+                user_add(db, user, folder.upper(), str(sub.id).zfill(10))
                 subs_total += 1
                 print()
 
