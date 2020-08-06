@@ -79,8 +79,6 @@ def search_submissions(db: Connection,
 
     wheres_str = " AND ".join(map(lambda p: "(" + p + ")", filter(len, wheres)))
 
-    print(f"""SELECT * FROM SUBMISSIONS WHERE {wheres_str}""")
-
     return db.execute(
         f"""SELECT * FROM SUBMISSIONS WHERE {wheres_str}""",
         dates + ratings + genders + species + categories + authors + titles + tags
