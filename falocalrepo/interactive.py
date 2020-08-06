@@ -83,7 +83,7 @@ def database_menu(db: Connection):
             raise NotImplemented(menu_items[choice])
 
 
-def settings_menu(api: FAAPI, db: Connection):
+def settings_menu(db: Connection):
     menu_items: List[str] = [
         "Cookies",
         "Files Folder",
@@ -133,4 +133,4 @@ def main_menu(db: Connection):
         elif choice == 2:
             database_menu(db)
         elif choice == 3:
-            settings_menu(api, db)
+            settings_menu(db)
