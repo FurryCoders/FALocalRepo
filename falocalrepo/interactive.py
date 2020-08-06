@@ -67,6 +67,8 @@ def database_menu(db: Connection):
     while choice := menu(db_menu):
         if choice == len(db_menu):
             break
+        else:
+            raise NotImplemented(db_menu[choice])
 
 
 def settings_menu(api: FAAPI, db: Connection):
