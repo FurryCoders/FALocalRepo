@@ -110,7 +110,7 @@ def database(db: Connection, args: List[str]):
             raise Exception("Malformed command: search needs 9 or less arguments")
         elif not any(args[1:]):
             raise Exception("Malformed command: search needs at least 1 argument")
-        search_params: Dict[str, str] = {(p := arg.split("="))[0].strip(): p[1].strip() for arg in args[1:]}
+        search_params: Dict[str, str] = {(p := arg.split("="))[0].strip().lower(): p[1].strip() for arg in args[1:]}
         results: List[tuple] = search_submissions(
             db,
             authors=[search_params["author"]] if search_params.get("author", None) else [],
@@ -129,7 +129,7 @@ def database(db: Connection, args: List[str]):
             raise Exception("Malformed command: search needs 11 or less arguments")
         elif len(args[1:]) < 11:
             raise Exception("Malformed command: search needs at least 8 arguments")
-        make_params: Dict[str, str] = {(p := arg.split("="))[0].strip(): p[1].strip() for arg in args[1:]}
+        make_params: Dict[str, str] = {(p := arg.split("="))[0].strip().lower(): p[1].strip() for arg in args[1:]}
         submission_save(db, *make_submission(
             id_=make_params.get("id", ""),
             author=make_params.get("author", ""),
