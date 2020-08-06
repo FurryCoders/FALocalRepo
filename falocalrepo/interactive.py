@@ -1,9 +1,11 @@
 from shutil import move
 from typing import List
+from typing import Tuple
 
 from faapi import FAAPI
 
 from .database import Connection
+from .database import select_all
 from .download import load_cookies
 from .download import submission_download
 from .download import user_download
@@ -44,6 +46,14 @@ def download_menu(api: FAAPI, db: Connection):
             for sub_id in map(int, filter(lambda i: i.isdigit(), sub_ids)):
                 print(f"Downloading {sub_id:010} ", end="", flush=True)
                 submission_download(api, db, sub_id)
+        elif choice == 3:
+            users_folders: List[Tuple[str, str]] = select_all(db, "USERS", ["USERNAME", "FOLDERS"])
+            for user, user_folders in users_folders:
+                for folder in user_folders.split(","):
+                    print(f"Downloading: {user}/{folder}")
+                    tot, fail = user_download(api, db, user, folder)
+                    print("Submissions downloaded:", tot)
+                    print("Submissions failed:", fail)
 
 
 def database_menu(db: Connection):
