@@ -17,15 +17,15 @@ from .settings import setting_read
 def download_menu(api: FAAPI, db: Connection):
     load_cookies(api, *cookies_read(db))
 
-    dl_menu: List[str] = [
+    menu_items: List[str] = [
         "Users",
         "Submissions",
         "Update",
         "Exit",
     ]
 
-    while choice := menu(dl_menu):
-        if choice == len(dl_menu):
+    while choice := menu(menu_items):
+        if choice == len(menu_items):
             break
         if choice == 1:
             print("Insert space-separated usernames.")
@@ -43,18 +43,18 @@ def download_menu(api: FAAPI, db: Connection):
 
 
 def database_menu(db: Connection):
-    db_menu: List[str] = [
+    menu_items: List[str] = [
         "Search",
         "Manual Entry"
         "Check for Errors",
         "Exit",
     ]
 
-    while choice := menu(db_menu):
-        if choice == len(db_menu):
+    while choice := menu(menu_items):
+        if choice == len(menu_items):
             break
         else:
-            raise NotImplemented(db_menu[choice])
+            raise NotImplemented(menu_items[choice])
 
 
 def settings_menu(api: FAAPI, db: Connection):
