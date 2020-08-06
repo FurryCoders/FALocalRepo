@@ -77,13 +77,13 @@ def insert(db: Connection, table: str, keys: List[str], values: List[Union[int, 
 
 def select(db: Connection, table: str, select_fields: List[str], key: str, key_value: str) -> List[tuple]:
     return db.execute(
-        f'''SELECT ({",".join(select_fields)}) FROM {table} WHERE {key} = ?''',
+        f'''SELECT {",".join(select_fields)} FROM {table} WHERE {key} = ?''',
         (key_value,)
     ).fetchall()
 
 
 def select_all(db: Connection, table: str, select_fields: List[str]) -> List[tuple]:
-    return db.execute(f'''SELECT ({",".join(select_fields)}) FROM {table}''').fetchall()
+    return db.execute(f'''SELECT {",".join(select_fields)} FROM {table}''').fetchall()
 
 
 def update(db: Connection, table: str, fields: List[str], values: List[Union[int, str]], key: str, key_value: str):
