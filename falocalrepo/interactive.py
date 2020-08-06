@@ -5,6 +5,8 @@ from faapi import FAAPI
 from .commands import download_submissions
 from .commands import download_users
 from .commands import files_folder_move
+from .commands import print_submissions
+from .commands import search_submissions
 from .commands import update_users
 from .database import Connection
 from .download import load_cookies
@@ -53,6 +55,30 @@ def database_menu(db: Connection):
     while choice := menu(menu_items):
         if choice == len(menu_items):
             break
+        elif choice == 1:
+            print("Insert search parameters.\nLeave empty to skip.")
+            user: str = input("User       : ")
+            title: str = input("Title      : ")
+            date: str = input("Date       : ")
+            tags: str = input("Tags       : ")
+            description: str = input("Description: ")
+            rating: str = input("Rating     : ")
+            category: str = input("Category   : ")
+            species: str = input("Species    : ")
+            gender: str = input("Gender     : ")
+            results: List[tuple] = search_submissions(
+                db,
+                authors=[user] if user else [],
+                titles=[title] if title else [],
+                dates=[date] if date else [],
+                tags=tags.split(",") if tags else [],
+                descriptions=[description] if description else [],
+                ratings=[rating] if rating else [],
+                categories=[category] if category else [],
+                species=[species] if species else [],
+                genders=[gender] if gender else []
+            )
+            print_submissions(results, sort=True)
         else:
             raise NotImplemented(menu_items[choice])
 
