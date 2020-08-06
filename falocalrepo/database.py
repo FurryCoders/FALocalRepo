@@ -82,6 +82,10 @@ def select(db: Connection, table: str, select_fields: List[str], key: str, key_v
     ).fetchall()
 
 
+def select_all(db: Connection, table: str, select_fields: List[str]) -> List[tuple]:
+    return db.execute(f'''SELECT ({",".join(select_fields)}) FROM {table}''').fetchall()
+
+
 def update(db: Connection, table: str, fields: List[str], values: List[Union[int, str]], key: str, key_value: str):
     assert len(fields) == len(values) and len(fields) > 0
 
