@@ -67,6 +67,7 @@ def make_submission(id_: int, author: str, title: str,
     assert isinstance(rating, str) and rating
     assert isinstance(description, str)
     assert isinstance(file_url, str)
+    assert isinstance(file_local_url, str)
 
     sub: Sub = Sub()
     sub_file: Optional[bytes] = None
@@ -131,7 +132,6 @@ def print_submissions(subs: List[tuple], sort: bool = True):
     space_id: int = 10
     space_user: int = 10
     space_date: int = 10
-    space_title: int = 30
     space_term: int = get_terminal_size()[0]
 
     index_id: int = keys_submissions.index("ID")
