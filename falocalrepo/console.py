@@ -1,6 +1,7 @@
 from argparse import ArgumentParser
 from argparse import Namespace
 from os.path import basename
+from typing import Dict
 from typing import List
 
 from faapi import FAAPI
@@ -9,6 +10,8 @@ from .__version__ import __version__
 from .commands import download_submissions
 from .commands import download_users
 from .commands import files_folder_move
+from .commands import print_submissions
+from .commands import search_submissions
 from .commands import update_users
 from .database import Connection
 from .download import load_cookies
@@ -96,6 +99,30 @@ def download(db: Connection, args: List[str]):
         raise Exception(f"Unknown download command {args[0]}")
 
 
+def database(db: Connection, args: List[str]):
+    if not args:
+        raise Exception("Malformed command: database needs a command")
+    elif args[0] == "search":
+        if len(args[1:]) > 9:
+            raise Exception("Malformed command: search needs 9 or less arguments")
+        elif not any(args[1:]):
+            raise Exception("Malformed command: search needs at least 1 argument")
+        search_params: Dict[str, str] = {(p := arg.split("="))[0].strip(): p[1].strip() for arg in args[1:]}
+        results: List[tuple] = search_submissions(
+            db,
+            authors=[search_params["author"]] if search_params.get("author", None) else [],
+            titles=[search_params["title"]] if search_params.get("title", None) else [],
+            dates=[search_params["date"]] if search_params.get("date", None) else [],
+            descriptions=[search_params["description"]] if search_params.get("description", None) else [],
+            tags=search_params["tags"].split(",") if search_params.get("tags", None) else [],
+            categories=[search_params["category"]] if search_params.get("category", None) else [],
+            species=[search_params["species"]] if search_params.get("species", None) else [],
+            genders=[search_params["gender"]] if search_params.get("gender", None) else [],
+            ratings=[search_params["rating"]] if search_params.get("rating", None) else [],
+        )
+        print_submissions(results, sort=True)
+
+
 def main_console(db: Connection, args: List[str]):
     args = list(filter(bool, args))
 
@@ -116,5 +143,7 @@ def main_console(db: Connection, args: List[str]):
         config(db, args[2:])
     elif args[1] == "download":
         download(db, args[2:])
+    elif args[1] == "database":
+        database(db, args[2:])
     else:
         raise Exception(f"Unknown {args[1]} command.")
