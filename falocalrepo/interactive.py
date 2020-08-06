@@ -57,7 +57,7 @@ def database_menu(db: Connection):
             break
         elif choice == 1:
             print("Insert search parameters.\nLeave empty to skip.")
-            user: str = input("User       : ")
+            author: str = input("Author     : ")
             title: str = input("Title      : ")
             date: str = input("Date       : ")
             tags: str = input("Tags       : ")
@@ -68,7 +68,7 @@ def database_menu(db: Connection):
             gender: str = input("Gender     : ")
             results: List[tuple] = search_submissions(
                 db,
-                authors=[user] if user else [],
+                authors=[author] if author else [],
                 titles=[title] if title else [],
                 dates=[date] if date else [],
                 tags=tags.split(",") if tags else [],
