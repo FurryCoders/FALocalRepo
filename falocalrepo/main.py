@@ -25,6 +25,7 @@ def main():
         else:
             main_console(db, argv)
     except KeyboardInterrupt:
+        print()
         pass
     except (Exception, BaseException) as err:
         print("\nERROR:", repr(err))
