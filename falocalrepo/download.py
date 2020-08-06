@@ -1,4 +1,4 @@
-from json import dumps as json_dumps
+from os import get_terminal_size
 from os import makedirs
 from os.path import join as path_join
 from re import sub as re_sub
@@ -150,6 +150,8 @@ def user_download(api: FAAPI, db: Connection, user: str, folder: str) -> Tuple[i
     page: Union[int, str] = 1
     page_n: int = 0
     user = user_clean_name(user)
+    space_term: int = get_terminal_size()[0]
+    space_title: int = space_term - 14 - 17
 
     downloader: Callable[[str, Union[str, int]], Tuple[List[SubPartial], Union[int, str]]] = lambda *x: ([], 0)
     if folder == "gallery":
@@ -170,7 +172,7 @@ def user_download(api: FAAPI, db: Connection, user: str, folder: str) -> Tuple[i
         if not user_subs:
             print("\r" + (" " * 31), end="\r", flush=True)
         for i, sub in enumerate(user_subs, 1):
-            print(f"\r{page_n:02d}/{i:02d} {sub.id:010d} {sub.title[:26]:<26s} ", end="",
+            print(f"\r{page_n:02d}/{i:02d} {sub.id:010d} {sub.title[:space_title]:<{space_title}} ", end="",
                   flush=True)
             if not sub.id:
                 subs_failed += 1
