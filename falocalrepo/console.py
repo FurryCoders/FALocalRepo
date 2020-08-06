@@ -1,23 +1,20 @@
 from argparse import ArgumentParser
 from argparse import Namespace
 from os.path import basename
-from os.path import isdir
-from shutil import move
 from typing import List
-from typing import Tuple
 
 from faapi import FAAPI
 
 from .__version__ import __version__
+from .commands import download_submissions
+from .commands import download_users
+from .commands import files_folder_move
+from .commands import update_users
 from .database import Connection
-from .database import select_all
 from .download import load_cookies
-from .download import submission_download
-from .download import user_download
 from .settings import cookies_read
 from .settings import cookies_write
 from .settings import setting_read
-from .settings import setting_write
 
 
 def help_message(args: List[str]) -> str:
@@ -60,22 +57,15 @@ def config(db: Connection, args: List[str]):
             cookie_a, cookie_b = cookies_read(db)
             print("cookie a:", cookie_a)
             print("cookie b:", cookie_b)
-        elif len(args[1:]) == 2:
-            cookie_a: str = args[1]
-            cookie_b: str = args[2]
-            cookies_write(db, cookie_a, cookie_b)
+        elif len(args[1:]) == 2 and args[1] and args[2]:
+            cookies_write(db, args[1], args[2])
         else:
             raise Exception("Malformed command: cookies needs two arguments")
     elif args[0] == "files-folder":
         if not args[1:]:
             print("files folder:", setting_read(db, "FILESFOLDER"))
-        elif len(args[1:]) == 1:
-            folder_old: str = setting_read(db, "FILESFOLDER")
-            setting_write(db, "FILESFOLDER", args[1])
-            if isdir(folder_old):
-                print("Moving files to new location... ", end="", flush=True)
-                move(folder_old, args[1])
-                print("Done")
+        elif len(args[1:]) == 1 and args[1]:
+            files_folder_move(db, setting_read(db, "FILESFOLDER"), args[1])
         else:
             raise Exception("Malformed command: files-folder needs one argument")
     else:
@@ -87,28 +77,14 @@ def download(db: Connection, args: List[str]):
     load_cookies(api, *cookies_read(db))
 
     if args[0] == "update":
-        users_folders: List[Tuple[str, str]] = select_all(db, "USERS", ["USERNAME", "FOLDERS"])
-        for user, user_folders in users_folders:
-            for folder in user_folders.split(","):
-                print(f"Downloading: {user}/{folder}")
-                tot, fail = user_download(api, db, user, folder)
-                print("Submissions downloaded:", tot)
-                print("Submissions failed:", fail)
+        update_users(api, db)
     elif args[0] == "users":
         users: List[str] = list(map(lambda s: s.strip(), args[1].split(",")))
         folders: List[str] = list(map(lambda s: s.strip(), args[2].split(",")))
-        for user, folder in ((u, f) for u in users for f in folders):
-            print(f"Downloading: {user}/{folder}")
-            tot, fail = user_download(api, db, user, folder)
-            print("Submissions downloaded:", tot)
-            print("Submissions failed:", fail)
+        download_users(api, db, users, folders)
     elif args[0] == "submissions":
         sub_ids: List[str] = list(filter(len, args[1:]))
-        if sub_ids_fail := list(filter(lambda i: not i.isdigit(), sub_ids)):
-            print("The following ID's are not correct:", *sub_ids_fail)
-        for sub_id in map(int, filter(lambda i: i.isdigit(), sub_ids)):
-            print(f"Downloading {sub_id:010} ", end="", flush=True)
-            submission_download(api, db, sub_id)
+        download_submissions(api, db, sub_ids)
 
 
 def main_console(db: Connection, args: List[str]):

@@ -1,19 +1,17 @@
-from shutil import move
 from typing import List
-from typing import Tuple
 
 from faapi import FAAPI
 
+from .commands import download_submissions
+from .commands import download_users
+from .commands import files_folder_move
+from .commands import update_users
 from .database import Connection
-from .database import select_all
 from .download import load_cookies
-from .download import submission_download
-from .download import user_download
 from .menu import menu
 from .settings import cookies_read
 from .settings import cookies_write
 from .settings import setting_read
-from .settings import setting_write
 
 
 def download_menu(api: FAAPI, db: Connection):
@@ -34,28 +32,14 @@ def download_menu(api: FAAPI, db: Connection):
             users: List[str] = input("Users: ").split(" ")
             print("Insert space-separated folders (gallery, scraps or favorites).")
             folders: List[str] = input("Folders: ").lower().split(" ")
-            for user, folder in ((u, f) for u in users for f in folders):
-                print(f"Downloading: {user}/{folder}")
-                tot, fail = user_download(api, db, user, folder)
-                print("Submissions downloaded:", tot)
-                print("Submissions failed:", fail)
+            download_users(api, db, users, folders)
         elif choice == 2:
             print("Insert space-separated submission ID's.\nLeave empty to cancel.")
             sub_ids: List[str] = input("ID: ").split()
             sub_ids = list(filter(len, sub_ids))
-            if sub_ids_fail := list(filter(lambda i: not i.isdigit(), sub_ids)):
-                print("The following ID's are not correct:", *sub_ids_fail)
-            for sub_id in map(int, filter(lambda i: i.isdigit(), sub_ids)):
-                print(f"Downloading {sub_id:010} ", end="", flush=True)
-                submission_download(api, db, sub_id)
+            download_submissions(api, db, sub_ids)
         elif choice == 3:
-            users_folders: List[Tuple[str, str]] = select_all(db, "USERS", ["USERNAME", "FOLDERS"])
-            for user, user_folders in users_folders:
-                for folder in user_folders.split(","):
-                    print(f"Downloading: {user}/{folder}")
-                    tot, fail = user_download(api, db, user, folder)
-                    print("Submissions downloaded:", tot)
-                    print("Submissions failed:", fail)
+            update_users(api, db)
 
 
 def database_menu(db: Connection):
@@ -99,13 +83,10 @@ def settings_menu(api: FAAPI, db: Connection):
             print("Leave empty to keep previous value.\n")
 
             folder_old: str = setting_read(db, "FILESFOLDER")
-            folder: str = input(f"[{folder_old}]\n:folder: ")
+            folder_new: str = input(f"[{folder_old}]\n:folder: ")
 
-            if folder:
-                setting_write(db, "FILESFOLDER", folder)
-                print("Moving files to new location... ", end="", flush=True)
-                move(folder_old, folder)
-                print("Done")
+            if folder_new:
+                files_folder_move(db, folder_old, folder_new)
 
 
 def main_menu(db: Connection):
