@@ -45,7 +45,7 @@ def download_menu(api: FAAPI, db: Connection):
 def database_menu(db: Connection):
     menu_items: List[str] = [
         "Search",
-        "Manual Entry"
+        "Manual Entry",
         "Check for Errors",
         "Exit",
     ]
