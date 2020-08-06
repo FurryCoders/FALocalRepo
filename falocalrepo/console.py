@@ -4,11 +4,12 @@ from os.path import basename
 from os.path import isdir
 from shutil import move
 from typing import List
+from typing import Tuple
 
 from faapi import FAAPI
 
 from .__version__ import __version__
-from .database import Connection
+from .database import Connection, select_all
 from .download import load_cookies
 from .download import submission_download, user_download
 from .settings import cookies_read
@@ -83,7 +84,15 @@ def download(db: Connection, args: List[str]):
     api: FAAPI = FAAPI()
     load_cookies(api, *cookies_read(db))
 
-    if args[0] == "users":
+    if args[0] == "update":
+        users_folders: List[Tuple[str, str]] = select_all(db, "USERS", ["USERNAME", "FOLDERS"])
+        for user, user_folders in users_folders:
+            for folder in user_folders.split(","):
+                print(f"Downloading: {user}/{folder}")
+                tot, fail = user_download(api, db, user, folder)
+                print("Submissions downloaded:", tot)
+                print("Submissions failed:", fail)
+    elif args[0] == "users":
         users: List[str] = list(map(lambda s: s.strip(), args[1].split(",")))
         folders: List[str] = list(map(lambda s: s.strip(), args[2].split(",")))
         for user, folder in ((u, f) for u in users for f in folders):
