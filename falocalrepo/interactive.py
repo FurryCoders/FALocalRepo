@@ -5,11 +5,13 @@ from faapi import FAAPI
 from .commands import download_submissions
 from .commands import download_users
 from .commands import files_folder_move
+from .commands import make_submission
 from .commands import print_submissions
 from .commands import search_submissions
 from .commands import update_users
 from .database import Connection
 from .download import load_cookies
+from .download import submission_save
 from .menu import menu
 from .settings import cookies_read
 from .settings import cookies_write
@@ -79,6 +81,33 @@ def database_menu(db: Connection):
                 genders=[gender] if gender else []
             )
             print_submissions(results, sort=True)
+        elif choice == 2:
+            print("Insert submission details.\nTags need to be space-separated\n" +
+                  "Description and Local file can be left empty.")
+            id_: int = int(input("ID         : "))
+            author: str = input("Author     : ")
+            title: str = input("Title      : ")
+            date: str = input("Date       : ")
+            tags: List[str] = input("Tags       : ").split(" ")
+            description: str = input("Description: ")
+            rating: str = input("Rating     : ")
+            category: str = input("Category   : ")
+            species: str = input("Species    : ")
+            gender: str = input("Gender     : ")
+            file_url: str = input("Local file : ")
+            submission_save(db, *make_submission(
+                id_=id_,
+                author=author,
+                title=title,
+                date=date,
+                tags=tags,
+                description=description,
+                rating=rating,
+                category=category,
+                species=species,
+                gender=gender,
+                file_url=file_url
+            ))
         else:
             raise NotImplemented(menu_items[choice])
 
