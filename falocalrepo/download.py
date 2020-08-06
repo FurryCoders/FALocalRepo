@@ -35,6 +35,12 @@ def user_clean_name(user: str) -> str:
     return str(re_sub(r"[^a-zA-Z0-9\-.~, ]", "", user))
 
 
+def user_check(db: Connection, user: str, field: str, value: str) -> bool:
+    field_value: List[str] = select(db, "USERS", [field], "USERNAME", user)[0][0].split(",")
+
+    return value in filter(len, field_value)
+
+
 def user_add(db: Connection, user: str, field: str, add_value: str):
     field_old: List[str] = select(db, "USERS", [field], "USERNAME", user)[0][0].split(",")
     field_old = list(filter(len, field_old))
@@ -168,7 +174,9 @@ def user_download(api: FAAPI, db: Connection, user: str, folder: str) -> Tuple[i
                   flush=True)
             if not sub.id:
                 subs_failed += 1
-                print("[ ID ERROR ]")
+                print(f"[{'ID ERROR':^10}]")
+            elif user_check(db, user, folder.upper(), str(sub.id).zfill(10)):
+                print(f"[{'FOUND':^10}]")
             elif submission_download(api, db, sub.id):
                 user_add(db, user, folder.upper(), str(sub.id).zfill(10))
                 subs_total += 1
