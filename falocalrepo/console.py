@@ -77,7 +77,7 @@ def download(db: Connection, args: List[str]):
     load_cookies(api, *cookies_read(db))
 
     if not args:
-        raise Exception("Malformed command: database needs a command")
+        raise Exception("Malformed command: download needs a command")
     elif args[0] == "update":
         update_users(api, db)
     elif args[0] == "users":
