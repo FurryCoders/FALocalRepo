@@ -1,10 +1,12 @@
 from os.path import isdir
 from shutil import move
 from typing import List
+from typing import Tuple
 
 from faapi import FAAPI
 
 from .database import Connection
+from .database import select_all
 from .download import submission_download
 from .download import user_download
 from .settings import setting_write
