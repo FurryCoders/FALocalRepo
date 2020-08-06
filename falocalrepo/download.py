@@ -62,7 +62,7 @@ def submission_save(db: Connection, sub: Sub, sub_ext: str):
     insert(db, "SUBMISSIONS",
            keys_submissions,
            [sub.id, sub.author, sub.title,
-            sub.date, sub.description, json_dumps(sub.tags),
+            sub.date, sub.description, ",".join(sub.tags),
             sub.category, sub.species, sub.gender,
             sub.rating, sub.file_url, sub_ext],
            replace=True)
