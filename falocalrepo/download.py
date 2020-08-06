@@ -161,7 +161,7 @@ def user_download(api: FAAPI, db: Connection, user: str, folder: str) -> Tuple[i
         downloader = api.favorites
 
     user_new(db, user)
-    user_add(db, user, "FOLDERS", folder[0])
+    user_add(db, user, "FOLDERS", folder.lower())
 
     while page:
         page_n += 1
