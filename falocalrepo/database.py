@@ -75,7 +75,7 @@ def insert(db: Connection, table: str, keys: List[str], values: List[Union[int, 
     )
 
 
-def select(db: Connection, table: str, select_fields: List[str], key: str, key_value: str) -> List[tuple]:
+def select(db: Connection, table: str, select_fields: List[str], key: str, key_value: Union[int, str]) -> List[tuple]:
     return db.execute(
         f'''SELECT {",".join(select_fields)} FROM {table} WHERE {key} = ?''',
         (key_value,)
