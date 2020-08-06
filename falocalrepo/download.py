@@ -58,7 +58,29 @@ def user_new(db: Connection, user: str):
     db.commit()
 
 
-def submission_save(db: Connection, sub: Sub, sub_ext: str):
+def submission_save(db: Connection, sub: Sub, sub_file: Optional[bytes]):
+    sub_ext: str = ""
+
+    if sub_file:
+        if (sub_ext_tmp := guess_extension(sub_file)) is None:
+            sub_filename = sub.file_url.split("/")[-1]
+            if "." in sub_filename:
+                sub_ext_tmp = sub.file_url.split(".")[-1]
+        elif str(sub_ext_tmp) == "zip":
+            sub_filename = sub.file_url.split("/")[-1]
+            if "." in sub_filename:
+                sub_ext_tmp = sub.file_url.split(".")[-1]
+            else:
+                sub_ext_tmp = None
+
+        sub_ext = "" if sub_ext_tmp is None else f".{str(sub_ext_tmp)}"
+        sub_folder: str = path_join(setting_read(db, "FILESFOLDER"), tiered_path(sub.id))
+
+        makedirs(sub_folder, exist_ok=True)
+
+        with open(path_join(sub_folder, "submission" + sub_ext), "wb") as f:
+            f.write(sub_file)
+
     insert(db, "SUBMISSIONS",
            keys_submissions,
            [sub.id, sub.author, sub.title,
@@ -117,29 +139,7 @@ def submission_download(api: FAAPI, db: Connection, sub_id: int) -> bool:
     if not sub.id:
         return False
 
-    if sub_file:
-        if (sub_ext_tmp := guess_extension(sub_file)) is None:
-            sub_filename = sub.file_url.split("/")[-1]
-            if "." in sub_filename:
-                sub_ext_tmp = sub.file_url.split(".")[-1]
-        elif str(sub_ext_tmp) == "zip":
-            sub_filename = sub.file_url.split("/")[-1]
-            if "." in sub_filename:
-                sub_ext_tmp = sub.file_url.split(".")[-1]
-            else:
-                sub_ext_tmp = None
-
-        sub_ext: str = "" if sub_ext_tmp is None else f".{str(sub_ext_tmp)}"
-        sub_folder: str = path_join(setting_read(db, "FILESFOLDER"), tiered_path(sub.id))
-
-        submission_save(db, sub, sub_ext.strip("."))
-
-        makedirs(sub_folder, exist_ok=True)
-
-        with open(path_join(sub_folder, "submission" + sub_ext), "wb") as f:
-            f.write(sub_file)
-    else:
-        submission_save(db, sub, sub.file_url.split(".")[-1] if "." in sub.file_url.split("/")[-1] else "")
+    submission_save(db, sub, sub_file)
 
     return True
 
