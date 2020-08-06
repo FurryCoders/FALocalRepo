@@ -10,12 +10,14 @@ from .__version__ import __version__
 from .commands import download_submissions
 from .commands import download_users
 from .commands import files_folder_move
+from .commands import make_submission
 from .commands import print_submissions
 from .commands import search_submissions
 from .commands import update_users
 from .database import Connection
 from .database import check_errors
 from .download import load_cookies
+from .download import submission_save
 from .settings import cookies_read
 from .settings import cookies_write
 from .settings import setting_read
@@ -122,6 +124,26 @@ def database(db: Connection, args: List[str]):
             ratings=[search_params["rating"]] if search_params.get("rating", None) else [],
         )
         print_submissions(results, sort=True)
+    elif args[0] == "manual-entry":
+        if len(args[1:]) > 11:
+            raise Exception("Malformed command: search needs 11 or less arguments")
+        elif len(args[1:]) < 11:
+            raise Exception("Malformed command: search needs at least 8 arguments")
+        make_params: Dict[str, str] = {(p := arg.split("="))[0].strip(): p[1].strip() for arg in args[1:]}
+        submission_save(db, *make_submission(
+            id_=make_params.get("id", ""),
+            author=make_params.get("author", ""),
+            title=make_params.get("title", ""),
+            date=make_params.get("date", ""),
+            tags=make_params.get("tags", ""),
+            description=make_params.get("description", ""),
+            rating=make_params.get("rating", ""),
+            category=make_params.get("category", ""),
+            species=make_params.get("species", ""),
+            gender=make_params.get("gender", ""),
+            file_url=make_params.get("file_url", ""),
+            file_local_url=make_params.get("file_local_url", "")
+        ))
     elif args[0] == "check-errors":
         print("Checking submissions table for errors... ", end="", flush=True)
         results: List[tuple] = check_errors(db, "SUBMISSIONS")
