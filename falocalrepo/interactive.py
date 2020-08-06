@@ -17,6 +17,8 @@ from .settings import setting_write
 
 
 def download_menu(api: FAAPI, db: Connection):
+    load_cookies(api, *cookies_read(db))
+
     dl_menu: List[str] = [
         "Users",
         "Submissions",
@@ -92,7 +94,6 @@ def settings_menu(api: FAAPI, db: Connection):
 
             if cookie_a or cookie_b:
                 cookies_write(db, cookie_a, cookie_b)
-                load_cookies(api, cookie_a, cookie_b)
         elif choice == 2:
             print("Insert new files folder.")
             print("Leave empty to keep previous value.\n")
@@ -109,7 +110,6 @@ def settings_menu(api: FAAPI, db: Connection):
 
 def main_menu(db: Connection):
     api: FAAPI = FAAPI()
-    load_cookies(api, *cookies_read(db))
 
     menu_items: List[str] = [
         "Download",
