@@ -99,6 +99,19 @@ def update(db: Connection, table: str, fields: List[str], values: List[Union[int
     )
 
 
+def check_errors(db: Connection, table: str) -> List[tuple]:
+    if (table := table.upper()) == "SUBMISSIONS":
+        id_errors: List[tuple] = select(db, table, ["*"], "ID", 0)
+        author_errors: List[tuple] = select(db, table, ["*"], "AUTHOR", "")
+        title_errors: List[tuple] = select(db, table, ["*"], "TITLE", "")
+        date_errors: List[tuple] = select(db, table, ["*"], "UDATE", "")
+        file_url_errors: List[tuple] = select(db, table, ["*"], "FILELINK", "")
+
+        return list(set(id_errors + author_errors + title_errors + date_errors + file_url_errors))
+    else:
+        return []
+
+
 def make_database(db: Connection):
     # Create submissions table
     db.execute(
