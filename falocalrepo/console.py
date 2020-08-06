@@ -81,11 +81,12 @@ def download(db: Connection, args: List[str]):
     elif args[0] == "update":
         update_users(api, db)
     elif args[0] == "users":
-        if len(args[1:3]) != 2:
+        if len(args[1:]) == 2 and args[1] and args[2]:
+            users: List[str] = list(map(lambda s: s.strip(), args[1].split(",")))
+            folders: List[str] = list(map(lambda s: s.strip(), args[2].split(",")))
+            download_users(api, db, users, folders)
+        else:
             raise Exception("Malformed command: users needs two arguments")
-        users: List[str] = list(map(lambda s: s.strip(), args[1].split(",")))
-        folders: List[str] = list(map(lambda s: s.strip(), args[2].split(",")))
-        download_users(api, db, users, folders)
     elif args[0] == "submissions":
         if not args[1:]:
             raise Exception("Malformed command: submissions needs at least one argument")
@@ -96,6 +97,8 @@ def download(db: Connection, args: List[str]):
 
 
 def main_console(db: Connection, args: List[str]):
+    args = list(filter(bool, args))
+
     args_parser: ArgumentParser = ArgumentParser(add_help=False)
     args_parser.add_argument("-h, --help", dest="help", action="store_true", default=False)
     args_parser.add_argument("-v, --version", dest="version", action="store_true", default=False)
