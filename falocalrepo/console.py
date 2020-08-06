@@ -9,9 +9,11 @@ from typing import Tuple
 from faapi import FAAPI
 
 from .__version__ import __version__
-from .database import Connection, select_all
+from .database import Connection
+from .database import select_all
 from .download import load_cookies
-from .download import submission_download, user_download
+from .download import submission_download
+from .download import user_download
 from .settings import cookies_read
 from .settings import cookies_write
 from .settings import setting_read
