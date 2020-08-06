@@ -69,22 +69,30 @@ def config(db: Connection, args: List[str]):
         else:
             raise Exception("Malformed command: files-folder needs one argument")
     else:
-        raise Exception(f"Unknown setting {args[0]}")
+        raise Exception(f"Unknown config command {args[0]}")
 
 
 def download(db: Connection, args: List[str]):
     api: FAAPI = FAAPI()
     load_cookies(api, *cookies_read(db))
 
-    if args[0] == "update":
+    if not args:
+        raise Exception("Malformed command: database needs a command")
+    elif args[0] == "update":
         update_users(api, db)
     elif args[0] == "users":
+        if len(args[1:3]) != 2:
+            raise Exception("Malformed command: users needs two arguments")
         users: List[str] = list(map(lambda s: s.strip(), args[1].split(",")))
         folders: List[str] = list(map(lambda s: s.strip(), args[2].split(",")))
         download_users(api, db, users, folders)
     elif args[0] == "submissions":
+        if not args[1:]:
+            raise Exception("Malformed command: submissions needs at least one argument")
         sub_ids: List[str] = list(filter(len, args[1:]))
         download_submissions(api, db, sub_ids)
+    else:
+        raise Exception(f"Unknown download command {args[0]}")
 
 
 def main_console(db: Connection, args: List[str]):
