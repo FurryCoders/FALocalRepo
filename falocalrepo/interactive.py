@@ -10,6 +10,7 @@ from .commands import print_submissions
 from .commands import search_submissions
 from .commands import update_users
 from .database import Connection
+from .database import check_errors
 from .download import load_cookies
 from .download import submission_save
 from .menu import menu
@@ -108,8 +109,12 @@ def database_menu(db: Connection):
                 gender=gender,
                 file_url=file_url
             ))
-        else:
-            raise NotImplemented(menu_items[choice])
+        elif choice == 3:
+            print("Checking submissions table for errors... ", end="", flush=True)
+            results: List[tuple] = check_errors(db, "SUBMISSIONS")
+            print("Done")
+            if results:
+                print_submissions(results)
 
 
 def settings_menu(db: Connection):

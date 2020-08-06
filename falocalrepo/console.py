@@ -14,6 +14,7 @@ from .commands import print_submissions
 from .commands import search_submissions
 from .commands import update_users
 from .database import Connection
+from .database import check_errors
 from .download import load_cookies
 from .settings import cookies_read
 from .settings import cookies_write
@@ -121,6 +122,12 @@ def database(db: Connection, args: List[str]):
             ratings=[search_params["rating"]] if search_params.get("rating", None) else [],
         )
         print_submissions(results, sort=True)
+    elif args[0] == "check-errors":
+        print("Checking submissions table for errors... ", end="", flush=True)
+        results: List[tuple] = check_errors(db, "SUBMISSIONS")
+        print("Done")
+        if results:
+            print_submissions(results)
 
 
 def main_console(db: Connection, args: List[str]):
