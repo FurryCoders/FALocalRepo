@@ -95,7 +95,8 @@ def database_menu(db: Connection):
             category: str = input("Category   : ")
             species: str = input("Species    : ")
             gender: str = input("Gender     : ")
-            file_url: str = input("Local file : ")
+            file_url: str = input("Remote file: ")
+            file_local_url: str = input("Local file : ")
             submission_save(db, *make_submission(
                 id_=id_,
                 author=author,
@@ -107,7 +108,8 @@ def database_menu(db: Connection):
                 category=category,
                 species=species,
                 gender=gender,
-                file_url=file_url
+                file_url=file_url,
+                file_local_url=file_local_url
             ))
         elif choice == 3:
             print("Checking submissions table for errors... ", end="", flush=True)
