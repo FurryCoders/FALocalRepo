@@ -1,10 +1,12 @@
+from os import get_terminal_size
 from os.path import isdir
 from shutil import move
 from typing import List
+from typing import Optional
 from typing import Tuple
-from os import get_terminal_size
 
 from faapi import FAAPI
+from faapi import Sub
 
 from .database import Connection
 from .database import keys_submissions
@@ -46,6 +48,46 @@ def update_users(api: FAAPI, db: Connection):
             tot, fail = user_download(api, db, user, folder)
             print("Submissions downloaded:", tot)
             print("Submissions failed:", fail)
+
+
+def make_submission(id_: int, author: str, title: str,
+                    date: str, tags: List[str], category: str,
+                    species: str, gender: str, rating: str,
+                    description: str, file_url: str,
+                    file_local_url: str = ""
+                    ) -> Tuple[Sub, Optional[bytes]]:
+    assert isinstance(id_, int) and id_ > 0
+    assert isinstance(author, str) and author
+    assert isinstance(title, str) and title
+    assert isinstance(date, str) and date
+    assert isinstance(tags, list) and all(isinstance(tag, str) for tag in tags)
+    assert isinstance(category, str) and category
+    assert isinstance(species, str) and species
+    assert isinstance(gender, str) and gender
+    assert isinstance(rating, str) and rating
+    assert isinstance(description, str)
+    assert isinstance(file_url, str)
+
+    sub: Sub = Sub()
+    sub_file: Optional[bytes] = None
+
+    sub.id = id_
+    sub.title = title
+    sub.author = author
+    sub.date = date
+    sub.tags = tags
+    sub.category = category
+    sub.species = species
+    sub.gender = gender
+    sub.rating = rating
+    sub.description = description
+    sub.file_url = file_url
+
+    if file_local_url:
+        with open(file_local_url, "rb") as f:
+            sub_file = f.read()
+
+    return sub, sub_file
 
 
 def search_submissions(db: Connection,
