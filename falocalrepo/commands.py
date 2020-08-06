@@ -139,7 +139,8 @@ def print_submissions(subs: List[tuple], sort: bool = True):
     index_date: int = keys_submissions.index("UDATE")
     index_title: int = keys_submissions.index("TITLE")
 
-    subs.sort(key=lambda s: (s[index_user], s[index_date]))
+    if sort:
+        subs.sort(key=lambda s: (s[index_user], s[index_date]))
 
     print(f"{'ID':^{space_id}} | {'User':^{space_user}} | {'Date':^{space_date}} | Title")
     for sub in subs:
