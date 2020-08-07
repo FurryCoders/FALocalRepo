@@ -133,8 +133,9 @@ def database(db: Connection, args: List[str]):
 
 def main_console(args: List[str]):
     prog: str = args[0]
-    comm: str = args[1] if args[1:] else ""
-    args = list(filter(bool, args[2:]))
+    args = list(filter(bool, args[1:]))
+    comm: str = args[0] if args else ""
+    args = args[1:]
 
     args_parser: ArgumentParser = ArgumentParser(add_help=False)
     args_parser.add_argument("-h, --help", dest="help", action="store_true", default=False)
