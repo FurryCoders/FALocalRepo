@@ -121,7 +121,7 @@ def submission_download_file(api: FAAPI, sub_file_url: str, speed: int = 100) ->
         print(("\b \b" * bar_pos) + f"{'CANCELLED':^{bar_length}}", end="", flush=True)
         raise
     except (Exception, BaseException):
-        print(("\b \b" * bar_pos) + f"{'FAILED':^{bar_length}}", end="", flush=True)
+        print(("\b \b" * bar_pos) + f"{'FILE ERR':^{bar_length}}", end="", flush=True)
         return None
 
 
