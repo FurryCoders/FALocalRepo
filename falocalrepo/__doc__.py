@@ -21,8 +21,14 @@ def help_message(prog: str, args: List[str] = None) -> str:
             \r    -v, --version   Display version
             \r\nAVAILABLE COMMANDS
             \r    help            Display the manual of a command
-            \r    interactive     Run in interactive mode
-            \r    config          Manage settings"""
+            \r    init            Create the database and exit
+            \r    config          Manage settings
+            \r    download        Perform downloads
+            \r    database        Operate on the database"""
+    elif args[0] == "init":
+        return f"""{basename(prog)} version {__version__}
+            \r\nUSAGE
+            \r    {basename(prog)} init"""
     elif args[0] == "config":
         return f"""USAGE
             \r    {basename(prog)} config [<setting>] [<value1>] ... [<valueN>]
