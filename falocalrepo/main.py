@@ -8,7 +8,6 @@ from .console import main_console
 from .database import Connection
 from .database import connect_database
 from .database import make_database
-from .interactive import main_menu
 from .settings import setting_write
 
 
@@ -20,10 +19,7 @@ def main():
 
     # Run main program
     try:
-        if argv[1:] and argv[1] == "interactive":
-            main_menu(db)
-        else:
-            main_console(db, argv)
+        main_console(db, argv)
     except KeyboardInterrupt:
         print()
         pass
