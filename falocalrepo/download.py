@@ -86,7 +86,8 @@ def submission_save(db: Connection, sub: Sub, sub_file: Optional[bytes]):
            [sub.id, sub.author, sub.title,
             sub.date, sub.description, ",".join(sorted(sub.tags, key=str.lower)),
             sub.category, sub.species, sub.gender,
-            sub.rating, sub.file_url, sub_ext.lstrip(".")],
+            sub.rating, sub.file_url, sub_ext.lstrip("."),
+            int(sub_file is not None)],
            replace=True)
 
     db.commit()

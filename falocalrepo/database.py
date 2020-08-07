@@ -30,7 +30,7 @@ from .__version__ import __version__
 # 9   GENDER        RATING
 # 10  RATING        FILELINK
 # 11  FILELINK      FILEEXT
-# 12  FILENAME
+# 12  FILENAME      FILESAVED
 # 13  LOCATION
 # 14  SERVER
 
@@ -40,6 +40,7 @@ keys_submissions: List[str] = [
     "UDATE", "DESCRIPTION", "TAGS",
     "CATEGORY", "SPECIES", "GENDER",
     "RATING", "FILELINK", "FILEEXT",
+    "FILESAVED"
 ]
 
 keys_users: List[str] = [
@@ -128,6 +129,7 @@ def make_database(db: Connection):
         RATING TEXT,
         FILELINK TEXT,
         FILEEXT TEXT,
+        FILESAVED INT,
         PRIMARY KEY (ID ASC));"""
     )
 
