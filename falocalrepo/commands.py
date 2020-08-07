@@ -4,6 +4,7 @@ from shutil import move
 from typing import List
 from typing import Optional
 from typing import Tuple
+from typing import Union
 
 from faapi import FAAPI
 from faapi import Sub
@@ -54,21 +55,22 @@ def users_update(api: FAAPI, db: Connection):
     print("Submissions failed:", fail)
 
 
-def submission_make(id_: int, author: str, title: str,
-                    date: str, tags: List[str], category: str,
-                    species: str, gender: str, rating: str,
-                    description: str, file_url: str,
+def submission_make(id_: Union[int, str], author: str, title: str,
+                    date: str, category: str, species: str,
+                    gender: str, rating: str, tags: str = "",
+                    description: str = "", file_url: str = "",
                     file_local_url: str = ""
                     ) -> Tuple[Sub, Optional[bytes]]:
-    assert isinstance(id_, int) and id_ > 0
+    assert isinstance(id_, int) or (isinstance(id_, str) and id_.isdigit())
+    assert int(id_) > 0
     assert isinstance(author, str) and author
     assert isinstance(title, str) and title
     assert isinstance(date, str) and date
-    assert isinstance(tags, list) and all(isinstance(tag, str) for tag in tags)
     assert isinstance(category, str) and category
     assert isinstance(species, str) and species
     assert isinstance(gender, str) and gender
     assert isinstance(rating, str) and rating
+    assert isinstance(tags, str)
     assert isinstance(description, str)
     assert isinstance(file_url, str)
     assert isinstance(file_local_url, str)
@@ -76,11 +78,11 @@ def submission_make(id_: int, author: str, title: str,
     sub: Sub = Sub()
     sub_file: Optional[bytes] = None
 
-    sub.id = id_
+    sub.id = int(id_)
     sub.title = title
     sub.author = author
     sub.date = date
-    sub.tags = tags
+    sub.tags = list(filter(bool, map(str.strip, tags.split(","))))
     sub.category = category
     sub.species = species
     sub.gender = gender
