@@ -1,8 +1,10 @@
 from argparse import ArgumentParser
 from argparse import Namespace
+from datetime import datetime
 from os.path import basename
 from typing import Dict
 from typing import List
+from typing import Optional
 
 from faapi import FAAPI
 
@@ -16,11 +18,14 @@ from .commands import search_submissions
 from .commands import update_users
 from .database import Connection
 from .database import check_errors
+from .database import connect_database
+from .database import make_database
 from .download import load_cookies
 from .download import submission_save
 from .settings import cookies_read
 from .settings import cookies_write
 from .settings import setting_read
+from .settings import setting_write
 
 
 def help_message(args: List[str]) -> str:
@@ -176,8 +181,10 @@ def database(db: Connection, args: List[str]):
             print_submissions(results)
 
 
-def main_console(db: Connection, args: List[str]):
-    args = list(filter(bool, args))
+def main_console(args: List[str]):
+    prog: str = args[0]
+    comm: str = args[1] if args[1:] else ""
+    args = list(filter(bool, args[2:]))
 
     args_parser: ArgumentParser = ArgumentParser(add_help=False)
     args_parser.add_argument("-h, --help", dest="help", action="store_true", default=False)
@@ -187,16 +194,30 @@ def main_console(db: Connection, args: List[str]):
     args_parsed: Namespace = args_parser.parse_args(global_options)
 
     if args_parsed.help:
-        print(help_message([args[0], "help"]))
+        print(help_message(prog))
     elif args_parsed.version:
         print(__version__)
-    elif not args or args[1] == "help":
-        print(help_message(args))
-    elif args[1] == "config":
-        config(db, args[2:])
-    elif args[1] == "download":
-        download(db, args[2:])
-    elif args[1] == "database":
-        database(db, args[2:])
-    else:
-        raise Exception(f"Unknown {args[1]} command.")
+    elif (not comm and not args) or comm == "help":
+        print(help_message(prog, args))
+
+    db: Optional[Connection] = None
+
+    try:
+        # Initialise and prepare database
+        db = connect_database("FA.db")
+        make_database(db)
+        setting_write(db, "LASTSTART", str(datetime.now().timestamp()))
+
+        if comm == "config":
+            config(db, args)
+        elif comm == "download":
+            download(db, args)
+        elif comm == "database":
+            database(db, args)
+        else:
+            raise Exception(f"Unknown {comm} command.")
+    finally:
+        # Close database
+        if db is not None:
+            db.commit()
+            db.close()
