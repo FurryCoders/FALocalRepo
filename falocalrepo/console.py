@@ -1,5 +1,3 @@
-from argparse import ArgumentParser
-from argparse import Namespace
 from datetime import datetime
 from typing import Dict
 from typing import List
@@ -132,24 +130,21 @@ def database(db: Connection, args: List[str]):
 
 
 def main_console(args: List[str]):
-    prog: str = args[0]
-    args = list(filter(bool, args[1:]))
-    comm: str = args[0] if args else ""
+    prog: str
+    comm: str
+
+    prog, *args = list(filter(bool, args))
+    comm = args[0] if args else ""
     args = args[1:]
 
-    args_parser: ArgumentParser = ArgumentParser(add_help=False)
-    args_parser.add_argument("-h, --help", dest="help", action="store_true", default=False)
-    args_parser.add_argument("-v, --version", dest="version", action="store_true", default=False)
-
-    global_options: List[str] = [arg for arg in args[1:] if arg.startswith("-")]
-    args_parsed: Namespace = args_parser.parse_args(global_options)
-
-    if args_parsed.help:
+    if comm in ("-h", "--help"):
         print(help_message(prog))
         return
-    elif args_parsed.version:
+    elif comm in ("-v", "--version"):
         print(__version__)
         return
+    elif comm.startswith("-"):
+        raise Exception(f"Unknown option {comm}")
     elif (not comm and not args) or comm == "help":
         print(help_message(prog, args))
         return
