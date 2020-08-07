@@ -128,7 +128,9 @@ def main_console(args: List[str]):
         make_database(db)
         setting_write(db, "LASTSTART", str(datetime.now().timestamp()))
 
-        if comm == "config":
+        if comm == "init":
+            return
+        elif comm == "config":
             config(db, args)
         elif comm == "download":
             download(db, args)
