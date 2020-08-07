@@ -42,12 +42,16 @@ def download_submissions(api: FAAPI, db: Connection, sub_ids: List[str]):
 
 def update_users(api: FAAPI, db: Connection):
     users_folders: List[Tuple[str, str]] = select_all(db, "USERS", ["USERNAME", "FOLDERS"])
+    tot: int = 0
+    fail: int = 0
     for user, user_folders in users_folders:
         for folder in user_folders.split(","):
             print(f"Downloading: {user}/{folder}")
-            tot, fail = user_download(api, db, user, folder)
-            print("Submissions downloaded:", tot)
-            print("Submissions failed:", fail)
+            tot_tmp, fail_tmp = user_download(api, db, user, folder, 1)
+            tot += tot_tmp
+            fail += fail_tmp
+    print("Submissions downloaded:", tot)
+    print("Submissions failed:", fail)
 
 
 def make_submission(id_: int, author: str, title: str,
