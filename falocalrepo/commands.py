@@ -24,7 +24,7 @@ def files_folder_move(db: Connection, folder_old: str, folder_new: str):
         print("Done")
 
 
-def download_users(api: FAAPI, db: Connection, users: List[str], folders: List[str]):
+def users_download(api: FAAPI, db: Connection, users: List[str], folders: List[str]):
     for user, folder in ((u, f) for u in users for f in folders):
         print(f"Downloading: {user}/{folder}")
         tot, fail = user_download(api, db, user, folder)
@@ -32,7 +32,7 @@ def download_users(api: FAAPI, db: Connection, users: List[str], folders: List[s
         print("Submissions failed:", fail)
 
 
-def download_submissions(api: FAAPI, db: Connection, sub_ids: List[str]):
+def submissions_download(api: FAAPI, db: Connection, sub_ids: List[str]):
     if sub_ids_fail := list(filter(lambda i: not i.isdigit(), sub_ids)):
         print("The following ID's are not correct:", *sub_ids_fail)
     for sub_id in map(int, filter(lambda i: i.isdigit(), sub_ids)):
@@ -40,7 +40,7 @@ def download_submissions(api: FAAPI, db: Connection, sub_ids: List[str]):
         submission_download(api, db, sub_id)
 
 
-def update_users(api: FAAPI, db: Connection):
+def users_update(api: FAAPI, db: Connection):
     users_folders: List[Tuple[str, str]] = select_all(db, "USERS", ["USERNAME", "FOLDERS"])
     tot: int = 0
     fail: int = 0
@@ -54,7 +54,7 @@ def update_users(api: FAAPI, db: Connection):
     print("Submissions failed:", fail)
 
 
-def make_submission(id_: int, author: str, title: str,
+def submission_make(id_: int, author: str, title: str,
                     date: str, tags: List[str], category: str,
                     species: str, gender: str, rating: str,
                     description: str, file_url: str,
@@ -95,7 +95,7 @@ def make_submission(id_: int, author: str, title: str,
     return sub, sub_file
 
 
-def search_submissions(db: Connection,
+def submissions_search(db: Connection,
                        authors: List[str] = None, titles: List[str] = None, dates: List[str] = None,
                        descriptions: List[str] = None, tags: List[str] = None, categories: List[str] = None,
                        species: List[str] = None, genders: List[str] = None, ratings: List[str] = None
@@ -132,7 +132,7 @@ def search_submissions(db: Connection,
     ).fetchall()
 
 
-def print_submissions(subs: List[tuple], sort: bool = True):
+def submissions_print(subs: List[tuple], sort: bool = True):
     space_id: int = 10
     space_user: int = 10
     space_date: int = 10

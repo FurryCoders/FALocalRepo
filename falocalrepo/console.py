@@ -9,13 +9,13 @@ from faapi import FAAPI
 
 from .__doc__ import help_message
 from .__version__ import __version__
-from .commands import download_submissions
-from .commands import download_users
 from .commands import files_folder_move
-from .commands import make_submission
-from .commands import print_submissions
-from .commands import search_submissions
-from .commands import update_users
+from .commands import submission_make
+from .commands import submissions_download
+from .commands import submissions_print
+from .commands import submissions_search
+from .commands import users_download
+from .commands import users_update
 from .database import Connection
 from .database import check_errors
 from .database import connect_database
@@ -64,19 +64,19 @@ def download(db: Connection, args: List[str]):
     if not args:
         raise Exception("Malformed command: download needs a command")
     elif args[0] == "update":
-        update_users(api, db)
+        users_update(api, db)
     elif args[0] == "users":
         if len(args[1:]) == 2 and args[1] and args[2]:
             users: List[str] = list(map(lambda s: s.strip(), args[1].split(",")))
             folders: List[str] = list(map(lambda s: s.strip(), args[2].split(",")))
-            download_users(api, db, users, folders)
+            users_download(api, db, users, folders)
         else:
             raise Exception("Malformed command: users needs two arguments")
     elif args[0] == "submissions":
         if not args[1:]:
             raise Exception("Malformed command: submissions needs at least one argument")
         sub_ids: List[str] = list(filter(len, args[1:]))
-        download_submissions(api, db, sub_ids)
+        submissions_download(api, db, sub_ids)
     else:
         raise Exception(f"Unknown download command {args[0]}")
 
@@ -90,7 +90,7 @@ def database(db: Connection, args: List[str]):
         elif not any(args[1:]):
             raise Exception("Malformed command: search needs at least 1 argument")
         search_params: Dict[str, str] = {(p := arg.split("="))[0].strip().lower(): p[1].strip() for arg in args[1:]}
-        results: List[tuple] = search_submissions(
+        results: List[tuple] = submissions_search(
             db,
             authors=[search_params["author"]] if search_params.get("author", None) else [],
             titles=[search_params["title"]] if search_params.get("title", None) else [],
@@ -102,14 +102,14 @@ def database(db: Connection, args: List[str]):
             genders=[search_params["gender"]] if search_params.get("gender", None) else [],
             ratings=[search_params["rating"]] if search_params.get("rating", None) else [],
         )
-        print_submissions(results, sort=True)
+        submissions_print(results, sort=True)
     elif args[0] == "manual-entry":
         if len(args[1:]) > 11:
             raise Exception("Malformed command: search needs 11 or less arguments")
         elif len(args[1:]) < 11:
             raise Exception("Malformed command: search needs at least 8 arguments")
         make_params: Dict[str, str] = {(p := arg.split("="))[0].strip().lower(): p[1].strip() for arg in args[1:]}
-        submission_save(db, *make_submission(
+        submission_save(db, *submission_make(
             id_=make_params.get("id", ""),
             author=make_params.get("author", ""),
             title=make_params.get("title", ""),
@@ -128,7 +128,7 @@ def database(db: Connection, args: List[str]):
         results: List[tuple] = check_errors(db, "SUBMISSIONS")
         print("Done")
         if results:
-            print_submissions(results)
+            submissions_print(results)
 
 
 def main_console(args: List[str]):
