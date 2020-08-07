@@ -144,7 +144,7 @@ def submission_download(api: FAAPI, db: Connection, sub_id: int) -> bool:
     return True
 
 
-def user_download(api: FAAPI, db: Connection, user: str, folder: str) -> Tuple[int, int]:
+def user_download(api: FAAPI, db: Connection, user: str, folder: str, stop: int = 0) -> Tuple[int, int]:
     subs_total: int = 0
     subs_failed: int = 0
     page: Union[int, str] = 1
@@ -152,6 +152,7 @@ def user_download(api: FAAPI, db: Connection, user: str, folder: str) -> Tuple[i
     user = user_clean_name(user)
     space_term: int = get_terminal_size()[0]
     space_title: int = space_term - 14 - 17
+    found_subs: int = 0
 
     downloader: Callable[[str, Union[str, int]], Tuple[List[SubPartial], Union[int, str]]] = lambda *x: ([], 0)
     if folder == "gallery":
@@ -179,6 +180,8 @@ def user_download(api: FAAPI, db: Connection, user: str, folder: str) -> Tuple[i
                 print(f"[{'ID ERROR':^10}]")
             elif user_check(db, user, folder.upper(), str(sub.id).zfill(10)):
                 print(f"[{'FOUND':^10}]")
+                if stop and (found_subs := found_subs + 1) >= stop:
+                    return subs_total, subs_failed
             elif submission_download(api, db, sub.id):
                 user_add(db, user, folder.upper(), str(sub.id).zfill(10))
                 subs_total += 1
