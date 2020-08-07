@@ -87,19 +87,8 @@ def database(db: Connection, args: List[str]):
             raise Exception("Malformed command: search needs 9 or less arguments")
         elif not any(args[1:]):
             raise Exception("Malformed command: search needs at least 1 argument")
-        search_params: Dict[str, str] = {(p := arg.split("="))[0].strip().lower(): p[1].strip() for arg in args[1:]}
-        results: List[tuple] = submissions_search(
-            db,
-            authors=[search_params["author"]] if search_params.get("author", None) else [],
-            titles=[search_params["title"]] if search_params.get("title", None) else [],
-            dates=[search_params["date"]] if search_params.get("date", None) else [],
-            descriptions=[search_params["description"]] if search_params.get("description", None) else [],
-            tags=search_params["tags"].split(",") if search_params.get("tags", None) else [],
-            categories=[search_params["category"]] if search_params.get("category", None) else [],
-            species=[search_params["species"]] if search_params.get("species", None) else [],
-            genders=[search_params["gender"]] if search_params.get("gender", None) else [],
-            ratings=[search_params["rating"]] if search_params.get("rating", None) else [],
-        )
+        search_params: Dict[str, List[str]] = {(p := arg.split("="))[0].lower(): [p[1]] for arg in args[1:]}
+        results: List[tuple] = submissions_search(db, **search_params)
         submissions_print(results, sort=True)
     elif args[0] == "manual-entry":
         if len(args[1:]) > 11:
