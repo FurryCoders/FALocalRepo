@@ -1,13 +1,13 @@
 from argparse import ArgumentParser
 from argparse import Namespace
 from datetime import datetime
-from os.path import basename
 from typing import Dict
 from typing import List
 from typing import Optional
 
 from faapi import FAAPI
 
+from .__doc__ import help_message
 from .__version__ import __version__
 from .commands import download_submissions
 from .commands import download_users
@@ -26,56 +26,6 @@ from .settings import cookies_read
 from .settings import cookies_write
 from .settings import setting_read
 from .settings import setting_write
-
-
-def help_message(args: List[str]) -> str:
-    if not args[1:] or (args[1] == "help" and not args[2:]):
-        return f"""{basename(args[0])} version {__version__}
-            \r\nUSAGE
-            \r    {basename(args[0])} [-h] [-v] <command> [<arg1>] ... [<argN>]
-            \r\nARGUMENTS
-            \r    <command>       The command to execute
-            \r    <arg>           The arguments of the command
-            \r\nGLOBAL OPTIONS
-            \r    -h, --help      Display this help message
-            \r    -v, --version   Display version
-            \r\nAVAILABLE COMMANDS"
-            \r    help            Display the manual of a command
-            \r    interactive     Run in interactive mode
-            \r    config          Manage settings"""
-    elif args[2] == "config":
-        return f"""USAGE
-            \r    {basename(args[0])} config [<setting>] [<value1>] ... [<valueN>]
-            \r\nARGUMENTS
-            \r    <setting>       Setting to read/edit
-            \r    <value>         New setting value
-            \r\nAVAILABLE SETTINGS
-            \r    cookies         Cookies for the API
-            \r    files-folder    Files download folder"""
-    elif args[2] == "download":
-        return f"""USAGE
-            \r    {basename(args[0])} download <command> [<arg1>] ... [<argN>]
-            \r\nARGUMENTS
-            \r    <command>       The type of download to execute
-            \r    <arg>           Argument for the download command
-            \r\nAVAILABLE COMMANDS
-            \r    users           Download users. First argument is a comma-separated list of
-            \r                      users, second is a comma-separated list of folders
-            \r    submissions     Download single submissions. Arguments are submission ID's
-            \r    update          Update database using the users and folders already saved"""
-    elif args[2] == "database":
-        return f"""USAGE
-            \r    {basename(args[0])} database <operation> [<param1>=<value1>] ... [<paramN>=<valueN>]
-            \r\nARGUMENTS
-            \r    <command>       The database operation to execute
-            \r    <param>         Parameter for the database operation
-            \r    <value>         Value of the parameter
-            \r\nAVAILABLE COMMANDS
-            \r    search          Search submissions.
-            \r    manual-entry    Add a submission to the database manually     
-            \r    check-errors    Check the database for errors"""
-    else:
-        raise Exception(f"Unknown {args[2]} command.")
 
 
 def config(db: Connection, args: List[str]):
