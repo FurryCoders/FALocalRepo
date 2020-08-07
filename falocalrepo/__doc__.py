@@ -5,7 +5,7 @@ from .__version__ import __version__
 
 
 def help_message(prog: str, args: List[str] = None) -> str:
-    args = [] if args is None else []
+    args = [] if args is None else args
 
     if len(args) > 1:
         raise Exception(f"Too many arguments to help command.")
