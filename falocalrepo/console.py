@@ -145,10 +145,13 @@ def main_console(args: List[str]):
 
     if args_parsed.help:
         print(help_message(prog))
+        return
     elif args_parsed.version:
         print(__version__)
+        return
     elif (not comm and not args) or comm == "help":
         print(help_message(prog, args))
+        return
 
     db: Optional[Connection] = None
 
