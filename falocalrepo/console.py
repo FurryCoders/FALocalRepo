@@ -95,21 +95,11 @@ def database(db: Connection, args: List[str]):
             raise Exception("Malformed command: search needs 11 or less arguments")
         elif len(args[1:]) < 11:
             raise Exception("Malformed command: search needs at least 8 arguments")
-        make_params: Dict[str, str] = {(p := arg.split("="))[0].strip().lower(): p[1].strip() for arg in args[1:]}
-        submission_save(db, *submission_make(
-            id_=make_params.get("id", ""),
-            author=make_params.get("author", ""),
-            title=make_params.get("title", ""),
-            date=make_params.get("date", ""),
-            tags=make_params.get("tags", ""),
-            description=make_params.get("description", ""),
-            rating=make_params.get("rating", ""),
-            category=make_params.get("category", ""),
-            species=make_params.get("species", ""),
-            gender=make_params.get("gender", ""),
-            file_url=make_params.get("file_url", ""),
-            file_local_url=make_params.get("file_local_url", "")
-        ))
+        make_params: Dict[str, str] = {(p := arg.split("="))[0].lower(): p[1].strip() for arg in args[1:]}
+        make_params["id_"] = make_params.get("id", "")
+        if "id" in make_params:
+            del make_params["id"]
+        submission_save(db, *submission_make(**make_params))
     elif args[0] == "check-errors":
         print("Checking submissions table for errors... ", end="", flush=True)
         results: List[tuple] = check_errors(db, "SUBMISSIONS")
