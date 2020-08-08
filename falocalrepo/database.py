@@ -161,7 +161,6 @@ def make_database(db: Connection):
 
     # Add settings
     insert(db, "SETTINGS", ["SETTING", "SVALUE"], ["USRN", "0"], False)
-    insert(db, "SETTINGS", ["SETTING", "SVALUE"], ["USRN", "0"], False)
     insert(db, "SETTINGS", ["SETTING", "SVALUE"], ["SUBN", "0"], False)
     insert(db, "SETTINGS", ["SETTING", "SVALUE"], ["LASTUPDATE", "0"], False)
     insert(db, "SETTINGS", ["SETTING", "SVALUE"], ["LASTDOWNLOAD", "0"], False)
