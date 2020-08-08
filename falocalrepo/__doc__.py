@@ -62,6 +62,7 @@ def help_message(prog: str, args: List[str] = None) -> str:
             \r    manual-entry       Add a submission to the database manually     
             \r    check-errors       Check the database for errors
             \r    remove-users       Remove users from database
-            \r    remove-submissions Remove submissions from database"""
+            \r    remove-submissions Remove submissions from database
+            \r    clean              Clean the database with the VACUUM function"""
     else:
         raise Exception(f"Unknown {args[0]} command.")
