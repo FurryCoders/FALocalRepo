@@ -36,11 +36,9 @@ def config(db: Connection, args: List[str]):
     if not args:
         cookie_a, cookie_b = cookies_read(db)
         folder: str = setting_read(db, "FILESFOLDER")
-        version: str = setting_read(db, "VERSION")
         print("cookie a:", cookie_a)
         print("cookie b:", cookie_b)
         print("folder  :", folder)
-        print("version :", version)
     elif args[0] == "cookies":
         if not args[1:]:
             cookie_a, cookie_b = cookies_read(db)
