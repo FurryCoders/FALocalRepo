@@ -100,6 +100,10 @@ def update(db: Connection, table: str, fields: List[str], values: List[Union[int
     )
 
 
+def delete(db: Connection, table: str, key: str, key_value: Union[int, str]):
+    db.execute(f"""DELETE FROM {table} where {key} = ?""", (key_value,))
+
+
 def check_errors(db: Connection, table: str) -> List[tuple]:
     if (table := table.upper()) == "SUBMISSIONS":
         id_errors: List[tuple] = select(db, table, ["*"], "ID", 0)
