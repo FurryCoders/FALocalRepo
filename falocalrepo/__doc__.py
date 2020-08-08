@@ -14,13 +14,14 @@ def help_message(prog: str, args: List[str] = None) -> str:
         return f"""{basename(prog)} version {__version__}
             \r{basename(prog)} database version {__database_version__}
             \r\nUSAGE
-            \r    {basename(prog)} [-h] [-v] <command> [<arg1>] ... [<argN>]
+            \r    {basename(prog)} [-h] [-v] [-d] <command> [<arg1>] ... [<argN>]
             \r\nARGUMENTS
             \r    <command>       The command to execute
             \r    <arg>           The arguments of the command
             \r\nGLOBAL OPTIONS
             \r    -h, --help      Display this help message
             \r    -v, --version   Display version
+            \r    -d, --database  Display database version
             \r\nAVAILABLE COMMANDS
             \r    help            Display the manual of a command
             \r    init            Create the database and exit
