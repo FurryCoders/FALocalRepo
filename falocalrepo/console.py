@@ -1,4 +1,5 @@
 from datetime import datetime
+from os.path import isfile
 from typing import Dict
 from typing import List
 from typing import Optional
@@ -27,6 +28,7 @@ from .settings import cookies_read
 from .settings import cookies_write
 from .settings import setting_read
 from .settings import setting_write
+from .update import update_database
 
 
 def config(db: Connection, args: List[str]):
@@ -137,8 +139,12 @@ def main_console(args: List[str]):
 
     try:
         # Initialise and prepare database
-        db = connect_database("FA.db")
-        make_database(db)
+        if isfile("FA.db"):
+            db = update_database(connect_database("FA.db"))
+        else:
+            db = connect_database("FA.db")
+            make_database(db)
+
         setting_write(db, "LASTSTART", str(datetime.now().timestamp()))
 
         if comm == "init":
