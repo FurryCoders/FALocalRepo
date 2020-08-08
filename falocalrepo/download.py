@@ -32,7 +32,7 @@ def cookies_load(api: FAAPI, cookie_a: str, cookie_b: str):
 
 
 def user_clean_name(user: str) -> str:
-    return str(re_sub(r"[^a-zA-Z0-9\-.~, ]", "", user))
+    return str(re_sub(r"[^a-zA-Z0-9\-.~, ]", "", user.lower()))
 
 
 def user_check(db: Connection, user: str, field: str, value: str) -> bool:
