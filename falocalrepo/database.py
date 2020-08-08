@@ -173,7 +173,6 @@ def make_database(db: Connection):
     insert(db, "SETTINGS", ["SETTING", "SVALUE"], ["LASTUPDATE", "0"], False)
     insert(db, "SETTINGS", ["SETTING", "SVALUE"], ["LASTSTART", "0"], False)
     insert(db, "SETTINGS", ["SETTING", "SVALUE"], ["COOKIES", "{}"], False)
-    insert(db, "SETTINGS", ["SETTING", "SVALUE"], ["USERNAME", ""], False)
     insert(db, "SETTINGS", ["SETTING", "SVALUE"], ["FILESFOLDER", "FA.files"], False)
     insert(db, "SETTINGS", ["SETTING", "SVALUE"], ["VERSION", str(__database_version__)], False)
 
