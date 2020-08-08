@@ -6,6 +6,7 @@ from typing import Optional
 from faapi import FAAPI
 
 from .__doc__ import help_message
+from .__version__ import __database_version__
 from .__version__ import __version__
 from .commands import files_folder_move
 from .commands import submission_make
@@ -124,7 +125,7 @@ def main_console(args: List[str]):
         print(help_message(prog))
         return
     elif comm in ("-v", "--version"):
-        print(__version__)
+        print(__version__, __database_version__)
         return
     elif comm.startswith("-"):
         raise Exception(f"Unknown option {comm}")
