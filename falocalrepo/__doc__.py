@@ -53,12 +53,14 @@ def help_message(prog: str, args: List[str] = None) -> str:
         return f"""USAGE
             \r    {basename(prog)} database <operation> [<param1>=<value1>] ... [<paramN>=<valueN>]
             \r\nARGUMENTS
-            \r    <command>       The database operation to execute
-            \r    <param>         Parameter for the database operation
-            \r    <value>         Value of the parameter
+            \r    <command>          The database operation to execute
+            \r    <param>            Parameter for the database operation
+            \r    <value>            Value of the parameter
             \r\nAVAILABLE COMMANDS
-            \r    search          Search submissions.
-            \r    manual-entry    Add a submission to the database manually     
-            \r    check-errors    Check the database for errors"""
+            \r    search             Search submissions.
+            \r    manual-entry       Add a submission to the database manually     
+            \r    check-errors       Check the database for errors
+            \r    remove-users       Remove users from database
+            \r    remove-submissions Remove submissions from database"""
     else:
         raise Exception(f"Unknown {args[0]} command.")
