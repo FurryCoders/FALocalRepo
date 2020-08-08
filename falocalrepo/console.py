@@ -140,7 +140,10 @@ def main_console(args: List[str]):
         print(help_message(prog))
         return
     elif comm in ("-v", "--version"):
-        print(__version__, __database_version__)
+        print(__version__)
+        return
+    elif comm in ("-d", "--database"):
+        print(__database_version__)
         return
     elif comm.startswith("-"):
         raise CommandError(f"Unknown option {comm}")
