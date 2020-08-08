@@ -17,9 +17,11 @@ from .commands import users_update
 from .database import Connection
 from .database import check_errors
 from .database import connect_database
+from .database import delete
 from .database import make_database
 from .download import cookies_load
 from .download import submission_save
+from .download import user_clean_name
 from .settings import cookies_read
 from .settings import cookies_write
 from .settings import setting_read
@@ -98,6 +100,16 @@ def database(db: Connection, args: List[str]):
         print("Done")
         if results:
             submissions_print(results)
+    elif args[0] == "remove-users":
+        for user in args[1:]:
+            print("Deleting", user)
+            delete(db, "USERS", "USERNAME", user_clean_name(user))
+            db.commit()
+    elif args[0] == "remove-submissions":
+        for sub in args[1:]:
+            print("Deleting", sub)
+            delete(db, "SUBMISSIONS", "ID", int(sub))
+            db.commit()
 
 
 def main_console(args: List[str]):
