@@ -108,6 +108,10 @@ def count(db:  Connection, table: str) -> int:
     return db.execute(f"SELECT COUNT(*) FROM {table}").fetchall()[0][0]
 
 
+def vacuum(db: Connection):
+    db.execute("VACUUM")
+
+
 def check_errors(db: Connection, table: str) -> List[tuple]:
     if (table := table.upper()) == "SUBMISSIONS":
         id_errors: List[tuple] = select(db, table, ["*"], "ID", 0)
