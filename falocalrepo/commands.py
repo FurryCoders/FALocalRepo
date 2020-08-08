@@ -1,3 +1,4 @@
+from datetime import datetime
 from os import get_terminal_size
 from os.path import isdir
 from shutil import move
@@ -53,6 +54,7 @@ def users_update(api: FAAPI, db: Connection):
             fail += fail_tmp
     print("Submissions downloaded:", tot)
     print("Submissions failed:", fail)
+    setting_write(db, "LASTUPDATE", str(datetime.now().timestamp()))
 
 
 def submission_make(id_: Union[int, str], author: str, title: str,
