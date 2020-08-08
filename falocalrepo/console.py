@@ -33,6 +33,10 @@ from .settings import setting_write
 from .update import update_database
 
 
+class CommandError(Exception):
+    pass
+
+
 def config(db: Connection, args: List[str]):
     if not args:
         cookie_a, cookie_b = cookies_read(db)
@@ -48,16 +52,16 @@ def config(db: Connection, args: List[str]):
         elif len(args[1:]) == 2 and args[1] and args[2]:
             cookies_write(db, args[1], args[2])
         else:
-            raise Exception("Malformed command: cookies needs two arguments")
+            raise CommandError("Malformed command: cookies needs two arguments")
     elif args[0] == "files-folder":
         if not args[1:]:
             print("files folder:", setting_read(db, "FILESFOLDER"))
         elif len(args[1:]) == 1 and args[1]:
             files_folder_move(db, setting_read(db, "FILESFOLDER"), args[1])
         else:
-            raise Exception("Malformed command: files-folder needs one argument")
+            raise CommandError("Malformed command: files-folder needs one argument")
     else:
-        raise Exception(f"Unknown config command {args[0]}")
+        raise CommandError(f"Unknown config command {args[0]}")
 
 
 def download(db: Connection, args: List[str]):
@@ -65,7 +69,7 @@ def download(db: Connection, args: List[str]):
     cookies_load(api, *cookies_read(db))
 
     if not args:
-        raise Exception("Malformed command: download needs a command")
+        raise CommandError("Malformed command: download needs a command")
     elif args[0] == "update":
         users_update(api, db)
     elif args[0] == "users":
@@ -74,14 +78,14 @@ def download(db: Connection, args: List[str]):
             folders: List[str] = list(map(lambda s: s.strip(), args[2].split(",")))
             users_download(api, db, users, folders)
         else:
-            raise Exception("Malformed command: users needs two arguments")
+            raise CommandError("Malformed command: users needs two arguments")
     elif args[0] == "submissions":
         if not args[1:]:
-            raise Exception("Malformed command: submissions needs at least one argument")
+            raise CommandError("Malformed command: submissions needs at least one argument")
         sub_ids: List[str] = list(filter(len, args[1:]))
         submissions_download(api, db, sub_ids)
     else:
-        raise Exception(f"Unknown download command {args[0]}")
+        raise CommandError(f"Unknown download command {args[0]}")
 
 
 def database(db: Connection, args: List[str]):
@@ -139,7 +143,7 @@ def main_console(args: List[str]):
         print(__version__, __database_version__)
         return
     elif comm.startswith("-"):
-        raise Exception(f"Unknown option {comm}")
+        raise CommandError(f"Unknown option {comm}")
     elif (not comm and not args) or comm == "help":
         print(help_message(prog, args))
         return
@@ -165,7 +169,7 @@ def main_console(args: List[str]):
         elif comm == "database":
             database(db, args)
         else:
-            raise Exception(f"Unknown {comm} command.")
+            raise CommandError(f"Unknown {comm} command.")
     finally:
         # Close database and update totals
         if db is not None:
