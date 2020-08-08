@@ -117,7 +117,7 @@ def submissions_search(db: Connection,
     assert any((authors, titles, dates, descriptions, tags, categories, species, genders, ratings))
 
     wheres: List[str] = [
-        " OR ".join(["UDATE = ?"] * len(dates)),
+        " OR ".join(["UDATE like ?"] * len(dates)),
         " OR ".join(["lower(RATING) like ?"] * len(ratings)),
         " OR ".join(["lower(GENDER) like ?"] * len(genders)),
         " OR ".join(["lower(SPECIES) like ?"] * len(species)),
