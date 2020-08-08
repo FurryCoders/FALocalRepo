@@ -18,7 +18,7 @@ from .database import Connection
 from .database import check_errors
 from .database import connect_database
 from .database import make_database
-from .download import load_cookies
+from .download import cookies_load
 from .download import submission_save
 from .settings import cookies_read
 from .settings import cookies_write
@@ -57,7 +57,7 @@ def config(db: Connection, args: List[str]):
 
 def download(db: Connection, args: List[str]):
     api: FAAPI = FAAPI()
-    load_cookies(api, *cookies_read(db))
+    cookies_load(api, *cookies_read(db))
 
     if not args:
         raise Exception("Malformed command: download needs a command")

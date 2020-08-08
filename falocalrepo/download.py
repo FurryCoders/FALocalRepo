@@ -24,7 +24,7 @@ from .database import update
 from .settings import setting_read
 
 
-def load_cookies(api: FAAPI, cookie_a: str, cookie_b: str):
+def cookies_load(api: FAAPI, cookie_a: str, cookie_b: str):
     api.load_cookies([
         {"name": "a", "value": cookie_a},
         {"name": "b", "value": cookie_b},
