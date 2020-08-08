@@ -163,7 +163,6 @@ def make_database(db: Connection):
     insert(db, "SETTINGS", ["SETTING", "SVALUE"], ["USRN", "0"], False)
     insert(db, "SETTINGS", ["SETTING", "SVALUE"], ["SUBN", "0"], False)
     insert(db, "SETTINGS", ["SETTING", "SVALUE"], ["LASTUPDATE", "0"], False)
-    insert(db, "SETTINGS", ["SETTING", "SVALUE"], ["LASTDOWNLOAD", "0"], False)
     insert(db, "SETTINGS", ["SETTING", "SVALUE"], ["LASTSTART", "0"], False)
     insert(db, "SETTINGS", ["SETTING", "SVALUE"], ["COOKIES", "{}"], False)
     insert(db, "SETTINGS", ["SETTING", "SVALUE"], ["USERNAME", ""], False)
