@@ -85,7 +85,14 @@ def download(db: Connection, args: List[str]):
 
 def database(db: Connection, args: List[str]):
     if not args:
-        raise Exception("Malformed command: database needs a command")
+        sub_n: int = int(setting_read(db, "SUBN"))
+        usr_n: int = int(setting_read(db, "USRN"))
+        last_update: float = float(setting_read(db, "LASTUPDATE"))
+        version: str = setting_read(db, "VERSION")
+        print("Submissions:", sub_n)
+        print("Users      :", usr_n)
+        print("Last update:", str(datetime.fromtimestamp(last_update)) if last_update else 0)
+        print("Version    :", version)
     elif args[0] == "search":
         search_params: Dict[str, List[str]] = {(p := arg.split("="))[0].lower(): [p[1]] for arg in args[1:]}
         results: List[tuple] = submissions_search(db, **search_params)
