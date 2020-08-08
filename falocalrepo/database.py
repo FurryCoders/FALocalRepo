@@ -4,7 +4,7 @@ from sqlite3 import connect as sqlite3_connect
 from typing import List
 from typing import Union
 
-from .__version__ import __version__
+from .__version__ import __database_version__
 
 # Entries guide - USERS
 # v2.6      v3.0
@@ -169,6 +169,6 @@ def make_database(db: Connection):
     insert(db, "SETTINGS", ["SETTING", "SVALUE"], ["COOKIES", "{}"], False)
     insert(db, "SETTINGS", ["SETTING", "SVALUE"], ["USERNAME", ""], False)
     insert(db, "SETTINGS", ["SETTING", "SVALUE"], ["FILESFOLDER", "FA.files"], False)
-    insert(db, "SETTINGS", ["SETTING", "SVALUE"], ["VERSION", str(__version__)], False)
+    insert(db, "SETTINGS", ["SETTING", "SVALUE"], ["VERSION", str(__database_version__)], False)
 
     db.commit()
