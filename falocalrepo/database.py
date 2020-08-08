@@ -104,6 +104,10 @@ def delete(db: Connection, table: str, key: str, key_value: Union[int, str]):
     db.execute(f"""DELETE FROM {table} where {key} = ?""", (key_value,))
 
 
+def count(db:  Connection, table: str) -> int:
+    return db.execute(f"SELECT COUNT(*) FROM {table}").fetchall()[0][0]
+
+
 def check_errors(db: Connection, table: str) -> List[tuple]:
     if (table := table.upper()) == "SUBMISSIONS":
         id_errors: List[tuple] = select(db, table, ["*"], "ID", 0)
