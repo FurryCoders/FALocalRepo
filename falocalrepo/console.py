@@ -19,6 +19,7 @@ from .commands import users_update
 from .database import Connection
 from .database import check_errors
 from .database import connect_database
+from .database import count
 from .database import delete
 from .database import make_database
 from .download import cookies_load
@@ -158,7 +159,9 @@ def main_console(args: List[str]):
         else:
             raise Exception(f"Unknown {comm} command.")
     finally:
-        # Close database
+        # Close database and update totals
         if db is not None:
+            setting_write(db, "SUBN", str(count(db, "SUBMISSIONS")))
+            setting_write(db, "USRN", str(count(db, "USERS")))
             db.commit()
             db.close()
