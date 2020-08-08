@@ -100,39 +100,39 @@ def submission_make(id_: Union[int, str], author: str, title: str,
 
 
 def submissions_search(db: Connection,
-                       authors: List[str] = None, titles: List[str] = None, dates: List[str] = None,
-                       descriptions: List[str] = None, tags: List[str] = None, categories: List[str] = None,
-                       species: List[str] = None, genders: List[str] = None, ratings: List[str] = None
+                       author: List[str] = None, title: List[str] = None, date: List[str] = None,
+                       description: List[str] = None, tags: List[str] = None, category: List[str] = None,
+                       species: List[str] = None, gender: List[str] = None, rating: List[str] = None
                        ) -> List[tuple]:
-    authors = [] if authors is None else authors
-    titles = [] if titles is None else titles
-    dates = [] if dates is None else dates
-    descriptions = [] if descriptions is None else descriptions
+    author = [] if author is None else author
+    title = [] if title is None else title
+    date = [] if date is None else date
+    description = [] if description is None else description
     tags = [] if tags is None else tags
-    categories = [] if categories is None else categories
+    category = [] if category is None else category
     species = [] if species is None else species
-    genders = [] if genders is None else genders
-    ratings = [] if ratings is None else ratings
+    gender = [] if gender is None else gender
+    rating = [] if rating is None else rating
 
-    assert any((authors, titles, dates, descriptions, tags, categories, species, genders, ratings))
+    assert any((author, title, date, description, tags, category, species, gender, rating))
 
     wheres: List[str] = [
-        " OR ".join(["UDATE like ?"] * len(dates)),
-        " OR ".join(["lower(RATING) like ?"] * len(ratings)),
-        " OR ".join(["lower(GENDER) like ?"] * len(genders)),
+        " OR ".join(["UDATE like ?"] * len(date)),
+        " OR ".join(["lower(RATING) like ?"] * len(rating)),
+        " OR ".join(["lower(GENDER) like ?"] * len(gender)),
         " OR ".join(["lower(SPECIES) like ?"] * len(species)),
-        " OR ".join(["lower(CATEGORY) like ?"] * len(categories)),
-        " OR ".join(["lower(AUTHOR) like ?"] * len(authors)),
-        " OR ".join(["lower(TITLE) like ?"] * len(titles)),
+        " OR ".join(["lower(CATEGORY) like ?"] * len(category)),
+        " OR ".join(["lower(AUTHOR) like ?"] * len(author)),
+        " OR ".join(["lower(TITLE) like ?"] * len(title)),
         " OR ".join(["lower(TAGS) like ?"] * len(tags)),
-        " OR ".join(["lower(DESCRIPTION) like ?"] * len(descriptions))
+        " OR ".join(["lower(DESCRIPTION) like ?"] * len(description))
     ]
 
     wheres_str = " AND ".join(map(lambda p: "(" + p + ")", filter(len, wheres)))
 
     return db.execute(
         f"""SELECT * FROM SUBMISSIONS WHERE {wheres_str}""",
-        dates + ratings + genders + species + categories + authors + titles + tags
+        date + rating + gender + species + category + author + title + tags
     ).fetchall()
 
 
