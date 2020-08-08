@@ -1,6 +1,7 @@
 from os.path import basename
 from typing import List
 
+from .__version__ import __database_version__
 from .__version__ import __version__
 
 
@@ -11,6 +12,7 @@ def help_message(prog: str, args: List[str] = None) -> str:
         raise Exception(f"Too many arguments to help command.")
     elif not args:
         return f"""{basename(prog)} version {__version__}
+            \r{basename(prog)} database version {__database_version__}
             \r\nUSAGE
             \r    {basename(prog)} [-h] [-v] <command> [<arg1>] ... [<argN>]
             \r\nARGUMENTS
