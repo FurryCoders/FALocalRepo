@@ -52,7 +52,7 @@ def help_message(prog: str, args: List[str] = None) -> str:
             \r    update          Update database using the users and folders already saved"""
     elif args[0] == "database":
         return f"""USAGE
-            \r    {basename(prog)} database <operation> [<param1>=<value1>] ... [<paramN>=<valueN>]
+            \r    {basename(prog)} database [<operation>] [<param1>=<value1>] ... [<paramN>=<valueN>]
             \r\nARGUMENTS
             \r    <command>          The database operation to execute
             \r    <param>            Parameter for the database operation
