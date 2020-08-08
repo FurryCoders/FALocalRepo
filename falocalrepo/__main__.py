@@ -1,5 +1,6 @@
 from sys import argv
 
+from .console import CommandError
 from .console import main_console
 
 
@@ -10,8 +11,8 @@ def main():
     except KeyboardInterrupt:
         print()
         pass
-    except (Exception, BaseException) as err:
-        print("\nERROR:", repr(err))
+    except CommandError as err:
+        print(repr(err))
 
 
 if __name__ == "__main__":
