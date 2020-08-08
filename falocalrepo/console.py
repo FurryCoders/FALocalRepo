@@ -22,6 +22,7 @@ from .database import connect_database
 from .database import count
 from .database import delete
 from .database import make_database
+from .database import vacuum
 from .download import cookies_load
 from .download import submission_save
 from .download import user_clean_name
@@ -119,6 +120,8 @@ def database(db: Connection, args: List[str]):
             print("Deleting", sub)
             delete(db, "SUBMISSIONS", "ID", int(sub))
             db.commit()
+    elif args[0] == "clean":
+        vacuum(db)
 
 
 def main_console(args: List[str]):
