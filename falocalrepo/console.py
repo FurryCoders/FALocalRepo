@@ -115,9 +115,9 @@ def database(db: Connection, args: List[str]):
         if results:
             submissions_print(results)
     elif args[0] == "remove-users":
-        for user in args[1:]:
+        for user in map(user_clean_name, args[1:]):
             print("Deleting", user)
-            delete(db, "USERS", "USERNAME", user_clean_name(user))
+            delete(db, "USERS", "USERNAME", user)
             db.commit()
     elif args[0] == "remove-submissions":
         for sub in args[1:]:
