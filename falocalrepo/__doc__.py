@@ -28,8 +28,7 @@ def help_message(prog: str, args: List[str] = None) -> str:
             \r    download        Perform downloads
             \r    database        Operate on the database"""
     elif args[0] == "init":
-        return f"""{basename(prog)} version {__version__}
-            \r\nUSAGE
+        return f"""USAGE
             \r    {basename(prog)} init"""
     elif args[0] == "config":
         return f"""USAGE
