@@ -74,15 +74,15 @@ def download(db: Connection, args: List[str]):
         users_update(api, db)
     elif args[0] == "users":
         if len(args[1:]) == 2 and args[1] and args[2]:
-            users: List[str] = list(map(lambda s: s.strip(), args[1].split(",")))
-            folders: List[str] = list(map(lambda s: s.strip(), args[2].split(",")))
+            users: List[str] = list(set(map(user_clean_name, args[1].split(","))))
+            folders: List[str] = list(set(map(str.strip, args[2].split(","))))
             users_download(api, db, users, folders)
         else:
             raise CommandError("Malformed command: users needs two arguments")
     elif args[0] == "submissions":
         if not args[1:]:
             raise CommandError("Malformed command: submissions needs at least one argument")
-        sub_ids: List[str] = list(filter(len, args[1:]))
+        sub_ids: List[str] = list(set(filter(str.isdigit, args[1:])))
         submissions_download(api, db, sub_ids)
     else:
         raise CommandError(f"Unknown download command {args[0]}")
