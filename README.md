@@ -10,7 +10,7 @@ Pure Python program to download any user's gallery/scraps/favorites from the Fur
 
 This program was born with the desire to provide a relatively easy-to-use method for FA users to download submissions that they care about from the forum.
 
-This program uses a custom scraping library to get content from FurAffinity. This is developed as a separate package also available on PyPi [FAAPI@PyPi.org](https://pypi.org/project/faapi/) and GitLab [FAAPI@GitLab.com](https://gitlab.com/MatteoCampinoti94/FAAPI). The data thus collected is then stored into a SQLite3 database and the submissions files are saved in a tree folder structure based on their ID's.
+This program uses a custom scraping library to get content from FurAffinity. This is developed as a separate package also available on PyPi ([FAAPI@PyPi.org](https://pypi.org/project/faapi/)) and GitLab ([FAAPI@GitLab.com](https://gitlab.com/MatteoCampinoti94/FAAPI)). The data thus collected is then stored into a SQLite3 database and the submissions files are saved in a tree folder structure based on their ID's.
 
 ## Contents
 
