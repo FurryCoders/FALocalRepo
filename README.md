@@ -24,9 +24,9 @@ This program uses a custom scraping library to get content from FurAffinity. Thi
     4. [Download](#download)
     5. [Database](#database)
 4. [Database](#database-1)
-    1. [SETTINGS](#settings)
-    1. [USERS](#users)
-    1. [SUBMISSIONS](#submissions)
+    1. [Settings](#settings)
+    1. [Users](#users)
+    1. [Submissions](#submissions)
 5. [Submission Files](#submission-files)
 6. [Upgrading from Earlier Versions](#upgrading-from-earlier-versions)
 7. [Issues](#issues)
@@ -209,7 +209,7 @@ To store the metadata of the downloaded submissions, downloaded users, cookies a
 
 To store all this information, the database uses three tables: `SETTINGS`, `USERS` and `SUBMISSIONS`.
 
-### `SETTINGS`
+### Settings
 
 The settings table contains settings for the program and statistics of the database.
 
@@ -221,7 +221,7 @@ The settings table contains settings for the program and statistics of the datab
 * `FILESFOLDER` location of downloaded submission files
 * `VERSION` database version, this can differ from the program version
 
-### `USERS`
+### Users
 
 The users table contains a list of all the users that have been download with the program, the folders that have been downloaded and the submissions found in each of those.
 
@@ -234,7 +234,7 @@ Each entry contains the following fields:
 * `FAVORITES`
 * `EXTRAS` this is a legacy entry used by the program up to version 2.11.2
 
-### `SUBMISSIONS`
+### Submissions
 
 The submissions table contains the metadata of the submissions downloaded by the program and information on their files 
 
