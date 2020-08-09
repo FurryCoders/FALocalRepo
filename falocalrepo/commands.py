@@ -132,7 +132,7 @@ def submissions_search(db: Connection,
 
     return db.execute(
         f"""SELECT * FROM SUBMISSIONS WHERE {wheres_str}""",
-        date + rating + gender + species + category + author + title + tags
+        date + rating + gender + species + category + author + title + tags + description
     ).fetchall()
 
 
