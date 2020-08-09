@@ -4,13 +4,16 @@
 [![supported Python version](https://img.shields.io/pypi/pyversions/falocalrepo)](https://pypi.org/project/falocalrepo/)
 [![license](https://img.shields.io/pypi/l/falocalrepo)](https://pypi.org/project/falocalrepo/)
 
+[![gitlab issues](https://img.shields.io/badge/dynamic/json?logo=gitlab&color=orange&label=issues&suffix=%20open&query=%24.length&url=https%3A%2F%2Fgitlab.com%2Fapi%2Fv4%2Fprojects%2Fmatteocampinoti94%252Ffalocalrepo%2Fissues%3Fstate%3Dopened)](https://gitlab.com/MatteoCampinoti94/FALocalRepo/issues)
+[![GitHub issues](https://img.shields.io/github/issues/matteocampinoti94/falocalrepo?logo=github&color=blue)](https://github.com/MatteoCampinoti94/FALocalRepo/issues)
+
 Pure Python program to download any user's gallery/scraps/favorites from the FurAffinity forum in an easily handled database.
 
 ## Introduction
 
 This program was born with the desire to provide a relatively easy-to-use method for FA users to download submissions that they care about from the forum.
 
-This program uses a custom scraping library to get content from FurAffinity. This is developed as a separate package also available on PyPi ([FAAPI@PyPi.org](https://pypi.org/project/faapi/)) and GitLab ([FAAPI@GitLab.com](https://gitlab.com/MatteoCampinoti94/FAAPI)). The data thus collected is then stored into a SQLite3 database and the submissions files are saved in a tiered tree structure based on their ID's.
+This program uses a custom scraping library to get content from FurAffinity. This is developed as a separate package also available on [PyPi](https://pypi.org/project/faapi/) and [GitLab](https://gitlab.com/MatteoCampinoti94/FAAPI). The data thus collected is then stored into a SQLite3 database and the submissions files are saved in a tiered tree structure based on their ID's.
 
 ## Contents
 
@@ -270,11 +273,21 @@ Information from the database are copied over to the new version, but otherwise 
 
 Files are moved to the new structure and the old files folder is deleted. Only submissions files are kept starting from version 3.0.0
 
+## Contributing
+
+Al contributions and suggestions are welcome!
+
+The only requirement is that any merge request must be sent to the GitLab project as the one on GitHub is only a mirror: [GitLab/FALocalRepo](https://gitlab.com/MatteoCampinoti94/FALocalRepo)
+
+If you have suggestions for fixes or improvements, you can open an issue with your idea, see [#Issues](#issues) for details.
+
 ## Issues
 
-If any problem is encountered during usage of the program, an issue can be opened on the project's Gitlab page: [FALocalRepo/Issues](https://gitlab.com/MatteoCampinoti94/FALocalRepo/issues).
+If any problem is encountered during usage of the program, an issue can be opened on the project's pages on [GitLab](https://gitlab.com/MatteoCampinoti94/FALocalRepo/issues) (preferred) or [GitHub](https://github.com/MatteoCampinoti94/FALocalRepo/issues) (mirror repository).
 
-When opening an issue on GitLab, please copy the error message and describe the operation in progress when the error occurred.
+Issues can also be used to suggest improvements and features.
+
+When opening an issue for a problem, please copy the error message and describe the operation in progress when the error occurred.
 
 ## Appendix
 
