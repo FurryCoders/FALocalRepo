@@ -1,6 +1,7 @@
 # FALocalRepo
 
 [![pypi version](https://img.shields.io/pypi/v/falocalrepo)](https://pypi.org/project/falocalrepo/)
+[![latest release](https://img.shields.io/badge/dynamic/json?logo=gitlab&color=orange&label=gitlab&query=%24%5B%3A1%5D.tag_name&url=https%3A%2F%2Fgitlab.com%2Fapi%2Fv4%2Fprojects%2Fmatteocampinoti94%252Ffalocalrepo%2Freleases)](https://gitlab.com/MatteoCampinoti94/FALocalRepo/releases)
 [![supported Python version](https://img.shields.io/pypi/pyversions/falocalrepo)](https://pypi.org/project/falocalrepo/)
 [![license](https://img.shields.io/pypi/l/falocalrepo)](https://pypi.org/project/falocalrepo/)
 
