@@ -116,3 +116,6 @@ ENV/
 FA.files
 FA*.db
 FA*.db-journal
+
+# system files
+.DS_Store
