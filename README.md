@@ -53,7 +53,7 @@ The program needs cookies from a logged-in FurAffinity session to download prote
 ## How to Read Usage Instructions
 
 * `command` a static command keyword
-* `<arg>` `<param>` `value` an argument, parameter, value, etc... that must be provided to a command
+* `<arg>` `<param>` `<value>` an argument, parameter, value, etc... that must be provided to a command
 * `[<optional>]` an optional argument that can be omitted
 
 ## Cookies
