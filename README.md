@@ -32,8 +32,9 @@ This program uses a custom scraping library to get content from FurAffinity. Thi
     1. [Submissions](#submissions)
 5. [Submission Files](#submission-files)
 6. [Upgrading from Earlier Versions](#upgrading-from-earlier-versions)
-7. [Issues](#issues)
-8. [Appendix](#appendix)
+7. [Contributing](#contributing)
+8. [Issues](#issues)
+9. [Appendix](#appendix)
 
 ## Installation & Requirements
 
