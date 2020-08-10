@@ -10,12 +10,14 @@ from typing import List
 from .__version__ import __database_version__
 from .database import Connection
 from .database import connect_database
+from .database import count
 from .database import make_database
 from .database import select
 from .database import select_all
 from .database import tiered_path
 from .database import update
 from .settings import setting_read
+from .settings import setting_write
 
 
 def get_version(db: Connection) -> str:
@@ -113,6 +115,10 @@ def update_2_7_to_3(db: Connection) -> Connection:
         rmtree("FA.files")
     if isdir("FA.files_new"):
         move("FA.files_new", "FA.files")
+
+    # Update counters for new database
+    setting_write(db_new, "SUBN", str(count(db_new, "SUBMISSIONS")))
+    setting_write(db_new, "USRN", str(count(db_new, "USERS")))
 
     # Close databases and replace old database
     print("Close databases and replace old database")
