@@ -48,6 +48,9 @@ def users_update(api: FAAPI, db: Connection):
     fail: int = 0
     for user, user_folders in users_folders:
         for folder in user_folders.split(","):
+            if folder.lower() == "extras":
+                print(f"Unsupported: {user}/{folder}")
+                continue
             print(f"Downloading: {user}/{folder}")
             tot_tmp, fail_tmp = user_download(api, db, user, folder, 1)
             tot += tot_tmp
