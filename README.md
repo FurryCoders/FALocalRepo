@@ -174,7 +174,7 @@ Available operations are:
     * `gender`
     * `rating`
 ```
-falocalrepo database search tags=cat,%mouse date=2020-% category=%artwork%
+falocalrepo database search tags=%cat,%mouse% date=2020-% category=%artwork%
 ```
 ```
 falocalrepo database search tags=%cat% tags=%mouse% date=2020-% category=%artwork%
