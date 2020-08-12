@@ -52,13 +52,13 @@ def update_2_7_to_3(db: Connection) -> Connection:
     print("Transfer common submissions and users data")
     db.execute("ATTACH DATABASE 'FA_new.db' AS db_new")
     db.execute(
-        """INSERT INTO
+        """INSERT OR IGNORE INTO
         db_new.SUBMISSIONS(ID, AUTHOR, UDATE, TITLE, DESCRIPTION, TAGS, CATEGORY, SPECIES, GENDER, RATING, FILELINK)
         SELECT ID, AUTHOR, UDATE, TITLE, DESCRIPTION, TAGS, CATEGORY, SPECIES, GENDER, RATING, FILELINK
         FROM SUBMISSIONS"""
     )
     db.execute(
-        """INSERT INTO
+        """INSERT OR IGNORE INTO
         db_new.USERS(USERNAME, FOLDERS, GALLERY, SCRAPS, FAVORITES, EXTRAS)
         SELECT USER, FOLDERS, GALLERY, SCRAPS, FAVORITES, EXTRAS
         FROM USERS"""
@@ -93,6 +93,7 @@ def update_2_7_to_3(db: Connection) -> Connection:
     # Update submissions FILEEXT and FILESAVED and move to new location
     print("Update submissions FILEEXT and FILESAVED and move to new location")
     sub_n: int = 0
+    sub_not_found: int = 0
     for id_, location, filename in select_all(db, "SUBMISSIONS", ["ID", "LOCATION", "FILENAME"]):
         sub_n += 1
         print(sub_n, end="\r", flush=True)
@@ -105,14 +106,21 @@ def update_2_7_to_3(db: Connection) -> Connection:
         elif isfile(path_join(sub_folder_new, filename)):
             update(db_new, "SUBMISSIONS", ["FILEEXT", "FILESAVED"], [filename.split(".")[-1], True], "ID", id_)
         else:
+            sub_not_found += 1
             update(db_new, "SUBMISSIONS", ["FILEEXT", "FILESAVED"], [filename.split(".")[-1], False], "ID", id_)
         db_new.commit()
     print()
+    if sub_not_found:
+        print(f"{sub_not_found} submissions not found in FA.files")
 
     # Replace older files folder with new
     print("Replace older files folder with new")
     if isdir("FA.files"):
-        rmtree("FA.files")
+        if not sub_not_found:
+            rmtree("FA.files")
+        else:
+            print("Saving older FA.files to FA.files_old")
+            move("FA.files", "FA.files_old")
     if isdir("FA.files_new"):
         move("FA.files_new", "FA.files")
 
