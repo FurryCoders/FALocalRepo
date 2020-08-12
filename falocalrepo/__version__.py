@@ -1,2 +1,2 @@
-__version__ = "3.0.3"
-__database_version__ = "3.1.0"
+__version__ = "3.1.1"
+__database_version__ = "3.0.0"
