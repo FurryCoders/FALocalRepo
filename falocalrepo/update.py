@@ -93,7 +93,7 @@ def update_2_7_to_3(db: Connection) -> Connection:
     # Update submissions FILEEXT and FILESAVED and move to new location
     print("Update submissions FILEEXT and FILESAVED and move to new location")
     sub_n: int = 0
-    sub_not_found: int = 0
+    sub_not_found: List[int] = []
     for id_, location, filename in select_all(db, "SUBMISSIONS", ["ID", "LOCATION", "FILENAME"]):
         sub_n += 1
         print(sub_n, end="\r", flush=True)
@@ -106,12 +106,16 @@ def update_2_7_to_3(db: Connection) -> Connection:
         elif isfile(path_join(sub_folder_new, filename)):
             update(db_new, "SUBMISSIONS", ["FILEEXT", "FILESAVED"], [filename.split(".")[-1], True], "ID", id_)
         else:
-            sub_not_found += 1
+            sub_not_found.append(id_)
             update(db_new, "SUBMISSIONS", ["FILEEXT", "FILESAVED"], [filename.split(".")[-1], False], "ID", id_)
         db_new.commit()
-    print()
     if sub_not_found:
-        print(f"{sub_not_found} submissions not found in FA.files")
+        print(f"{sub_not_found} submissions not found in FA.files\n" +
+              "Writing ID's to FA_update_2_7_to_3.txt")
+        with open("FA_update_2_7_to_3.txt", "w") as f:
+            for i, sub in enumerate(sorted(sub_not_found)):
+                print(i, end="\r", flush=True)
+                f.write(str(sub) + "\n")
 
     # Replace older files folder with new
     print("Replace older files folder with new")
