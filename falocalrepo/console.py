@@ -99,7 +99,10 @@ def database(db: Connection, args: List[str]):
         print("Last update:", str(datetime.fromtimestamp(last_update)) if last_update else 0)
         print("Version    :", version)
     elif args[0] == "search":
-        search_params: Dict[str, List[str]] = {(p := arg.split("="))[0].lower(): [p[1]] for arg in args[1:]}
+        search_params: Dict[str, List[str]] = {}
+        for param, value in map(lambda p: p.split("=", 1), args[1:]):
+            param = param.strip().lower()
+            search_params[param] = search_params.get(param, []) + [value]
         results: List[tuple] = submissions_search(db, **search_params)
         submissions_print(results, sort=True)
         print(f"Found {len(results)} results")
