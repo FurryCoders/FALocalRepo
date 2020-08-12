@@ -140,7 +140,11 @@ def submissions_print(subs: List[tuple], sort: bool = True):
     space_id: int = 10
     space_user: int = 10
     space_date: int = 10
-    space_term: int = get_terminal_size()[0]
+    space_term: int = 10000
+    try:
+        space_term = get_terminal_size()[0]
+    except IOError:
+        pass
 
     index_id: int = keys_submissions.index("ID")
     index_user: int = keys_submissions.index("AUTHOR")
