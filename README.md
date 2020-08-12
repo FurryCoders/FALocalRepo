@@ -163,7 +163,7 @@ The `database` command allows to operate on the database. Used without an operat
 
 Available operations are:
 
-* `search <param1>=<value1> ... [<paramN>=<valueN>]` search the submissions entries using metadata fields. Search is conducted case-insensitively using the SQLite `like` expression which allows for limited pattern matching. For example this string can be used to search two tags together separated by an unknown amount of characters `cat,%mouse`. The following search parameters are supported:
+* `search <param1>=<value1> ... [<paramN>=<valueN>]` search the submissions entries using metadata fields. Search is conducted case-insensitively using the SQLite `like` expression which allows for limited pattern matching. For example this string can be used to search two tags together separated by an unknown amount of characters `cat,%mouse`. Search parameters can be passed multiple times to act as OR values. The following search parameters are supported:
     * `author` author (uploader) in display format - e.g. with underscores "_" -
     * `title`
     * `date`
@@ -175,6 +175,9 @@ Available operations are:
     * `rating`
 ```
 falocalrepo database search tags=cat,%mouse date=2020-% category=%artwork%
+```
+```
+falocalrepo database search tags=%cat% tags=%mouse% date=2020-% category=%artwork%
 ```
 * `manual-entry <param1>=<value1> ... <paramN>=<valueN>` add a submission to the database manually. The submission file is not downloaded and can instead be provided with the extra parameter `file_local_url`. The following parameters are necessary for a submission entry to be accepted:
     * `id` submission id
