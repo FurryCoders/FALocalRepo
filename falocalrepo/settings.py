@@ -6,11 +6,11 @@ from typing import Tuple
 
 from .database import Connection
 from .database import select
-from .database import insert
+from .database import update
 
 
 def setting_write(db: Connection, key: str, value: str, replace: bool = True):
-    insert(db, "SETTINGS", ["SETTING", "SVALUE"], [key, value], replace)
+    update(db, "SETTINGS", ["SVALUE"], [value], "SETTING", key)
     db.commit()
 
 
