@@ -110,7 +110,7 @@ def update_2_7_to_3(db: Connection) -> Connection:
             update(db_new, "SUBMISSIONS", ["FILEEXT", "FILESAVED"], [filename.split(".")[-1], False], "ID", id_)
         db_new.commit()
     if sub_not_found:
-        print(f"{sub_not_found} submissions not found in FA.files\n" +
+        print(f"{len(sub_not_found)} submissions not found in FA.files\n" +
               "Writing ID's to FA_update_2_7_to_3.txt")
         with open("FA_update_2_7_to_3.txt", "w") as f:
             for i, sub in enumerate(sorted(sub_not_found)):
