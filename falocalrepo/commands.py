@@ -14,6 +14,7 @@ from .database import Connection
 from .database import keys_submissions
 from .database import select_all
 from .download import submission_download
+from .download import user_clean_name
 from .download import user_download
 from .settings import setting_write
 
@@ -106,7 +107,7 @@ def submissions_search(db: Connection,
                        description: List[str] = None, tags: List[str] = None, category: List[str] = None,
                        species: List[str] = None, gender: List[str] = None, rating: List[str] = None
                        ) -> List[tuple]:
-    author = [] if author is None else author
+    author = [] if author is None else list(map(user_clean_name, author))
     title = [] if title is None else title
     date = [] if date is None else date
     description = [] if description is None else description
@@ -124,7 +125,7 @@ def submissions_search(db: Connection,
         " OR ".join(["lower(GENDER) like ?"] * len(gender)),
         " OR ".join(["lower(SPECIES) like ?"] * len(species)),
         " OR ".join(["lower(CATEGORY) like ?"] * len(category)),
-        " OR ".join(["lower(AUTHOR) like ?"] * len(author)),
+        " OR ".join(['replace(lower(AUTHOR), "_", "") like ?'] * len(author)),
         " OR ".join(["lower(TITLE) like ?"] * len(title)),
         " OR ".join(["lower(TAGS) like ?"] * len(tags)),
         " OR ".join(["lower(DESCRIPTION) like ?"] * len(description))
