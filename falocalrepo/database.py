@@ -7,32 +7,31 @@ from typing import Union
 from .__version__ import __database_version__
 
 # Entries guide - USERS
-# v2.6      v3.0
-# USER      USERNAME
-# USERFULL  FOLDERS
-# FOLDERS   GALLERY
-# GALLERY   SCRAPS
-# SCRAPS    FAVORITES
-# FAVORITES EXTRAS
-# EXTRAS
+# v3.0
+# 0 USERNAME
+# 1 FOLDERS
+# 2 GALLERY
+# 3 SCRAPS
+# 4 FAVORITES
+# 5 EXTRAS
 
 # Entries guide - SUBMISSIONS
-# v2.6              v3.0
-# 0   ID            ID
-# 1   AUTHOR        AUTHOR
-# 2   AUTHORURL     TITLE
-# 3   TITLE         UDATE
-# 4   UDATE         DESCRIPTION
-# 5   DESCRIPTION   TAGS
-# 6   TAGS          CATEGORY
-# 7   CATEGORY      SPECIES
-# 8   SPECIES       GENDER
-# 9   GENDER        RATING
-# 10  RATING        FILELINK
-# 11  FILELINK      FILEEXT
-# 12  FILENAME      FILESAVED
-# 13  LOCATION
-# 14  SERVER
+# v3.0
+# 0  ID
+# 1  AUTHOR
+# 2  TITLE
+# 3  UDATE
+# 4  DESCRIPTION
+# 5  TAGS
+# 6  CATEGORY
+# 7  SPECIES
+# 8  GENDER
+# 9  RATING
+# 10 FILELINK
+# 11 FILEEXT
+# 12 FILESAVED
+# 13 LOCATION
+# 14 SERVER
 
 
 keys_submissions: List[str] = [
