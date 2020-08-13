@@ -6,6 +6,7 @@ from shutil import move
 from shutil import rmtree
 from sqlite3 import OperationalError
 from typing import List
+from typing import Optional
 
 from .__version__ import __database_version__
 from .database import Connection
@@ -45,105 +46,116 @@ def compare_versions(a: str, b: str) -> int:
 
 def update_2_7_to_3(db: Connection) -> Connection:
     print("Updating 2.7.0 to 3.0.0")
-    db_new: Connection = connect_database("FA_new.db")
-    make_database(db_new)
+    db_new: Optional[Connection] = None
 
-    # Transfer common submissions and users data
-    print("Transfer common submissions and users data")
-    db.execute("ATTACH DATABASE 'FA_new.db' AS db_new")
-    db.execute(
-        """INSERT OR IGNORE INTO
-        db_new.SUBMISSIONS(ID, AUTHOR, UDATE, TITLE, DESCRIPTION, TAGS, CATEGORY, SPECIES, GENDER, RATING, FILELINK)
-        SELECT ID, AUTHOR, UDATE, TITLE, DESCRIPTION, TAGS, CATEGORY, SPECIES, GENDER, RATING, FILELINK
-        FROM SUBMISSIONS"""
-    )
-    db.execute(
-        """INSERT OR IGNORE INTO
-        db_new.USERS(USERNAME, FOLDERS, GALLERY, SCRAPS, FAVORITES, EXTRAS)
-        SELECT USER, FOLDERS, GALLERY, SCRAPS, FAVORITES, EXTRAS
-        FROM USERS"""
-    )
+    try:
+        db_new = connect_database("FA_new.db")
+        make_database(db_new)
 
-    db.commit()
-    db_new.commit()
+        # Transfer common submissions and users data
+        print("Transfer common submissions and users data")
+        db.execute("ATTACH DATABASE 'FA_new.db' AS db_new")
+        db.execute(
+            """INSERT OR IGNORE INTO
+            db_new.SUBMISSIONS(ID, AUTHOR, UDATE, TITLE, DESCRIPTION, TAGS, CATEGORY, SPECIES, GENDER, RATING, FILELINK)
+            SELECT ID, AUTHOR, UDATE, TITLE, DESCRIPTION, TAGS, CATEGORY, SPECIES, GENDER, RATING, FILELINK
+            FROM SUBMISSIONS"""
+        )
+        db.execute(
+            """INSERT OR IGNORE INTO
+            db_new.USERS(USERNAME, FOLDERS, GALLERY, SCRAPS, FAVORITES, EXTRAS)
+            SELECT USER, FOLDERS, GALLERY, SCRAPS, FAVORITES, EXTRAS
+            FROM USERS"""
+        )
 
-    # Update users folders
-    print("Update users folders")
-    user: str
-    folders: str
-    user_n: int = 0
-    for user, folders in select_all(db_new, "USERS", ["USERNAME", "FOLDERS"]):
-        user_n += 1
-        print(user_n, end="\r", flush=True)
-        folders_new: List[str] = []
-        for folder in folders.split(","):
-            if folder == "g":
-                folders_new.append("gallery")
-            elif folder == "s":
-                folders_new.append("scraps")
-            elif folder == "f":
-                folders_new.append("favorites")
-            elif folder == "e":
-                folders_new.append("extras")
-            elif folder == "E":
-                folders_new.append("Extras")
-        update(db_new, "USERS", ["FOLDERS"], [",".join(folders_new)], "USERNAME", user)
-        db_new.commit() if user_n % 1000 == 0 else None
-    db_new.commit()
-    print()
+        db.commit()
+        db_new.commit()
 
-    # Update submissions FILEEXT and FILESAVED and move to new location
-    print("Update submissions FILEEXT and FILESAVED and move to new location")
-    sub_n: int = 0
-    sub_not_found: List[int] = []
-    for id_, location, filename in select_all(db, "SUBMISSIONS", ["ID", "LOCATION", "FILENAME"]):
-        sub_n += 1
-        print(sub_n, end="\r", flush=True)
-        sub_folder: str = path_join("FA.files", location.strip("/"))
-        sub_folder_new: str = path_join("FA.files_new", tiered_path(id_))
-        if isfile(sub_file := path_join(sub_folder, filename)):
-            makedirs(sub_folder_new, exist_ok=True)
-            move(sub_file, path_join(sub_folder_new, filename))
-            update(db_new, "SUBMISSIONS", ["FILEEXT", "FILESAVED"], [filename.split(".")[-1], True], "ID", id_)
-        elif isfile(path_join(sub_folder_new, filename)):
-            update(db_new, "SUBMISSIONS", ["FILEEXT", "FILESAVED"], [filename.split(".")[-1], True], "ID", id_)
-        else:
-            sub_not_found.append(id_)
-            update(db_new, "SUBMISSIONS", ["FILEEXT", "FILESAVED"], [filename.split(".")[-1], False], "ID", id_)
-        db_new.commit() if sub_n % 10000 == 0 else None
-    db_new.commit()
-    print()
-    if sub_not_found:
-        print(f"{len(sub_not_found)} submissions not found in FA.files\n" +
-              "Writing ID's to FA_update_2_7_to_3.txt")
-        with open("FA_update_2_7_to_3.txt", "w") as f:
-            for i, sub in enumerate(sorted(sub_not_found)):
-                print(i, end="\r", flush=True)
-                f.write(str(sub) + "\n")
+        # Update users folders
+        print("Update users folders")
+        user: str
+        folders: str
+        user_n: int = 0
+        for user, folders in select_all(db_new, "USERS", ["USERNAME", "FOLDERS"]):
+            user_n += 1
+            print(user_n, end="\r", flush=True)
+            folders_new: List[str] = []
+            for folder in folders.split(","):
+                if folder == "g":
+                    folders_new.append("gallery")
+                elif folder == "s":
+                    folders_new.append("scraps")
+                elif folder == "f":
+                    folders_new.append("favorites")
+                elif folder == "e":
+                    folders_new.append("extras")
+                elif folder == "E":
+                    folders_new.append("Extras")
+            update(db_new, "USERS", ["FOLDERS"], [",".join(folders_new)], "USERNAME", user)
+            db_new.commit() if user_n % 1000 == 0 else None
+        db_new.commit()
+        print()
 
-    # Replace older files folder with new
-    print("Replace older files folder with new")
-    if isdir("FA.files"):
-        if not sub_not_found:
-            rmtree("FA.files")
-        else:
-            print("Saving older FA.files to FA.files_old")
-            move("FA.files", "FA.files_old")
-    if isdir("FA.files_new"):
-        move("FA.files_new", "FA.files")
+        # Update submissions FILEEXT and FILESAVED and move to new location
+        print("Update submissions FILEEXT and FILESAVED and move to new location")
+        sub_n: int = 0
+        sub_not_found: List[int] = []
+        for id_, location, filename in select_all(db, "SUBMISSIONS", ["ID", "LOCATION", "FILENAME"]):
+            sub_n += 1
+            print(sub_n, end="\r", flush=True)
+            sub_folder: str = path_join("FA.files", location.strip("/"))
+            sub_folder_new: str = path_join("FA.files_new", tiered_path(id_))
+            if isfile(sub_file := path_join(sub_folder, filename)):
+                makedirs(sub_folder_new, exist_ok=True)
+                move(sub_file, path_join(sub_folder_new, filename))
+                update(db_new, "SUBMISSIONS", ["FILEEXT", "FILESAVED"], [filename.split(".")[-1], True], "ID", id_)
+            elif isfile(path_join(sub_folder_new, filename)):
+                update(db_new, "SUBMISSIONS", ["FILEEXT", "FILESAVED"], [filename.split(".")[-1], True], "ID", id_)
+            else:
+                sub_not_found.append(id_)
+                update(db_new, "SUBMISSIONS", ["FILEEXT", "FILESAVED"], [filename.split(".")[-1], False], "ID", id_)
+            db_new.commit() if sub_n % 10000 == 0 else None
+        db_new.commit()
+        print()
+        if sub_not_found:
+            print(f"{len(sub_not_found)} submissions not found in FA.files\n" +
+                  "Writing ID's to FA_update_2_7_to_3.txt")
+            with open("FA_update_2_7_to_3.txt", "w") as f:
+                for i, sub in enumerate(sorted(sub_not_found)):
+                    print(i, end="\r", flush=True)
+                    f.write(str(sub) + "\n")
 
-    # Update counters for new database
-    setting_write(db_new, "SUBN", str(count(db_new, "SUBMISSIONS")))
-    setting_write(db_new, "USRN", str(count(db_new, "USERS")))
+        # Replace older files folder with new
+        print("Replace older files folder with new")
+        if isdir("FA.files"):
+            if not sub_not_found:
+                rmtree("FA.files")
+            else:
+                print("Saving older FA.files to FA.files_old")
+                move("FA.files", "FA.files_old")
+        if isdir("FA.files_new"):
+            move("FA.files_new", "FA.files")
 
-    # Close databases and replace old database
-    print("Close databases and replace old database")
-    db.commit()
-    db.close()
-    db_new.commit()
-    db_new.close()
-    move("FA.db", "FA_2_11_2.db")
-    move("FA_new.db", "FA.db")
+        # Update counters for new database
+        setting_write(db_new, "SUBN", str(count(db_new, "SUBMISSIONS")))
+        setting_write(db_new, "USRN", str(count(db_new, "USERS")))
+
+        # Close databases and replace old database
+        print("Close databases and replace old database")
+        db.commit()
+        db.close()
+        db_new.commit()
+        db_new.close()
+        move("FA.db", "FA_2_11_2.db")
+        move("FA_new.db", "FA.db")
+    except (BaseException, Exception) as err:
+        print("Database update interrupted!")
+        db.commit()
+        db.close()
+        if db_new is not None:
+            db_new.commit()
+            db_new.close()
+        raise err
 
     return connect_database("FA.db")
 
