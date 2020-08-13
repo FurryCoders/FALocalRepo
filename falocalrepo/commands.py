@@ -43,10 +43,9 @@ def submissions_download(api: FAAPI, db: Connection, sub_ids: List[str]):
 
 
 def users_update(api: FAAPI, db: Connection):
-    users_folders: List[Tuple[str, str]] = select_all(db, "USERS", ["USERNAME", "FOLDERS"])
     tot: int = 0
     fail: int = 0
-    for user, user_folders in users_folders:
+    for user, user_folders in select_all(db, "USERS", ["USERNAME", "FOLDERS"]):
         for folder in user_folders.split(","):
             if folder.lower() == "extras":
                 print(f"Unsupported: {user}/{folder}")

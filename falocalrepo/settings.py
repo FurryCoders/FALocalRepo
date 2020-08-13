@@ -15,9 +15,9 @@ def setting_write(db: Connection, key: str, value: str, replace: bool = True):
 
 
 def setting_read(db: Connection, key: str) -> Optional[str]:
-    setting = select(db, "SETTINGS", ["SVALUE"], "SETTING", key)
+    setting = next(select(db, "SETTINGS", ["SVALUE"], "SETTING", key))
 
-    return None if not setting else setting[0][0]
+    return None if not setting else setting[0]
 
 
 def cookies_read(db: Connection) -> Tuple[str, str]:

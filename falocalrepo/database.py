@@ -1,6 +1,7 @@
 from os.path import join as path_join
 from sqlite3 import Connection
 from sqlite3 import connect as sqlite3_connect
+from typing import Iterator
 from typing import List
 from typing import Union
 
@@ -75,15 +76,16 @@ def insert(db: Connection, table: str, keys: List[str], values: List[Union[int, 
     )
 
 
-def select(db: Connection, table: str, select_fields: List[str], key: str, key_value: Union[int, str]) -> List[tuple]:
+def select(db: Connection, table: str, select_fields: List[str], key: str, key_value: Union[int, str]
+           ) -> Iterator[tuple]:
     return db.execute(
         f'''SELECT {",".join(select_fields)} FROM {table} WHERE {key} = ?''',
         (key_value,)
-    ).fetchall()
+    )
 
 
-def select_all(db: Connection, table: str, select_fields: List[str]) -> List[tuple]:
-    return db.execute(f'''SELECT {",".join(select_fields)} FROM {table}''').fetchall()
+def select_all(db: Connection, table: str, select_fields: List[str]) -> Iterator[tuple]:
+    return db.execute(f'''SELECT {",".join(select_fields)} FROM {table}''')
 
 
 def update(db: Connection, table: str, fields: List[str], values: List[Union[int, str]], key: str, key_value: str):
@@ -103,7 +105,7 @@ def delete(db: Connection, table: str, key: str, key_value: Union[int, str]):
     db.execute(f"""DELETE FROM {table} where {key} = ?""", (key_value,))
 
 
-def count(db:  Connection, table: str) -> int:
+def count(db: Connection, table: str) -> int:
     return db.execute(f"SELECT COUNT(*) FROM {table}").fetchall()[0][0]
 
 

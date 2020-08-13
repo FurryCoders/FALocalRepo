@@ -26,7 +26,7 @@ def get_version(db: Connection) -> str:
         return setting_read(db, "VERSION")
     except OperationalError:
         # Database version 2.7.0
-        return select(db, "INFOS", ["VALUE"], "FIELD", "VERSION")[0][0]
+        return next(select(db, "INFOS", ["VALUE"], "FIELD", "VERSION"))[0]
 
 
 def compare_versions(a: str, b: str) -> int:
