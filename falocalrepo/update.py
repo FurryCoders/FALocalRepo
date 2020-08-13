@@ -90,6 +90,7 @@ def update_2_7_to_3(db: Connection) -> Connection:
         update(db_new, "USERS", ["FOLDERS"], [",".join(folders_new)], "USERNAME", user)
         db_new.commit() if user_n % 1000 == 0 else None
     db_new.commit()
+    print()
 
     # Update submissions FILEEXT and FILESAVED and move to new location
     print("Update submissions FILEEXT and FILESAVED and move to new location")
@@ -111,6 +112,7 @@ def update_2_7_to_3(db: Connection) -> Connection:
             update(db_new, "SUBMISSIONS", ["FILEEXT", "FILESAVED"], [filename.split(".")[-1], False], "ID", id_)
         db_new.commit() if sub_n % 10000 == 0 else None
     db_new.commit()
+    print()
     if sub_not_found:
         print(f"{len(sub_not_found)} submissions not found in FA.files\n" +
               "Writing ID's to FA_update_2_7_to_3.txt")
