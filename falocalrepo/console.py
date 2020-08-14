@@ -71,7 +71,13 @@ def download(db: Connection, args: List[str]):
     if not args:
         raise CommandError("Malformed command: download needs a command")
     elif args[0] == "update":
-        users_update(api, db)
+        users: Optional[List[str]] = None
+        folders: Optional[List[str]] = None
+        if args[1:] and args[1] != "--":
+            users = list(set(map(user_clean_name, args[1].split(","))))
+        if args[2:] and args[2] != "--":
+            folders = list(set(map(str.strip, args[2].split(","))))
+        users_update(api, db, users, folders)
     elif args[0] == "users":
         if len(args[1:]) == 2 and args[1] and args[2]:
             users: List[str] = list(set(map(user_clean_name, args[1].split(","))))
