@@ -43,11 +43,15 @@ def submissions_download(api: FAAPI, db: Connection, sub_ids: List[str]):
         submission_download(api, db, sub_id)
 
 
-def users_update(api: FAAPI, db: Connection):
+def users_update(api: FAAPI, db: Connection, users: List[str] = None, folders: List[str] = None):
     tot: int = 0
     fail: int = 0
     for user, user_folders in select_all(db, "USERS", ["USERNAME", "FOLDERS"]):
+        if users and user not in users:
+            continue
         for folder in user_folders.split(","):
+            if folders and folder not in folders:
+                continue
             if folder.lower() == "extras":
                 print(f"Unsupported: {user}/{folder}")
                 continue
