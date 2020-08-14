@@ -145,7 +145,16 @@ The `download` command performs all download and repository update operations.
 
 Available operations are:
 
-* `update` update the repository by checking the previously downloaded folders (gallery, scraps or favorites) of each user and stopping when it finds a submission that is already present in the repository. Requires no arguments.
+* `update [<user1>,...,<userN>] [<folder1>,...,<folderN>]` update the repository by checking the previously downloaded folders (gallery, scraps or favorites) of each user and stopping when it finds a submission that is already present in the repository. Can pass a list of users and/or folders that will be updated if in the database. To skip users, use `--` as argument.
+```
+falocalrepo download update
+```
+```
+falocalrepo download update -- gallery,scraps
+```
+```
+falocalrepo download update tom,jerry
+```
 * `users <user1>,...,<userN> <folder1>,...,<folderN>` download specific user folders. Requires two arguments in the format is one of gallery, scraps or favorites.
 ```
 falocalrepo download users tom,jerry gallery,scraps
