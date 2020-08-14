@@ -146,7 +146,7 @@ def update_2_7_to_3(db: Connection) -> Connection:
         db.close()
         db_new.commit()
         db_new.close()
-        move("FA.db", "FA_2_11_2.db")
+        move("FA.db", "FA_2_7.db")
         move("FA_new.db", "FA.db")
     except (BaseException, Exception) as err:
         print("Database update interrupted!")
