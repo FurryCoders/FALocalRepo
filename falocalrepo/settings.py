@@ -9,7 +9,7 @@ from .database import select
 from .database import update
 
 
-def setting_write(db: Connection, key: str, value: str, replace: bool = True):
+def setting_write(db: Connection, key: str, value: str):
     update(db, "SETTINGS", ["SVALUE"], [value], "SETTING", key)
     db.commit()
 
