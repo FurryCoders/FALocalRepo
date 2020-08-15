@@ -24,6 +24,10 @@ from .database import update
 from .settings import setting_read
 
 
+class UnknownFolder(Exception):
+    pass
+
+
 def cookies_load(api: FAAPI, cookie_a: str, cookie_b: str):
     api.load_cookies([
         {"name": "a", "value": cookie_a},
@@ -173,6 +177,8 @@ def user_download(api: FAAPI, db: Connection, user: str, folder: str, stop: int 
     elif folder == "favorites":
         page = "next"
         downloader = api.favorites
+    else:
+        UnknownFolder(folder)
 
     user_new(db, user)
     user_add(db, user, "FOLDERS", folder.lower())
