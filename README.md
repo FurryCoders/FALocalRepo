@@ -31,7 +31,7 @@ This program uses a custom scraping library to get content from FurAffinity. Thi
     1. [Users](#users)
     1. [Submissions](#submissions)
 5. [Submission Files](#submission-files)
-6. [Upgrading from Earlier Versions](#upgrading-from-earlier-versions)
+6. [Upgrading Database](#upgrading-database)
 7. [Contributing](#contributing)
 8. [Issues](#issues)
 9. [Appendix](#appendix)
@@ -248,7 +248,7 @@ Each entry contains the following fields:
 * `GALLERY`
 * `SCRAPS`
 * `FAVORITES`
-* `EXTRAS` this is a legacy entry used by the program up to version 2.11.2
+* `MENTIONS` this is a legacy entry used by the program up to version 2.11.2 (was named `EXTRAS`)
 
 ### Submissions
 
@@ -274,7 +274,7 @@ Submission files are saved in a tiered tree structure based on their submission 
 
 For example, a submission `1457893` will be padded to `0001457893` and divided into `00`, `01`, `45`, `78`, `93`. The submission file will then be saved as `00/01/45/78/93/submission.file` with the correct extension extracted from the file itself - FurAffinity links do not always contain the right extension and often confuse jpg and png -.
 
-## Upgrading from Earlier Versions
+## Upgrading Database
 
 When the program starts, it checks the version of the database against the one used by the program and if the latter is more advanced it updates the database.
 
@@ -285,6 +285,10 @@ _Note:_ Versions before 2.7.0 are not supported by falocalrepo version 3.0.0 and
 Information from the database are copied over to the new version, but otherwise remain unaltered save for a few changed column names in the `SUBMISSIONS` and `USERS` tables.
 
 Files are moved to the new structure and the old files folder is deleted. Only submissions files are kept starting from version 3.0.0
+
+### 3.0.0 &rarr; 3.1.0
+
+`EXTRAS` field in `USERS` table is changed to `MENTIONS`, and `extras` and `Extras` folders are renamed to `mentions` and `mentions_all` respectively.
 
 ## Contributing
 
