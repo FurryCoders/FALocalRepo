@@ -215,6 +215,58 @@ def update_2_7_to_3(db: Connection) -> Connection:
     return connect_database("FA.db")
 
 
+def update_3_to_3_1(db: Connection) -> Connection:
+    print("Updating 3.0.0 to 3.1.0")
+    db_new: Optional[Connection] = None
+
+    try:
+        db_new = connect_database("FA_new.db")
+        make_database(db_new)
+
+        # Transfer common submissions and users data
+        print("Transfer common submissions and users data")
+        db.execute("ATTACH DATABASE 'FA_new.db' AS db_new")
+        db.execute(
+            """INSERT OR IGNORE INTO db_new.SUBMISSIONS
+            SELECT * FROM SUBMISSIONS"""
+        )
+        db.execute(
+            """INSERT OR IGNORE INTO db_new.USERS
+            SELECT * FROM USERS"""
+        )
+        db.execute(
+            """INSERT OR IGNORE INTO db_new.SETTINGS
+            SELECT * FROM SETTINGS"""
+        )
+
+        db.commit()
+        db_new.commit()
+
+        # Update users folders
+        print("Update user folders")
+        db_new.execute("UPDATE USERS SET FOLDERS = replace(FOLDERS, 'extras', 'mentions')")
+        db_new.execute("UPDATE USERS SET FOLDERS = replace(FOLDERS, 'Extras', 'mentions_all')")
+
+        # Close databases and replace old database
+        print("Close databases and replace old database")
+        db.commit()
+        db.close()
+        db_new.commit()
+        db_new.close()
+        move("FA.db", "FA_3.db")
+        move("FA_new.db", "FA.db")
+    except (BaseException, Exception) as err:
+        print("Database update interrupted!")
+        db.commit()
+        db.close()
+        if db_new is not None:
+            db_new.commit()
+            db_new.close()
+        raise err
+
+    return connect_database("FA.db")
+
+
 def update_database(db: Connection) -> Connection:
     if not (db_version := get_version(db)):
         raise Exception("Cannot read version from database.")
@@ -222,9 +274,12 @@ def update_database(db: Connection) -> Connection:
         return db
     elif v > 0:
         raise Exception("Database version is newer than program.")
-    elif db_version == "2.7":
-        return update_2_7_to_3(db)
-    elif compare_versions(db_version, "2.11.2") < 0:
+    elif compare_versions(db_version, "2.7.0") == 0:
+        db = update_2_7_to_3(db)
+        db = update_3_to_3_1(db)
+    elif compare_versions(db_version, "3.0.0") == 0:
+        db = update_3_to_3_1(db)
+    elif compare_versions(db_version, "2.7.0") < 0:
         raise Exception("Update does not support versions lower than 2.11.2")
 
     return db
