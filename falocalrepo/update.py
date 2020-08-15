@@ -240,6 +240,7 @@ def update_3_to_3_1(db: Connection) -> Connection:
             """INSERT OR REPLACE INTO db_new.SETTINGS
             SELECT * FROM SETTINGS"""
         )
+        db.execute("UPDATE db_new.SETTINGS SET SVALUE = '3.1.0' WHERE SETTING = 'VERSION'")
 
         db.commit()
         db_new.commit()
