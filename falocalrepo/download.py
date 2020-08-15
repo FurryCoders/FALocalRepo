@@ -144,6 +144,8 @@ def submission_download(api: FAAPI, db: Connection, sub_id: int) -> bool:
         raise
     except (Exception, BaseException):
         pass
+    finally:
+        print()
 
     if not sub.id:
         return False
@@ -201,6 +203,5 @@ def user_download(api: FAAPI, db: Connection, user: str, folder: str, stop: int 
             elif submission_download(api, db, sub.id):
                 user_add(db, user, folder.upper(), str(sub.id).zfill(10))
                 subs_total += 1
-                print()
 
     return subs_total, subs_failed
