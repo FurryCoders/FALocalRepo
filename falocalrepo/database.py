@@ -52,7 +52,7 @@ keys_submissions: List[str] = [
     "FILESAVED"
 ]
 
-key_journals: List[str] = [
+keys_journals: List[str] = [
     "ID", "AUTHOR", "TITLE",
     "UDATE", "CONTENT"
 ]
