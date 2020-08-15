@@ -52,7 +52,7 @@ def users_update(api: FAAPI, db: Connection, users: List[str] = None, folders: L
         for folder in user_folders.split(","):
             if folders and folder not in folders:
                 continue
-            if folder.lower() == "extras":
+            if folder.lower().startswith("mentions"):
                 print(f"Unsupported: {user}/{folder}")
                 continue
             print(f"Downloading: {user}/{folder}")

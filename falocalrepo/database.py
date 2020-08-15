@@ -8,16 +8,16 @@ from typing import Union
 from .__version__ import __database_version__
 
 # Entries guide - USERS
-# v3.0
-# 0 USERNAME
-# 1 FOLDERS
-# 2 GALLERY
-# 3 SCRAPS
-# 4 FAVORITES
-# 5 EXTRAS
+# v3.0        v3.1
+# 0 USERNAME  USERNAME
+# 1 FOLDERS   FOLDERS
+# 2 GALLERY   GALLERY
+# 3 SCRAPS    SCRAPS
+# 4 FAVORITES FAVORITES
+# 5 EXTRAS    MENTIONS
 
 # Entries guide - SUBMISSIONS
-# v3.0
+# v3.1
 # 0  ID
 # 1  AUTHOR
 # 2  TITLE
@@ -46,7 +46,7 @@ keys_submissions: List[str] = [
 keys_users: List[str] = [
     "USERNAME", "FOLDERS",
     "GALLERY", "SCRAPS",
-    "FAVORITES", "EXTRAS"
+    "FAVORITES", "MENTIONS"
 ]
 
 
@@ -154,7 +154,7 @@ def make_database(db: Connection):
         GALLERY TEXT,
         SCRAPS TEXT,
         FAVORITES TEXT,
-        EXTRAS TEXT,
+        MENTIONS TEXT,
         PRIMARY KEY (USERNAME ASC));"""
     )
 
