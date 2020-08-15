@@ -35,6 +35,10 @@ def user_clean_name(user: str) -> str:
     return str(re_sub(r"[^a-zA-Z0-9\-.~,]", "", user.lower().strip()))
 
 
+def submission_clean_title(title: str) -> str:
+    return str(re_sub(r"[^\x20-\x7E]", "", title.strip()))
+
+
 def user_check(db: Connection, user: str, field: str, value: str) -> bool:
     field_value: List[str] = next(select(db, "USERS", [field], "USERNAME", user))[0].split(",")
 
@@ -174,8 +178,12 @@ def user_download(api: FAAPI, db: Connection, user: str, folder: str, stop: int 
         if not user_subs:
             print("\r" + (" " * 31), end="\r", flush=True)
         for i, sub in enumerate(user_subs, 1):
-            print(f"\r{page_n:02d}/{i:02d} {sub.id:010d} {sub.title[:space_title]:<{space_title}} ", end="",
-                  flush=True)
+            print(
+                f"\r{page_n:02d}/{i:02d} {sub.id:010d} " +
+                f"{submission_clean_title(sub.title)[:space_title]:<{space_title}} ",
+                end="",
+                flush=True
+            )
             if not sub.id:
                 subs_failed += 1
                 print(f"[{'ID ERROR':^10}]")
