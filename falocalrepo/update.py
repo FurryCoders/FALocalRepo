@@ -136,16 +136,18 @@ def update_2_7_to_3(db: Connection) -> Connection:
             print(user_n, end="\r", flush=True)
             folders_new: List[str] = []
             for folder in folders.split(","):
-                if folder == "g":
-                    folders_new.append("gallery")
+                folder_new = ""
+                if (folder := folder.strip("!")) == "g":
+                    folder_new = "gallery"
                 elif folder == "s":
-                    folders_new.append("scraps")
+                    folder_new = "scraps"
                 elif folder == "f":
-                    folders_new.append("favorites")
+                    folder_new = "favorites"
                 elif folder == "e":
-                    folders_new.append("extras")
+                    folder_new = "extras"
                 elif folder == "E":
-                    folders_new.append("Extras")
+                    folder_new = "Extras"
+                folders_new.append(folder_new + ("!" if folder.endswith("!") else ""))
             update(db_new, "USERS", ["FOLDERS"], [",".join(folders_new)], "USERNAME", user)
             db_new.commit() if user_n % 1000 == 0 else None
         db_new.commit()
