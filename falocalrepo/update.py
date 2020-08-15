@@ -235,7 +235,7 @@ def update_3_to_3_1(db: Connection) -> Connection:
             SELECT * FROM USERS"""
         )
         db.execute(
-            """INSERT OR IGNORE INTO db_new.SETTINGS
+            """INSERT OR REPLACE INTO db_new.SETTINGS
             SELECT * FROM SETTINGS"""
         )
 
