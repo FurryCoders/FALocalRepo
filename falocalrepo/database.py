@@ -8,16 +8,17 @@ from typing import Union
 from .__version__ import __database_version__
 
 # Entries guide - USERS
-# v3.0        v3.1
-# 0 USERNAME  USERNAME
-# 1 FOLDERS   FOLDERS
-# 2 GALLERY   GALLERY
-# 3 SCRAPS    SCRAPS
-# 4 FAVORITES FAVORITES
-# 5 EXTRAS    MENTIONS
+# v3.0        v3.1      v3.2
+# 0 USERNAME  USERNAME  USERNAME
+# 1 FOLDERS   FOLDERS   FOLDERS
+# 2 GALLERY   GALLERY   GALLERY
+# 3 SCRAPS    SCRAPS    SCRAPS
+# 4 FAVORITES FAVORITES FAVORITES
+# 5 EXTRAS    MENTIONS  MENTIONS
+# 6                     JOURNALS
 
 # Entries guide - SUBMISSIONS
-# v3.1
+# v3.2
 # 0  ID
 # 1  AUTHOR
 # 2  TITLE
@@ -34,6 +35,14 @@ from .__version__ import __database_version__
 # 13 LOCATION
 # 14 SERVER
 
+# Entries guide - JOURNALS
+# v3.2
+# 0 ID
+# 1 AUTHOR
+# 2 TITLE
+# 3 UDATE
+# 4 CONTENT
+
 
 keys_submissions: List[str] = [
     "ID", "AUTHOR", "TITLE",
@@ -41,6 +50,11 @@ keys_submissions: List[str] = [
     "CATEGORY", "SPECIES", "GENDER",
     "RATING", "FILELINK", "FILEEXT",
     "FILESAVED"
+]
+
+key_journals: List[str] = [
+    "ID", "AUTHOR", "TITLE",
+    "UDATE", "CONTENT"
 ]
 
 keys_users: List[str] = [
@@ -146,6 +160,17 @@ def make_database(db: Connection):
         PRIMARY KEY (ID ASC));"""
     )
 
+    # Create journals table
+    db.execute(
+        """CREATE TABLE IF NOT EXISTS JOURNALS
+        (ID INT UNIQUE NOT NULL,
+        AUTHOR TEXT NOT NULL,
+        TITLE TEXT,
+        UDATE DATE NOT NULL,
+        CONTENT TEXT,
+        PRIMARY KEY (ID ASC));"""
+    )
+
     # Create users table
     db.execute(
         """CREATE TABLE IF NOT EXISTS USERS
@@ -155,6 +180,7 @@ def make_database(db: Connection):
         SCRAPS TEXT,
         FAVORITES TEXT,
         MENTIONS TEXT,
+        JOURNALS TEXT,
         PRIMARY KEY (USERNAME ASC));"""
     )
 
@@ -171,6 +197,7 @@ def make_database(db: Connection):
     # Add settings
     insert(db, "SETTINGS", ["SETTING", "SVALUE"], ["USRN", "0"], False)
     insert(db, "SETTINGS", ["SETTING", "SVALUE"], ["SUBN", "0"], False)
+    insert(db, "SETTINGS", ["SETTING", "SVALUE"], ["JRNN", "0"], False)
     insert(db, "SETTINGS", ["SETTING", "SVALUE"], ["LASTUPDATE", "0"], False)
     insert(db, "SETTINGS", ["SETTING", "SVALUE"], ["LASTSTART", "0"], False)
     insert(db, "SETTINGS", ["SETTING", "SVALUE"], ["COOKIES", "{}"], False)
