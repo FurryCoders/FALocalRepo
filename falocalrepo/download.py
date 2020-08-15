@@ -170,7 +170,10 @@ def user_download(api: FAAPI, db: Connection, user: str, folder: str, stop: int 
     found_subs: int = 0
 
     downloader: Callable[[str, Union[str, int]], Tuple[List[SubPartial], Union[int, str]]] = lambda *x: ([], 0)
-    if folder == "gallery":
+    if folder.endswith("!"):
+        print(f"{folder} disabled")
+        return 0, 0
+    elif folder == "gallery":
         downloader = api.gallery
     elif folder == "scraps":
         downloader = api.scraps
