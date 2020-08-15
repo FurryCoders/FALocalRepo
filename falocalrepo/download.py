@@ -109,7 +109,7 @@ def submission_save(db: Connection, sub: Sub, sub_file: Optional[bytes]):
 def submission_download_file(api: FAAPI, sub_file_url: str, speed: int = 100) -> Optional[bytes]:
     bar_length: int = 10
     bar_pos: int = 0
-    print("[" + (" " * bar_length) + "]", end=("\b" * bar_length), flush=True)
+    print("[" + (" " * bar_length) + "]", end=("\b" * bar_length) + "\b", flush=True)
 
     try:
         if not (file_stream := api.session.get(sub_file_url, stream=True)).ok:
@@ -185,7 +185,7 @@ def user_download(api: FAAPI, db: Connection, user: str, folder: str, stop: int 
 
     while page:
         page_n += 1
-        space_title: int = space_term - 28 - (int(log10(page_n)) + 1)
+        space_title: int = space_term - 29 - (int(log10(page_n)) + 1)
         print(f"{page_n}    {user[:space_title]} ...", end="", flush=True)
         user_subs, page = downloader(user, page)
         if not user_subs:
