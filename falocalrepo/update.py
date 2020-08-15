@@ -137,6 +137,7 @@ def update_2_7_to_3(db: Connection) -> Connection:
             folders_new: List[str] = []
             for folder in folders.split(","):
                 folder_new = ""
+                folder_disabled = folder.endswith("!")
                 if (folder := folder.strip("!")) == "g":
                     folder_new = "gallery"
                 elif folder == "s":
@@ -147,7 +148,7 @@ def update_2_7_to_3(db: Connection) -> Connection:
                     folder_new = "extras"
                 elif folder == "E":
                     folder_new = "Extras"
-                folders_new.append(folder_new + ("!" if folder.endswith("!") else ""))
+                folders_new.append(folder_new + ("!" if folder_disabled else ""))
             update(db_new, "USERS", ["FOLDERS"], [",".join(folders_new)], "USERNAME", user)
             db_new.commit() if user_n % 1000 == 0 else None
         db_new.commit()
