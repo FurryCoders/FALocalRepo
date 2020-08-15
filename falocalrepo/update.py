@@ -12,6 +12,7 @@ from .__version__ import __database_version__
 from .database import Connection
 from .database import connect_database
 from .database import count
+from .database import insert
 from .database import make_database
 from .database import select
 from .database import select_all
@@ -44,13 +45,67 @@ def compare_versions(a: str, b: str) -> int:
     return 0
 
 
+def make_database_3(db: Connection):
+    # Create submissions table
+    db.execute(
+        """CREATE TABLE IF NOT EXISTS SUBMISSIONS
+        (ID INT UNIQUE NOT NULL,
+        AUTHOR TEXT NOT NULL,
+        TITLE TEXT,
+        UDATE DATE NOT NULL,
+        DESCRIPTION TEXT,
+        TAGS TEXT,
+        CATEGORY TEXT,
+        SPECIES TEXT,
+        GENDER TEXT,
+        RATING TEXT,
+        FILELINK TEXT,
+        FILEEXT TEXT,
+        FILESAVED INT,
+        PRIMARY KEY (ID ASC));"""
+    )
+
+    # Create users table
+    db.execute(
+        """CREATE TABLE IF NOT EXISTS USERS
+        (USERNAME TEXT UNIQUE NOT NULL,
+        FOLDERS TEXT NOT NULL,
+        GALLERY TEXT,
+        SCRAPS TEXT,
+        FAVORITES TEXT,
+        EXTRAS TEXT,
+        PRIMARY KEY (USERNAME ASC));"""
+    )
+
+    # Create settings table
+    db.execute(
+        """CREATE TABLE IF NOT EXISTS SETTINGS
+        (SETTING TEXT UNIQUE,
+        SVALUE TEXT,
+        PRIMARY KEY (SETTING ASC));"""
+    )
+
+    db.commit()
+
+    # Add settings
+    insert(db, "SETTINGS", ["SETTING", "SVALUE"], ["USRN", "0"], False)
+    insert(db, "SETTINGS", ["SETTING", "SVALUE"], ["SUBN", "0"], False)
+    insert(db, "SETTINGS", ["SETTING", "SVALUE"], ["LASTUPDATE", "0"], False)
+    insert(db, "SETTINGS", ["SETTING", "SVALUE"], ["LASTSTART", "0"], False)
+    insert(db, "SETTINGS", ["SETTING", "SVALUE"], ["COOKIES", "{}"], False)
+    insert(db, "SETTINGS", ["SETTING", "SVALUE"], ["FILESFOLDER", "FA.files"], False)
+    insert(db, "SETTINGS", ["SETTING", "SVALUE"], ["VERSION", str(__database_version__)], False)
+
+    db.commit()
+
+
 def update_2_7_to_3(db: Connection) -> Connection:
     print("Updating 2.7.0 to 3.0.0")
     db_new: Optional[Connection] = None
 
     try:
         db_new = connect_database("FA_new.db")
-        make_database(db_new)
+        make_database_3(db_new)
 
         # Transfer common submissions and users data
         print("Transfer common submissions and users data")
