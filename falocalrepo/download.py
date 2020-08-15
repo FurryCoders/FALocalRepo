@@ -1,3 +1,4 @@
+from math import log10
 from os import get_terminal_size
 from os import makedirs
 from os.path import join as path_join
@@ -108,7 +109,7 @@ def submission_save(db: Connection, sub: Sub, sub_file: Optional[bytes]):
 def submission_download_file(api: FAAPI, sub_file_url: str, speed: int = 100) -> Optional[bytes]:
     bar_length: int = 10
     bar_pos: int = 0
-    print("[" + (" " * bar_length) + "]", end=("\b" * bar_length) + "\b", flush=True)
+    print("[" + (" " * bar_length) + "]", end=("\b" * bar_length), flush=True)
 
     try:
         if not (file_stream := api.session.get(sub_file_url, stream=True)).ok:
@@ -166,7 +167,6 @@ def user_download(api: FAAPI, db: Connection, user: str, folder: str, stop: int 
     page_n: int = 0
     user = user_clean_name(user)
     space_term: int = get_terminal_size()[0]
-    space_title: int = space_term - 14 - 17
     found_subs: int = 0
 
     downloader: Callable[[str, Union[str, int]], Tuple[List[SubPartial], Union[int, str]]] = lambda *x: ([], 0)
@@ -185,13 +185,14 @@ def user_download(api: FAAPI, db: Connection, user: str, folder: str, stop: int 
 
     while page:
         page_n += 1
-        print(f"{page_n:02d}    {user[:37]} ...", end="", flush=True)
+        space_title: int = space_term - 28 - (int(log10(page_n)) + 1)
+        print(f"{page_n}    {user[:space_title]} ...", end="", flush=True)
         user_subs, page = downloader(user, page)
         if not user_subs:
             print("\r" + (" " * 31), end="\r", flush=True)
         for i, sub in enumerate(user_subs, 1):
             print(
-                f"\r{page_n:02d}/{i:02d} {sub.id:010d} " +
+                f"\r{page_n}/{i:02d} {sub.id:010d} " +
                 f"{submission_clean_title(sub.title)[:space_title]:<{space_title}} ",
                 end="",
                 flush=True
