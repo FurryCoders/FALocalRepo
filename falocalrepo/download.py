@@ -62,6 +62,10 @@ def user_new(db: Connection, user: str):
     db.commit()
 
 
+def submission_check(db: Connection, sub_id: int) -> bool:
+    return bool(select(db, "SUBMISSIONS", ["ID"], "ID", sub_id).fetchone())
+
+
 def submission_save(db: Connection, sub: Sub, sub_file: Optional[bytes]):
     sub_ext: str = ""
 
@@ -191,6 +195,9 @@ def user_download(api: FAAPI, db: Connection, user: str, folder: str, stop: int 
                 print(f"[{'FOUND':^10}]")
                 if stop and (found_subs := found_subs + 1) >= stop:
                     return subs_total, subs_failed
+            elif submission_check(db, sub.id):
+                print(f"[{'FOUND':^10}]")
+                user_add(db, user, folder.upper(), str(sub.id).zfill(10))
             elif submission_download(api, db, sub.id):
                 user_add(db, user, folder.upper(), str(sub.id).zfill(10))
                 subs_total += 1
