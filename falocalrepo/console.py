@@ -92,7 +92,8 @@ def download(db: Connection, args: List[str]):
     elif args[0] == "submissions":
         if not args[1:]:
             raise CommandError("Malformed command: submissions needs at least one argument")
-        sub_ids: List[str] = list(set(filter(str.isdigit, args[1:])))
+        sub_ids_tmp: List[str] = list(filter(str.isdigit, args[1:]))
+        sub_ids: List[str] = sorted(set(sub_ids_tmp), key=sub_ids_tmp.index)
         submissions_download(api, db, sub_ids)
     else:
         raise CommandError(f"Unknown download command {args[0]}")
