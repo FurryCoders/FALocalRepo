@@ -99,6 +99,60 @@ def make_database_3(db: Connection):
     db.commit()
 
 
+def make_database_3_1(db: Connection):
+    # Create submissions table
+    db.execute(
+        """CREATE TABLE IF NOT EXISTS SUBMISSIONS
+        (ID INT UNIQUE NOT NULL,
+        AUTHOR TEXT NOT NULL,
+        TITLE TEXT,
+        UDATE DATE NOT NULL,
+        DESCRIPTION TEXT,
+        TAGS TEXT,
+        CATEGORY TEXT,
+        SPECIES TEXT,
+        GENDER TEXT,
+        RATING TEXT,
+        FILELINK TEXT,
+        FILEEXT TEXT,
+        FILESAVED INT,
+        PRIMARY KEY (ID ASC));"""
+    )
+
+    # Create users table
+    db.execute(
+        """CREATE TABLE IF NOT EXISTS USERS
+        (USERNAME TEXT UNIQUE NOT NULL,
+        FOLDERS TEXT NOT NULL,
+        GALLERY TEXT,
+        SCRAPS TEXT,
+        FAVORITES TEXT,
+        MENTIONS TEXT,
+        PRIMARY KEY (USERNAME ASC));"""
+    )
+
+    # Create settings table
+    db.execute(
+        """CREATE TABLE IF NOT EXISTS SETTINGS
+        (SETTING TEXT UNIQUE,
+        SVALUE TEXT,
+        PRIMARY KEY (SETTING ASC));"""
+    )
+
+    db.commit()
+
+    # Add settings
+    insert(db, "SETTINGS", ["SETTING", "SVALUE"], ["USRN", "0"], False)
+    insert(db, "SETTINGS", ["SETTING", "SVALUE"], ["SUBN", "0"], False)
+    insert(db, "SETTINGS", ["SETTING", "SVALUE"], ["LASTUPDATE", "0"], False)
+    insert(db, "SETTINGS", ["SETTING", "SVALUE"], ["LASTSTART", "0"], False)
+    insert(db, "SETTINGS", ["SETTING", "SVALUE"], ["COOKIES", "{}"], False)
+    insert(db, "SETTINGS", ["SETTING", "SVALUE"], ["FILESFOLDER", "FA.files"], False)
+    insert(db, "SETTINGS", ["SETTING", "SVALUE"], ["VERSION", str(__database_version__)], False)
+
+    db.commit()
+
+
 def update_2_7_to_3(db: Connection) -> Connection:
     print("Updating 2.7.0 to 3.0.0")
     db_new: Optional[Connection] = None
@@ -224,7 +278,7 @@ def update_3_to_3_1(db: Connection) -> Connection:
 
     try:
         db_new = connect_database("FA_new.db")
-        make_database(db_new)
+        make_database_3_1(db_new)
 
         # Transfer common submissions and users data
         print("Transfer common submissions and users data")
@@ -271,6 +325,55 @@ def update_3_to_3_1(db: Connection) -> Connection:
     return connect_database("FA.db")
 
 
+def update_3_1_to_3_2(db: Connection) -> Connection:
+    print("Updating 3.1.0 to 3.2.0")
+    db_new: Optional[Connection] = None
+
+    try:
+        db_new = connect_database("FA_new.db")
+        make_database(db_new)
+
+        # Transfer common submissions and users data
+        print("Transfer common submissions and users data")
+        db.execute("ATTACH DATABASE 'FA_new.db' AS db_new")
+        db.execute(
+            """INSERT OR IGNORE INTO db_new.SUBMISSIONS
+            SELECT * FROM SUBMISSIONS"""
+        )
+        db.execute(
+            """INSERT OR IGNORE INTO db_new.USERS(USERNAME, FOLDERS, GALLERY, SCRAPS, FAVORITES, MENTIONS)
+        SELECT USERNAME, FOLDERS, GALLERY, SCRAPS, FAVORITES, MENTIONS FROM USERS"""
+        )
+        db.execute(
+            """INSERT OR REPLACE INTO db_new.SETTINGS
+            SELECT * FROM SETTINGS"""
+        )
+        db.execute("UPDATE db_new.SETTINGS SET SVALUE = '3.2.0' WHERE SETTING = 'VERSION'")
+        db.execute("UPDATE db_new.USERS SET JOURNALS = ''")
+
+        db.commit()
+        db_new.commit()
+
+        # Close databases and replace old database
+        print("Close databases and replace old database")
+        db.commit()
+        db.close()
+        db_new.commit()
+        db_new.close()
+        move("FA.db", "FA_3.db")
+        move("FA_new.db", "FA.db")
+    except (BaseException, Exception) as err:
+        print("Database update interrupted!")
+        db.commit()
+        db.close()
+        if db_new is not None:
+            db_new.commit()
+            db_new.close()
+        raise err
+
+    return connect_database("FA.db")
+
+
 def update_database(db: Connection) -> Connection:
     if not (db_version := get_version(db)):
         raise Exception("Cannot read version from database.")
@@ -281,8 +384,12 @@ def update_database(db: Connection) -> Connection:
     elif compare_versions(db_version, "2.7.0") == 0:
         db = update_2_7_to_3(db)
         db = update_3_to_3_1(db)
+        db = update_3_1_to_3_2(db)
     elif compare_versions(db_version, "3.0.0") == 0:
         db = update_3_to_3_1(db)
+        db = update_3_1_to_3_2(db)
+    elif compare_versions(db_version, "3.1.0") == 0:
+        db = update_3_1_to_3_2(db)
     elif compare_versions(db_version, "2.7.0") < 0:
         raise Exception("Update does not support versions lower than 2.11.2")
 
