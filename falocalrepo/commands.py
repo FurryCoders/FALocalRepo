@@ -31,8 +31,8 @@ def users_download(api: FAAPI, db: Connection, users: List[str], folders: List[s
     for user, folder in ((u, f) for u in users for f in folders):
         print(f"Downloading: {user}/{folder}")
         tot, fail = user_download(api, db, user, folder)
-        print("Submissions downloaded:", tot)
-        print("Submissions failed:", fail)
+        print("Items downloaded:", tot)
+        print("Items failed:", fail) if fail else None
 
 
 def users_update(api: FAAPI, db: Connection, users: List[str] = None, folders: List[str] = None):
@@ -51,8 +51,8 @@ def users_update(api: FAAPI, db: Connection, users: List[str] = None, folders: L
             tot_tmp, fail_tmp = user_download(api, db, user, folder, 1)
             tot += tot_tmp
             fail += fail_tmp
-    print("Submissions downloaded:", tot)
-    print("Submissions failed:", fail)
+    print("Items downloaded:", tot)
+    print("Items failed:", fail) if fail else None
     setting_write(db, "LASTUPDATE", str(datetime.now().timestamp()))
 
 
