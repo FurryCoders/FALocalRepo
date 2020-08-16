@@ -168,6 +168,11 @@ def database(db: Connection, args: List[str]):
         print("Done")
         if results:
             submissions_print(results)
+        print("Checking journals table for errors... ", end="", flush=True)
+        results: List[tuple] = check_errors(db, "JOURNALS")
+        print("Done")
+        if results:
+            journals_print(results)
     elif args[0] == "clean":
         vacuum(db)
 
