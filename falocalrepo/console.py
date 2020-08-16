@@ -94,7 +94,9 @@ def download(db: Connection, args: List[str]):
     api: FAAPI = FAAPI()
     cookies_load(api, *cookies_read(db))
 
-    if comm == "update":
+    if not api.connection_status:
+        raise ConnectionError("FAAPI cannot connect to FA")
+    elif comm == "update":
         users: Optional[List[str]] = None
         folders: Optional[List[str]] = None
         if args and args[0] != "--":
