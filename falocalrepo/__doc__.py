@@ -62,8 +62,8 @@ def help_message(prog: str, args: List[str] = None) -> str:
             \r    search             Search submissions.
             \r    add-submission     Add a submission to the database manually     
             \r    add-journal        Add a journal to the database manually     
-            \r    remove-users       Remove users from database
             \r    remove-submissions Remove submissions from database
+            \r    remove-users       Remove users from database
             \r    check-errors       Check the database for errors
             \r    clean              Clean the database with the VACUUM function"""
     else:
