@@ -123,7 +123,7 @@ def database(db: Connection, args: List[str]):
         results: List[tuple] = submissions_search(db, **search_params)
         submissions_print(results, sort=True)
         print(f"Found {len(results)} results")
-    elif args[0] == "add-submissions":
+    elif args[0] == "add-submission":
         make_params: Dict[str, str] = {(p := arg.split("="))[0].lower(): p[1].strip() for arg in args[1:]}
         make_params["id_"] = make_params.get("id", "")
         if "id" in make_params:
