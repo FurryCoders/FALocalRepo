@@ -4,6 +4,7 @@ from sqlite3 import Cursor
 from sqlite3 import connect as sqlite3_connect
 from typing import List
 from typing import Union
+from math import log10
 
 from .__version__ import __database_version__
 
@@ -67,8 +68,8 @@ keys_users: List[str] = [
 
 def tiered_path(id_: Union[int, str], tiers: int = 5, depth: int = 2) -> str:
     assert isinstance(id_, int) or (isinstance(id_, str) and id_.isdigit())
-    assert isinstance(tiers, int)
-    assert isinstance(depth, int)
+    assert isinstance(tiers, int) and tiers > 0
+    assert isinstance(depth, int) and depth > 0
 
     id_str: str = str(int(id_)).zfill(tiers * depth)
     id_tiered: List[str] = []
