@@ -145,6 +145,11 @@ def database(db: Connection, args: List[str]):
             print("Deleting", sub)
             delete(db, "SUBMISSIONS", "ID", int(sub))
             db.commit()
+    elif args[0] == "remove-journals":
+        for sub in args[1:]:
+            print("Deleting", sub)
+            delete(db, "JOURNALS", "ID", int(sub))
+            db.commit()
     elif args[0] == "clean":
         vacuum(db)
 
