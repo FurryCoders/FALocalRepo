@@ -1,7 +1,9 @@
+from glob import glob
 from os import makedirs
+from os.path import basename
 from os.path import isdir
-from os.path import isfile
 from os.path import join as path_join
+from shutil import copy
 from shutil import move
 from shutil import rmtree
 from sqlite3 import OperationalError
@@ -212,20 +214,26 @@ def update_2_7_to_3(db: Connection) -> Connection:
         print("Update submissions FILEEXT and FILESAVED and move to new location")
         sub_n: int = 0
         sub_not_found: List[int] = []
-        for id_, location, filename in select_all(db, "SUBMISSIONS", ["ID", "LOCATION", "FILENAME"]):
+        for id_, location in select_all(db, "SUBMISSIONS", ["ID", "LOCATION"]):
             sub_n += 1
             print(sub_n, end="\r", flush=True)
-            sub_folder: str = path_join("FA.files", location.strip("/"))
-            sub_folder_new: str = path_join("FA.files_new", tiered_path(id_))
-            if isfile(sub_file := path_join(sub_folder, filename)):
-                makedirs(sub_folder_new, exist_ok=True)
-                move(sub_file, path_join(sub_folder_new, filename))
-                update(db_new, "SUBMISSIONS", ["FILEEXT", "FILESAVED"], [filename.split(".")[-1], True], "ID", id_)
-            elif isfile(path_join(sub_folder_new, filename)):
-                update(db_new, "SUBMISSIONS", ["FILEEXT", "FILESAVED"], [filename.split(".")[-1], True], "ID", id_)
+            if isdir(sub_folder := path_join("FA.files", location.strip("/"))):
+                fileglob = glob(path_join(sub_folder, "submission*"))
+                fileext = ""
+                if filename := fileglob[0] if fileglob else "":
+                    makedirs((sub_folder_new := path_join("FA.files_new", tiered_path(id_))), exist_ok=True)
+                    copy(filename, path_join(sub_folder_new, (filename := basename(filename))))
+                    fileext = filename.split(".")[-1] if "." in filename else ""
+                else:
+                    sub_not_found.append(id_)
+                update(db_new, "SUBMISSIONS", ["FILEEXT", "FILESAVED"], [fileext, bool(filename)], "ID", id_)
+                rmtree(sub_folder)
+            elif isdir(path_join("FA.files_new", tiered_path(id_))):
+                # if this block is reached, original folder was removed and database entry updated
+                continue
             else:
                 sub_not_found.append(id_)
-                update(db_new, "SUBMISSIONS", ["FILEEXT", "FILESAVED"], [filename.split(".")[-1], False], "ID", id_)
+                update(db_new, "SUBMISSIONS", ["FILEEXT", "FILESAVED"], ["", False], "ID", id_)
             db_new.commit() if sub_n % 10000 == 0 else None
         db_new.commit()
         print()
