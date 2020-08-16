@@ -63,7 +63,7 @@ The scraping library used by this program needs two specific cookies from a logg
 As of 2020-08-09 these take the form of hexadecimal strings like `356f5962-5a60-0922-1c11-65003b703038`.
 
 The easiest way to obtain these cookies is by using a browser extension to extract your cookies and then search for `a` and `b`.<br>
-Alternatively, the storage inspection tool of a desktop browser can also be used. For example on Mozilla's Firefox this can be opened with &#8679;F9 shortcut.
+Alternatively, the storage inspection tool of a desktop browser can also be used. For example on Mozilla's Firefox this can be opened with the &#8679;F9 shortcut.
 
 To set the cookies use the `config cookies` command. See [#Configuration](#configuration) for more details.
 
@@ -176,7 +176,7 @@ The `database` command allows to operate on the database. Used without an operat
 
 Available operations are:
 
-* `search <param1>=<value1> ... [<paramN>=<valueN>]` search the submissions entries using metadata fields. Search is conducted case-insensitively using the SQLite `like` expression which allows for limited pattern matching. For example this string can be used to search two tags together separated by an unknown amount of characters `cat,%mouse`. Search parameters can be passed multiple times to act as OR values. The following search parameters are supported:
+* `search-submissions <param1>=<value1> ... [<paramN>=<valueN>]` search the submissions entries using metadata fields. Search is conducted case-insensitively using the SQLite [`like`](https://sqlite.org/lang_expr.html#like) expression which allows for limited pattern matching. For example this string can be used to search two tags together separated by an unknown amount of characters `cat,%mouse`. Search parameters can be passed multiple times to act as OR values. The following search parameters are supported:
     * `author` author
     * `title`
     * `date`
@@ -187,10 +187,21 @@ Available operations are:
     * `gender`
     * `rating`
 ```
-falocalrepo database search tags=%cat,%mouse% date=2020-% category=%artwork%
+falocalrepo database search-submissions tags=%cat,%mouse% date=2020-% category=%artwork%
 ```
 ```
-falocalrepo database search tags=%cat% tags=%mouse% date=2020-% category=%artwork%
+falocalrepo database search-submissions tags=%cat% tags=%mouse% date=2020-% category=%artwork%
+```
+* `search-journals <param1>=<value1> ... [<paramN>=<valueN>]` search the journals entries using metadata fields. Search is conducted case-insensitively using the SQLite `like` expression. Search parameters can be passed multiple times to act as OR values. The following search parameters are supported:
+    * `author` author
+    * `title`
+    * `date`
+    * `content`
+```
+falocalrepo database search-journals date=2020-% author=CatArtist
+```
+```
+falocalrepo database search-journals date=2020-% date=2019-% content=%commission%
 ```
 * `add-submission <param1>=<value1> ... <paramN>=<valueN>` add a submission to the database manually. The submission file is not downloaded and can instead be provided with the extra parameter `file_local_url`. The following parameters are necessary for a submission entry to be accepted:
     * `id` submission id
@@ -207,12 +218,22 @@ The following parameters are optional:
     * `file_url` the url of the submission file, not used to download the file
     * `file_local_url` if provided, take the submission file from this path and put it into the database
 ```
-falocalrepo database manual-entry id=12345678 'title=cat & mouse' author=CartoonArtist \
+falocalrepo database add-submission id=12345678 'title=cat & mouse' author=CartoonArtist \
     date=2020-08-09 category=Artwork 'species=Unspecified / Any' gender=Any rating=General \
     tags=cat,mouse,cartoon 'description=There once were a cat named Tom and a mouse named Jerry.' \
     'file_url=http://remote.url/to/submission.file' file_local_url=path/to/submission.file
 ```
-* `check-errors` check the database for common errors and prints a list of entries that contain erroneous data. Requires no arguments.
+* `add-journal <param1>=<value1> ... <paramN>=<valueN>` add a journal to the database manually. The following parameters are necessary for a journal entry to be accepted:
+    * `id` journal id
+    * `title`
+    * `author`
+    * `date` date in the format YYYY-MM-DD<br>
+The following parameters are optional:
+    * `content` the body of the journal
+```
+falocalrepo database add-journal id=12345678 title="An Update" author=CartoonArtist \
+    date=2020-08-09 content="$(cat journal.html)"
+```
 * `remove-users <user1> ... [<userN>]` remove specific users from the database.
 ```
 falocalrepo database remove-users jerry
@@ -221,11 +242,16 @@ falocalrepo database remove-users jerry
 ```
 falocalrepo database remove-submissions 12345678 13572468 87651234
 ```
+* `remove-journals <id1> ... [<idN>]` remove specific journals from the database.
+```
+falocalrepo database remove-journals 123456 135724 876512
+```
+* `check-errors` check the database for common errors and prints a list of entries that contain erroneous data. Requires no arguments.
 * `clean` clean the database using the SQLite [VACUUM](https://www.sqlite.org/lang_vacuum.html) function. Requires no arguments.
 
 ## Database
 
-To store the metadata of the downloaded submissions, downloaded users, cookies and statistics, the program uses a SQLite3 database. This database is built to be as light as possible while also containing all the metadata that can be extracted from a submission page. 
+To store the metadata of the downloaded submissions, journals, users, cookies and statistics, the program uses a SQLite3 database. This database is built to be as light as possible while also containing all the metadata that can be extracted from a submission page.
 
 To store all this information, the database uses three tables: `SETTINGS`, `USERS` and `SUBMISSIONS`.
 
