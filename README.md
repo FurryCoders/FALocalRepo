@@ -155,7 +155,7 @@ falocalrepo download update -- gallery,scraps
 ```
 falocalrepo download update tom,jerry
 ```
-* `users <user1>,...,<userN> <folder1>,...,<folderN>` download specific user folders. Requires two arguments in the format is one of gallery, scraps or favorites.
+* `users <user1>,...,<userN> <folder1>,...,<folderN>` download specific user folders. Requires two arguments with comma separated users and folders.
 ```
 falocalrepo download users tom,jerry gallery,scraps
 ```
