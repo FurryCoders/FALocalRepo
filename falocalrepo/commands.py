@@ -11,6 +11,7 @@ from faapi import Journal
 from faapi import Sub
 
 from .database import Connection
+from .database import keys_journals
 from .database import keys_submissions
 from .download import submission_download
 from .download import user_clean_name
@@ -94,6 +95,60 @@ def submission_make(id_: Union[int, str], author: str, title: str,
             sub_file = f.read()
 
     return sub, sub_file
+
+
+def journals_search(db: Connection,
+                    author: List[str] = None, title: List[str] = None,
+                    date: List[str] = None, content: List[str] = None
+                    ) -> List[tuple]:
+    author = [] if author is None else list(map(user_clean_name, author))
+    title = [] if title is None else title
+    date = [] if date is None else date
+    content = [] if content is None else content
+
+    assert any((author, title, date, content))
+
+    wheres: List[str] = [
+        " OR ".join(["UDATE like ?"] * len(date)),
+        " OR ".join(['replace(lower(AUTHOR), "_", "") like ?'] * len(author)),
+        " OR ".join(["lower(TITLE) like ?"] * len(title)),
+        " OR ".join(["lower(content) like ?"] * len(content))
+    ]
+
+    wheres_str = " AND ".join(map(lambda p: "(" + p + ")", filter(len, wheres)))
+
+    return db.execute(
+        f"""SELECT * FROM JOURNALS WHERE {wheres_str}""",
+        date + author + title + content
+    ).fetchall()
+
+
+def journals_print(journals: List[tuple], sort: bool = True):
+    space_id: int = 10
+    space_user: int = 10
+    space_date: int = 10
+    space_term: int = 10000
+    try:
+        space_term = get_terminal_size()[0]
+    except IOError:
+        pass
+
+    index_id: int = keys_journals.index("ID")
+    index_user: int = keys_journals.index("AUTHOR")
+    index_date: int = keys_journals.index("UDATE")
+    index_title: int = keys_journals.index("TITLE")
+
+    if sort:
+        journals.sort(key=lambda j: (j[index_user], j[index_date]))
+
+    print(f"{'ID':^{space_id}} | {'User':^{space_user}} | {'Date':^{space_date}} | Title")
+    for journal in journals:
+        print(
+            f"{str(journal[index_id])[:space_id].zfill(space_id)} | " +
+            f"{journal[index_user][:space_user]:<{space_user}} | " +
+            f"{journal[index_date][:space_date]:<{space_date}} | " +
+            journal[index_title][:(space_term - space_id - space_user - space_date - 10)]
+        )
 
 
 def submissions_search(db: Connection,
