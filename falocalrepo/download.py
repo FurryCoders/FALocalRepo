@@ -50,13 +50,13 @@ def clean_title(title: str) -> str:
 
 
 def user_check(db: Connection, user: str, field: str, value: str) -> bool:
-    field_value: List[str] = select(db, "USERS", [field], "USERNAME", user).fetchone().split(",")
+    field_value: List[str] = select(db, "USERS", [field], "USERNAME", user).fetchone()[0].split(",")
 
     return value in filter(len, field_value)
 
 
 def user_add(db: Connection, user: str, field: str, add_value: str):
-    field_old: List[str] = select(db, "USERS", [field], "USERNAME", user).fetchone().split(",")
+    field_old: List[str] = select(db, "USERS", [field], "USERNAME", user).fetchone()[0].split(",")
     field_old = list(filter(len, field_old))
 
     if add_value in field_old:
