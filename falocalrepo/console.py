@@ -220,7 +220,8 @@ def main_console(args: List[str]):
     finally:
         # Close database and update totals
         if db is not None:
-            setting_write(db, "SUBN", str(count(db, "SUBMISSIONS")))
             setting_write(db, "USRN", str(count(db, "USERS")))
+            setting_write(db, "SUBN", str(count(db, "SUBMISSIONS")))
+            setting_write(db, "JRNN", str(count(db, "JOURNALS")))
             db.commit()
             db.close()
