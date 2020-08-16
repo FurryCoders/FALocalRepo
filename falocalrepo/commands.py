@@ -35,14 +35,6 @@ def users_download(api: FAAPI, db: Connection, users: List[str], folders: List[s
         print("Submissions failed:", fail)
 
 
-def submissions_download(api: FAAPI, db: Connection, sub_ids: List[str]):
-    if sub_ids_fail := list(filter(lambda i: not i.isdigit(), sub_ids)):
-        print("The following ID's are not correct:", *sub_ids_fail)
-    for sub_id in map(int, filter(lambda i: i.isdigit(), sub_ids)):
-        print(f"Downloading {sub_id:010} ", end="", flush=True)
-        submission_download(api, db, sub_id)
-
-
 def users_update(api: FAAPI, db: Connection, users: List[str] = None, folders: List[str] = None):
     tot: int = 0
     fail: int = 0
@@ -62,6 +54,14 @@ def users_update(api: FAAPI, db: Connection, users: List[str] = None, folders: L
     print("Submissions downloaded:", tot)
     print("Submissions failed:", fail)
     setting_write(db, "LASTUPDATE", str(datetime.now().timestamp()))
+
+
+def submissions_download(api: FAAPI, db: Connection, sub_ids: List[str]):
+    if sub_ids_fail := list(filter(lambda i: not i.isdigit(), sub_ids)):
+        print("The following ID's are not correct:", *sub_ids_fail)
+    for sub_id in map(int, filter(lambda i: i.isdigit(), sub_ids)):
+        print(f"Downloading {sub_id:010} ", end="", flush=True)
+        submission_download(api, db, sub_id)
 
 
 def submission_make(id_: Union[int, str], author: str, title: str,
