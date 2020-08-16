@@ -59,11 +59,13 @@ def help_message(prog: str, args: List[str] = None) -> str:
             \r    <param>            Parameter for the database operation
             \r    <value>            Value of the parameter
             \r\nAVAILABLE COMMANDS
-            \r    search             Search submissions.
+            \r    search-submissions Search submissions
+            \r    search-journals    Search submissions
             \r    add-submission     Add a submission to the database manually     
             \r    add-journal        Add a journal to the database manually     
-            \r    remove-submissions Remove submissions from database
             \r    remove-users       Remove users from database
+            \r    remove-submissions Remove submissions from database
+            \r    remove-journals    Remove submissions from database
             \r    check-errors       Check the database for errors
             \r    clean              Clean the database with the VACUUM function"""
     else:
