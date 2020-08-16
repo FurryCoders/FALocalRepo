@@ -188,7 +188,7 @@ falocalrepo database search tags=%cat,%mouse% date=2020-% category=%artwork%
 ```
 falocalrepo database search tags=%cat% tags=%mouse% date=2020-% category=%artwork%
 ```
-* `manual-entry <param1>=<value1> ... <paramN>=<valueN>` add a submission to the database manually. The submission file is not downloaded and can instead be provided with the extra parameter `file_local_url`. The following parameters are necessary for a submission entry to be accepted:
+* `add-submission <param1>=<value1> ... <paramN>=<valueN>` add a submission to the database manually. The submission file is not downloaded and can instead be provided with the extra parameter `file_local_url`. The following parameters are necessary for a submission entry to be accepted:
     * `id` submission id
     * `title`
     * `author`
