@@ -1,7 +1,7 @@
 from os.path import join as path_join
 from sqlite3 import Connection
+from sqlite3 import Cursor
 from sqlite3 import connect as sqlite3_connect
-from typing import Iterator
 from typing import List
 from typing import Union
 
@@ -92,14 +92,14 @@ def insert(db: Connection, table: str, keys: List[str], values: List[Union[int, 
 
 
 def select(db: Connection, table: str, select_fields: List[str], key: str, key_value: Union[int, str]
-           ) -> Iterator[tuple]:
+           ) -> Cursor:
     return db.execute(
         f'''SELECT {",".join(select_fields)} FROM {table} WHERE {key} = ?''',
         (key_value,)
     )
 
 
-def select_all(db: Connection, table: str, select_fields: List[str]) -> Iterator[tuple]:
+def select_all(db: Connection, table: str, select_fields: List[str]) -> Cursor:
     return db.execute(f'''SELECT {",".join(select_fields)} FROM {table}''')
 
 
