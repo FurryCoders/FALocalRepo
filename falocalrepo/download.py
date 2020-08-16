@@ -27,6 +27,7 @@ from .database import select_all
 from .database import tiered_path
 from .database import update
 from .settings import setting_read
+from .settings import setting_write
 
 
 class UnknownFolder(Exception):
