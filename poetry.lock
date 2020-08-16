@@ -46,7 +46,7 @@ description = "Python module to implement API-like functionality for the FurAffi
 name = "faapi"
 optional = false
 python-versions = ">=3.8,<4.0"
-version = "2.7.3"
+version = "2.8.1"
 
 [package.dependencies]
 beautifulsoup4 = ">=4.9.1,<5.0.0"
@@ -144,7 +144,7 @@ secure = ["certifi", "cryptography (>=1.3.4)", "idna (>=2.0.0)", "pyOpenSSL (>=0
 socks = ["PySocks (>=1.5.6,<1.5.7 || >1.5.7,<2.0)"]
 
 [metadata]
-content-hash = "64f75887d5e775d352e56c94271b955b84f04c9fbd80b1938ea8a9da7ea07122"
+content-hash = "6cc522f8b5dc3eea30164a45019219ec5acf0375e261e78bf88bf7852d61232b"
 lock-version = "1.0"
 python-versions = "^3.8"
 
@@ -167,8 +167,8 @@ chardet = [
     {file = "chardet-3.0.4.tar.gz", hash = "sha256:84ab92ed1c4d4f16916e05906b6b75a6c0fb5db821cc65e70cbd64a3e2a5eaae"},
 ]
 faapi = [
-    {file = "faapi-2.7.3-py3-none-any.whl", hash = "sha256:55fbbca61d07c7ec501647eb5213ecf07a9ed460c21f90747f01e2513f85ae05"},
-    {file = "faapi-2.7.3.tar.gz", hash = "sha256:3d85db04c5380b41aaca4c5bed1497de7580eaa6018e51c1245cc3e8e1cc43ff"},
+    {file = "faapi-2.8.1-py3-none-any.whl", hash = "sha256:0989eb6452560eec8f2b2bb1f16dc7ab9c9d9e6f965ea24a7b6c4f718fe893c2"},
+    {file = "faapi-2.8.1.tar.gz", hash = "sha256:a9beef96e628a7f3a57e13e96b4d99f22b9ec4d6009e98421f8e3273c19c8c78"},
 ]
 filetype = [
     {file = "filetype-1.0.7-py2.py3-none-any.whl", hash = "sha256:353369948bb1c09b8b3ea3d78390b5586e9399bff9aab894a1dff954e31a66f6"},

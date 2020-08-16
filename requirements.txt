@@ -1,2 +1,2 @@
-faapi==2.7.3
+faapi==2.8.1
 filetype==1.0.7
