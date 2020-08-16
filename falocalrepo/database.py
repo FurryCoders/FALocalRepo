@@ -70,7 +70,7 @@ def tiered_path(id_: Union[int, str], tiers: int = 5, depth: int = 2) -> str:
     assert isinstance(tiers, int)
     assert isinstance(depth, int)
 
-    id_str: str = str(id_).lstrip("0").zfill(tiers * depth)
+    id_str: str = str(int(id_)).zfill(tiers * depth)
     id_tiered: List[str] = []
     for n in range(0, tiers * depth, depth):
         id_tiered.append(id_str[n:n + depth])
