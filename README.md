@@ -145,7 +145,7 @@ The `download` command performs all download and repository update operations.
 
 Available operations are:
 
-* `update [<user1>,...,<userN>] [<folder1>,...,<folderN>]` update the repository by checking the previously downloaded folders (gallery, scraps or favorites) of each user and stopping when it finds a submission that is already present in the repository. Can pass a list of users and/or folders that will be updated if in the database. To skip users, use `--` as argument.
+* `update [<user1>,...,<userN>] [<folder1>,...,<folderN>]` update the repository by checking the previously downloaded folders (gallery, scraps, favorites or journals) of each user and stopping when it finds a submission that is already present in the repository. Can pass a list of users and/or folders that will be updated if in the database. To skip users, use `--` as argument.
 ```
 falocalrepo download update
 ```
@@ -162,6 +162,10 @@ falocalrepo download users tom,jerry gallery,scraps
 * `submissions <id1> ... [<idN>]` download specific submissions. Requires submission ID's provided as separate arguments.
 ```
 falocalrepo download submissions 12345678 13572468 87651234
+```
+* `journals <id1> ... [<idN>]` download specific journals. Requires journal ID's provided as separate arguments.
+```
+falocalrepo download journals 123456 135724 876512
 ```
 
 ### Database
@@ -249,6 +253,7 @@ Each entry contains the following fields:
 * `SCRAPS`
 * `FAVORITES`
 * `MENTIONS` this is a legacy entry used by the program up to version 2.11.2 (was named `EXTRAS`)
+* `JOURNALS`
 
 ### Submissions
 
@@ -267,6 +272,16 @@ The submissions table contains the metadata of the submissions downloaded by the
 * `FILELINK` the remote URL of the submission file
 * `FILEEXT` the extensions of the downloaded file. Can be empty if the file contained errors and could not be recognised upon download
 * `FILESAVED` 1 if the file was successfully downloaded and saved, 0 if there was an error during download
+
+### Journals
+
+The journals table contains the metadata of the journals downloaded by the program.
+
+* `ID` the id of the journal
+* `AUTHOR` the username of the author (uploader) in full format
+* `TITLE`
+* `UDATE` upload date in the format YYYY-MM-DD
+* `CONTENT` content in html format
 
 ## Submission Files
 
@@ -289,6 +304,10 @@ Files are moved to the new structure and the old files folder is deleted. Only s
 ### 3.0.0 &rarr; 3.1.0
 
 `EXTRAS` field in `USERS` table is changed to `MENTIONS`, and `extras` and `Extras` folders are renamed to `mentions` and `mentions_all` respectively.
+
+### 3.1.0 &rarr; 3.2.0
+
+Add `JOURNALS` table and `JOURNALS` field in `USERS` table.
 
 ## Contributing
 
