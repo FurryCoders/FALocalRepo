@@ -41,6 +41,19 @@ class CommandError(Exception):
     pass
 
 
+def parameters_multi(*args) -> Dict[str, List[str]]:
+    params: Dict[str, List[str]] = {}
+    for param, value in map(lambda p: p.split("=", 1), args):
+        param = param.strip().lower()
+        params[param] = params.get(param, []) + [value]
+
+    return params
+
+
+def parameters(*args) -> Dict[str, str]:
+    return {p: v for p, v in map(lambda p: p.split("=", 1), args)}
+
+
 def config(db: Connection, args: List[str]):
     comm: str = args[0] if args else ""
     args = args[1:]
@@ -130,30 +143,20 @@ def database(db: Connection, args: List[str]):
         print("Last update:", str(datetime.fromtimestamp(last_update)) if last_update else 0)
         print("Version    :", version)
     elif comm == "search-submissions":
-        search_params: Dict[str, List[str]] = {}
-        for param, value in map(lambda p: p.split("=", 1), args):
-            param = param.strip().lower()
-            search_params[param] = search_params.get(param, []) + [value]
-        results: List[tuple] = submissions_search(db, **search_params)
+        results: List[tuple] = submissions_search(db, **parameters_multi(args))
         submissions_print(results, sort=True)
         print(f"Found {len(results)} results")
     elif comm == "search-journals":
-        search_params: Dict[str, List[str]] = {}
-        for param, value in map(lambda p: p.split("=", 1), args):
-            param = param.strip().lower()
-            search_params[param] = search_params.get(param, []) + [value]
-        results: List[tuple] = journals_search(db, **search_params)
+        results: List[tuple] = journals_search(db, **parameters_multi(args))
         journals_print(results, sort=True)
         print(f"Found {len(results)} results")
     elif comm == "add-submission":
-        make_params: Dict[str, str] = {(p := arg.split("="))[0].lower(): p[1].strip() for arg in args}
-        make_params["id_"] = make_params.get("id", "")
+        make_params = parameters(args)
         if "id" in make_params:
             del make_params["id"]
         submission_save(db, *submission_make(**make_params))
     elif comm == "add-journal":
-        make_params: Dict[str, str] = {(p := arg.split("="))[0].lower(): p[1].strip() for arg in args}
-        make_params["id_"] = make_params.get("id", "")
+        make_params = parameters(args)
         if "id" in make_params:
             del make_params["id"]
         journal_save(db, journal_make(**make_params))
