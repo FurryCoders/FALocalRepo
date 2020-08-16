@@ -11,12 +11,14 @@ from typing import Tuple
 from typing import Union
 
 from faapi import FAAPI
+from faapi import Journal
 from faapi import Sub
 from faapi import SubPartial
 from filetype import guess_extension
 
 from .database import Connection
 from .database import insert
+from .database import keys_journals
 from .database import keys_submissions
 from .database import keys_users
 from .database import select
@@ -40,7 +42,7 @@ def user_clean_name(user: str) -> str:
     return str(re_sub(r"[^a-zA-Z0-9\-.~,]", "", user.lower().strip()))
 
 
-def submission_clean_title(title: str) -> str:
+def clean_title(title: str) -> str:
     return str(re_sub(r"[^\x20-\x7E]", "", title.strip()))
 
 
@@ -160,16 +162,29 @@ def submission_download(api: FAAPI, db: Connection, sub_id: int) -> bool:
     return True
 
 
+def journal_check(db: Connection, journal_id: int) -> bool:
+    return bool(select(db, "JOURNALS", ["ID"], "ID", journal_id).fetchone())
+
+
+def journal_save(db: Connection, journal: Journal):
+    insert(db, "JOURNALS", keys_journals,
+           [journal.id, journal.author, journal.title, journal.date, journal.content])
+
+
 def user_download(api: FAAPI, db: Connection, user: str, folder: str, stop: int = 0) -> Tuple[int, int]:
-    subs_total: int = 0
-    subs_failed: int = 0
+    items_total: int = 0
+    items_failed: int = 0
+    items_type: str = "sub"
     page: Union[int, str] = 1
     page_n: int = 0
     user = user_clean_name(user)
     space_term: int = get_terminal_size()[0]
     found_subs: int = 0
 
-    downloader: Callable[[str, Union[str, int]], Tuple[List[SubPartial], Union[int, str]]] = lambda *x: ([], 0)
+    downloader: Callable[
+        [str, Union[str, int]],
+        Tuple[Union[List[SubPartial], List[Journal]], Union[int, str]]
+    ] = lambda *x: ([], 0)
     if folder.endswith("!"):
         print(f"{folder} disabled")
         return 0, 0
@@ -180,6 +195,9 @@ def user_download(api: FAAPI, db: Connection, user: str, folder: str, stop: int 
     elif folder == "favorites":
         page = "next"
         downloader = api.favorites
+    elif folder == "journals":
+        items_type = "journal"
+        downloader = api.journals
     else:
         UnknownFolder(folder)
 
@@ -190,28 +208,36 @@ def user_download(api: FAAPI, db: Connection, user: str, folder: str, stop: int 
         page_n += 1
         space_title: int = space_term - 29 - (int(log10(page_n)) + 1)
         print(f"{page_n}    {user[:space_title]} ...", end="", flush=True)
-        user_subs, page = downloader(user, page)
-        if not user_subs:
+        items, page = downloader(user, page)
+        if not items:
             print("\r" + (" " * 31), end="\r", flush=True)
-        for i, sub in enumerate(user_subs, 1):
+        for i, item in enumerate(items, 1):
             print(
-                f"\r{page_n}/{i:02d} {sub.id:010d} " +
-                f"{submission_clean_title(sub.title)[:space_title]:<{space_title}} ",
+                f"\r{page_n}/{i:02d} {item.id:010d} " +
+                f"{clean_title(item.title)[:space_title]:<{space_title}} ",
                 end="",
                 flush=True
             )
-            if not sub.id:
-                subs_failed += 1
+            if not item.id:
+                items_failed += 1
                 print(f"[{'ID ERROR':^10}]")
-            elif user_check(db, user, folder.upper(), str(sub.id).zfill(10)):
+            elif user_check(db, user, folder.upper(), str(item.id).zfill(10)):
                 print(f"[{'FOUND':^10}]")
                 if stop and (found_subs := found_subs + 1) >= stop:
-                    return subs_total, subs_failed
-            elif submission_check(db, sub.id):
+                    return items_total, items_failed
+            elif items_type == "sub" and submission_check(db, item.id):
                 print(f"[{'FOUND':^10}]")
-                user_add(db, user, folder.upper(), str(sub.id).zfill(10))
-            elif submission_download(api, db, sub.id):
-                user_add(db, user, folder.upper(), str(sub.id).zfill(10))
-                subs_total += 1
+                user_add(db, user, folder.upper(), str(item.id).zfill(10))
+            elif items_type == "sub" and submission_download(api, db, item.id):
+                user_add(db, user, folder.upper(), str(item.id).zfill(10))
+                items_total += 1
+            elif items_type == "journal" and journal_check(db, item.id):
+                print(f"[{'FOUND':^10}]")
+                user_add(db, user, folder.upper(), str(item.id).zfill(10))
+            elif items_type == "journal":
+                print(f"[{'#' * 10}]")
+                journal_save(db, item)
+                user_add(db, user, folder.upper(), str(item.id).zfill(10))
+                items_total += 1
 
-    return subs_total, subs_failed
+    return items_total, items_failed
