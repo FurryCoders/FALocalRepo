@@ -60,7 +60,8 @@ keys_journals: List[str] = [
 keys_users: List[str] = [
     "USERNAME", "FOLDERS",
     "GALLERY", "SCRAPS",
-    "FAVORITES", "MENTIONS"
+    "FAVORITES", "MENTIONS",
+    "JOURNALS"
 ]
 
 
