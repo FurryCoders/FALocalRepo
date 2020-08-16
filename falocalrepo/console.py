@@ -10,6 +10,7 @@ from .__doc__ import help_message
 from .__version__ import __database_version__
 from .__version__ import __version__
 from .commands import files_folder_move
+from .commands import journal_make
 from .commands import submission_make
 from .commands import submissions_download
 from .commands import submissions_print
@@ -24,6 +25,7 @@ from .database import delete
 from .database import make_database
 from .database import vacuum
 from .download import cookies_load
+from .download import journal_save
 from .download import submission_save
 from .download import user_clean_name
 from .settings import cookies_read
@@ -129,6 +131,12 @@ def database(db: Connection, args: List[str]):
         if "id" in make_params:
             del make_params["id"]
         submission_save(db, *submission_make(**make_params))
+    elif args[0] == "add-journal":
+        make_params: Dict[str, str] = {(p := arg.split("="))[0].lower(): p[1].strip() for arg in args[1:]}
+        make_params["id_"] = make_params.get("id", "")
+        if "id" in make_params:
+            del make_params["id"]
+        journal_save(db, journal_make(**make_params))
     elif args[0] == "check-errors":
         print("Checking submissions table for errors... ", end="", flush=True)
         results: List[tuple] = check_errors(db, "SUBMISSIONS")
