@@ -95,6 +95,12 @@ def download(db: Connection, args: List[str]):
         sub_ids_tmp: List[str] = list(filter(str.isdigit, args[1:]))
         sub_ids: List[str] = sorted(set(sub_ids_tmp), key=sub_ids_tmp.index)
         submissions_download(api, db, sub_ids)
+    elif args[0] == "journals":
+        if not args[1:]:
+            raise CommandError("Malformed command: journals needs at least one argument")
+        journal_ids_tmp: List[str] = list(filter(str.isdigit, args[1:]))
+        journal_ids: List[str] = sorted(set(journal_ids_tmp), key=journal_ids_tmp.index)
+        submissions_download(api, db, journal_ids)
     else:
         raise CommandError(f"Unknown download command {args[0]}")
 
