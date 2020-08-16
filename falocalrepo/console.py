@@ -137,12 +137,6 @@ def database(db: Connection, args: List[str]):
         if "id" in make_params:
             del make_params["id"]
         journal_save(db, journal_make(**make_params))
-    elif args[0] == "check-errors":
-        print("Checking submissions table for errors... ", end="", flush=True)
-        results: List[tuple] = check_errors(db, "SUBMISSIONS")
-        print("Done")
-        if results:
-            submissions_print(results)
     elif args[0] == "remove-users":
         for user in map(user_clean_name, args[1:]):
             print("Deleting", user)
@@ -158,6 +152,12 @@ def database(db: Connection, args: List[str]):
             print("Deleting", sub)
             delete(db, "JOURNALS", "ID", int(sub))
             db.commit()
+    elif args[0] == "check-errors":
+        print("Checking submissions table for errors... ", end="", flush=True)
+        results: List[tuple] = check_errors(db, "SUBMISSIONS")
+        print("Done")
+        if results:
+            submissions_print(results)
     elif args[0] == "clean":
         vacuum(db)
 
