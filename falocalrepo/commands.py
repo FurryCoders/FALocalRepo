@@ -8,7 +8,7 @@ from typing import Tuple
 from typing import Union
 
 from faapi import FAAPI
-from faapi import Sub
+from faapi import Sub, Journal
 
 from .database import Connection
 from .database import keys_submissions
@@ -54,6 +54,27 @@ def users_update(api: FAAPI, db: Connection, users: List[str] = None, folders: L
     print("Submissions downloaded:", tot)
     print("Submissions failed:", fail)
     setting_write(db, "LASTUPDATE", str(datetime.now().timestamp()))
+
+
+def journal_make(id_: Union[int, str], author: str,
+                 title: str, date: str, content: str = ""
+                 ) -> Journal:
+    assert isinstance(id_, int) or (isinstance(id_, str) and id_.isdigit())
+    assert int(id_) > 0
+    assert isinstance(author, str) and author
+    assert isinstance(title, str) and title
+    assert isinstance(date, str) and date
+    assert isinstance(content, str)
+
+    journal = Journal()
+
+    journal.id = int(id_)
+    journal.author = author
+    journal.title = title
+    journal.date = date
+    journal.content = content
+
+    return journal
 
 
 def submissions_download(api: FAAPI, db: Connection, sub_ids: List[str]):
