@@ -117,7 +117,7 @@ def database(db: Connection, args: List[str]):
         print("Users      :", usr_n)
         print("Last update:", str(datetime.fromtimestamp(last_update)) if last_update else 0)
         print("Version    :", version)
-    elif args[0] == "search":
+    elif args[0] == "search-submissions":
         search_params: Dict[str, List[str]] = {}
         for param, value in map(lambda p: p.split("=", 1), args[1:]):
             param = param.strip().lower()
