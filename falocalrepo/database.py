@@ -129,14 +129,18 @@ def vacuum(db: Connection):
 
 
 def check_errors(db: Connection, table: str) -> List[tuple]:
-    if (table := table.upper()) == "SUBMISSIONS":
-        id_errors: List[tuple] = select(db, table, ["*"], "ID", 0)
-        author_errors: List[tuple] = select(db, table, ["*"], "AUTHOR", "")
-        title_errors: List[tuple] = select(db, table, ["*"], "TITLE", "")
-        date_errors: List[tuple] = select(db, table, ["*"], "UDATE", "")
-        file_url_errors: List[tuple] = select(db, table, ["*"], "FILELINK", "")
+    if (table := table.upper()) in ("SUBMISSIONS", "JOURNALS"):
+        errors: List[tuple] = []
+        errors.extend(select(db, table, ["*"], "ID", 0).fetchall())
+        errors.extend(select(db, table, ["*"], "AUTHOR", "").fetchall())
+        errors.extend(select(db, table, ["*"], "TITLE", "").fetchall())
+        errors.extend(select(db, table, ["*"], "UDATE", "").fetchall())
 
-        return list(set(id_errors + author_errors + title_errors + date_errors + file_url_errors))
+        if table == "SUBMISSIONS":
+            errors.extend(select(db, table, ["*"], "FILELINK", "").fetchall())
+            errors.extend(select(db, table, ["*"], "FILESAVED", "").fetchall())
+
+        return sorted(set(errors), key=lambda s: s[0])
     else:
         return []
 
