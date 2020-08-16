@@ -94,7 +94,7 @@ def make_database_3(db: Connection):
     insert(db, "SETTINGS", ["SETTING", "SVALUE"], ["LASTSTART", "0"], False)
     insert(db, "SETTINGS", ["SETTING", "SVALUE"], ["COOKIES", "{}"], False)
     insert(db, "SETTINGS", ["SETTING", "SVALUE"], ["FILESFOLDER", "FA.files"], False)
-    insert(db, "SETTINGS", ["SETTING", "SVALUE"], ["VERSION", str(__database_version__)], False)
+    insert(db, "SETTINGS", ["SETTING", "SVALUE"], ["VERSION", "3.0.0"], False)
 
     db.commit()
 
@@ -148,7 +148,7 @@ def make_database_3_1(db: Connection):
     insert(db, "SETTINGS", ["SETTING", "SVALUE"], ["LASTSTART", "0"], False)
     insert(db, "SETTINGS", ["SETTING", "SVALUE"], ["COOKIES", "{}"], False)
     insert(db, "SETTINGS", ["SETTING", "SVALUE"], ["FILESFOLDER", "FA.files"], False)
-    insert(db, "SETTINGS", ["SETTING", "SVALUE"], ["VERSION", str(__database_version__)], False)
+    insert(db, "SETTINGS", ["SETTING", "SVALUE"], ["VERSION", "3.1.0"], False)
 
     db.commit()
 
