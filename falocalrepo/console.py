@@ -11,6 +11,8 @@ from .__version__ import __database_version__
 from .__version__ import __version__
 from .commands import files_folder_move
 from .commands import journal_make
+from .commands import journals_print
+from .commands import journals_search
 from .commands import submission_make
 from .commands import submissions_download
 from .commands import submissions_print
@@ -124,6 +126,14 @@ def database(db: Connection, args: List[str]):
             search_params[param] = search_params.get(param, []) + [value]
         results: List[tuple] = submissions_search(db, **search_params)
         submissions_print(results, sort=True)
+        print(f"Found {len(results)} results")
+    elif args[0] == "search-journals":
+        search_params: Dict[str, List[str]] = {}
+        for param, value in map(lambda p: p.split("=", 1), args[1:]):
+            param = param.strip().lower()
+            search_params[param] = search_params.get(param, []) + [value]
+        results: List[tuple] = journals_search(db, **search_params)
+        journals_print(results, sort=True)
         print(f"Found {len(results)} results")
     elif args[0] == "add-submission":
         make_params: Dict[str, str] = {(p := arg.split("="))[0].lower(): p[1].strip() for arg in args[1:]}
