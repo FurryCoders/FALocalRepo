@@ -1,3 +1,4 @@
+from datetime import datetime
 from math import log10
 from os import get_terminal_size
 from os import makedirs
@@ -22,6 +23,7 @@ from .database import keys_journals
 from .database import keys_submissions
 from .database import keys_users
 from .database import select
+from .database import select_all
 from .database import tiered_path
 from .database import update
 from .settings import setting_read
@@ -169,6 +171,35 @@ def journal_check(db: Connection, journal_id: int) -> bool:
 def journal_save(db: Connection, journal: Journal):
     insert(db, "JOURNALS", keys_journals,
            [journal.id, journal.author, journal.title, journal.date, journal.content])
+
+
+def users_download(api: FAAPI, db: Connection, users: List[str], folders: List[str]):
+    for user, folder in ((u, f) for u in users for f in folders):
+        print(f"Downloading: {user}/{folder}")
+        tot, fail = user_download(api, db, user, folder)
+        print("Items downloaded:", tot)
+        print("Items failed:", fail) if fail else None
+
+
+def users_update(api: FAAPI, db: Connection, users: List[str] = None, folders: List[str] = None):
+    tot: int = 0
+    fail: int = 0
+    for user, user_folders in select_all(db, "USERS", ["USERNAME", "FOLDERS"]):
+        if users and user not in users:
+            continue
+        for folder in user_folders.split(","):
+            if folders and folder not in folders:
+                continue
+            if folder.lower().startswith("mentions"):
+                print(f"Unsupported: {user}/{folder}")
+                continue
+            print(f"Downloading: {user}/{folder}")
+            tot_tmp, fail_tmp = user_download(api, db, user, folder, 1)
+            tot += tot_tmp
+            fail += fail_tmp
+    print("Items downloaded:", tot)
+    print("Items failed:", fail) if fail else None
+    setting_write(db, "LASTUPDATE", str(datetime.now().timestamp()))
 
 
 def user_download(api: FAAPI, db: Connection, user: str, folder: str, stop: int = 0) -> Tuple[int, int]:

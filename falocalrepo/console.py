@@ -15,8 +15,6 @@ from .commands import submission_make
 from .commands import submissions_download
 from .commands import submissions_print
 from .commands import submissions_search
-from .commands import users_download
-from .commands import users_update
 from .database import Connection
 from .database import check_errors
 from .database import connect_database
@@ -28,6 +26,8 @@ from .download import cookies_load
 from .download import journal_save
 from .download import submission_save
 from .download import user_clean_name
+from .download import users_download
+from .download import users_update
 from .settings import cookies_read
 from .settings import cookies_write
 from .settings import setting_read

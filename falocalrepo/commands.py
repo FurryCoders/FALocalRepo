@@ -1,4 +1,3 @@
-from datetime import datetime
 from os import get_terminal_size
 from os.path import isdir
 from shutil import move
@@ -8,14 +7,13 @@ from typing import Tuple
 from typing import Union
 
 from faapi import FAAPI
-from faapi import Sub, Journal
+from faapi import Journal
+from faapi import Sub
 
 from .database import Connection
 from .database import keys_submissions
-from .database import select_all
 from .download import submission_download
 from .download import user_clean_name
-from .download import user_download
 from .settings import setting_write
 
 
@@ -25,35 +23,6 @@ def files_folder_move(db: Connection, folder_old: str, folder_new: str):
         print("Moving files to new location... ", end="", flush=True)
         move(folder_old, folder_new)
         print("Done")
-
-
-def users_download(api: FAAPI, db: Connection, users: List[str], folders: List[str]):
-    for user, folder in ((u, f) for u in users for f in folders):
-        print(f"Downloading: {user}/{folder}")
-        tot, fail = user_download(api, db, user, folder)
-        print("Items downloaded:", tot)
-        print("Items failed:", fail) if fail else None
-
-
-def users_update(api: FAAPI, db: Connection, users: List[str] = None, folders: List[str] = None):
-    tot: int = 0
-    fail: int = 0
-    for user, user_folders in select_all(db, "USERS", ["USERNAME", "FOLDERS"]):
-        if users and user not in users:
-            continue
-        for folder in user_folders.split(","):
-            if folders and folder not in folders:
-                continue
-            if folder.lower().startswith("mentions"):
-                print(f"Unsupported: {user}/{folder}")
-                continue
-            print(f"Downloading: {user}/{folder}")
-            tot_tmp, fail_tmp = user_download(api, db, user, folder, 1)
-            tot += tot_tmp
-            fail += fail_tmp
-    print("Items downloaded:", tot)
-    print("Items failed:", fail) if fail else None
-    setting_write(db, "LASTUPDATE", str(datetime.now().timestamp()))
 
 
 def journal_make(id_: Union[int, str], author: str,
