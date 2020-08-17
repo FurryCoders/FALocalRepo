@@ -217,17 +217,17 @@ def update_2_7_to_3(db: Connection) -> Connection:
         for id_, location in select_all(db, "SUBMISSIONS", ["ID", "LOCATION"]):
             sub_n += 1
             print(sub_n, end="\r", flush=True)
-            if isdir(sub_folder := path_join("FA.files", location.strip("/"))):
-                fileglob = glob(path_join(sub_folder, "submission*"))
+            if isdir(folder_old := path_join("FA.files", location.strip("/"))):
+                fileglob = glob(path_join(folder_old, "submission*"))
                 fileext = ""
                 if filename := fileglob[0] if fileglob else "":
-                    makedirs((sub_folder_new := path_join("FA.files_new", tiered_path(id_))), exist_ok=True)
-                    copy(filename, path_join(sub_folder_new, (filename := basename(filename))))
+                    makedirs((folder_new := path_join("FA.files_new", tiered_path(id_))), exist_ok=True)
+                    copy(filename, path_join(folder_new, (filename := basename(filename))))
                     fileext = filename.split(".")[-1] if "." in filename else ""
                 else:
                     sub_not_found.append(id_)
                 update(db_new, "SUBMISSIONS", ["FILEEXT", "FILESAVED"], [fileext, bool(filename)], "ID", id_)
-                rmtree(sub_folder)
+                rmtree(folder_old)
             elif isdir(path_join("FA.files_new", tiered_path(id_))):
                 # if this block is reached, original folder was removed and database entry updated
                 continue
