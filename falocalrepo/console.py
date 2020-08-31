@@ -41,7 +41,7 @@ class CommandError(Exception):
     pass
 
 
-def parameters_multi(*args) -> Dict[str, List[str]]:
+def parameters_multi(args: List[str]) -> Dict[str, List[str]]:
     params: Dict[str, List[str]] = {}
     for param, value in map(lambda p: p.split("=", 1), args):
         param = param.strip().lower()
@@ -50,7 +50,7 @@ def parameters_multi(*args) -> Dict[str, List[str]]:
     return params
 
 
-def parameters(*args) -> Dict[str, str]:
+def parameters(args: List[str]) -> Dict[str, str]:
     return {p: v for p, v in map(lambda p: p.split("=", 1), args)}
 
 
