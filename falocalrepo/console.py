@@ -118,10 +118,10 @@ def download(db: Connection, args: List[str]):
     elif comm == "update":
         users: Optional[List[str]] = None
         folders: Optional[List[str]] = None
-        if args and args[0] != "--":
+        if args and args[0] != "@":
             users_tmp: List[str] = list(filter(bool, map(user_clean_name, args[0].split(","))))
             users = sorted(set(users_tmp), key=users_tmp.index)
-        if args[1:] and args[1] != "--":
+        if args[1:] and args[1] != "@":
             folders_tmp: List[str] = list(filter(bool, map(str.strip, args[1].split(","))))
             folders = sorted(set(folders_tmp), key=folders_tmp.index)
         users_update(api, db, users, folders, int(opts.get("stop", 1)))
