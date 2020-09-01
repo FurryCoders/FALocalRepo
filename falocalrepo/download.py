@@ -182,7 +182,7 @@ def users_download(api: FAAPI, db: Connection, users: List[str], folders: List[s
         print("Items failed:", fail) if fail else None
 
 
-def users_update(api: FAAPI, db: Connection, users: List[str] = None, folders: List[str] = None):
+def users_update(api: FAAPI, db: Connection, users: List[str] = None, folders: List[str] = None, stop: int = 1):
     tot: int = 0
     fail: int = 0
     for user, user_folders in select_all(db, "USERS", ["USERNAME", "FOLDERS"]):
@@ -195,7 +195,7 @@ def users_update(api: FAAPI, db: Connection, users: List[str] = None, folders: L
                 print(f"Unsupported: {user}/{folder}")
                 continue
             print(f"Downloading: {user}/{folder}")
-            tot_tmp, fail_tmp = user_download(api, db, user, folder, 1)
+            tot_tmp, fail_tmp = user_download(api, db, user, folder, stop)
             tot += tot_tmp
             fail += fail_tmp
     print("Items downloaded:", tot)

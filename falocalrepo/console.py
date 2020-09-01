@@ -124,7 +124,7 @@ def download(db: Connection, args: List[str]):
         if args[1:] and args[1] != "--":
             folders_tmp: List[str] = list(filter(bool, map(str.strip, args[1].split(","))))
             folders = sorted(set(folders_tmp), key=folders_tmp.index)
-        users_update(api, db, users, folders)
+        users_update(api, db, users, folders, int(opts.get("stop", 1)))
     elif comm == "users":
         if len(args) == 2 and args[0] and args[1]:
             users_tmp: List[str] = list(filter(bool, map(user_clean_name, args[0].split(","))))
