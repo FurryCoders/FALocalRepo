@@ -42,7 +42,7 @@ def help_message(prog: str, args: List[str] = None) -> str:
             \r    files-folder    Files download folder"""
     elif args[0] == "download":
         return f"""USAGE
-            \r    {basename(prog)} download <command> [<arg1>] ... [<argN>]
+            \r    {basename(prog)} download <command> [<option>=<value>] [<arg1>] ... [<argN>]
             \r\nARGUMENTS
             \r    <command>       The type of download to execute
             \r    <arg>           Argument for the download command
