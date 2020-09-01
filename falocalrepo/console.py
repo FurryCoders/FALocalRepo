@@ -1,8 +1,10 @@
 from datetime import datetime
 from os.path import isfile
+from re import match
 from typing import Dict
 from typing import List
 from typing import Optional
+from typing import Tuple
 
 from faapi import FAAPI
 
@@ -54,9 +56,26 @@ def parameters(args: List[str]) -> Dict[str, str]:
     return {p: v for p, v in map(lambda p: p.split("=", 1), args)}
 
 
+def parse_args(args: List[str]) -> Tuple[Dict[str, str], List[str]]:
+    opts: List[str] = []
+    vals: List[str] = []
+
+    for i, arg in enumerate(args):
+        if match(r"\w+=\w+", arg):
+            opts.append(arg)
+        elif arg == "--":
+            vals.extend(args[i + 1:])
+            break
+        else:
+            vals.extend(args[i:])
+            break
+
+    return parameters(opts), vals
+
+
 def config(db: Connection, args: List[str]):
     comm: str = args[0] if args else ""
-    args = args[1:]
+    opts, args = parse_args(args[1:])
 
     if not comm:
         cookie_a, cookie_b = cookies_read(db)
@@ -86,7 +105,7 @@ def config(db: Connection, args: List[str]):
 
 def download(db: Connection, args: List[str]):
     comm: str = args[0] if args else ""
-    args = args[1:]
+    opts, args = parse_args(args[1:])
 
     if not comm:
         raise CommandError("Malformed command: download needs a command")
@@ -133,7 +152,7 @@ def download(db: Connection, args: List[str]):
 
 def database(db: Connection, args: List[str]):
     comm: str = args[0] if args else ""
-    args = args[1:]
+    opts, args = parse_args(args[1:])
 
     if not comm:
         sub_n: int = int(setting_read(db, "SUBN"))
