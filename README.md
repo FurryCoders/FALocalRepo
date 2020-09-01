@@ -139,18 +139,18 @@ falocalrepo config files-folder SubmissionFiles
 
 ### Download
 
-`download <operation> [<arg1>] ... [<argN>]`
+`download <operation> [<option>=<value>] [<arg1>] ... [<argN>]`
 
 The `download` command performs all download and repository update operations.
 
 Available operations are:
 
-* `update [<user1>,...,<userN>] [<folder1>,...,<folderN>]` update the repository by checking the previously downloaded folders (gallery, scraps, favorites or journals) of each user and stopping when it finds a submission that is already present in the repository. Can pass a list of users and/or folders that will be updated if in the database. To skip users, use `--` as argument.
+* `update [stop=<n>] [<user1>,...,<userN>] [<folder1>,...,<folderN>]` update the repository by checking the previously downloaded folders (gallery, scraps, favorites or journals) of each user and stopping when it finds a submission that is already present in the repository. Can pass a list of users and/or folders that will be updated if in the database. To skip users, use `@` as argument. The `stop=<n>` option allows to stop updating after finding `n` submissions in a user's database entry, defaults to 1.
 ```
-falocalrepo download update
+falocalrepo download update stop=5
 ```
 ```
-falocalrepo download update -- gallery,scraps
+falocalrepo download update @ gallery,scraps
 ```
 ```
 falocalrepo download update tom,jerry
