@@ -56,21 +56,21 @@ def parameters(args: List[str]) -> Dict[str, str]:
     return {p: v for p, v in map(lambda p: p.split("=", 1), args)}
 
 
-def parse_args(args: List[str]) -> Tuple[Dict[str, str], List[str]]:
+def parse_args(args_raw: List[str]) -> Tuple[Dict[str, str], List[str]]:
     opts: List[str] = []
-    vals: List[str] = []
+    args: List[str] = []
 
-    for i, arg in enumerate(args):
+    for i, arg in enumerate(args_raw):
         if match(r"\w+=\w+", arg):
             opts.append(arg)
         elif arg == "--":
-            vals.extend(args[i + 1:])
+            args.extend(args_raw[i + 1:])
             break
         else:
-            vals.extend(args[i:])
+            args.extend(args_raw[i:])
             break
 
-    return parameters(opts), vals
+    return parameters(opts), args
 
 
 def config(db: Connection, args: List[str]):
