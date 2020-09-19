@@ -9,7 +9,7 @@
             --table_background_color: lightgrey;
         }
 
-        body>h2 {
+        body > h2 {
             text-align: center;
         }
 
@@ -42,6 +42,10 @@
         table td {
             padding: 2px;
             border: 1px solid var(--table_border_color);
+        }
+
+        table td:last-child {
+            max-width: available !important;
         }
 
         table th {
@@ -161,8 +165,7 @@
             <td class="col_date">{{ item[keys.index("UDATE")] }}</td>
             <td class="col_title">{{ item[keys.index("TITLE")] }}</td>
             {% if table == "submissions" %}
-                <td class="col_tags" style="max-width: available !important;">
-                    {{ item[keys.index("TAGS")] }}</td>
+                <td class="col_tags">{{ item[keys.index("TAGS")] }}</td>
             {% endif %}
         </tr>
     {% endfor %}
