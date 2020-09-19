@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+    <style>
+        :root {
+            --table_border_color: darkgray;
+            --table_background_color: lightgrey;
+        }
+
+        .header {
+            width: 95%;
+            top: 20px;
+            margin: auto;
+            text-align: center
+        }
+
+        .footer {
+            width: 95%;
+            top: 20px;
+            margin: auto;
+            text-align: center
+        }
+
+        .header table {
+            width: 40%;
+            top: 20px;
+            margin: auto;
+            text-align: left;
+        }
+
+        table {
+            border-collapse: collapse;
+            border: 1px solid var(--table_border_color);
+        }
+
+        table td {
+            padding: 2px;
+            border: 1px solid var(--table_border_color);
+        }
+
+        table th {
+            padding: 2px;
+            border: 2px solid var(--table_border_color);
+            text-align: center;
+        }
+
+        table .col_id {
+            min-width: fit-content;
+            text-align: center;
+        }
+
+        table .col_author {
+            min-width: fit-content;
+            text-align: center;
+        }
+
+        table .col_date {
+            min-width: fit-content;
+            text-align: center;
+        }
+
+        table .col_title {
+            max-width: 180px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        table .col_tags {
+            max-width: 180px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        table .col_description {
+            max-width: 360px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        table tr.odd {
+            background-color: inherit;
+        }
+
+        table tr.even {
+            background-color: var(--table_background_color);
+        }
+
+        #search_results {
+            width: 95%;
+            top: 20px;
+            margin: auto;
+        }
+
+        button {
+            position: relative;
+            top: 10px;
+            bottom: 10px;
+        }
+
+        .clickable {
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<div class="header">
+    <table>
+        {% for param, value in params.items() %}
+            <tr class="{{ loop.cycle('odd', 'even') }}">
+                <td style="width: 80px">{{ param.title() }}</td>
+                <td>{{ " OR ".join(value) }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+    <br>
+    Results: {{ offset }}-{{ offset + results|length }} of {{ results_total }}
+    · Page {{ (offset // limit) + 1 }}
+    <br>
+    <button onclick="pagePrev()" style="visibility: {{ 'visible' if offset >= limit else 'hidden' }}">
+        Prev
+    </button>
+    <button onclick="newSearch()">New Search</button>
+    <button onclick="pageNext()" style="visibility: {{ 'visible' if results|length == limit else 'hidden' }}">
+        Next
+    </button>
+    <br>&nbsp;<br>
+</div>
+<table id="search_results">
+    <tr class="even header">
+        <th class="col_id">ID</th>
+        <th class="col_author">Author</th>
+        <th class="col_date">Date</th>
+        <th class="col_title">Title</th>
+        {% if table == "submissions" %}
+            <th class="col_tags">Tags</th>
+        {% endif %}
+    </tr>
+    {% for item in results %}
+        <tr class="clickable {{ loop.cycle('odd', 'even') }}"
+            onclick="openItem({{ item[keys.index("ID")] }})">
+            <td class="col_id"><a href="/{{ table }}/{{ item[keys.index("ID")] }}">
+                {{ item[keys.index("ID")] }}</a></td>
+            <td class="col_author">{{ item[keys.index("AUTHOR")] }}</td>
+            <td class="col_date">{{ item[keys.index("UDATE")] }}</td>
+            <td class="col_title">{{ item[keys.index("TITLE")] }}</td>
+            {% if table == "submissions" %}
+                <td class="col_tags" style="max-width: available !important;">
+                    {{ item[keys.index("TAGS")] }}</td>
+            {% endif %}
+        </tr>
+    {% endfor %}
+</table>
+<div class="footer">
+    Results: {{ offset }}-{{ offset + results|length }} of {{ results_total }}
+    · Page {{ (offset // limit) + 1 }}
+    <br>
+    <button onclick="pagePrev()" style="visibility: {{ 'visible' if offset >= limit else 'hidden' }}">
+        Prev
+    </button>
+    <button onclick="pageNext()" style="visibility: {{ 'visible' if results|length == limit else 'hidden' }}">
+        Next
+    </button>
+    <br>&nbsp;<br>
+</div>
+<script>
+    const newSearch = () => {
+        let url = new URL(window.location.origin)
+        url.pathname = "/search/"
+        window.location = url.href
+    }
+    const openItem = (itemID) => {
+        let url = new URL(window.location.origin)
+        url.pathname = `/{{ table }}/${itemID}/`
+        console.log(url)
+        window.location = url.href
+    }
+    const pagePrev = () => {
+        let url = new URL(window.location.href)
+        url.searchParams.set("offset", Number(url.searchParams.get("offset") || 0) - {{ limit }})
+        window.location = url.href
+    }
+    const pageNext = () => {
+        let url = new URL(window.location.href)
+        url.searchParams.set("offset", Number(url.searchParams.get("offset") || 0) + {{ limit }})
+        window.location = url.href
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+    <style>
+        :root {
+            --table_border_color: darkgray;
+            --table_background_color: lightgrey;
+        }
+
+        #submission_file {
+            width: 95%;
+            max-width: 95%;
+            top: 20px;
+            margin: auto;
+            text-align: center
+        }
+
+        #submission_metadata {
+            width: 95%;
+            max-width: 95%;
+            top: 20px;
+            margin: auto;
+            text-align: center
+        }
+
+        #submission_description {
+            width: 80%;
+            top: 20px;
+            margin: auto;
+            text-align: justify;
+        }
+
+        img {
+            max-width: 100%;
+            max-height: 100%;
+        }
+
+        table {
+            border-collapse: collapse;
+            border: 1px solid var(--table_border_color);
+        }
+
+        table th {
+            padding: 2px;
+            border: 2px solid var(--table_border_color);
+            text-align: center;
+        }
+
+        table td {
+            padding: 2px;
+            border: 1px solid var(--table_border_color);
+        }
+
+        .overflow {
+            overflow: hidden;
+            white-space: normal;
+        }
+
+        #submission_metadata table {
+            width: 300px;
+            max-width: 300px;
+            margin: auto;
+        }
+
+        #submission_metadata .value {
+            max-width: 300px;
+        }
+    </style>
+</head>
+<body>
+<div id="submission_file">
+    {% if file_type == None %}
+        Submission has no files
+    {% elif file_type == "image" %}
+        <a href="/submission/{{ sub_id }}/file">
+            <img src="/submission/{{ sub_id }}/file" alt="">
+        </a>
+    {% else %}
+        Download submission file:
+        <a href="/submission/{{ sub_id }}/file">
+            submission.{{ submission[keys.index('FILEEXT')] }}
+        </a>
+    {% endif %}
+</div>
+<br>
+<div id="submission_metadata">
+    <h2>{{ submission[keys.index('TITLE')] }} by {{ submission[keys.index('AUTHOR')] }}</h2>
+    <table style="max-width: 300px">
+        <tr>
+            <td>Date</td>
+            <td class="overflow value">{{ submission[keys.index('UDATE')] }}</td>
+        </tr>
+        <tr>
+            <td>Tags</td>
+            <td class="overflow value">
+                {% for tag in submission[keys.index('TAGS')].split(",") %}
+                    <a href='/search/submissions/?tags=["%25{{ tag }}%25"]'>{{ tag }}</a>
+                {% endfor %}
+            </td>
+        </tr>
+        <tr>
+            <td>Category</td>
+            <td class="overflow value">{{ submission[keys.index('CATEGORY')] }}</td>
+        </tr>
+        <tr>
+            <td>Species</td>
+            <td class="overflow value">{{ submission[keys.index('SPECIES')] }}</td>
+        </tr>
+        <tr>
+            <td>Gender</td>
+            <td class="overflow value">{{ submission[keys.index('GENDER')] }}</td>
+        </tr>
+        <tr>
+            <td>Rating</td>
+            <td class="overflow value">{{ submission[keys.index('RATING')] }}</td>
+        </tr>
+    </table>
+</div>
+<br><br>
+<div id="submission_description">
+    {% autoescape false %}
+    {{ submission[keys.index('DESCRIPTION')] }}
+    {% endautoescape %}
+</div>
+</body>
+</html>
