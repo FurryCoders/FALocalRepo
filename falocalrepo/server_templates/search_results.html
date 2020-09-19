@@ -172,11 +172,12 @@
             <td class="col_date">{{ item[keys.index("UDATE")] }}</td>
             <td class="col_title">{{ item[keys.index("TITLE")] }}</td>
             {% if table == "submissions" %}
-                <td class="col_tags">{{ item[keys.index("TAGS")] }}</td>
+                <td class="col_tags">{{ " ".join(item[keys.index("TAGS")].split(",")) }}</td>
             {% endif %}
         </tr>
     {% endfor %}
 </table>
+<br>
 <div class="footer">
     {{ navigation }}
     <br>&nbsp;<br>
