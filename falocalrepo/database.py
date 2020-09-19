@@ -4,7 +4,6 @@ from sqlite3 import Cursor
 from sqlite3 import connect as sqlite3_connect
 from typing import List
 from typing import Union
-from math import log10
 
 from .__version__ import __database_version__
 
@@ -72,7 +71,7 @@ def tiered_path(id_: Union[int, str], tiers: int = 5, depth: int = 2) -> str:
     assert isinstance(depth, int) and depth > 0
 
     id_str: str = str(int(id_)).zfill(tiers * depth)
-    return path_join(*[id_str[n:n+depth] for n in range(0, tiers * depth, depth)])
+    return path_join(*[id_str[n:n + depth] for n in range(0, tiers * depth, depth)])
 
 
 def connect_database(db_name: str) -> Connection:
