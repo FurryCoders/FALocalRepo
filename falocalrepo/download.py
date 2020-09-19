@@ -245,7 +245,7 @@ def user_download(api: FAAPI, db: Connection, user: str, folder: str, stop: int 
         items_type = "journal"
         downloader = api.journals
     else:
-        UnknownFolder(folder)
+        raise UnknownFolder(folder)
 
     user_new(db, user)
     user_add(db, user, "FOLDERS", folder.lower())
