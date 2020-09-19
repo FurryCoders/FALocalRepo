@@ -67,6 +67,11 @@ def user_add(db: Connection, user: str, field: str, add_value: str):
     db.commit()
 
 
+def user_edit(db: Connection, user: str, fields: List[str], new_values: List[str]):
+    update(db, "USERS", fields, new_values, "USERNAME", user)
+    db.commit()
+
+
 def user_new(db: Connection, user: str):
     insert(db, "USERS", keys_users, [user] + [""] * (len(keys_users) - 1), replace=False)
     db.commit()
@@ -188,6 +193,11 @@ def users_update(api: FAAPI, db: Connection, users: List[str] = None, folders: L
     for user, user_folders in select_all(db, "USERS", ["USERNAME", "FOLDERS"]):
         if users and user not in users:
             continue
+        elif not api.user_exists(user):
+            print(f"User {user} not found")
+            new_folders = list(map(lambda f: "!" + f if f in ("gallery", "scraps") else f, user_folders.split(",")))
+            user_edit(db, user, ["FOLDERS"], new_folders)
+            continue
         for folder in user_folders.split(","):
             if folders and folder not in folders:
                 continue
@@ -212,6 +222,9 @@ def user_download(api: FAAPI, db: Connection, user: str, folder: str, stop: int 
     user = user_clean_name(user)
     space_term: int = get_terminal_size()[0]
     found_subs: int = 0
+
+    if not api.user_exists(user):
+        print(f"User {user} not found")
 
     downloader: Callable[
         [str, Union[str, int]],
