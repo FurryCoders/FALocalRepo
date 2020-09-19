@@ -143,9 +143,6 @@ def journals_print(journals: List[tuple], sort: bool = True):
     index_date: int = keys_journals.index("UDATE")
     index_title: int = keys_journals.index("TITLE")
 
-    if sort:
-        journals.sort(key=lambda j: (j[index_user], j[index_date]))
-
     print(f"{'ID':^{space_id}} | {'User':^{space_user}} | {'Date':^{space_date}} | Title")
     for journal in journals:
         print(
