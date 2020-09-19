@@ -225,6 +225,7 @@ def user_download(api: FAAPI, db: Connection, user: str, folder: str, stop: int 
 
     if not api.user_exists(user):
         print(f"User {user} not found")
+        return 0, 0
 
     downloader: Callable[
         [str, Union[str, int]],
