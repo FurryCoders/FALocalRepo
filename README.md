@@ -176,7 +176,7 @@ The `database` command allows to operate on the database. Used without an operat
 
 Available operations are:
 
-* `search-submissions <param1>=<value1> ... [<paramN>=<valueN>]` search the submissions entries using metadata fields. Search is conducted case-insensitively using the SQLite [`like`](https://sqlite.org/lang_expr.html#like) expression which allows for limited pattern matching. For example this string can be used to search two tags together separated by an unknown amount of characters `cat,%mouse`. Search parameters can be passed multiple times to act as OR values. The following search parameters are supported:
+* `search-submissions <param1>=<value1> ... [<paramN>=<valueN>]` search the submissions entries using metadata fields. Search is conducted case-insensitively using the SQLite [`like`](https://sqlite.org/lang_expr.html#like) expression which allows for limited pattern matching. For example this string can be used to search two tags together separated by an unknown amount of characters `%cat,%mouse%`. Fields missing wildcards will only match an exact result, i.e. `cat` will only match a submission which has only the `cat` tag whereas `%cat%` wil match a submission that has at least the `cat` tag. Search parameters can be passed multiple times to act as OR values. The following search parameters are supported:
     * `author` author
     * `title`
     * `date`
