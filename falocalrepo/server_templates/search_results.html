@@ -190,7 +190,8 @@
     }
     const pagePrev = () => {
         let url = new URL(window.location.href)
-        url.searchParams.set("offset", Number(url.searchParams.get("offset") || 0) - {{ limit }})
+        let offset = Number(url.searchParams.get("offset") || 0)
+        url.searchParams.set("offset", offset - {{ limit }} > 0 ? offset - {{ limit }} : 0)
         window.location = url.href
     }
     const pageNext = () => {
