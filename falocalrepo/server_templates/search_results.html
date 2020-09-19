@@ -105,6 +105,15 @@
         .clickable {
             cursor: pointer;
         }
+
+        .rowlink::before {
+            content: "";
+            display: block;
+            position: absolute;
+            left: 0;
+            width: 100%;
+            height: 1.5em;
+        }
     </style>
 </head>
 <body>
@@ -141,10 +150,8 @@
         {% endif %}
     </tr>
     {% for item in results %}
-        <tr class="clickable {{ loop.cycle('odd', 'even') }}"
-            onclick="openItem({{ item[keys.index("ID")] }})">
-            <td class="col_id"><a href="/{{ table }}/{{ item[keys.index("ID")] }}">
-                {{ item[keys.index("ID")] }}</a></td>
+        <tr class="clickable {{ loop.cycle('odd', 'even') }}">
+            <td class="col_id"><a class="rowlink" href="/{{ table }}/{{ item[keys.index("ID")] }}"></a>{{ item[keys.index("ID")] }}</td>
             <td class="col_author">{{ item[keys.index("AUTHOR")] }}</td>
             <td class="col_date">{{ item[keys.index("UDATE")] }}</td>
             <td class="col_title">{{ item[keys.index("TITLE")] }}</td>
@@ -171,12 +178,6 @@
     const newSearch = () => {
         let url = new URL(window.location.origin)
         url.pathname = "/search/"
-        window.location = url.href
-    }
-    const openItem = (itemID) => {
-        let url = new URL(window.location.origin)
-        url.pathname = `/{{ table }}/${itemID}/`
-        console.log(url)
         window.location = url.href
     }
     const pagePrev = () => {
