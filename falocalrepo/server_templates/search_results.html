@@ -9,6 +9,10 @@
             --table_background_color: lightgrey;
         }
 
+        body>h2 {
+            text-align: center;
+        }
+
         .header {
             width: 95%;
             top: 20px;
@@ -117,6 +121,7 @@
     </style>
 </head>
 <body>
+<h2>{{ title }}</h2>
 <div class="header">
     <table>
         {% for param, value in params.items() %}
