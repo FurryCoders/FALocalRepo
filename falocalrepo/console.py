@@ -32,6 +32,7 @@ from .download import submission_save
 from .download import user_clean_name
 from .download import users_download
 from .download import users_update
+from .server import server
 from .settings import cookies_read
 from .settings import cookies_write
 from .settings import setting_read
@@ -197,6 +198,9 @@ def database(db: Connection, args: List[str]):
             print("Deleting", jrn)
             delete(db, "JOURNALS", "ID", int(jrn))
             db.commit()
+    elif comm == "server":
+        opts, _ = parse_args(args)
+        server(**opts)
     elif comm == "check-errors":
         print("Checking submissions table for errors... ", end="", flush=True)
         results: List[tuple] = check_errors(db, "SUBMISSIONS")
