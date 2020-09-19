@@ -98,9 +98,11 @@ def submission_make(id_: Union[int, str], author: str, title: str,
 
 
 def journals_search(db: Connection,
-                    author: List[str] = None, title: List[str] = None,
+                    limit: List[Union[str, int]] = None, offset: List[Union[str, int]] = None,
+                    order: List[str] = None, author: List[str] = None, title: List[str] = None,
                     date: List[str] = None, content: List[str] = None
                     ) -> List[tuple]:
+    order = [] if order is None else order
     author = [] if author is None else list(map(user_clean_name, author))
     title = [] if title is None else title
     date = [] if date is None else date
@@ -116,9 +118,12 @@ def journals_search(db: Connection,
     ]
 
     wheres_str = " AND ".join(map(lambda p: "(" + p + ")", filter(len, wheres)))
+    order_str: str = f"ORDER BY {','.join(order)}" if order else ""
+    limit_str: str = f"LIMIT {int(limit[0])}" if limit is not None else ""
+    offset_str: str = f"OFFSET {int(offset[0])}" if offset is not None else ""
 
     return db.execute(
-        f"""SELECT * FROM JOURNALS WHERE {wheres_str}""",
+        f"""SELECT * FROM JOURNALS WHERE {wheres_str} {order_str} {limit_str} {offset_str}""",
         date + author + title + content
     ).fetchall()
 
