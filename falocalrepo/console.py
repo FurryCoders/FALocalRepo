@@ -210,7 +210,7 @@ def database(db: Connection, args: List[str]):
     elif comm == "clean":
         vacuum(db)
     else:
-        raise CommandError(f"Unknown download command {comm}")
+        raise CommandError(f"Unknown database command {comm}")
 
 
 def main_console(args: List[str]):
