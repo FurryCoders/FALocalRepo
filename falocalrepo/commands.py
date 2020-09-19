@@ -152,10 +152,13 @@ def journals_print(journals: List[tuple], sort: bool = True):
 
 
 def submissions_search(db: Connection,
-                       author: List[str] = None, title: List[str] = None, date: List[str] = None,
-                       description: List[str] = None, tags: List[str] = None, category: List[str] = None,
-                       species: List[str] = None, gender: List[str] = None, rating: List[str] = None
+                       limit: List[Union[str, int]] = None, offset: List[Union[str, int]] = None,
+                       order: List[str] = None, author: List[str] = None, title: List[str] = None,
+                       date: List[str] = None, description: List[str] = None, tags: List[str] = None,
+                       category: List[str] = None, species: List[str] = None, gender: List[str] = None,
+                       rating: List[str] = None
                        ) -> List[tuple]:
+    order = [] if order is None else order
     author = [] if author is None else list(map(user_clean_name, author))
     title = [] if title is None else title
     date = [] if date is None else date
@@ -180,10 +183,13 @@ def submissions_search(db: Connection,
         " OR ".join(["lower(DESCRIPTION) like ?"] * len(description))
     ]
 
-    wheres_str = " AND ".join(map(lambda p: "(" + p + ")", filter(len, wheres)))
+    wheres_str: str = " AND ".join(map(lambda p: "(" + p + ")", filter(len, wheres)))
+    order_str: str = f"ORDER BY {','.join(order)}" if order else ""
+    limit_str: str = f"LIMIT {int(limit[0])}" if limit is not None else ""
+    offset_str: str = f"OFFSET {int(offset[0])}" if offset is not None else ""
 
     return db.execute(
-        f"""SELECT * FROM SUBMISSIONS WHERE {wheres_str}""",
+        f"""SELECT * FROM SUBMISSIONS WHERE {wheres_str} {order_str} {limit_str} {offset_str}""",
         date + rating + gender + species + category + author + title + tags + description
     ).fetchall()
 
