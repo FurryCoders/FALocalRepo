@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+    <style>
+        :root {
+            --table_border_color: darkgray;
+            --table_background_color: lightgrey;
+        }
+
+        body>h2 {
+            text-align: center;
+        }
+
+        #database_info {
+            width: 95%;
+            max-width: 95%;
+            top: 20px;
+            margin: auto;
+            text-align: center
+        }
+
+        #search_menu {
+            width: 95%;
+            max-width: 95%;
+            top: 20px;
+            margin: auto;
+            text-align: center
+        }
+
+        table {
+            border-collapse: collapse;
+            border: 1px solid var(--table_border_color);
+        }
+
+        table th {
+            padding: 2px;
+            border: 2px solid var(--table_border_color);
+            text-align: center;
+        }
+
+        table td {
+            padding: 2px;
+            border: 1px solid var(--table_border_color);
+        }
+
+        #database_info table {
+            width: 300px;
+            max-width: 300px;
+            margin: auto;
+        }
+
+        #search_menu button {
+            width: 90px;
+            max-width: 90px;
+        }
+    </style>
+</head>
+<body>
+<h2>{{ title }}</h2>
+<div id="database_info">
+    <h3>Database Information</h3>
+    <table>
+        <tr>
+            <td>Submissions</td>
+            <td>{{ submissions_total }}</td>
+        </tr>
+        <tr>
+            <td>Users</td>
+            <td>{{ users_total }}</td>
+        </tr>
+        <tr>
+            <td>Database version</td>
+            <td>{{ version_db }}</td>
+        </tr>
+        <tr>
+            <td>Program version</td>
+            <td>{{ version }}</td>
+        </tr>
+    </table>
+</div>
+<div id="search_menu">
+    <h3>Search Database</h3>
+    <button onclick="openSearch('submissions')">Search Submissions</button>
+    <button onclick="openSearch('journals')">Search Journals</button>
+</div>
+<script>
+    const openSearch = (table) => {
+        let url = new URL(window.location.origin)
+        url.pathname = `/search/${table}`
+        window.location = url.href
+    }
+</script>
+</body>
+</html>

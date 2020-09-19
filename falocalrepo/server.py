@@ -17,6 +17,7 @@ from flask import render_template
 from flask import request
 from flask import send_file
 
+from .__version__ import __version__
 from .commands import journals_search
 from .commands import submissions_search
 from .database import Connection
@@ -41,6 +42,26 @@ last_search: dict = {
 @app.route("/favicon.ico")
 def favicon():
     return redirect("https://www.furaffinity.net/favicon.ico")
+
+
+@app.route("/")
+def root():
+    db_temp: Connection = connect_database("FA.db")
+    sub_n: int = int(setting_read(db_temp, "SUBN"))
+    usr_n: int = int(setting_read(db_temp, "USRN"))
+    last_update: float = float(setting_read(db_temp, "LASTUPDATE"))
+    version: str = setting_read(db_temp, "VERSION")
+    db_temp.close()
+
+    return render_template(
+        "root.html",
+        title=app.name,
+        submissions_total=sub_n,
+        users_total=usr_n,
+        last_update=last_update,
+        version=__version__,
+        version_db=version,
+    )
 
 
 @app.route("/search/")
