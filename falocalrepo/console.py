@@ -75,7 +75,7 @@ def parse_args(args_raw: List[str]) -> Tuple[Dict[str, str], List[str]]:
 
 def config(db: Connection, args: List[str]):
     comm: str = args[0] if args else ""
-    opts, args = parse_args(args[1:])
+    args = args[1:]
 
     if not comm:
         cookie_a, cookie_b = cookies_read(db)
@@ -105,7 +105,7 @@ def config(db: Connection, args: List[str]):
 
 def download(db: Connection, args: List[str]):
     comm: str = args[0] if args else ""
-    opts, args = parse_args(args[1:])
+    args = args[1:]
 
     if not comm:
         raise CommandError("Malformed command: download needs a command")
@@ -118,6 +118,7 @@ def download(db: Connection, args: List[str]):
     elif comm == "update":
         users: Optional[List[str]] = None
         folders: Optional[List[str]] = None
+        opts, args = parse_args(args)
         if args and args[0] != "@":
             users_tmp: List[str] = list(filter(bool, map(user_clean_name, args[0].split(","))))
             users = sorted(set(users_tmp), key=users_tmp.index)
@@ -152,7 +153,7 @@ def download(db: Connection, args: List[str]):
 
 def database(db: Connection, args: List[str]):
     comm: str = args[0] if args else ""
-    opts, args = parse_args(args[1:])
+    args = args[1:]
 
     if not comm:
         sub_n: int = int(setting_read(db, "SUBN"))
