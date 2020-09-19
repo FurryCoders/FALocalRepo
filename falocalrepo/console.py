@@ -165,7 +165,7 @@ def database(db: Connection, args: List[str]):
         print("Last update:", str(datetime.fromtimestamp(last_update)) if last_update else 0)
         print("Version    :", version)
     elif comm == "search-submissions":
-        results: List[tuple] = submissions_search(db, **parameters_multi(args))
+        results: List[tuple] = submissions_search(db, **{"order": ["AUTHOR", "ID"], **parameters_multi(args)})
         submissions_print(results, sort=True)
         print(f"Found {len(results)} results")
     elif comm == "search-journals":
