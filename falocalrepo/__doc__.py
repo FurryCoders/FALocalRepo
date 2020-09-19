@@ -66,6 +66,7 @@ def help_message(prog: str, args: List[str] = None) -> str:
             \r    remove-users       Remove users from database
             \r    remove-submissions Remove submissions from database
             \r    remove-journals    Remove submissions from database
+            \r    server             Start local server to browse database
             \r    check-errors       Check the database for errors
             \r    clean              Clean the database with the VACUUM function"""
     else:
