@@ -136,16 +136,20 @@
         {% endfor %}
     </table>
     <br>
+    {% set navigation %}
     Results: {{ offset }}-{{ offset + results|length }} of {{ results_total }}
     · Page {{ (offset // limit) + 1 }}
     <br>
-    <button onclick="pagePrev()" style="visibility: {{ 'visible' if offset >= limit else 'hidden' }}">
+    <button onclick="pagePrev()" style="visibility: {{ 'visible' if offset > 0 else 'hidden' }}">
         Prev
     </button>
     <button onclick="newSearch()">New Search</button>
-    <button onclick="pageNext()" style="visibility: {{ 'visible' if results|length == limit else 'hidden' }}">
+    <button onclick="pageNext()"
+            style="visibility: {{ 'visible' if offset + results|length < results_total else 'hidden' }}">
         Next
     </button>
+    {% endset %}
+    {{ navigation }}
     <br>&nbsp;<br>
 </div>
 <table id="search_results">
@@ -160,7 +164,8 @@
     </tr>
     {% for item in results %}
         <tr class="clickable {{ loop.cycle('odd', 'even') }}">
-            <td class="col_id"><a class="rowlink" href="/{{ table }}/{{ item[keys.index("ID")] }}"></a>{{ item[keys.index("ID")] }}</td>
+            <td class="col_id"><a class="rowlink"
+                                  href="/{{ table }}/{{ item[keys.index("ID")] }}"></a>{{ item[keys.index("ID")] }}</td>
             <td class="col_author">{{ item[keys.index("AUTHOR")] }}</td>
             <td class="col_date">{{ item[keys.index("UDATE")] }}</td>
             <td class="col_title">{{ item[keys.index("TITLE")] }}</td>
@@ -171,15 +176,7 @@
     {% endfor %}
 </table>
 <div class="footer">
-    Results: {{ offset }}-{{ offset + results|length }} of {{ results_total }}
-    · Page {{ (offset // limit) + 1 }}
-    <br>
-    <button onclick="pagePrev()" style="visibility: {{ 'visible' if offset >= limit else 'hidden' }}">
-        Prev
-    </button>
-    <button onclick="pageNext()" style="visibility: {{ 'visible' if results|length == limit else 'hidden' }}">
-        Next
-    </button>
+    {{ navigation }}
     <br>&nbsp;<br>
 </div>
 <script>
