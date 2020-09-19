@@ -134,7 +134,6 @@ def user(username: str):
 
 
 @app.route("/submission/<int:id_>/file/")
-@app.route("/submissions/<int:id_>/file/")
 def submission_file(id_: int):
     db_temp: Connection = connect_database("FA.db")
     sub_dir: str = join(setting_read(db_temp, "FILESFOLDER"), *split(tiered_path(id_)))
@@ -148,7 +147,6 @@ def submission_file(id_: int):
 
 
 @app.route("/journal/<int:id_>/")
-@app.route("/journals/<int:id_>/")
 def journal(id_: int):
     db_temp: Connection = connect_database("FA.db")
     jrnl: Optional[tuple] = select(db_temp, "JOURNALS", ["*"], "ID", id_).fetchone()
@@ -166,7 +164,6 @@ def journal(id_: int):
 
 
 @app.route("/submission/<int:id_>/")
-@app.route("/submissions/<int:id_>/")
 def submission(id_: int):
     db_temp: Connection = connect_database("FA.db")
     sub: Optional[tuple] = select(db_temp, "SUBMISSIONS", ["*"], "ID", id_).fetchone()
