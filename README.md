@@ -323,13 +323,13 @@ The root folder `/` displays basic information on the database and has links to 
 
 ### Submissions & Journals
 
-Submissions and journals can be accessed respectively at `/submission/<id>` and `/journal/<id>` (`/submissions/<id>` and `/journals/<id>` are also allowed). All the metadata, content and files that are recorded in the database are displayed in these pages.
+Submissions and journals can be accessed respectively at `/submission/<id>` and `/journal/<id>`. All the metadata, content and files that are recorded in the database are displayed in these pages.
 
-Submission files can be accessed at `/submission/<id>/file` (`/submissions/<id>/file` is also allowed).
+Submission files can be accessed at `/submission/<id>/file`.
 
 ### Search
 
-The server search interface allows to search both submissions and journals. Respectively, these can be reached at `/search/submissions` and `/search/journals`.
+The server search interface allows to search both submissions and journals. Respectively, these can be reached at `/search/submissions` and `/search/journals`. The `/search/` path defaults to submissions search.
 
 The interface supports the search fields supported by the command line database search commands. To add a field press on the `+` button after selecting one in the dropdown menu. The `-` buttons allow to remove a field from the search.
 
