@@ -125,6 +125,7 @@
     </style>
 </head>
 <body>
+{% set table_short %}{{ "submission" if table == "submissions" }}{{ "journal" if table == "journals" }}{% endset %}
 <h2>{{ title }}</h2>
 <div class="header">
     <table>
@@ -165,7 +166,7 @@
     {% for item in results %}
         <tr class="clickable {{ loop.cycle('odd', 'even') }}">
             <td class="col_id">
-                <a class="rowlink" href="/{{ table }}/{{ item[keys.index("ID")] }}"></a>
+                <a class="rowlink" href="/{{ table_short }}/{{ item[keys.index("ID")] }}"></a>
                 {{ item[keys.index("ID")] }}
             </td>
             <td class="col_author">{{ item[keys.index("AUTHOR")] }}</td>
