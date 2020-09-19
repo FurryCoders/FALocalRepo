@@ -90,6 +90,7 @@ def search(table: str):
         order: List[str] = params.get("order", ["AUTHOR", "ID"])
         limit: int = 50
         offset: int = params.get("offset", 0)
+        offset = 0 if offset < 0 else offset
 
         if "order" in params:
             del params["order"]
