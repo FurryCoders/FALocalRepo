@@ -14,7 +14,6 @@ from .database import Connection
 from .database import keys_journals
 from .database import keys_submissions
 from .download import submission_download
-from .download import user_clean_name
 from .settings import setting_write
 
 
@@ -128,7 +127,7 @@ def journals_search(db: Connection,
     ).fetchall()
 
 
-def journals_print(journals: List[tuple], sort: bool = True):
+def journals_print(journals: List[tuple]):
     space_id: int = 10
     space_user: int = 10
     space_date: int = 10
@@ -196,7 +195,7 @@ def submissions_search(db: Connection,
     ).fetchall()
 
 
-def submissions_print(subs: List[tuple], sort: bool = True):
+def submissions_print(subs: List[tuple]):
     space_id: int = 10
     space_user: int = 10
     space_date: int = 10

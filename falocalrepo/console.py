@@ -171,11 +171,11 @@ def database(db: Connection, args: List[str]):
         print("Version    :", version)
     elif comm == "search-submissions":
         results: List[tuple] = submissions_search(db, **{"order": ["AUTHOR", "ID"], **parameters_multi(args)})
-        submissions_print(results, sort=True)
+        submissions_print(results)
         print(f"Found {len(results)} results")
     elif comm == "search-journals":
         results: List[tuple] = journals_search(db, **{"order": ["AUTHOR", "ID"], **parameters_multi(args)})
-        journals_print(results, sort=True)
+        journals_print(results)
         print(f"Found {len(results)} results")
     elif comm == "add-submission":
         make_params = parameters(args)
