@@ -104,9 +104,9 @@ def journals_search(db: Connection,
                     ) -> List[tuple]:
     order = [] if order is None else order
     author = [] if author is None else list(map(user_clean_name, author))
-    title = [] if title is None else title
-    date = [] if date is None else date
-    content = [] if content is None else content
+    title = [] if title is None else list(map(str.lower, title))
+    date = [] if date is None else list(map(str.lower, date))
+    content = [] if content is None else list(map(str.lower, content))
 
     assert any((author, title, date, content))
 
@@ -162,14 +162,14 @@ def submissions_search(db: Connection,
                        ) -> List[tuple]:
     order = [] if order is None else order
     author = [] if author is None else list(map(user_clean_name, author))
-    title = [] if title is None else title
-    date = [] if date is None else date
-    description = [] if description is None else description
-    tags = [] if tags is None else tags
-    category = [] if category is None else category
-    species = [] if species is None else species
-    gender = [] if gender is None else gender
-    rating = [] if rating is None else rating
+    title = [] if title is None else list(map(str.lower, title))
+    date = [] if date is None else list(map(str.lower, date))
+    description = [] if description is None else list(map(str.lower, description))
+    tags = [] if tags is None else list(map(str.lower, tags))
+    category = [] if category is None else list(map(str.lower, category))
+    species = [] if species is None else list(map(str.lower, species))
+    gender = [] if gender is None else list(map(str.lower, gender))
+    rating = [] if rating is None else list(map(str.lower, rating))
 
     assert any((author, title, date, description, tags, category, species, gender, rating))
 
