@@ -7,6 +7,7 @@ from typing import Optional
 from typing import Tuple
 
 from faapi import FAAPI
+from falocalrepo_server import server
 
 from .__doc__ import help_message
 from .__version__ import __database_version__
@@ -203,7 +204,6 @@ def database(db: Connection, args: List[str]):
             db.commit()
     elif comm == "server":
         opts, _ = parse_args(args)
-        from falocalrepo_server import server
         server(**opts)
     elif comm == "check-errors":
         print("Checking submissions table for errors... ", end="", flush=True)
