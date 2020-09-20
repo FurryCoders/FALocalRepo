@@ -32,7 +32,6 @@ from .download import submission_save
 from .download import user_clean_name
 from .download import users_download
 from .download import users_update
-from .server import server
 from .settings import cookies_read
 from .settings import cookies_write
 from .settings import setting_read
