@@ -202,6 +202,7 @@ def database(db: Connection, args: List[str]):
             db.commit()
     elif comm == "server":
         opts, _ = parse_args(args)
+        from falocalrepo_server import server
         server(**opts)
     elif comm == "check-errors":
         print("Checking submissions table for errors... ", end="", flush=True)
