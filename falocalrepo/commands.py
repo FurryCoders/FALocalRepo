@@ -103,7 +103,7 @@ def journals_search(db: Connection,
                     date: List[str] = None, content: List[str] = None
                     ) -> List[tuple]:
     order = [] if order is None else order
-    author = [] if author is None else list(map(user_clean_name, author))
+    author = [] if author is None else list(map(str.lower, author))
     title = [] if title is None else list(map(str.lower, title))
     date = [] if date is None else list(map(str.lower, date))
     content = [] if content is None else list(map(str.lower, content))
@@ -161,7 +161,7 @@ def submissions_search(db: Connection,
                        rating: List[str] = None
                        ) -> List[tuple]:
     order = [] if order is None else order
-    author = [] if author is None else list(map(user_clean_name, author))
+    author = [] if author is None else list(map(str.lower, author))
     title = [] if title is None else list(map(str.lower, title))
     date = [] if date is None else list(map(str.lower, date))
     description = [] if description is None else list(map(str.lower, description))
