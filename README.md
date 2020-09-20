@@ -333,13 +333,15 @@ The server search interface allows to search both submissions and journals. Resp
 
 The interface supports the search fields supported by the command line database search commands. To add a field press on the `+` button after selecting one in the dropdown menu. The `-` buttons allow to remove a field from the search.
 
+The order field allows to sort the search result. By default submissions and journals are sorted by author and ID. For a list of possible sorting fields, see [#Submissions](#submissions) and [#Journals](#journals)
+
 Fields can be added multiple times and will act as OR options.
 
 Fields are matched using the SQLite [`like`](https://sqlite.org/lang_expr.html#like) expression which allows for limited pattern matching. See [`database search-submissions`](#database) and [`database search-journals`](#database) for more details.
 
-The `/user/<username>/` path allows to quickly open a search for submissions by `<username>`.
+The `/submissions/<username>/` and `/journals/<username>/` paths allow to quickly open a search for submissions and journals by `<username>`. `/search/submissions/<username>/` and `/search/journals/<username>/` are also allowed.
 
-Results of the search are displayed 50 per page in a table. Clicking on any row allows to open the specific item.
+Results of the search are displayed 50 per page in a table. Clicking on any row opens the specific item. Clicking on the table headers allows to perform re-sort the search results.
 
 ## Submission Files
 
