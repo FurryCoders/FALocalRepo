@@ -250,6 +250,9 @@ falocalrepo database remove-submissions 12345678 13572468 87651234
 falocalrepo database remove-journals 123456 135724 876512
 ```
 * `server [host=<host>] [port=<port>]` start a server at `<host>:<port>` to navigate the database. Defaults to `0.0.0.0:8080`. See [#Server](#server) for more details.
+```
+falocalrepo database server host=127.0.0.1 port=5000
+```
 * `check-errors` check the database for common errors and prints a list of entries that contain erroneous data. Requires no arguments.
 * `clean` clean the database using the SQLite [VACUUM](https://www.sqlite.org/lang_vacuum.html) function. Requires no arguments.
 
