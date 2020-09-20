@@ -1,4 +1,4 @@
-from sys import argv
+from sys import argv, exit
 
 from .console import MalformedCommand
 from .console import UnknownCommand
@@ -14,6 +14,10 @@ def main():
         pass
     except (MalformedCommand, UnknownCommand) as err:
         print(repr(err))
+        exit(1)
+    except ModuleNotFoundError as err:
+        print(repr(err))
+        exit(2)
 
 
 if __name__ == "__main__":
