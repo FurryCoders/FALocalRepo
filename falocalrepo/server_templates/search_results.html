@@ -155,12 +155,12 @@
 </div>
 <table id="search_results">
     <tr class="even header">
-        <th class="col_id">ID</th>
-        <th class="col_author">Author</th>
-        <th class="col_date">Date</th>
-        <th class="col_title">Title</th>
+        <th class="col_id clickable" onclick="sortBy('ID')">ID</th>
+        <th class="col_author clickable" onclick="sortBy('AUTHOR')">Author</th>
+        <th class="col_date clickable" onclick="sortBy('UDATE')">Date</th>
+        <th class="col_title clickable" onclick="sortBy('TITLE')">Title</th>
         {% if table == "submissions" %}
-            <th class="col_tags">Tags</th>
+            <th class="col_tags clickable" onclick="sortBy('TAGS')">Tags</th>
         {% endif %}
     </tr>
     {% for item in results %}
@@ -187,6 +187,11 @@
     const newSearch = () => {
         let url = new URL(window.location.origin)
         url.pathname = "/search/"
+        window.location = url.href
+    }
+    const sortBy = (sortField) => {
+        let url = new URL(window.location.href)
+        url.searchParams.set("order", JSON.stringify([sortField.toUpperCase()]))
         window.location = url.href
     }
     const pagePrev = () => {
