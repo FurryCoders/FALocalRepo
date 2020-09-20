@@ -1,6 +1,7 @@
 from sys import argv
 
-from .console import CommandError
+from .console import MalformedCommand
+from .console import UnknownCommand
 from .console import main_console
 
 
@@ -11,7 +12,7 @@ def main():
     except KeyboardInterrupt:
         print()
         pass
-    except CommandError as err:
+    except (MalformedCommand, UnknownCommand) as err:
         print(repr(err))
 
 

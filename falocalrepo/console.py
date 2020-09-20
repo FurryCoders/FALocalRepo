@@ -40,7 +40,10 @@ from .settings import setting_write
 from .update import update_database
 
 
-class CommandError(Exception):
+class MalformedCommand(Exception):
+    pass
+
+class UnknownCommand(Exception):
     pass
 
 
@@ -92,16 +95,16 @@ def config(db: Connection, args: List[str]):
         elif len(args) == 2 and args[0] and args[1]:
             cookies_write(db, args[0], args[1])
         else:
-            raise CommandError("Malformed command: cookies needs two arguments")
+            raise MalformedCommand("cookies needs two arguments")
     elif comm == "files-folder":
         if not args:
             print("files folder:", setting_read(db, "FILESFOLDER"))
         elif len(args) == 1 and args[0]:
             files_folder_move(db, setting_read(db, "FILESFOLDER"), args[0])
         else:
-            raise CommandError("Malformed command: files-folder needs one argument")
+            raise MalformedCommand("files-folder needs one argument")
     else:
-        raise CommandError(f"Unknown config command {comm}")
+        raise UnknownCommand(f"config {comm}")
 
 
 def download(db: Connection, args: List[str]):
@@ -109,7 +112,7 @@ def download(db: Connection, args: List[str]):
     args = args[1:]
 
     if not comm:
-        raise CommandError("Malformed command: download needs a command")
+        raise MalformedCommand("download needs a command")
 
     api: FAAPI = FAAPI()
     cookies_load(api, *cookies_read(db))
@@ -135,10 +138,10 @@ def download(db: Connection, args: List[str]):
             folders: List[str] = sorted(set(folders_tmp), key=folders_tmp.index)
             users_download(api, db, users, folders)
         else:
-            raise CommandError("Malformed command: users needs two arguments")
+            raise MalformedCommand("users needs two arguments")
     elif comm == "submissions":
         if not args:
-            raise CommandError("Malformed command: submissions needs at least one argument")
+            raise MalformedCommand("submissions needs at least one argument")
         sub_ids_tmp: List[str] = list(filter(str.isdigit, args))
         sub_ids: List[str] = sorted(set(sub_ids_tmp), key=sub_ids_tmp.index)
         submissions_download(api, db, sub_ids)
@@ -149,7 +152,7 @@ def download(db: Connection, args: List[str]):
         journal_ids: List[str] = sorted(set(journal_ids_tmp), key=journal_ids_tmp.index)
         submissions_download(api, db, journal_ids)
     else:
-        raise CommandError(f"Unknown download command {comm}")
+        raise UnknownCommand(f"download {comm}")
 
 
 def database(db: Connection, args: List[str]):
@@ -215,7 +218,7 @@ def database(db: Connection, args: List[str]):
     elif comm == "clean":
         vacuum(db)
     else:
-        raise CommandError(f"Unknown database command {comm}")
+        raise UnknownCommand(f"database {comm}")
 
 
 def main_console(args: List[str]):
@@ -235,11 +238,11 @@ def main_console(args: List[str]):
     elif comm in ("-d", "--database"):
         print(__database_version__)
         return
-    elif comm.startswith("-"):
-        raise CommandError(f"Unknown option {comm}")
     elif (not comm and not args) or comm == "help":
         print(help_message(prog, args))
         return
+    elif comm not in ("init", "config", "download", "database"):
+        raise UnknownCommand(comm)
 
     db: Optional[Connection] = None
 
@@ -261,8 +264,6 @@ def main_console(args: List[str]):
             download(db, args)
         elif comm == "database":
             database(db, args)
-        else:
-            raise CommandError(f"Unknown {comm} command.")
     finally:
         # Close database and update totals
         if db is not None:
