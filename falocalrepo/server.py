@@ -34,6 +34,7 @@ app: Flask = Flask(
 )
 last_search: dict = {
     "table": "",
+    "order": [],
     "params": {},
     "results": []
 }
@@ -99,8 +100,9 @@ def search(table: str):
         if "offset" in params:
             del params["offset"]
 
-        if last_search["table"] != table or last_search["params"] != params:
+        if last_search["table"] != table or last_search["order"] != table or last_search["params"] != params:
             last_search["table"] = table
+            last_search["order"] = deepcopy(order)
             last_search["params"] = deepcopy(params)
             db_temp: Connection = connect_database("FA.db")
             if table == "submissions":
