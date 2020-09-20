@@ -80,6 +80,20 @@ def search_journals():
     return search("journals")
 
 
+@app.route("/submissions/<username>/")
+@app.route("/search/submissions/<username>/")
+def search_user_submissions(username: str):
+    return redirect(f'/search/submissions/?author=["{username}"]')
+
+
+@app.route("/journals/<username>/")
+@app.route("/search/journals/<username>/")
+def search_user_journals(username: str):
+    return redirect(f'/search/journals/?author=["{username}"]')
+
+
+
+
 def search(table: str):
     global last_search
 
@@ -128,11 +142,6 @@ def search(table: str):
             title=f"{app.name} · Search {table.title()}",
             table=table
         )
-
-
-@app.route("/user/<username>/")
-def user(username: str):
-    return redirect(f'/search/submissions/?author=["{username}"]')
 
 
 @app.route("/submission/<int:id_>/file/")
