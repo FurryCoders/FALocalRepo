@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>{{ title }}</title>
     <style>
-        body>h2 {
+        body > h2 {
             text-align: center;
         }
 
@@ -104,8 +104,11 @@
         let params = {}
         Array.from(document.getElementsByClassName("search_field"))
             .forEach(f => {
-                if (f.value.length > 0) params[f.name] = (params[f.name] || []).concat(f.value)
+                f.value = f.value.trim()
+                if (f.value) params[f.name] = (params[f.name] || []).concat(f.value)
             });
+
+        if (Object.keys(params).length === 0) return
 
         let url = new URL(window.location.href)
         url.pathname = "/search/{{ table }}"
