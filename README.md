@@ -30,14 +30,11 @@ This program uses a custom scraping library to get content from FurAffinity. Thi
     1. [Settings](#settings)
     1. [Users](#users)
     1. [Submissions](#submissions)
-6. [Server](#server)
-    1. [Submissions & Journals](#submissions--journals)
-    2. [Search](#search)
-7. [Submission Files](#submission-files)
-8. [Upgrading Database](#upgrading-database)
-9. [Contributing](#contributing)
-10. [Issues](#issues)
-11. [Appendix](#appendix)
+6. [Submission Files](#submission-files)
+7. [Upgrading Database](#upgrading-database)
+8. [Contributing](#contributing)
+9. [Issues](#issues)
+10. [Appendix](#appendix)
 
 ## Installation & Requirements
 
@@ -249,7 +246,7 @@ falocalrepo database remove-submissions 12345678 13572468 87651234
 ```
 falocalrepo database remove-journals 123456 135724 876512
 ```
-* `server [host=<host>] [port=<port>]` start a server at `<host>:<port>` to navigate the database. Defaults to `0.0.0.0:8080`. See [#Server](#server) for more details.
+* `server [host=<host>] [port=<port>]` starts a server at `<host>:<port>` to navigate the database using `falocalrepo-server`. Defaults to `0.0.0.0:8080`. See [falocalrepo-server](https://pypi.org/project/falocalrepo-server/) for more details on usage.
 ```
 falocalrepo database server host=127.0.0.1 port=5000
 ```
@@ -315,36 +312,6 @@ The journals table contains the metadata of the journals downloaded by the progr
 * `TITLE`
 * `UDATE` upload date in the format YYYY-MM-DD
 * `CONTENT` content in html format
-
-## Server
-
-The [`database server`](#database) command opens a small server instance written in Flask that allows to brows the local database in a friendly GUI (General User Interface).
-
-_Note:_ All the following paths are meant as paths from `<host>:<port>`.
-
-The root folder `/` displays basic information on the database and has links to perform submissions or journal searches.
-
-### Submissions & Journals
-
-Submissions and journals can be accessed respectively at `/submission/<id>` and `/journal/<id>`. All the metadata, content and files that are recorded in the database are displayed in these pages.
-
-Submission files can be accessed at `/submission/<id>/file`.
-
-### Search
-
-The server search interface allows to search both submissions and journals. Respectively, these can be reached at `/search/submissions` and `/search/journals`. The `/search/` path defaults to submissions search.
-
-The interface supports the search fields supported by the command line database search commands. To add a field press on the `+` button after selecting one in the dropdown menu. The `-` buttons allow to remove a field from the search.
-
-The order field allows to sort the search result. By default submissions and journals are sorted by author and ID. For a list of possible sorting fields, see [#Submissions](#submissions) and [#Journals](#journals)
-
-Fields can be added multiple times and will act as OR options.
-
-Fields are matched using the SQLite [`like`](https://sqlite.org/lang_expr.html#like) expression which allows for limited pattern matching. See [`database search-submissions`](#database) and [`database search-journals`](#database) for more details.
-
-The `/submissions/<username>/` and `/journals/<username>/` paths allow to quickly open a search for submissions and journals by `<username>`. `/search/submissions/<username>/` and `/search/journals/<username>/` are also allowed.
-
-Results of the search are displayed 50 per page in a table. Clicking on any row opens the specific item. Clicking on the table headers allows to perform re-sort the search results.
 
 ## Submission Files
 
