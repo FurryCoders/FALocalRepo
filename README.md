@@ -51,7 +51,7 @@ Python 3.8 or above is needed to run this program, all other dependencies are ha
 
 The program needs cookies from a logged-in FurAffinity session to download protected pages. Without the cookies the program can still download publicly available pages, but others will return empty. See [#Cookies](#cookies) for more details on which cookies to use.
 
-**Warning**: FurAffinity theme needs to be set to "beta"
+**Warning**: FurAffinity theme template must be set to "modern". Can be changed at [furaffinity.net/controls/settings/](https://www.furaffinity.net/controls/settings/).
 
 ## How to Read Usage Instructions
 
