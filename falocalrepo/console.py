@@ -42,6 +42,7 @@ from .update import update_database
 class MalformedCommand(Exception):
     pass
 
+
 class UnknownCommand(Exception):
     pass
 
@@ -146,7 +147,7 @@ def download(db: Connection, args: List[str]):
         submissions_download(api, db, sub_ids)
     elif comm == "journals":
         if not args:
-            raise CommandError("Malformed command: journals needs at least one argument")
+            raise MalformedCommand("journals needs at least one argument")
         journal_ids_tmp: List[str] = list(filter(str.isdigit, args))
         journal_ids: List[str] = sorted(set(journal_ids_tmp), key=journal_ids_tmp.index)
         submissions_download(api, db, journal_ids)
