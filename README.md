@@ -30,6 +30,7 @@ This program uses a custom scraping library to get content from FurAffinity. Thi
     1. [Settings](#settings)
     1. [Users](#users)
     1. [Submissions](#submissions)
+    1. [Journals](#journals)
 6. [Submission Files](#submission-files)
 7. [Upgrading Database](#upgrading-database)
 8. [Contributing](#contributing)
