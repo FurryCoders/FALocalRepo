@@ -20,12 +20,15 @@ def format_help(message: Message, depth: int = 0) -> List[str]:
 
 
 def help_message(prog: str, args: List[str] = None) -> str:
+    from .console import MalformedCommand
+    from .console import UnknownCommand
+
     prog = basename(prog)
     args = [] if args is None else args
     message: List[str]
 
     if len(args) > 1:
-        raise Exception(f"Too many arguments to help command.")
+        raise MalformedCommand(f"Too many arguments to help command.")
     elif not args:
         message = [
             f"{prog} version {__version__}",
@@ -124,6 +127,6 @@ def help_message(prog: str, args: List[str] = None) -> str:
             ]
         ]
     else:
-        raise Exception(f"Unknown {args[0]} command.")
+        raise UnknownCommand(args[0])
 
     return "\n".join(format_help(message))
