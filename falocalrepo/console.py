@@ -89,11 +89,11 @@ def help_message(*fs: str) -> str:
         raise MalformedCommand("help takes a single argument")
     elif not fs[0]:
         return format_doc(main_console)
-    elif fs[0] == "config":
+    elif fs[0] == config.__name__:
         return format_doc(config)
-    elif fs[0] == "download":
+    elif fs[0] == download.__name__:
         return format_doc(download)
-    elif fs[0] == "database":
+    elif fs[0] == database.__name__:
         return format_doc(database)
     else:
         raise UnknownCommand(fs[0])
@@ -322,7 +322,7 @@ def main_console(args: List[str]):
     elif comm == "help":
         print(help_message(*args))
         return
-    elif comm not in ("init", "config", "download", "database"):
+    elif comm not in ("init", config.__name__, download.__name__, database.__name__):
         raise UnknownCommand(comm)
 
     db: Optional[Connection] = None
@@ -339,11 +339,11 @@ def main_console(args: List[str]):
 
         if comm == "init":
             return
-        elif comm == "config":
+        elif comm == config.__name__:
             config(db, args)
-        elif comm == "download":
+        elif comm == download.__name__:
             download(db, args)
-        elif comm == "database":
+        elif comm == database.__name__:
             database(db, args)
     finally:
         # Close database and update totals
