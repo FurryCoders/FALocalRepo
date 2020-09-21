@@ -87,7 +87,7 @@ def format_doc(func):
 def help_message(*fs: str) -> str:
     if len(fs) > 1:
         raise MalformedCommand("help takes a single argument")
-    elif not fs[0]:
+    elif not fs:
         return format_doc(main_console)
     elif fs[0] == config.__name__:
         return format_doc(config)
