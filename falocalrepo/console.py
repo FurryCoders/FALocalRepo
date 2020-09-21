@@ -340,6 +340,7 @@ def main_console(args: List[str]):
         setting_write(db, "LASTSTART", str(datetime.now().timestamp()))
 
         if comm == "init":
+            print("Database ready")
             return
         elif comm == config.__name__:
             config(db, args)
