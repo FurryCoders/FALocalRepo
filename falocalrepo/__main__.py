@@ -15,9 +15,6 @@ def main():
     except (MalformedCommand, UnknownCommand) as err:
         print(repr(err))
         exit(1)
-    except ModuleNotFoundError as err:
-        print(repr(err))
-        exit(2)
 
 
 if __name__ == "__main__":
