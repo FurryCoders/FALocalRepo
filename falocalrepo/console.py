@@ -9,7 +9,6 @@ from typing import Tuple
 from faapi import FAAPI
 from falocalrepo_server import server
 
-from .__doc__ import help_message
 from .__version__ import __database_version__
 from .__version__ import __version__
 from .commands import files_folder_move
@@ -78,7 +77,39 @@ def parse_args(args_raw: List[str]) -> Tuple[Dict[str, str], List[str]]:
     return parameters(opts), args
 
 
+def format_doc(func):
+    return "\n".join(map(
+        lambda l: l[4:] if l.startswith(" ") else l,
+        func.__doc__.split("\n")
+    )).strip() if func.__doc__ else ""
+
+
+def help_message(*fs: str) -> str:
+    if len(fs) > 1:
+        raise MalformedCommand("help takes a single argument")
+    elif not fs[0]:
+        return format_doc(main_console)
+    elif fs[0] == "config":
+        return format_doc(config)
+    elif fs[0] == "download":
+        return format_doc(download)
+    elif fs[0] == "database":
+        return format_doc(database)
+    else:
+        raise UnknownCommand(fs[0])
+
+
 def config(db: Connection, args: List[str]):
+    """
+    USAGE
+    falocalrepo config [<setting>] [<value1>] ... [<valueN>]
+    ARGUMENTS
+        <setting>       Setting to read/edit
+        <value>         New setting value
+    AVAILABLE SETTINGS
+        cookies         Cookies for the API
+        files-folder    Files download folder
+    """
     comm: str = args[0] if args else ""
     args = args[1:]
 
@@ -109,6 +140,18 @@ def config(db: Connection, args: List[str]):
 
 
 def download(db: Connection, args: List[str]):
+    """
+    USAGE
+    falocalrepo download <command> [<option>=<value>] [<arg1>] ... [<argN>]
+    ARGUMENTS
+        <command>       The type of download to execute
+        <arg>           Argument for the download command
+    AVAILABLE COMMANDS
+        users           Download users. First argument is a comma-separated list of
+                          users, second is a comma-separated list of folders
+        submissions     Download single submissions. Arguments are submission ID's
+        update          Update database using the users and folders already saved
+    """
     comm: str = args[0] if args else ""
     args = args[1:]
 
@@ -157,6 +200,26 @@ def download(db: Connection, args: List[str]):
 
 
 def database(db: Connection, args: List[str]):
+    """
+    USAGE
+    falocalrepo database [<operation>] [<param1>=<value1>] ...
+                [<paramN>=<valueN>]
+    ARGUMENTS
+        <command>          The database operation to execute
+        <param>            Parameter for the database operation
+        <value>            Value of the parameter
+    AVAILABLE COMMANDS
+        search-submissions Search submissions
+        search-journals    Search submissions
+        add-submission     Add a submission to the database manually
+        add-journal        Add a journal to the database manually
+        remove-users       Remove users from database
+        remove-submissions Remove submissions from database
+        remove-journals    Remove submissions from database
+        server             Start local server to browse database
+        check-errors       Check the database for errors
+        clean              Clean the database with the VACUUM function
+    """
     comm: str = args[0] if args else ""
     args = args[1:]
 
@@ -223,6 +286,23 @@ def database(db: Connection, args: List[str]):
 
 
 def main_console(args: List[str]):
+    """
+    USAGE
+    falocalrepo [-h] [-v] [-d] <command> [<arg1>] ... [<argN>]
+    ARGUMENTS
+        <command>       The command to execute
+        <arg>           The arguments of the command
+    GLOBAL OPTIONS
+        -h, --help      Display this help message
+        -v, --version   Display version
+        -d, --database  Display database version
+    AVAILABLE COMMANDS
+        help            Display the manual of a command
+        init            Create the database and exit
+        config          Manage settings
+        download        Perform downloads
+        database        Operate on the database
+    """
     prog: str
     comm: str
 
@@ -231,7 +311,7 @@ def main_console(args: List[str]):
     args = args[1:]
 
     if comm in ("-h", "--help"):
-        print(help_message(prog))
+        print(format_doc(main_console))
         return
     elif comm in ("-v", "--version"):
         print(__version__)
@@ -239,8 +319,8 @@ def main_console(args: List[str]):
     elif comm in ("-d", "--database"):
         print(__database_version__)
         return
-    elif (not comm and not args) or comm == "help":
-        print(help_message(prog, args))
+    elif comm == "help":
+        print(help_message(*args))
         return
     elif comm not in ("init", "config", "download", "database"):
         raise UnknownCommand(comm)
