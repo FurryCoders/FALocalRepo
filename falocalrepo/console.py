@@ -310,7 +310,9 @@ def main_console(args: List[str]):
     comm = args[0] if args else ""
     args = args[1:]
 
-    if comm in ("-h", "--help"):
+    if not comm:
+        comm = "init"
+    elif comm in ("-h", "--help"):
         print(format_doc(main_console))
         return
     elif comm in ("-v", "--version"):
