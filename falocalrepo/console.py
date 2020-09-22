@@ -313,7 +313,7 @@ def main_console(args: List[str]):
     if not comm:
         comm = "init"
     elif comm in ("-h", "--help"):
-        print(format_doc(main_console))
+        print(help_message(main_console.__name__))
         return
     elif comm in ("-v", "--version"):
         print(__version__)
