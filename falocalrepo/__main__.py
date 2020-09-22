@@ -4,14 +4,14 @@ from typing import List
 
 from .console import MalformedCommand
 from .console import UnknownCommand
-from .console import main_console
+from .console import console
 
 
 def main(args: List[str] = None):
     # Run main program
     args = argv if args is None else args
     try:
-        main_console(*args)
+        console(*args)
     except KeyboardInterrupt:
         print()
         pass

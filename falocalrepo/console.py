@@ -81,7 +81,7 @@ def parse_args(args_raw: Iterable[str]) -> Tuple[Dict[str, str], List[str]]:
 
 def help_message(comm: str = None) -> str:
     if not comm:
-        return cleandoc(main_console.__doc__)
+        return cleandoc(console.__doc__)
     elif comm == config.__name__:
         return cleandoc(config.__doc__)
     elif comm == download.__name__:
@@ -272,7 +272,7 @@ def database(db: Connection, comm: str = "", *args: str):
         raise UnknownCommand(f"database {comm}")
 
 
-def main_console(prog: str, comm: str = "", *args: str) -> None:
+def console(prog: str, comm: str = "", *args: str) -> None:
     """
     USAGE
         falocalrepo [-h] [-v] [-d] [<command>] [<arg1>] ... [<argN>]

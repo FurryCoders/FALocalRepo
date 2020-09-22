@@ -1,1 +1,1 @@
-from .console import main_console
+from .console import console
