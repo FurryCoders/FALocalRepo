@@ -102,7 +102,7 @@ def help_message(*fs: str) -> str:
 def config(db: Connection, args: List[str]):
     """
     USAGE
-    falocalrepo config [<setting>] [<value1>] ... [<valueN>]
+        falocalrepo config [<setting>] [<value1>] ... [<valueN>]
     ARGUMENTS
         <setting>       Setting to read/edit
         <value>         New setting value
@@ -142,7 +142,7 @@ def config(db: Connection, args: List[str]):
 def download(db: Connection, args: List[str]):
     """
     USAGE
-    falocalrepo download <command> [<option>=<value>] [<arg1>] ... [<argN>]
+        falocalrepo download <command> [<option>=<value>] [<arg1>] ... [<argN>]
     ARGUMENTS
         <command>       The type of download to execute
         <arg>           Argument for the download command
@@ -202,8 +202,8 @@ def download(db: Connection, args: List[str]):
 def database(db: Connection, args: List[str]):
     """
     USAGE
-    falocalrepo database [<operation>] [<param1>=<value1>] ...
-                [<paramN>=<valueN>]
+        falocalrepo database [<operation>] [<param1>=<value1>] ...
+                    [<paramN>=<valueN>]
     ARGUMENTS
         <command>          The database operation to execute
         <param>            Parameter for the database operation
@@ -288,7 +288,7 @@ def database(db: Connection, args: List[str]):
 def main_console(args: List[str]):
     """
     USAGE
-    falocalrepo [-h] [-v] [-d] [<command>] [<arg1>] ... [<argN>]
+        falocalrepo [-h] [-v] [-d] [<command>] [<arg1>] ... [<argN>]
     ARGUMENTS
         <command>       The command to execute
         <arg>           The arguments of the command
