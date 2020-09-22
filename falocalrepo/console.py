@@ -80,7 +80,7 @@ def parse_args(args_raw: Iterable[str]) -> Tuple[Dict[str, str], List[str]]:
     return parameters(opts), args
 
 
-def help_message(comm: str = None) -> str:
+def help_message(comm: str = None, *_args: str) -> str:
     if not comm:
         return cleandoc(console.__doc__)
     elif comm == config.__name__:
@@ -316,7 +316,7 @@ def console(comm: str = "", *args: str) -> None:
         print(help_message())
         return
     elif not comm or comm == "help":
-        print(help_message(args[0] if args else None))
+        print(help_message(*args))
         return
     elif comm not in ("init", config.__name__, download.__name__, database.__name__):
         raise UnknownCommand(comm)
