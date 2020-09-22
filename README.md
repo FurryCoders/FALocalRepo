@@ -247,7 +247,7 @@ falocalrepo database remove-submissions 12345678 13572468 87651234
 ```
 falocalrepo database remove-journals 123456 135724 876512
 ```
-* `server [host=<host>] [port=<port>]` starts a server at `<host>:<port>` to navigate the database using `falocalrepo-server`. Defaults to `0.0.0.0:8080`. See [falocalrepo-server](https://pypi.org/project/falocalrepo-server/) for more details on usage.
+* `server [host=<host>] [port=<port>]` starts a server at `<host>:<port>` to navigate the database using `falocalrepo-server`. Defaults to `0.0.0.0:8080`. See [falocalrepo-server](https://pypi.org/project/falocalrepo-server/1.1.1) for more details on usage.
 ```
 falocalrepo database server host=127.0.0.1 port=5000
 ```
