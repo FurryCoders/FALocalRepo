@@ -337,12 +337,13 @@ def main_console(args: List[str]):
             db = connect_database("FA.db")
             make_database(db)
 
-        setting_write(db, "LASTSTART", str(datetime.now().timestamp()))
-
         if comm == "init":
             print("Database ready")
             return
-        elif comm == config.__name__:
+
+        setting_write(db, "LASTSTART", str(datetime.now().timestamp()))
+
+        if comm == config.__name__:
             config(db, args)
         elif comm == download.__name__:
             download(db, args)
