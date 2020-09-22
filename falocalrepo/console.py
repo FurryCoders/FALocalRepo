@@ -291,23 +291,20 @@ def console(prog: str, comm: str = "", *args: str) -> None:
         database        Operate on the database
     """
 
-    if not comm:
-        print(f"{prog}: {__version__}")
-        print(f"{prog}-database: {__database_version__}\n")
-        print(help_message())
-        return
-    elif comm in ("-h", "--help"):
-        print(f"{prog}: {__version__}")
-        print(f"{prog}-database: {__database_version__}\n")
-        print(help_message())
-        return
-    elif comm in ("-v", "--version"):
+    console.__doc__ = f"    falocalrepo: {__version__}\n" + \
+                      f"    falocalrepo-database: {__database_version__}\n" + \
+                      console.__doc__
+
+    if comm in ("-v", "--version"):
         print(__version__)
         return
     elif comm in ("-d", "--database"):
         print(__database_version__)
         return
-    elif comm == "help":
+    elif comm in ("-h", "--help"):
+        print(help_message())
+        return
+    elif not comm or comm == "help":
         print(help_message(args[0] if args else None))
         return
     elif comm not in ("init", config.__name__, download.__name__, database.__name__):
