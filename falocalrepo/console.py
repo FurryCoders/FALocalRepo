@@ -77,28 +77,27 @@ def parse_args(args_raw: List[str]) -> Tuple[Dict[str, str], List[str]]:
     return parameters(opts), args
 
 
-def format_doc(func):
-    return "\n".join(map(
-        lambda l: l[4:] if l.startswith(" ") else l,
-        func.__doc__.split("\n")
-    )).strip() if func.__doc__ else ""
+def dedent_docstring(func):
+    func.__doc__ = "\n".join(map(lambda l: l[4:], func.__doc__.split("\n"))).strip() if func.__doc__ else ""
+    return func
 
 
 def help_message(*fs: str) -> str:
     if len(fs) > 1:
         raise MalformedCommand("help takes a single argument")
     elif not fs:
-        return format_doc(main_console)
+        return main_console.__doc__
     elif fs[0] == config.__name__:
-        return format_doc(config)
+        return config.__doc__
     elif fs[0] == download.__name__:
-        return format_doc(download)
+        return download.__doc__
     elif fs[0] == database.__name__:
-        return format_doc(database)
+        return database.__doc__
     else:
         raise UnknownCommand(fs[0])
 
 
+@dedent_docstring
 def config(db: Connection, args: List[str]):
     """
     USAGE
@@ -139,6 +138,7 @@ def config(db: Connection, args: List[str]):
         raise UnknownCommand(f"config {comm}")
 
 
+@dedent_docstring
 def download(db: Connection, args: List[str]):
     """
     USAGE
@@ -199,6 +199,7 @@ def download(db: Connection, args: List[str]):
         raise UnknownCommand(f"download {comm}")
 
 
+@dedent_docstring
 def database(db: Connection, args: List[str]):
     """
     USAGE
@@ -285,6 +286,7 @@ def database(db: Connection, args: List[str]):
         raise UnknownCommand(f"database {comm}")
 
 
+@dedent_docstring
 def main_console(args: List[str]):
     """
     USAGE
@@ -313,10 +315,10 @@ def main_console(args: List[str]):
     if not comm:
         print(f"{prog}: {__version__}")
         print(f"{prog}-database: {__database_version__}\n")
-        print(help_message(main_console.__name__))
+        print(help_message())
         return
     elif comm in ("-h", "--help"):
-        print(help_message(main_console.__name__))
+        print(help_message())
         return
     elif comm in ("-v", "--version"):
         print(__version__)
