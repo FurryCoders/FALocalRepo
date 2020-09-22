@@ -1,5 +1,6 @@
 from datetime import datetime
 from inspect import cleandoc
+from os.path import getsize
 from os.path import isfile
 from re import match
 from typing import Dict
@@ -220,12 +221,14 @@ def database(db: Connection, comm: str = "", *args: str):
     """
 
     if not comm or comm == "info":
+        size: int = getsize("FA.db")
         sub_n: int = int(setting_read(db, "SUBN"))
         usr_n: int = int(setting_read(db, "USRN"))
         jrn_n: int = int(setting_read(db, "JRNN"))
         last_update: float = float(setting_read(db, "LASTUPDATE"))
         last_start: float = float(setting_read(db, "LASTSTART"))
         version: str = setting_read(db, "VERSION")
+        print("Size       :", f"{size / 1e6:.1f}MB")
         print("Submissions:", sub_n)
         print("Users      :", usr_n)
         print("Journals   :", jrn_n)
