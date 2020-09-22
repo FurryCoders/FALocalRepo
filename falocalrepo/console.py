@@ -10,6 +10,7 @@ from typing import Tuple
 
 from faapi import FAAPI
 from falocalrepo_server import server
+from falocalrepo_server.__version__ import __version__ as __server_version__
 
 from .__version__ import __database_version__
 from .__version__ import __version__
@@ -302,6 +303,7 @@ def console(comm: str = "", *args: str) -> None:
 
     console.__doc__ = f"    falocalrepo: {__version__}\n" + \
                       f"    falocalrepo-database: {__database_version__}\n" + \
+                      f"    falocalrepo-server: {__server_version__}\n" + \
                       console.__doc__
 
     if comm in ("-v", "--version"):
