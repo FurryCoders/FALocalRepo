@@ -272,7 +272,7 @@ def database(db: Connection, comm: str = "", *args: str):
         raise UnknownCommand(f"database {comm}")
 
 
-def console(prog: str, comm: str = "", *args: str) -> None:
+def console(comm: str = "", *args: str) -> None:
     """
     USAGE
         falocalrepo [-h] [-v] [-d] [<command>] [<arg1>] ... [<argN>]

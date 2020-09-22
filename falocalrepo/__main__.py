@@ -9,7 +9,7 @@ from .console import console
 
 def main(args: List[str] = None):
     # Run main program
-    args = argv if args is None else args
+    args = argv[1:] if args is None else args
     try:
         console(*args)
     except KeyboardInterrupt:
