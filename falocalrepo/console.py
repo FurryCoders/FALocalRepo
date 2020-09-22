@@ -311,6 +311,8 @@ def main_console(args: List[str]):
     args = args[1:]
 
     if not comm:
+        print(f"{prog}: {__version__}")
+        print(f"{prog}-database: {__database_version__}\n")
         print(help_message(main_console.__name__))
         return
     elif comm in ("-h", "--help"):
