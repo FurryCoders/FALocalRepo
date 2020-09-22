@@ -103,11 +103,12 @@ def config(db: Connection, comm: str = "", *args: str):
         <value>         New setting value
 
     AVAILABLE SETTINGS
+        list            List settings
         cookies         Cookies for the API
         files-folder    Files download folder
     """
 
-    if not comm:
+    if not comm or comm == "list":
         cookie_a, cookie_b = cookies_read(db)
         folder: str = setting_read(db, "FILESFOLDER")
         print("cookie a:", cookie_a)
