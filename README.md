@@ -177,11 +177,11 @@ falocalrepo download journals 123456 135724 876512
 
 `database [<operation>] [<param1>=<value1>] ... [<paramN>=<valueN>]`
 
-The `database` command allows to operate on the database. Used without an operation command shows the database information and statistics (number of users and submissions and time of last update) and version.
+The `database` command allows to operate on the database. Used without an operation command shows the database information, statistics (number of users and submissions and time of last update), and version.
 
 Available operations are:
 
-* `info` show database information and statistics.
+* `info` show database information, statistics and version.
 ```
 falocalrepo database info
 ```
