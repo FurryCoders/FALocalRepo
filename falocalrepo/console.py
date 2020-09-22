@@ -205,6 +205,7 @@ def database(db: Connection, comm: str = "", *args: str):
         <value>            Value of the parameter
 
     AVAILABLE COMMANDS
+        info               Show database information
         search-submissions Search submissions
         search-journals    Search submissions
         add-submission     Add a submission to the database manually
@@ -217,7 +218,7 @@ def database(db: Connection, comm: str = "", *args: str):
         clean              Clean the database with the VACUUM function
     """
 
-    if not comm:
+    if not comm or comm == "info":
         sub_n: int = int(setting_read(db, "SUBN"))
         usr_n: int = int(setting_read(db, "USRN"))
         jrn_n: int = int(setting_read(db, "JRNN"))
