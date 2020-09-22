@@ -96,9 +96,11 @@ def config(db: Connection, comm: str = "", *args: str):
     """
     USAGE
         falocalrepo config [<setting>] [<value1>] ... [<valueN>]
+
     ARGUMENTS
         <setting>       Setting to read/edit
         <value>         New setting value
+
     AVAILABLE SETTINGS
         cookies         Cookies for the API
         files-folder    Files download folder
@@ -134,9 +136,11 @@ def download(db: Connection, comm: str = "", *args: str):
     """
     USAGE
         falocalrepo download <command> [<option>=<value>] [<arg1>] ... [<argN>]
+
     ARGUMENTS
         <command>       The type of download to execute
         <arg>           Argument for the download command
+
     AVAILABLE COMMANDS
         users           Download users. First argument is a comma-separated list of
                           users, second is a comma-separated list of folders
@@ -193,10 +197,12 @@ def database(db: Connection, comm: str = "", *args: str):
     USAGE
         falocalrepo database [<operation>] [<param1>=<value1>] ...
                     [<paramN>=<valueN>]
+
     ARGUMENTS
         <command>          The database operation to execute
         <param>            Parameter for the database operation
         <value>            Value of the parameter
+
     AVAILABLE COMMANDS
         search-submissions Search submissions
         search-journals    Search submissions
@@ -276,13 +282,16 @@ def console(comm: str = "", *args: str) -> None:
     """
     USAGE
         falocalrepo [-h] [-v] [-d] [<command>] [<arg1>] ... [<argN>]
+
     ARGUMENTS
         <command>       The command to execute
         <arg>           The arguments of the command
+
     GLOBAL OPTIONS
         -h, --help      Display this help message
         -v, --version   Display version
         -d, --database  Display database version
+
     AVAILABLE COMMANDS
         help            Display the manual of a command
         init            Create/update the database and exit, default command
