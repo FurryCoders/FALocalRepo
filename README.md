@@ -125,10 +125,14 @@ It can be used to create the database and then manually edit it, or to update it
 
 The `config` command allows to change the settings used by the program.
 
-Running the command alone will show the current values of the settings stored in the database. Running `config <setting>` without value arguments will show the current value of that specific setting.
+Running the command alone will list the current values of the settings stored in the database. Running `config <setting>` without value arguments will show the current value of that specific setting.
 
 Available settings are:
 
+* `list` list stored settings.
+```
+falocalrepo config list
+```
 * `cookies [<cookie a>] [<cookie b>]` the cookies stored in the database.
 ```
 falocalrepo config cookies 38565475-3421-3f21-7f63-3d341339737 356f5962-5a60-0922-1c11-65003b703038
@@ -173,10 +177,14 @@ falocalrepo download journals 123456 135724 876512
 
 `database [<operation>] [<param1>=<value1>] ... [<paramN>=<valueN>]`
 
-The `database` command allows to operate on the database. Used without an operation command shows the database statistics (number of users and submissions and time of last update) and version.
+The `database` command allows to operate on the database. Used without an operation command shows the database information and statistics (number of users and submissions and time of last update) and version.
 
 Available operations are:
 
+* `info` show database information and statistics.
+```
+falocalrepo database info
+```
 * `search-submissions <param1>=<value1> ... [<paramN>=<valueN>]` search the submissions entries using metadata fields. Search is conducted case-insensitively using the SQLite [`like`](https://sqlite.org/lang_expr.html#like) expression which allows for limited pattern matching. For example this string can be used to search two tags together separated by an unknown amount of characters `%cat,%mouse%`. Fields missing wildcards will only match an exact result, i.e. `cat` will only match a submission which has only the `cat` tag whereas `%cat%` wil match a submission that has at least the `cat` tag. Search parameters can be passed multiple times to act as OR values. The following search parameters are supported:
     * `author` author
     * `title`
