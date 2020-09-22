@@ -1,4 +1,5 @@
 from datetime import datetime
+from inspect import cleandoc
 from os.path import isfile
 from re import match
 from typing import Dict
@@ -78,25 +79,19 @@ def parse_args(args_raw: Iterable[str]) -> Tuple[Dict[str, str], List[str]]:
     return parameters(opts), args
 
 
-def dedent_docstring(func):
-    func.__doc__ = "\n".join(map(lambda l: l[4:], func.__doc__.split("\n"))).strip() if func.__doc__ else ""
-    return func
-
-
 def help_message(comm: str = None) -> str:
     if not comm:
-        return main_console.__doc__
+        return cleandoc(main_console.__doc__)
     elif comm == config.__name__:
-        return config.__doc__
+        return cleandoc(config.__doc__)
     elif comm == download.__name__:
-        return download.__doc__
+        return cleandoc(download.__doc__)
     elif comm == database.__name__:
-        return database.__doc__
+        return cleandoc(database.__doc__)
     else:
         raise UnknownCommand(comm)
 
 
-@dedent_docstring
 def config(db: Connection, comm: str = "", *args: str):
     """
     USAGE
@@ -135,7 +130,6 @@ def config(db: Connection, comm: str = "", *args: str):
         raise UnknownCommand(f"config {comm}")
 
 
-@dedent_docstring
 def download(db: Connection, comm: str = "", *args: str):
     """
     USAGE
@@ -194,7 +188,6 @@ def download(db: Connection, comm: str = "", *args: str):
         raise UnknownCommand(f"download {comm}")
 
 
-@dedent_docstring
 def database(db: Connection, comm: str = "", *args: str):
     """
     USAGE
@@ -279,7 +272,6 @@ def database(db: Connection, comm: str = "", *args: str):
         raise UnknownCommand(f"database {comm}")
 
 
-@dedent_docstring
 def main_console(prog: str, comm: str = "", *args: str) -> None:
     """
     USAGE
