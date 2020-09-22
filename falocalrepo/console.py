@@ -82,19 +82,17 @@ def dedent_docstring(func):
     return func
 
 
-def help_message(*fs: str) -> str:
-    if len(fs) > 1:
-        raise MalformedCommand("help takes a single argument")
-    elif not fs:
+def help_message(comm: str = None) -> str:
+    if not comm:
         return main_console.__doc__
-    elif fs[0] == config.__name__:
+    elif comm == config.__name__:
         return config.__doc__
-    elif fs[0] == download.__name__:
+    elif comm == download.__name__:
         return download.__doc__
-    elif fs[0] == database.__name__:
+    elif comm == database.__name__:
         return database.__doc__
     else:
-        raise UnknownCommand(fs[0])
+        raise UnknownCommand(comm)
 
 
 @dedent_docstring
@@ -329,7 +327,7 @@ def main_console(args: List[str]):
         print(__database_version__)
         return
     elif comm == "help":
-        print(help_message(*args))
+        print(help_message(comm))
         return
     elif comm not in ("init", config.__name__, download.__name__, database.__name__):
         raise UnknownCommand(comm)
