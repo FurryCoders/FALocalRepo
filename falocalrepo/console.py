@@ -318,6 +318,8 @@ def main_console(args: List[str]):
         print(help_message())
         return
     elif comm in ("-h", "--help"):
+        print(f"{prog}: {__version__}")
+        print(f"{prog}-database: {__database_version__}\n")
         print(help_message())
         return
     elif comm in ("-v", "--version"):
