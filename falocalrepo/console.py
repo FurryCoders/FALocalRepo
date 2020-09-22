@@ -220,10 +220,12 @@ def database(db: Connection, comm: str = "", *args: str):
     if not comm:
         sub_n: int = int(setting_read(db, "SUBN"))
         usr_n: int = int(setting_read(db, "USRN"))
+        jrn_n: int = int(setting_read(db, "JRNN"))
         last_update: float = float(setting_read(db, "LASTUPDATE"))
         version: str = setting_read(db, "VERSION")
         print("Submissions:", sub_n)
         print("Users      :", usr_n)
+        print("Journals   :", jrn_n)
         print("Last update:", str(datetime.fromtimestamp(last_update)) if last_update else 0)
         print("Version    :", version)
     elif comm == "search-submissions":
