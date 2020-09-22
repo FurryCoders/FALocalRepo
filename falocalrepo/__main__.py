@@ -5,10 +5,10 @@ from .console import UnknownCommand
 from .console import main_console
 
 
-def main():
+def main(*args: str):
     # Run main program
     try:
-        main_console(argv)
+        main_console(*args)
     except KeyboardInterrupt:
         print()
         pass
@@ -18,4 +18,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    main(*argv)

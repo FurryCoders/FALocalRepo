@@ -2,6 +2,7 @@ from datetime import datetime
 from os.path import isfile
 from re import match
 from typing import Dict
+from typing import Iterable
 from typing import List
 from typing import Optional
 from typing import Tuple
@@ -47,7 +48,7 @@ class UnknownCommand(Exception):
     pass
 
 
-def parameters_multi(args: List[str]) -> Dict[str, List[str]]:
+def parameters_multi(args: Iterable[str]) -> Dict[str, List[str]]:
     params: Dict[str, List[str]] = {}
     for param, value in map(lambda p: p.split("=", 1), args):
         param = param.strip().lower()
@@ -56,11 +57,11 @@ def parameters_multi(args: List[str]) -> Dict[str, List[str]]:
     return params
 
 
-def parameters(args: List[str]) -> Dict[str, str]:
+def parameters(args: Iterable[str]) -> Dict[str, str]:
     return {p: v for p, v in map(lambda p: p.split("=", 1), args)}
 
 
-def parse_args(args_raw: List[str]) -> Tuple[Dict[str, str], List[str]]:
+def parse_args(args_raw: Iterable[str]) -> Tuple[Dict[str, str], List[str]]:
     opts: List[str] = []
     args: List[str] = []
 
@@ -96,7 +97,7 @@ def help_message(comm: str = None) -> str:
 
 
 @dedent_docstring
-def config(db: Connection, args: List[str]):
+def config(db: Connection, comm: str = "", *args: str):
     """
     USAGE
         falocalrepo config [<setting>] [<value1>] ... [<valueN>]
@@ -107,8 +108,6 @@ def config(db: Connection, args: List[str]):
         cookies         Cookies for the API
         files-folder    Files download folder
     """
-    comm: str = args[0] if args else ""
-    args = args[1:]
 
     if not comm:
         cookie_a, cookie_b = cookies_read(db)
@@ -137,7 +136,7 @@ def config(db: Connection, args: List[str]):
 
 
 @dedent_docstring
-def download(db: Connection, args: List[str]):
+def download(db: Connection, comm: str = "", *args: str):
     """
     USAGE
         falocalrepo download <command> [<option>=<value>] [<arg1>] ... [<argN>]
@@ -150,8 +149,6 @@ def download(db: Connection, args: List[str]):
         submissions     Download single submissions. Arguments are submission ID's
         update          Update database using the users and folders already saved
     """
-    comm: str = args[0] if args else ""
-    args = args[1:]
 
     if not comm:
         raise MalformedCommand("download needs a command")
@@ -198,7 +195,7 @@ def download(db: Connection, args: List[str]):
 
 
 @dedent_docstring
-def database(db: Connection, args: List[str]):
+def database(db: Connection, comm: str = "", *args: str):
     """
     USAGE
         falocalrepo database [<operation>] [<param1>=<value1>] ...
@@ -219,8 +216,6 @@ def database(db: Connection, args: List[str]):
         check-errors       Check the database for errors
         clean              Clean the database with the VACUUM function
     """
-    comm: str = args[0] if args else ""
-    args = args[1:]
 
     if not comm:
         sub_n: int = int(setting_read(db, "SUBN"))
@@ -285,7 +280,7 @@ def database(db: Connection, args: List[str]):
 
 
 @dedent_docstring
-def main_console(args: List[str]):
+def main_console(prog: str, comm: str = "", *args: str) -> None:
     """
     USAGE
         falocalrepo [-h] [-v] [-d] [<command>] [<arg1>] ... [<argN>]
@@ -303,12 +298,6 @@ def main_console(args: List[str]):
         download        Perform downloads
         database        Operate on the database
     """
-    prog: str
-    comm: str
-
-    prog, *args = list(filter(bool, args))
-    comm = args[0] if args else ""
-    args = args[1:]
 
     if not comm:
         print(f"{prog}: {__version__}")
@@ -349,11 +338,11 @@ def main_console(args: List[str]):
         setting_write(db, "LASTSTART", str(datetime.now().timestamp()))
 
         if comm == config.__name__:
-            config(db, args)
+            config(db, *args)
         elif comm == download.__name__:
-            download(db, args)
+            download(db, *args)
         elif comm == database.__name__:
-            database(db, args)
+            database(db, *args)
     finally:
         # Close database and update totals
         if db is not None:
