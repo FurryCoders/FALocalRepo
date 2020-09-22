@@ -54,7 +54,7 @@ description = "Python module to implement API-like functionality for the FurAffi
 name = "faapi"
 optional = false
 python-versions = ">=3.8,<4.0"
-version = "2.8.2"
+version = "2.8.3"
 
 [package.dependencies]
 beautifulsoup4 = ">=4.9.1,<5.0.0"
@@ -225,7 +225,7 @@ dev = ["pytest", "pytest-timeout", "coverage", "tox", "sphinx", "pallets-sphinx-
 watchdog = ["watchdog"]
 
 [metadata]
-content-hash = "78db7351e66d6d57370dbdce244d88392bfa0da00ae55f31ed1effce8892e7a2"
+content-hash = "99ce35293fc84f15168e89dd0a40bba64c1f541e56c7994b0159486343cd69a1"
 lock-version = "1.0"
 python-versions = "^3.8"
 
@@ -252,8 +252,8 @@ click = [
     {file = "click-7.1.2.tar.gz", hash = "sha256:d2b5255c7c6349bc1bd1e59e08cd12acbbd63ce649f2588755783aa94dfb6b1a"},
 ]
 faapi = [
-    {file = "faapi-2.8.2-py3-none-any.whl", hash = "sha256:39e8515d0b9b8b24a0a503e3d5b2004dadefba49d9bfb6cd752198ca2abb76ef"},
-    {file = "faapi-2.8.2.tar.gz", hash = "sha256:2234e63ac2e92fbd3c5dfd6dae782b41754031323d35f6e04eab2f1f1af5dc3d"},
+    {file = "faapi-2.8.3-py3-none-any.whl", hash = "sha256:bc00b7eba1ae9478c52d54bcfaf70297ac4b66f64319b5c549fdeac0f2df714d"},
+    {file = "faapi-2.8.3.tar.gz", hash = "sha256:ab38069e9d2623cd9392ed9a77977b8e087ae843ca1c959fc21408a2db83c58e"},
 ]
 falocalrepo-server = [
     {file = "falocalrepo-server-1.1.2.tar.gz", hash = "sha256:08fabbae07e4b4b08db75e1da8595cb8bb6cdb5f9d683a536a022c74492d0bc9"},
