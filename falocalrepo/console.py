@@ -288,7 +288,7 @@ def database(db: Connection, args: List[str]):
 def main_console(args: List[str]):
     """
     USAGE
-    falocalrepo [-h] [-v] [-d] <command> [<arg1>] ... [<argN>]
+    falocalrepo [-h] [-v] [-d] [<command>] [<arg1>] ... [<argN>]
     ARGUMENTS
         <command>       The command to execute
         <arg>           The arguments of the command
@@ -298,7 +298,7 @@ def main_console(args: List[str]):
         -d, --database  Display database version
     AVAILABLE COMMANDS
         help            Display the manual of a command
-        init            Create the database and exit
+        init            Create/update the database and exit, default command
         config          Manage settings
         download        Perform downloads
         database        Operate on the database
