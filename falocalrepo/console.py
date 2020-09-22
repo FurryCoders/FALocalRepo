@@ -311,7 +311,8 @@ def main_console(args: List[str]):
     args = args[1:]
 
     if not comm:
-        comm = "init"
+        print(help_message(main_console.__name__))
+        return
     elif comm in ("-h", "--help"):
         print(help_message(main_console.__name__))
         return
