@@ -1,12 +1,15 @@
-from sys import argv, exit
+from sys import argv
+from sys import exit
+from typing import List
 
 from .console import MalformedCommand
 from .console import UnknownCommand
 from .console import main_console
 
 
-def main(*args: str):
+def main(args: List[str] = None):
     # Run main program
+    args = argv if args is None else args
     try:
         main_console(*args)
     except KeyboardInterrupt:
@@ -18,4 +21,4 @@ def main(*args: str):
 
 
 if __name__ == "__main__":
-    main(*argv)
+    main(argv)
