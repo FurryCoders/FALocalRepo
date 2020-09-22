@@ -316,7 +316,7 @@ def main_console(prog: str, comm: str = "", *args: str) -> None:
         print(__database_version__)
         return
     elif comm == "help":
-        print(help_message(comm))
+        print(help_message(args[0] if args else None))
         return
     elif comm not in ("init", config.__name__, download.__name__, database.__name__):
         raise UnknownCommand(comm)
