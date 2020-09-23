@@ -81,10 +81,10 @@ description = "Web interface for falocalrepo."
 name = "falocalrepo-server"
 optional = false
 python-versions = ">=3.8,<4.0"
-version = "1.2.0"
+version = "1.2.2"
 
 [package.dependencies]
-falocalrepo-database = ">=3.2.2,<4.0.0"
+falocalrepo-database = ">=3.2.4,<3.3.0"
 flask = "1.1.2"
 
 [[package]]
@@ -237,7 +237,7 @@ dev = ["pytest", "pytest-timeout", "coverage", "tox", "sphinx", "pallets-sphinx-
 watchdog = ["watchdog"]
 
 [metadata]
-content-hash = "6589a6e02a095dd140c42fcc95007dd13e1ce9ff8b09a221ec7546cad6c7a46d"
+content-hash = "24ac7e166d1afe72326347f676ca76c86a7958cebf10d42f69b3931ae76aa75d"
 lock-version = "1.0"
 python-versions = "^3.8"
 
@@ -272,8 +272,8 @@ falocalrepo-database = [
     {file = "falocalrepo_database-3.2.4-py3-none-any.whl", hash = "sha256:366a19a3ab6e74ef88e2693304c07bd98070aa5d07eff5f510633c67be1e2c62"},
 ]
 falocalrepo-server = [
-    {file = "falocalrepo-server-1.2.0.tar.gz", hash = "sha256:21f7a4a782dabbb518e483ef091166e9030d675f0f9c246cfbcff33dd3205cff"},
-    {file = "falocalrepo_server-1.2.0-py3-none-any.whl", hash = "sha256:964dffba329ca64dd943c6f65dcd49066eeb0d082138a1fb3b468bb6d9177306"},
+    {file = "falocalrepo-server-1.2.2.tar.gz", hash = "sha256:fe26f04c5a4d71ed1d5d6319ca1dd0cd39cb5d60f748f11c3cd17c0a477548e8"},
+    {file = "falocalrepo_server-1.2.2-py3-none-any.whl", hash = "sha256:ce37c9c8fea015e3fc84ffa66a537b9ef96c77b3c8a650451eb8ab957f4d0ab2"},
 ]
 filetype = [
     {file = "filetype-1.0.7-py2.py3-none-any.whl", hash = "sha256:353369948bb1c09b8b3ea3d78390b5586e9399bff9aab894a1dff954e31a66f6"},
