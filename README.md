@@ -266,7 +266,7 @@ falocalrepo database server host=127.0.0.1 port=5000
 
 To store the metadata of the downloaded submissions, journals, users, cookies and statistics, the program uses a SQLite3 database. This database is built to be as light as possible while also containing all the metadata that can be extracted from a submission page.
 
-To store all this information, the database uses three tables: `SETTINGS`, `USERS` and `SUBMISSIONS`.
+To store all this information, the database uses four tables: `SETTINGS`, `USERS`, `SUBMISSIONS` and `JOURNALS`.
 
 ### Settings
 
