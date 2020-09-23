@@ -20,7 +20,6 @@ from .commands import journal_make
 from .commands import journals_print
 from .commands import journals_search
 from .commands import submission_make
-from .commands import submissions_download
 from .commands import submissions_print
 from .commands import submissions_search
 from .database import Connection
@@ -34,6 +33,7 @@ from .download import cookies_load
 from .download import journal_save
 from .download import journals_download
 from .download import submission_save
+from .download import submissions_download
 from .download import user_clean_name
 from .download import users_download
 from .download import users_update

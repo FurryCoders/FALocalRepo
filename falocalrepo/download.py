@@ -149,6 +149,14 @@ def submission_download_file(api: FAAPI, sub_file_url: str, speed: int = 100) ->
         return None
 
 
+def submissions_download(api: FAAPI, db: Connection, sub_ids: List[str]):
+    if sub_ids_fail := list(filter(lambda i: not i.isdigit(), sub_ids)):
+        print("The following ID's are not correct:", *sub_ids_fail)
+    for sub_id in map(int, filter(lambda i: i.isdigit(), sub_ids)):
+        print(f"Downloading {sub_id:010} ", end="", flush=True)
+        submission_download(api, db, sub_id)
+
+
 def submission_download(api: FAAPI, db: Connection, sub_id: int) -> bool:
     sub, _ = api.get_sub(sub_id, False)
     sub_file: bytes = bytes()

@@ -46,14 +46,6 @@ def journal_make(id_: Union[int, str], author: str,
     return journal
 
 
-def submissions_download(api: FAAPI, db: Connection, sub_ids: List[str]):
-    if sub_ids_fail := list(filter(lambda i: not i.isdigit(), sub_ids)):
-        print("The following ID's are not correct:", *sub_ids_fail)
-    for sub_id in map(int, filter(lambda i: i.isdigit(), sub_ids)):
-        print(f"Downloading {sub_id:010} ", end="", flush=True)
-        submission_download(api, db, sub_id)
-
-
 def submission_make(id_: Union[int, str], author: str, title: str,
                     date: str, category: str, species: str,
                     gender: str, rating: str, tags: str = "",
