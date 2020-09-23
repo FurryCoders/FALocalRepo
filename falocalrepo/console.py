@@ -158,7 +158,6 @@ def download(db: Connection, comm: str = "", *args: str):
 
     api: FAAPI = FAAPI()
     cookies_load(api, *cookies_read(db))
-    api.handle_delay = (lambda *xs: None)
 
     if not api.connection_status:
         raise ConnectionError("FAAPI cannot connect to FA")

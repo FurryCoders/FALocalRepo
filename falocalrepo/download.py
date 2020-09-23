@@ -57,7 +57,7 @@ def clean_string(title: str) -> str:
     return str(re_sub(r"[^\x20-\x7E]", "", title.strip()))
 
 
-def submission_download_file(api: FAAPI, sub_file_url: str, speed: int = 0) -> Optional[bytes]:
+def submission_download_file(api: FAAPI, sub_file_url: str, speed: int = 100) -> Optional[bytes]:
     bar_length: int = 10
     bar_pos: int = 0
     print("[" + (" " * bar_length) + "]", end=("\b" * bar_length) + "\b", flush=True)
