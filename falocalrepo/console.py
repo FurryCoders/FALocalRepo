@@ -32,6 +32,7 @@ from .database import make_database
 from .database import vacuum
 from .download import cookies_load
 from .download import journal_save
+from .download import journals_download
 from .download import submission_save
 from .download import user_clean_name
 from .download import users_download
@@ -190,7 +191,7 @@ def download(db: Connection, comm: str = "", *args: str):
             raise MalformedCommand("journals needs at least one argument")
         journal_ids_tmp: List[str] = list(filter(str.isdigit, args))
         journal_ids: List[str] = sorted(set(journal_ids_tmp), key=journal_ids_tmp.index)
-        submissions_download(api, db, journal_ids)
+        journals_download(api, db, journal_ids)
     else:
         raise UnknownCommand(f"download {comm}")
 
