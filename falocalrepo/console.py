@@ -10,8 +10,8 @@ from typing import Optional
 from typing import Tuple
 
 from faapi import FAAPI
+from falocalrepo_server import __version__ as __server_version__
 from falocalrepo_server import server
-from falocalrepo_server.__version__ import __version__ as __server_version__
 
 from .__version__ import __database_version__
 from .__version__ import __version__
