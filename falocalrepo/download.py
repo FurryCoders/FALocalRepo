@@ -1,11 +1,13 @@
 from datetime import datetime
+from json import dumps as json_dumps
+from json import loads as json_loads
 from math import log10
 from os import get_terminal_size
-from os import makedirs
-from os.path import join as path_join
 from re import sub as re_sub
+from sqlite3 import Connection
 from time import sleep
 from typing import Callable
+from typing import Dict
 from typing import List
 from typing import Optional
 from typing import Tuple
@@ -13,21 +15,18 @@ from typing import Union
 
 from faapi import FAAPI
 from faapi import Journal
-from faapi import Sub
 from faapi import SubPartial
-from filetype import guess_extension
-
-from .database import Connection
-from .database import insert
-from .database import keys_journals
-from .database import keys_submissions
-from .database import keys_users
-from .database import select
-from .database import select_all
-from .database import tiered_path
-from .database import update
-from .settings import setting_read
-from .settings import setting_write
+from falocalrepo_database import edit_user_field_add
+from falocalrepo_database import edit_user_field_remove
+from falocalrepo_database import exist_journal
+from falocalrepo_database import exist_submission
+from falocalrepo_database import exist_user_field_value
+from falocalrepo_database import new_user
+from falocalrepo_database import read_setting
+from falocalrepo_database import save_journal
+from falocalrepo_database import save_submission
+from falocalrepo_database import select_all
+from falocalrepo_database import write_setting
 
 
 class UnknownFolder(Exception):
@@ -41,82 +40,24 @@ def cookies_load(api: FAAPI, cookie_a: str, cookie_b: str):
     ])
 
 
-def user_clean_name(user: str) -> str:
-    return str(re_sub(r"[^a-zA-Z0-9\-.~,]", "", user.lower().strip()))
+def cookies_read(db: Connection) -> Tuple[str, str]:
+    cookies: Dict[str, str] = json_loads(read_setting(db, "COOKIES"))
+    return cookies.get("a", ""), cookies.get("b", "")
 
 
-def clean_title(title: str) -> str:
+def cookies_write(db: Connection, a: str, b: str):
+    write_setting(db, "COOKIES", json_dumps({"a": a, "b": b}))
+
+
+def clean_username(username: str) -> str:
+    return str(re_sub(r"[^a-zA-Z0-9\-.~,]", "", username.lower().strip()))
+
+
+def clean_string(title: str) -> str:
     return str(re_sub(r"[^\x20-\x7E]", "", title.strip()))
 
 
-def user_check(db: Connection, user: str, field: str, value: str) -> bool:
-    field_value: List[str] = select(db, "USERS", [field], "USERNAME", user).fetchone()[0].split(",")
-
-    return value in filter(len, field_value)
-
-
-def user_add(db: Connection, user: str, field: str, add_value: str):
-    field_old: List[str] = select(db, "USERS", [field], "USERNAME", user).fetchone()[0].split(",")
-    field_old = list(filter(len, field_old))
-
-    if add_value in field_old:
-        return
-
-    update(db, "USERS", [field], [",".join(field_old + [add_value])], "USERNAME", user)
-
-    db.commit()
-
-
-def user_edit(db: Connection, user: str, fields: List[str], new_values: List[str]):
-    update(db, "USERS", fields, new_values, "USERNAME", user)
-    db.commit()
-
-
-def user_new(db: Connection, user: str):
-    insert(db, "USERS", keys_users, [user] + [""] * (len(keys_users) - 1), replace=False)
-    db.commit()
-
-
-def submission_check(db: Connection, sub_id: int) -> bool:
-    return bool(select(db, "SUBMISSIONS", ["ID"], "ID", sub_id).fetchone())
-
-
-def submission_save(db: Connection, sub: Sub, sub_file: Optional[bytes]):
-    sub_ext: str = ""
-
-    if sub_file:
-        if (sub_ext_tmp := guess_extension(sub_file)) is None:
-            sub_filename = sub.file_url.split("/")[-1]
-            if "." in sub_filename:
-                sub_ext_tmp = sub.file_url.split(".")[-1]
-        elif str(sub_ext_tmp) == "zip":
-            sub_filename = sub.file_url.split("/")[-1]
-            if "." in sub_filename:
-                sub_ext_tmp = sub.file_url.split(".")[-1]
-            else:
-                sub_ext_tmp = None
-
-        sub_ext = "" if sub_ext_tmp is None else f".{str(sub_ext_tmp)}"
-        sub_folder: str = path_join(setting_read(db, "FILESFOLDER"), tiered_path(sub.id))
-
-        makedirs(sub_folder, exist_ok=True)
-
-        with open(path_join(sub_folder, "submission" + sub_ext), "wb") as f:
-            f.write(sub_file)
-
-    insert(db, "SUBMISSIONS",
-           keys_submissions,
-           [sub.id, sub.author, sub.title,
-            sub.date, sub.description, ",".join(sorted(sub.tags, key=str.lower)),
-            sub.category, sub.species, sub.gender,
-            sub.rating, sub.file_url, sub_ext.lstrip("."),
-            sub_file is not None],
-           replace=True)
-
-    db.commit()
-
-
-def submission_download_file(api: FAAPI, sub_file_url: str, speed: int = 100) -> Optional[bytes]:
+def submission_download_file(api: FAAPI, sub_file_url: str, speed: int = 0) -> Optional[bytes]:
     bar_length: int = 10
     bar_pos: int = 0
     print("[" + (" " * bar_length) + "]", end=("\b" * bar_length) + "\b", flush=True)
@@ -173,18 +114,9 @@ def submission_download(api: FAAPI, db: Connection, sub_id: int) -> bool:
     if not sub.id:
         return False
 
-    submission_save(db, sub, sub_file)
+    save_submission(db, sub, sub_file)
 
     return True
-
-
-def journal_check(db: Connection, journal_id: int) -> bool:
-    return bool(select(db, "JOURNALS", ["ID"], "ID", journal_id).fetchone())
-
-
-def journal_save(db: Connection, journal: Journal):
-    insert(db, "JOURNALS", keys_journals,
-           [journal.id, journal.author, journal.title, journal.date, journal.content])
 
 
 def journals_download(api: FAAPI, db: Connection, jrn_ids: List[str]):
@@ -197,7 +129,7 @@ def journals_download(api: FAAPI, db: Connection, jrn_ids: List[str]):
 
 def journal_download(api: FAAPI, db: Connection, jrn_id: int):
     journal: Journal = api.get_journal(jrn_id)
-    journal_save(db, journal)
+    save_journal(db, journal)
 
 
 def users_download(api: FAAPI, db: Connection, users: List[str], folders: List[str]):
@@ -216,14 +148,11 @@ def users_update(api: FAAPI, db: Connection, users: List[str] = None, folders: L
             continue
         elif not api.user_exists(user):
             print(f"User {user} not found")
-            new_folders = list(map(lambda f: "!" + f if f in ("gallery", "scraps") else f, user_folders.split(",")))
-            user_edit(db, user, ["FOLDERS"], new_folders)
+            edit_user_field_remove(db, user, "FOLDERS", ["gallery", "scraps"])
+            edit_user_field_add(db, user, "FOLDERS", ["!gallery", "!scraps"])
             continue
         for folder in user_folders.split(","):
             if folders and folder not in folders:
-                continue
-            if folder.lower().startswith("mentions"):
-                print(f"Unsupported: {user}/{folder}")
                 continue
             print(f"Downloading: {user}/{folder}")
             tot_tmp, fail_tmp = user_download(api, db, user, folder, stop)
@@ -231,7 +160,7 @@ def users_update(api: FAAPI, db: Connection, users: List[str] = None, folders: L
             fail += fail_tmp
     print("Items downloaded:", tot)
     print("Items failed:", fail) if fail else None
-    setting_write(db, "LASTUPDATE", str(datetime.now().timestamp()))
+    write_setting(db, "LASTUPDATE", str(datetime.now().timestamp()))
 
 
 def user_download(api: FAAPI, db: Connection, user: str, folder: str, stop: int = 0) -> Tuple[int, int]:
@@ -240,7 +169,7 @@ def user_download(api: FAAPI, db: Connection, user: str, folder: str, stop: int 
     items_type: str = "sub"
     page: Union[int, str] = 1
     page_n: int = 0
-    user = user_clean_name(user)
+    user = clean_username(user)
     space_term: int = get_terminal_size()[0]
     found_subs: int = 0
 
@@ -255,6 +184,9 @@ def user_download(api: FAAPI, db: Connection, user: str, folder: str, stop: int 
     if folder.endswith("!"):
         print(f"{folder} disabled")
         return 0, 0
+    elif folder.startswith("mentions"):
+        print(f"Unsupported: {user}/{folder}")
+        return 0, 0
     elif folder == "gallery":
         downloader = api.gallery
     elif folder == "scraps":
@@ -268,8 +200,8 @@ def user_download(api: FAAPI, db: Connection, user: str, folder: str, stop: int 
     else:
         raise UnknownFolder(folder)
 
-    user_new(db, user)
-    user_add(db, user, "FOLDERS", folder.lower())
+    new_user(db, user)
+    edit_user_field_add(db, user, "FOLDERS", [folder.lower()])
 
     while page:
         page_n += 1
@@ -281,30 +213,30 @@ def user_download(api: FAAPI, db: Connection, user: str, folder: str, stop: int 
         for i, item in enumerate(items, 1):
             print(
                 f"\r{page_n}/{i:02d} {item.id:010d} " +
-                f"{clean_title(item.title)[:space_title]:<{space_title}} ",
+                f"{clean_string(item.title)[:space_title]:<{space_title}} ",
                 end="",
                 flush=True
             )
             if not item.id:
                 items_failed += 1
                 print(f"[{'ID ERROR':^10}]")
-            elif user_check(db, user, folder.upper(), str(item.id).zfill(10)):
+            elif exist_user_field_value(db, user, folder.upper(), str(item.id).zfill(10)):
                 print(f"[{'FOUND':^10}]")
                 if stop and (found_subs := found_subs + 1) >= stop:
                     return items_total, items_failed
-            elif items_type == "sub" and submission_check(db, item.id):
+            elif items_type == "sub" and exist_submission(db, item.id):
                 print(f"[{'FOUND':^10}]")
-                user_add(db, user, folder.upper(), str(item.id).zfill(10))
+                edit_user_field_add(db, user, folder.upper(), [str(item.id).zfill(10)])
             elif items_type == "sub" and submission_download(api, db, item.id):
-                user_add(db, user, folder.upper(), str(item.id).zfill(10))
+                edit_user_field_add(db, user, folder.upper(), [str(item.id).zfill(10)])
                 items_total += 1
-            elif items_type == "journal" and journal_check(db, item.id):
+            elif items_type == "journal" and exist_journal(db, item.id):
                 print(f"[{'FOUND':^10}]")
-                user_add(db, user, folder.upper(), str(item.id).zfill(10))
+                edit_user_field_add(db, user, folder.upper(), [str(item.id).zfill(10)])
             elif items_type == "journal":
                 print(f"[{'#' * 10}]")
-                journal_save(db, item)
-                user_add(db, user, folder.upper(), str(item.id).zfill(10))
+                save_journal(db, item)
+                edit_user_field_add(db, user, folder.upper(), [str(item.id).zfill(10)])
                 items_total += 1
 
     return items_total, items_failed

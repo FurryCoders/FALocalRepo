@@ -3,6 +3,7 @@ from inspect import cleandoc
 from os.path import getsize
 from os.path import isfile
 from re import match
+from sqlite3 import Connection
 from typing import Dict
 from typing import Iterable
 from typing import List
@@ -10,38 +11,38 @@ from typing import Optional
 from typing import Tuple
 
 from faapi import FAAPI
+from falocalrepo_database import __version__ as __database_version__
+from falocalrepo_database import check_errors
+from falocalrepo_database import connect_database
+from falocalrepo_database import count
+from falocalrepo_database import delete
+from falocalrepo_database import journals_indexes
+from falocalrepo_database import make_tables
+from falocalrepo_database import read_setting
+from falocalrepo_database import save_journal
+from falocalrepo_database import save_submission
+from falocalrepo_database import search_journals
+from falocalrepo_database import search_submissions
+from falocalrepo_database import submissions_indexes
+from falocalrepo_database import update_database
+from falocalrepo_database import vacuum
+from falocalrepo_database import write_setting
 from falocalrepo_server import __version__ as __server_version__
 from falocalrepo_server import server
 
-from .__version__ import __database_version__
 from .__version__ import __version__
-from .commands import files_folder_move
-from .commands import journal_make
-from .commands import journals_print
-from .commands import journals_search
-from .commands import submission_make
-from .commands import submissions_print
-from .commands import submissions_search
-from .database import Connection
-from .database import check_errors
-from .database import connect_database
-from .database import count
-from .database import delete
-from .database import make_database
-from .database import vacuum
+from .commands import make_journal
+from .commands import make_submission
+from .commands import move_files_folder
+from .commands import print_items
+from .download import clean_username
 from .download import cookies_load
-from .download import journal_save
+from .download import cookies_read
+from .download import cookies_write
 from .download import journals_download
-from .download import submission_save
 from .download import submissions_download
-from .download import user_clean_name
 from .download import users_download
 from .download import users_update
-from .settings import cookies_read
-from .settings import cookies_write
-from .settings import setting_read
-from .settings import setting_write
-from .update import update_database
 
 
 class MalformedCommand(Exception):
@@ -112,7 +113,7 @@ def config(db: Connection, comm: str = "", *args: str):
 
     if not comm or comm == "list":
         cookie_a, cookie_b = cookies_read(db)
-        folder: str = setting_read(db, "FILESFOLDER")
+        folder: str = read_setting(db, "FILESFOLDER")
         print("cookie a:", cookie_a)
         print("cookie b:", cookie_b)
         print("folder  :", folder)
@@ -127,9 +128,9 @@ def config(db: Connection, comm: str = "", *args: str):
             raise MalformedCommand("cookies needs two arguments")
     elif comm == "files-folder":
         if not args:
-            print("files folder:", setting_read(db, "FILESFOLDER"))
+            print("files folder:", read_setting(db, "FILESFOLDER"))
         elif len(args) == 1 and args[0]:
-            files_folder_move(db, setting_read(db, "FILESFOLDER"), args[0])
+            move_files_folder(db, read_setting(db, "FILESFOLDER"), args[0])
         else:
             raise MalformedCommand("files-folder needs one argument")
     else:
@@ -157,6 +158,7 @@ def download(db: Connection, comm: str = "", *args: str):
 
     api: FAAPI = FAAPI()
     cookies_load(api, *cookies_read(db))
+    api.handle_delay = (lambda *xs: None)
 
     if not api.connection_status:
         raise ConnectionError("FAAPI cannot connect to FA")
@@ -165,7 +167,7 @@ def download(db: Connection, comm: str = "", *args: str):
         folders: Optional[List[str]] = None
         opts, args = parse_args(args)
         if args and args[0] != "@":
-            users_tmp: List[str] = list(filter(bool, map(user_clean_name, args[0].split(","))))
+            users_tmp: List[str] = list(filter(bool, map(clean_username, args[0].split(","))))
             users = sorted(set(users_tmp), key=users_tmp.index)
         if args[1:] and args[1] != "@":
             folders_tmp: List[str] = list(filter(bool, map(str.strip, args[1].split(","))))
@@ -173,7 +175,7 @@ def download(db: Connection, comm: str = "", *args: str):
         users_update(api, db, users, folders, int(opts.get("stop", 1)))
     elif comm == "users":
         if len(args) == 2 and args[0] and args[1]:
-            users_tmp: List[str] = list(filter(bool, map(user_clean_name, args[0].split(","))))
+            users_tmp: List[str] = list(filter(bool, map(clean_username, args[0].split(","))))
             users: List[str] = sorted(set(users_tmp), key=users_tmp.index)
             folders_tmp: List[str] = list(filter(bool, map(str.strip, args[1].split(","))))
             folders: List[str] = sorted(set(folders_tmp), key=folders_tmp.index)
@@ -223,12 +225,12 @@ def database(db: Connection, comm: str = "", *args: str):
 
     if not comm or comm == "info":
         size: int = getsize("FA.db")
-        sub_n: int = int(setting_read(db, "SUBN"))
-        usr_n: int = int(setting_read(db, "USRN"))
-        jrn_n: int = int(setting_read(db, "JRNN"))
-        last_update: float = float(setting_read(db, "LASTUPDATE"))
-        last_start: float = float(setting_read(db, "LASTSTART"))
-        version: str = setting_read(db, "VERSION")
+        sub_n: int = int(read_setting(db, "SUBN"))
+        usr_n: int = int(read_setting(db, "USRN"))
+        jrn_n: int = int(read_setting(db, "JRNN"))
+        last_update: float = float(read_setting(db, "LASTUPDATE"))
+        last_start: float = float(read_setting(db, "LASTSTART"))
+        version: str = read_setting(db, "VERSION")
         print("Size       :", f"{size / 1e6:.1f}MB")
         print("Submissions:", sub_n)
         print("Users      :", usr_n)
@@ -237,25 +239,25 @@ def database(db: Connection, comm: str = "", *args: str):
         print("Last start :", str(datetime.fromtimestamp(last_start)) if last_start else 0)
         print("Version    :", version)
     elif comm == "search-submissions":
-        results: List[tuple] = submissions_search(db, **{"order": ["AUTHOR", "ID"], **parameters_multi(args)})
-        submissions_print(results)
+        results: List[tuple] = search_submissions(db, **{"order": ["AUTHOR", "ID"], **parameters_multi(args)})
+        print_items(results, submissions_indexes)
         print(f"Found {len(results)} results")
     elif comm == "search-journals":
-        results: List[tuple] = journals_search(db, **{"order": ["AUTHOR", "ID"], **parameters_multi(args)})
-        journals_print(results)
+        results: List[tuple] = search_journals(db, **{"order": ["AUTHOR", "ID"], **parameters_multi(args)})
+        print_items(results, journals_indexes)
         print(f"Found {len(results)} results")
     elif comm == "add-submission":
         make_params = parameters(args)
         if "id" in make_params:
             del make_params["id"]
-        submission_save(db, *submission_make(**make_params))
+        save_submission(db, *make_submission(**make_params))
     elif comm == "add-journal":
         make_params = parameters(args)
         if "id" in make_params:
             del make_params["id"]
-        journal_save(db, journal_make(**make_params))
+        save_journal(db, make_journal(**make_params))
     elif comm == "remove-users":
-        for user in map(user_clean_name, args):
+        for user in map(clean_username, args):
             print("Deleting", user)
             delete(db, "USERS", "USERNAME", user)
             db.commit()
@@ -277,12 +279,12 @@ def database(db: Connection, comm: str = "", *args: str):
         results: List[tuple] = check_errors(db, "SUBMISSIONS")
         print("Done")
         if results:
-            submissions_print(results)
+            print_items(results, submissions_indexes)
         print("Checking journals table for errors... ", end="", flush=True)
         results: List[tuple] = check_errors(db, "JOURNALS")
         print("Done")
         if results:
-            journals_print(results)
+            print_items(results, journals_indexes)
     elif comm == "clean":
         vacuum(db)
     else:
@@ -339,13 +341,13 @@ def console(comm: str = "", *args: str) -> None:
             db = update_database(connect_database("FA.db"))
         else:
             db = connect_database("FA.db")
-            make_database(db)
+            make_tables(db)
 
         if comm == "init":
             print("Database ready")
             return
 
-        setting_write(db, "LASTSTART", str(datetime.now().timestamp()))
+        write_setting(db, "LASTSTART", str(datetime.now().timestamp()))
 
         if comm == config.__name__:
             config(db, *args)
@@ -356,8 +358,8 @@ def console(comm: str = "", *args: str) -> None:
     finally:
         # Close database and update totals
         if db is not None:
-            setting_write(db, "USRN", str(count(db, "USERS")))
-            setting_write(db, "SUBN", str(count(db, "SUBMISSIONS")))
-            setting_write(db, "JRNN", str(count(db, "JOURNALS")))
+            write_setting(db, "USRN", str(count(db, "USERS")))
+            write_setting(db, "SUBN", str(count(db, "SUBMISSIONS")))
+            write_setting(db, "JRNN", str(count(db, "JOURNALS")))
             db.commit()
             db.close()

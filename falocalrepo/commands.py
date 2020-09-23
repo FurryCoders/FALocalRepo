@@ -1,31 +1,27 @@
 from os import get_terminal_size
 from os.path import isdir
 from shutil import move
+from sqlite3 import Connection
+from typing import Dict
 from typing import List
 from typing import Optional
 from typing import Tuple
 from typing import Union
 
-from faapi import FAAPI
 from faapi import Journal
 from faapi import Sub
-
-from .database import Connection
-from .database import keys_journals
-from .database import keys_submissions
-from .download import submission_download
-from .settings import setting_write
+from falocalrepo_database import write_setting
 
 
-def files_folder_move(db: Connection, folder_old: str, folder_new: str):
-    setting_write(db, "FILESFOLDER", folder_new)
+def move_files_folder(db: Connection, folder_old: str, folder_new: str):
+    write_setting(db, "FILESFOLDER", folder_new)
     if isdir(folder_old):
         print("Moving files to new location... ", end="", flush=True)
         move(folder_old, folder_new)
         print("Done")
 
 
-def journal_make(id_: Union[int, str], author: str,
+def make_journal(id_: Union[int, str], author: str,
                  title: str, date: str, content: str = ""
                  ) -> Journal:
     assert isinstance(id_, int) or (isinstance(id_, str) and id_.isdigit())
@@ -46,7 +42,7 @@ def journal_make(id_: Union[int, str], author: str,
     return journal
 
 
-def submission_make(id_: Union[int, str], author: str, title: str,
+def make_submission(id_: Union[int, str], author: str, title: str,
                     date: str, category: str, species: str,
                     gender: str, rating: str, tags: str = "",
                     description: str = "", file_url: str = "",
@@ -88,38 +84,7 @@ def submission_make(id_: Union[int, str], author: str, title: str,
     return sub, sub_file
 
 
-def journals_search(db: Connection,
-                    limit: List[Union[str, int]] = None, offset: List[Union[str, int]] = None,
-                    order: List[str] = None, author: List[str] = None, title: List[str] = None,
-                    date: List[str] = None, content: List[str] = None
-                    ) -> List[tuple]:
-    order = [] if order is None else order
-    author = [] if author is None else list(map(str.lower, author))
-    title = [] if title is None else list(map(str.lower, title))
-    date = [] if date is None else list(map(str.lower, date))
-    content = [] if content is None else list(map(str.lower, content))
-
-    assert any((author, title, date, content))
-
-    wheres: List[str] = [
-        " OR ".join(["UDATE like ?"] * len(date)),
-        " OR ".join(['replace(lower(AUTHOR), "_", "") like ?'] * len(author)),
-        " OR ".join(["lower(TITLE) like ?"] * len(title)),
-        " OR ".join(["lower(content) like ?"] * len(content))
-    ]
-
-    wheres_str = " AND ".join(map(lambda p: "(" + p + ")", filter(len, wheres)))
-    order_str: str = f"ORDER BY {','.join(order)}" if order else ""
-    limit_str: str = f"LIMIT {int(limit[0])}" if limit is not None else ""
-    offset_str: str = f"OFFSET {int(offset[0])}" if offset is not None else ""
-
-    return db.execute(
-        f"""SELECT * FROM JOURNALS WHERE {wheres_str} {order_str} {limit_str} {offset_str}""",
-        date + author + title + content
-    ).fetchall()
-
-
-def journals_print(journals: List[tuple]):
+def print_items(subs: List[tuple], indexes: Dict[str, int]):
     space_id: int = 10
     space_user: int = 10
     space_date: int = 10
@@ -129,78 +94,10 @@ def journals_print(journals: List[tuple]):
     except IOError:
         pass
 
-    index_id: int = keys_journals.index("ID")
-    index_user: int = keys_journals.index("AUTHOR")
-    index_date: int = keys_journals.index("UDATE")
-    index_title: int = keys_journals.index("TITLE")
-
-    print(f"{'ID':^{space_id}} | {'User':^{space_user}} | {'Date':^{space_date}} | Title")
-    for journal in journals:
-        print(
-            f"{str(journal[index_id])[:space_id].zfill(space_id)} | " +
-            f"{journal[index_user][:space_user]:<{space_user}} | " +
-            f"{journal[index_date][:space_date]:<{space_date}} | " +
-            journal[index_title][:(space_term - space_id - space_user - space_date - 10)]
-        )
-
-
-def submissions_search(db: Connection,
-                       limit: List[Union[str, int]] = None, offset: List[Union[str, int]] = None,
-                       order: List[str] = None, author: List[str] = None, title: List[str] = None,
-                       date: List[str] = None, description: List[str] = None, tags: List[str] = None,
-                       category: List[str] = None, species: List[str] = None, gender: List[str] = None,
-                       rating: List[str] = None
-                       ) -> List[tuple]:
-    order = [] if order is None else order
-    author = [] if author is None else list(map(str.lower, author))
-    title = [] if title is None else list(map(str.lower, title))
-    date = [] if date is None else list(map(str.lower, date))
-    description = [] if description is None else list(map(str.lower, description))
-    tags = [] if tags is None else list(map(str.lower, tags))
-    category = [] if category is None else list(map(str.lower, category))
-    species = [] if species is None else list(map(str.lower, species))
-    gender = [] if gender is None else list(map(str.lower, gender))
-    rating = [] if rating is None else list(map(str.lower, rating))
-
-    assert any((author, title, date, description, tags, category, species, gender, rating))
-
-    wheres: List[str] = [
-        " OR ".join(["UDATE like ?"] * len(date)),
-        " OR ".join(["lower(RATING) like ?"] * len(rating)),
-        " OR ".join(["lower(GENDER) like ?"] * len(gender)),
-        " OR ".join(["lower(SPECIES) like ?"] * len(species)),
-        " OR ".join(["lower(CATEGORY) like ?"] * len(category)),
-        " OR ".join(['replace(lower(AUTHOR), "_", "") like ?'] * len(author)),
-        " OR ".join(["lower(TITLE) like ?"] * len(title)),
-        " OR ".join(["lower(TAGS) like ?"] * len(tags)),
-        " OR ".join(["lower(DESCRIPTION) like ?"] * len(description))
-    ]
-
-    wheres_str: str = " AND ".join(map(lambda p: "(" + p + ")", filter(len, wheres)))
-    order_str: str = f"ORDER BY {','.join(order)}" if order else ""
-    limit_str: str = f"LIMIT {int(limit[0])}" if limit is not None else ""
-    offset_str: str = f"OFFSET {int(offset[0])}" if offset is not None else ""
-
-    return db.execute(
-        f"""SELECT * FROM SUBMISSIONS WHERE {wheres_str} {order_str} {limit_str} {offset_str}""",
-        date + rating + gender + species + category + author + title + tags + description
-    ).fetchall()
-
-
-def submissions_print(subs: List[tuple]):
-    space_id: int = 10
-    space_user: int = 10
-    space_date: int = 10
-    space_term: int = 10000
-    try:
-        space_term = get_terminal_size()[0]
-    except IOError:
-        pass
-
-    index_id: int = keys_submissions.index("ID")
-    index_user: int = keys_submissions.index("AUTHOR")
-    index_date: int = keys_submissions.index("UDATE")
-    index_title: int = keys_submissions.index("TITLE")
+    index_id: int = indexes["ID"]
+    index_user: int = indexes["AUTHOR"]
+    index_date: int = indexes["UDATE"]
+    index_title: int = indexes["TITLE"]
 
     print(f"{'ID':^{space_id}} | {'User':^{space_user}} | {'Date':^{space_date}} | Title")
     for sub in subs:
