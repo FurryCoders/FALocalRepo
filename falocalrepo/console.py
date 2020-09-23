@@ -303,6 +303,7 @@ def console(comm: str = "", *args: str) -> None:
         -h, --help      Display this help message
         -v, --version   Display version
         -d, --database  Display database version
+        -s, --server    Display server version
 
     AVAILABLE COMMANDS
         help            Display the manual of a command
@@ -322,6 +323,9 @@ def console(comm: str = "", *args: str) -> None:
         return
     elif comm in ("-d", "--database"):
         print(__database_version__)
+        return
+    elif comm in ("-s", "--server"):
+        print(__server_version__)
         return
     elif comm in ("-h", "--help"):
         print(help_message())
