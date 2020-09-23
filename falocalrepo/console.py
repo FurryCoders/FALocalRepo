@@ -147,10 +147,11 @@ def download(db: Connection, comm: str = "", *args: str):
         <arg>           Argument for the download command
 
     AVAILABLE COMMANDS
+        update          Update database using the users and folders already saved
         users           Download users. First argument is a comma-separated list of
                           users, second is a comma-separated list of folders
         submissions     Download single submissions. Arguments are submission ID's
-        update          Update database using the users and folders already saved
+        journals        Download single journals. Arguments are journal ID's
     """
 
     if not comm:
