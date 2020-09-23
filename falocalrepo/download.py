@@ -179,6 +179,19 @@ def journal_save(db: Connection, journal: Journal):
            [journal.id, journal.author, journal.title, journal.date, journal.content])
 
 
+def journals_download(api: FAAPI, db: Connection, jrn_ids: List[str]):
+    if sub_ids_fail := list(filter(lambda i: not i.isdigit(), jrn_ids)):
+        print("The following ID's are not correct:", *sub_ids_fail)
+    for sub_id in map(int, filter(lambda i: i.isdigit(), jrn_ids)):
+        print(f"Downloading {sub_id:010} ", end="", flush=True)
+        journal_download(api, db, sub_id)
+
+
+def journal_download(api: FAAPI, db: Connection, jrn_id: int):
+    journal: Journal = api.get_journal(jrn_id)
+    journal_save(db, journal)
+
+
 def users_download(api: FAAPI, db: Connection, users: List[str], folders: List[str]):
     for user, folder in ((u, f) for u in users for f in folders):
         print(f"Downloading: {user}/{folder}")
