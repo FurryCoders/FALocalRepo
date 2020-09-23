@@ -57,7 +57,7 @@ def clean_string(title: str) -> str:
     return str(re_sub(r"[^\x20-\x7E]", "", title.strip()))
 
 
-def submission_download_file(api: FAAPI, sub_file_url: str, speed: int = 100) -> Optional[bytes]:
+def download_submission_file(api: FAAPI, sub_file_url: str, speed: int = 100) -> Optional[bytes]:
     bar_length: int = 10
     bar_pos: int = 0
     print("[" + (" " * bar_length) + "]", end=("\b" * bar_length) + "\b", flush=True)
@@ -90,20 +90,20 @@ def submission_download_file(api: FAAPI, sub_file_url: str, speed: int = 100) ->
         return None
 
 
-def submissions_download(api: FAAPI, db: Connection, sub_ids: List[str]):
+def download_submissions(api: FAAPI, db: Connection, sub_ids: List[str]):
     if sub_ids_fail := list(filter(lambda i: not i.isdigit(), sub_ids)):
         print("The following ID's are not correct:", *sub_ids_fail)
     for sub_id in map(int, filter(lambda i: i.isdigit(), sub_ids)):
         print(f"Downloading {sub_id:010} ", end="", flush=True)
-        submission_download(api, db, sub_id)
+        download_submission(api, db, sub_id)
 
 
-def submission_download(api: FAAPI, db: Connection, sub_id: int) -> bool:
+def download_submission(api: FAAPI, db: Connection, sub_id: int) -> bool:
     sub, _ = api.get_sub(sub_id, False)
     sub_file: bytes = bytes()
 
     try:
-        sub_file = submission_download_file(api, sub.file_url)
+        sub_file = download_submission_file(api, sub.file_url)
     except KeyboardInterrupt:
         raise
     except (Exception, BaseException):
@@ -119,28 +119,20 @@ def submission_download(api: FAAPI, db: Connection, sub_id: int) -> bool:
     return True
 
 
-def journals_download(api: FAAPI, db: Connection, jrn_ids: List[str]):
+def download_journals(api: FAAPI, db: Connection, jrn_ids: List[str]):
     if sub_ids_fail := list(filter(lambda i: not i.isdigit(), jrn_ids)):
         print("The following ID's are not correct:", *sub_ids_fail)
     for sub_id in map(int, filter(lambda i: i.isdigit(), jrn_ids)):
         print(f"Downloading {sub_id:010} ", end="", flush=True)
-        journal_download(api, db, sub_id)
+        download_journal(api, db, sub_id)
 
 
-def journal_download(api: FAAPI, db: Connection, jrn_id: int):
+def download_journal(api: FAAPI, db: Connection, jrn_id: int):
     journal: Journal = api.get_journal(jrn_id)
     save_journal(db, journal)
 
 
-def users_download(api: FAAPI, db: Connection, users: List[str], folders: List[str]):
-    for user, folder in ((u, f) for u in users for f in folders):
-        print(f"Downloading: {user}/{folder}")
-        tot, fail = user_download(api, db, user, folder)
-        print("Items downloaded:", tot)
-        print("Items failed:", fail) if fail else None
-
-
-def users_update(api: FAAPI, db: Connection, users: List[str] = None, folders: List[str] = None, stop: int = 1):
+def download_users_update(api: FAAPI, db: Connection, users: List[str] = None, folders: List[str] = None, stop: int = 1):
     tot: int = 0
     fail: int = 0
     for user, user_folders in select_all(db, "USERS", ["USERNAME", "FOLDERS"]):
@@ -155,7 +147,7 @@ def users_update(api: FAAPI, db: Connection, users: List[str] = None, folders: L
             if folders and folder not in folders:
                 continue
             print(f"Downloading: {user}/{folder}")
-            tot_tmp, fail_tmp = user_download(api, db, user, folder, stop)
+            tot_tmp, fail_tmp = download_user(api, db, user, folder, stop)
             tot += tot_tmp
             fail += fail_tmp
     print("Items downloaded:", tot)
@@ -163,7 +155,15 @@ def users_update(api: FAAPI, db: Connection, users: List[str] = None, folders: L
     write_setting(db, "LASTUPDATE", str(datetime.now().timestamp()))
 
 
-def user_download(api: FAAPI, db: Connection, user: str, folder: str, stop: int = 0) -> Tuple[int, int]:
+def download_users(api: FAAPI, db: Connection, users: List[str], folders: List[str]):
+    for user, folder in ((u, f) for u in users for f in folders):
+        print(f"Downloading: {user}/{folder}")
+        tot, fail = download_user(api, db, user, folder)
+        print("Items downloaded:", tot)
+        print("Items failed:", fail) if fail else None
+
+
+def download_user(api: FAAPI, db: Connection, user: str, folder: str, stop: int = 0) -> Tuple[int, int]:
     items_total: int = 0
     items_failed: int = 0
     items_type: str = "sub"
@@ -227,7 +227,7 @@ def user_download(api: FAAPI, db: Connection, user: str, folder: str, stop: int 
             elif items_type == "sub" and exist_submission(db, item.id):
                 print(f"[{'FOUND':^10}]")
                 edit_user_field_add(db, user, folder.upper(), [str(item.id).zfill(10)])
-            elif items_type == "sub" and submission_download(api, db, item.id):
+            elif items_type == "sub" and download_submission(api, db, item.id):
                 edit_user_field_add(db, user, folder.upper(), [str(item.id).zfill(10)])
                 items_total += 1
             elif items_type == "journal" and exist_journal(db, item.id):

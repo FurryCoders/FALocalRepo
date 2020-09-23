@@ -39,10 +39,10 @@ from .download import clean_username
 from .download import cookies_load
 from .download import cookies_read
 from .download import cookies_write
-from .download import journals_download
-from .download import submissions_download
-from .download import users_download
-from .download import users_update
+from .download import download_journals
+from .download import download_submissions
+from .download import download_users
+from .download import download_users_update
 
 
 class MalformedCommand(Exception):
@@ -172,14 +172,14 @@ def download(db: Connection, comm: str = "", *args: str):
         if args[1:] and args[1] != "@":
             folders_tmp: List[str] = list(filter(bool, map(str.strip, args[1].split(","))))
             folders = sorted(set(folders_tmp), key=folders_tmp.index)
-        users_update(api, db, users, folders, int(opts.get("stop", 1)))
+        download_users_update(api, db, users, folders, int(opts.get("stop", 1)))
     elif comm == "users":
         if len(args) == 2 and args[0] and args[1]:
             users_tmp: List[str] = list(filter(bool, map(clean_username, args[0].split(","))))
             users: List[str] = sorted(set(users_tmp), key=users_tmp.index)
             folders_tmp: List[str] = list(filter(bool, map(str.strip, args[1].split(","))))
             folders: List[str] = sorted(set(folders_tmp), key=folders_tmp.index)
-            users_download(api, db, users, folders)
+            download_users(api, db, users, folders)
         else:
             raise MalformedCommand("users needs two arguments")
     elif comm == "submissions":
@@ -187,13 +187,13 @@ def download(db: Connection, comm: str = "", *args: str):
             raise MalformedCommand("submissions needs at least one argument")
         sub_ids_tmp: List[str] = list(filter(str.isdigit, args))
         sub_ids: List[str] = sorted(set(sub_ids_tmp), key=sub_ids_tmp.index)
-        submissions_download(api, db, sub_ids)
+        download_submissions(api, db, sub_ids)
     elif comm == "journals":
         if not args:
             raise MalformedCommand("journals needs at least one argument")
         journal_ids_tmp: List[str] = list(filter(str.isdigit, args))
         journal_ids: List[str] = sorted(set(journal_ids_tmp), key=journal_ids_tmp.index)
-        journals_download(api, db, journal_ids)
+        download_journals(api, db, journal_ids)
     else:
         raise UnknownCommand(f"download {comm}")
 
