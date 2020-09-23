@@ -330,23 +330,11 @@ For example, a submission `1457893` will be padded to `0001457893` and divided i
 
 ## Upgrading Database
 
-When the program starts, it checks the version of the database against the one used by the program and if the latter is more advanced it updates the database.
+When the program starts, it checks the version of the database against the one used by the program and if the latter is more advanced it upgrades the database.
 
 _Note:_ Versions before 2.7.0 are not supported by falocalrepo version 3.0.0 and above. To update from those to the new version use version 2.11.2 to update the database to version 2.7.0
 
-### 2.7.0 &rarr; 3.0.0
-
-Information from the database are copied over to the new version, but otherwise remain unaltered save for a few changed column names in the `SUBMISSIONS` and `USERS` tables.
-
-Files are moved to the new structure and the old files folder is deleted. Only submissions files are kept starting from version 3.0.0
-
-### 3.0.0 &rarr; 3.1.0
-
-`EXTRAS` field in `USERS` table is changed to `MENTIONS`, and `extras` and `Extras` folders are renamed to `mentions` and `mentions_all` respectively.
-
-### 3.1.0 &rarr; 3.2.0
-
-Add `JOURNALS` table and `JOURNALS` field in `USERS` table.
+For details on upgrades and changes between database versions, see [falocalrepo-database](https://pypi.org/project/falocalrepo-database/).
 
 ## Contributing
 
