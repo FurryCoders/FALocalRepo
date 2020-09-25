@@ -2,6 +2,8 @@ from sys import argv
 from sys import exit
 from typing import List
 
+from requests.exceptions import ConnectionError
+
 from .console import MalformedCommand
 from .console import UnknownCommand
 from .console import console
@@ -18,6 +20,9 @@ def main(args: List[str] = None):
     except (MalformedCommand, UnknownCommand) as err:
         print(repr(err))
         exit(1)
+    except ConnectionError as err:
+        print(repr(err))
+        exit(2)
 
 
 if __name__ == "__main__":
