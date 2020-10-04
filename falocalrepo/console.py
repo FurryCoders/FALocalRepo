@@ -31,7 +31,7 @@ from falocalrepo_server import __version__ as __server_version__
 from falocalrepo_server import server
 
 from .__version__ import __version__
-from .commands import check_version
+from .commands import latest_version
 from .commands import make_journal
 from .commands import make_submission
 from .commands import move_files_folder
@@ -98,7 +98,7 @@ def help_message(comm: str = None, *_args: str) -> str:
 
 
 def check_update(version: str, package: str):
-    if latest := check_version(__database_version__, package):
+    if (latest := latest_version(__database_version__, package)) and latest != version:
         print(f"New {package} version available: {latest} > {version}")
 
 
