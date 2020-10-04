@@ -11,6 +11,20 @@ from typing import Union
 from faapi import Journal
 from faapi import Sub
 from falocalrepo_database import write_setting
+from requests import get as req_get
+
+
+def check_version(version: str, package: str) -> str:
+    try:
+        res = req_get(f"https://pypi.org/pypi/{package}/json")
+        if not res.ok:
+            return ""
+        elif (latest := list(res.json()["releases"].keys())[-1]) != version:
+            return latest
+        else:
+            return ""
+    except (Exception, BaseException):
+        return ""
 
 
 def move_files_folder(db: Connection, folder_old: str, folder_new: str):
