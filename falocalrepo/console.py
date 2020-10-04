@@ -31,6 +31,7 @@ from falocalrepo_server import __version__ as __server_version__
 from falocalrepo_server import server
 
 from .__version__ import __version__
+from .commands import check_version
 from .commands import make_journal
 from .commands import make_submission
 from .commands import move_files_folder
@@ -338,6 +339,11 @@ def console(comm: str = "", *args: str) -> None:
         raise UnknownCommand(comm)
 
     db: Optional[Connection] = None
+
+    if version := check_version(__database_version__, package := "falocalrepo-database"):
+        print(f"New {package} version available: {version} > {__database_version__}")
+    if version := check_version(__server_version__, package := "falocalrepo-server"):
+        print(f"New {package} version available: {version} > {__server_version__}")
 
     try:
         # Initialise and prepare database
