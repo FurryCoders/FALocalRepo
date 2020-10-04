@@ -2,8 +2,6 @@ from sys import argv
 from sys import exit
 from typing import List
 
-from requests.exceptions import ConnectionError
-
 from .console import MalformedCommand
 from .console import UnknownCommand
 from .console import console
