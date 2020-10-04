@@ -97,6 +97,11 @@ def help_message(comm: str = None, *_args: str) -> str:
         raise UnknownCommand(comm)
 
 
+def check_update(version: str, package: str):
+    if latest := check_version(__database_version__, package):
+        print(f"New {package} version available: {latest} > {version}")
+
+
 def config(db: Connection, comm: str = "", *args: str):
     """
     USAGE
@@ -340,10 +345,8 @@ def console(comm: str = "", *args: str) -> None:
 
     db: Optional[Connection] = None
 
-    if version := check_version(__database_version__, package := "falocalrepo-database"):
-        print(f"New {package} version available: {version} > {__database_version__}")
-    if version := check_version(__server_version__, package := "falocalrepo-server"):
-        print(f"New {package} version available: {version} > {__server_version__}")
+    check_update(__database_version__, "falocalrepo-database")
+    check_update(__server_version__, "falocalrepo-server")
 
     try:
         # Initialise and prepare database
