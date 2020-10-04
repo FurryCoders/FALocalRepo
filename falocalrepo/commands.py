@@ -19,7 +19,7 @@ def check_version(version: str, package: str) -> str:
         res = req_get(f"https://pypi.org/pypi/{package}/json")
         if not res.ok:
             return ""
-        elif (latest := list(res.json()["releases"].keys())[-1]) != version:
+        elif (latest := res.json()["info"]["version"]) != version:
             return latest
         else:
             return ""
