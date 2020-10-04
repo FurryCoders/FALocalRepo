@@ -345,6 +345,7 @@ def console(comm: str = "", *args: str) -> None:
 
     db: Optional[Connection] = None
 
+    check_update(__version__, "falocalrepo")
     check_update(__database_version__, "falocalrepo-database")
     check_update(__server_version__, "falocalrepo-server")
 
