@@ -219,6 +219,7 @@ def database(db: Connection, comm: str = "", *args: str):
 
     AVAILABLE COMMANDS
         info               Show database information
+        history            Show commands history
         search-submissions Search submissions
         search-journals    Search submissions
         add-submission     Add a submission to the database manually
