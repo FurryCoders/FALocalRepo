@@ -325,7 +325,16 @@ def console(comm: str = "", *args: str) -> None:
                       f"    falocalrepo-server: {__server_version__}\n" + \
                       console.__doc__
 
-    if comm in ("-v", "--version"):
+    if not comm:
+        print(help_message())
+        return
+    elif comm in ("-h", "--help"):
+        print(help_message())
+        return
+    elif comm == "help":
+        print(help_message(*args))
+        return
+    elif comm in ("-v", "--version"):
         print(__version__)
         return
     elif comm in ("-d", "--database"):
@@ -333,12 +342,6 @@ def console(comm: str = "", *args: str) -> None:
         return
     elif comm in ("-s", "--server"):
         print(__server_version__)
-        return
-    elif comm in ("-h", "--help"):
-        print(help_message())
-        return
-    elif not comm or comm == "help":
-        print(help_message(*args))
         return
     elif comm not in ("init", config.__name__, download.__name__, database.__name__):
         raise UnknownCommand(comm)
