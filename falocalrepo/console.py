@@ -256,12 +256,13 @@ def database(db: Connection, comm: str = "", *args: str):
         make_params = parameters(args)
         if "id" in make_params:
             del make_params["id"]
-        save_submission(db, *make_submission(**make_params))
+        sub, sub_file = make_submission(**make_params)
+        save_submission(db, dict(sub), sub_file)
     elif comm == "add-journal":
         make_params = parameters(args)
         if "id" in make_params:
             del make_params["id"]
-        save_journal(db, make_journal(**make_params))
+        save_journal(db, dict(make_journal(**make_params)))
     elif comm == "remove-users":
         for user in map(clean_username, args):
             print("Deleting", user)
