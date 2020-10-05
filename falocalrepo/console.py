@@ -12,12 +12,14 @@ from typing import Tuple
 
 from faapi import FAAPI
 from falocalrepo_database import __version__ as __database_version__
+from falocalrepo_database import add_history
 from falocalrepo_database import check_errors
 from falocalrepo_database import connect_database
 from falocalrepo_database import count
 from falocalrepo_database import delete
 from falocalrepo_database import journals_indexes
 from falocalrepo_database import make_tables
+from falocalrepo_database import read_history
 from falocalrepo_database import read_setting
 from falocalrepo_database import save_journal
 from falocalrepo_database import save_submission
@@ -234,16 +236,21 @@ def database(db: Connection, comm: str = "", *args: str):
         sub_n: int = int(read_setting(db, "SUBN"))
         usr_n: int = int(read_setting(db, "USRN"))
         jrn_n: int = int(read_setting(db, "JRNN"))
-        last_update: float = float(read_setting(db, "LASTUPDATE"))
-        last_start: float = float(read_setting(db, "LASTSTART"))
+        history: List[List[str]] = read_history(db)
         version: str = read_setting(db, "VERSION")
-        print("Size       :", f"{size / 1e6:.1f}MB")
-        print("Submissions:", sub_n)
-        print("Users      :", usr_n)
-        print("Journals   :", jrn_n)
-        print("Last update:", str(datetime.fromtimestamp(last_update)) if last_update else 0)
-        print("Last start :", str(datetime.fromtimestamp(last_start)) if last_start else 0)
-        print("Version    :", version)
+        print("Size        :", f"{size / 1e6:.1f}MB")
+        print("Submissions :", sub_n)
+        print("Users       :", usr_n)
+        print("Journals    :", jrn_n)
+        print("History     :",
+              f"{str(datetime.fromtimestamp(float(history[-2][0])))} {history[-2][1]}"
+              if len(history) > 1 else ""
+              )
+        print("Version     :", version)
+    elif comm == "history":
+        history: List[List[str]] = read_history(db)
+        for time, command in history:
+            print(str(datetime.fromtimestamp(float(time))), command)
     elif comm == "search-submissions":
         results: List[tuple] = search_submissions(db, **{"order": ["AUTHOR", "ID"], **parameters_multi(args)})
         print_items(results, submissions_indexes)
@@ -361,11 +368,11 @@ def console(comm: str = "", *args: str) -> None:
             db = connect_database("FA.db")
             make_tables(db)
 
+        add_history(db, datetime.now().timestamp(), f"{comm} {' '.join(args)}".strip())
+
         if comm == "init":
             print("Database ready")
             return
-
-        write_setting(db, "LASTSTART", str(datetime.now().timestamp()))
 
         if comm == config.__name__:
             config(db, *args)
