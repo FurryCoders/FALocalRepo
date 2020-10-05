@@ -98,7 +98,7 @@ def help_message(comm: str = None, *_args: str) -> str:
 
 
 def check_update(version: str, package: str):
-    if (latest := latest_version(__database_version__, package)) and latest != version:
+    if (latest := latest_version(package)) and latest != version:
         print(f"New {package} version available: {latest} > {version}")
 
 

@@ -14,7 +14,7 @@ from falocalrepo_database import write_setting
 from requests import get as req_get
 
 
-def latest_version(version: str, package: str) -> str:
+def latest_version(package: str) -> str:
     try:
         res = req_get(f"https://pypi.org/pypi/{package}/json")
         if not res.ok:
