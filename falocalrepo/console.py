@@ -58,7 +58,7 @@ def parameters_multi(args: Iterable[str]) -> Dict[str, List[str]]:
     params: Dict[str, List[str]] = {}
     for param, value in map(lambda p: p.split("=", 1), args):
         param = param.strip()
-        params[param] = params.get(param, []) + [value]
+        params[param] = [*params.get(param, []), value]
 
     return params
 
