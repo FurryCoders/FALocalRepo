@@ -1,3 +1,4 @@
+from sqlite3 import DatabaseError
 from sys import argv
 from sys import exit
 from traceback import print_exc
@@ -22,12 +23,15 @@ def main(args: List[str] = None):
     except ConnectionError as err:
         print(repr(err))
         exit(2)
+    except DatabaseError as err:
+        print(repr(err))
+        exit(3)
     except (Exception, BaseException) as err:
         with open("FA.log", "w") as f:
             print_exc(file=f)
             print(repr(err))
             print(f"Trace written to {f.name}")
-        exit(3)
+        exit(4)
 
 
 if __name__ == "__main__":
