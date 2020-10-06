@@ -1,5 +1,6 @@
 from sys import argv
 from sys import exit
+from traceback import print_exc
 from typing import List
 
 from .console import MalformedCommand
@@ -21,6 +22,12 @@ def main(args: List[str] = None):
     except ConnectionError as err:
         print(repr(err))
         exit(2)
+    except (Exception, BaseException) as err:
+        with open("FA.log", "w") as f:
+            print_exc(file=f)
+            print(repr(err))
+            print(f"Trace written to {f.name}")
+        exit(3)
 
 
 if __name__ == "__main__":
