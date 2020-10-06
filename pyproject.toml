@@ -23,7 +23,7 @@ falocalrepo = "falocalrepo.__main__:main"
 [tool.poetry.dependencies]
 python = "^3.8"
 faapi = "2.8.3"
-falocalrepo-database = "~3.4.0"
+falocalrepo-database = "~3.4.1"
 falocalrepo-server = "~1.3.0"
 filetype = "1.0.7"
 
