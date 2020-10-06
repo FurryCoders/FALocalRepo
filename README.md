@@ -77,7 +77,7 @@ Running without arguments will prompt a help message with all the available opti
 Generally, commands need to be in the following format:
 
 ```
-falocalrepo [-h] [-v] [-d] <command> [<arg1>] ... [<argN>]
+falocalrepo [-h] [-v] [-d] [-s] <command> [<arg1>] ... [<argN>]
 ```
 
 Available options are:
@@ -85,6 +85,7 @@ Available options are:
 * `-h, --help` show help message
 * `-v, --version` show program version
 * `-d, --database` show database version
+* `-s, --server` show server version
 
 Available commands are:
 
@@ -274,8 +275,7 @@ The settings table contains settings for the program and statistics of the datab
 
 * `USRN` number of users in the `USERS` table
 * `SUBN` number of submissions in the `SUBMISSIONS` table
-* `LASTUPDATE` time when the last update was completed (UNIX time in seconds)
-* `LASTSTART` time when the program was last started (UNIX time in seconds)
+* `HISTORY` list of executed commands in the format `[["<time1>", "<command1>"], ..., ["<timeN>", "<commandN>"]]` (UNIX time in seconds)
 * `COOKIES` cookies for the scraper, stored in JSON format
 * `FILESFOLDER` location of downloaded submission files
 * `VERSION` database version, this can differ from the program version
