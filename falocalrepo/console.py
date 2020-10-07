@@ -1,7 +1,6 @@
 from datetime import datetime
 from inspect import cleandoc
 from os.path import getsize
-from os.path import isfile
 from re import match
 from sqlite3 import Connection
 from typing import Dict
@@ -102,6 +101,10 @@ def help_message(comm: str = None, *_args: str) -> str:
 def check_update(version: str, package: str):
     if (latest := latest_version(package)) and latest != version:
         print(f"New {package} version available: {latest} > {version}")
+
+
+def init():
+    print("Database ready")
 
 
 def config(db: Connection, comm: str = "", *args: str):
@@ -363,19 +366,15 @@ def console(comm: str = "", *args: str) -> None:
 
     try:
         # Initialise and prepare database
-        if isfile("FA.db"):
-            db = update_database(connect_database("FA.db"))
-        else:
-            db = connect_database("FA.db")
-            make_tables(db)
+        db = connect_database("FA.db")
+        make_tables(db)
+        db = update_database(db)
 
         add_history(db, datetime.now().timestamp(), f"{comm} {' '.join(args)}".strip())
 
-        if comm == "init":
-            print("Database ready")
-            return
-
-        if comm == config.__name__:
+        if comm == init.__name__:
+            init()
+        elif comm == config.__name__:
             config(db, *args)
         elif comm == download.__name__:
             download(db, *args)
