@@ -16,7 +16,6 @@ def main(args: List[str] = None):
         console(*args)
     except KeyboardInterrupt:
         print()
-        pass
     except (MalformedCommand, UnknownCommand) as err:
         print(repr(err))
         exit(1)
