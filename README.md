@@ -134,7 +134,7 @@ Available settings are:
 ```
 falocalrepo config list
 ```
-* `cookies [<cookie a>] [<cookie b>]` the cookies stored in the database.
+* `cookies [<cookie a> <cookie b>]` the cookies stored in the database.
 ```
 falocalrepo config cookies 38565475-3421-3f21-7f63-3d341339737 356f5962-5a60-0922-1c11-65003b703038
 ```
