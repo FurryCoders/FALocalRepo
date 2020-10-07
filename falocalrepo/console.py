@@ -323,7 +323,7 @@ def console(comm: str = "", *args: str) -> None:
 
     AVAILABLE COMMANDS
         help            Display the manual of a command
-        init            Create/update the database and exit, default command
+        init            Create/update the database and exit
         config          Manage settings
         download        Perform downloads
         database        Operate on the database
