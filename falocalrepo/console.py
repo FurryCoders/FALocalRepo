@@ -355,11 +355,11 @@ def console(comm: str = "", *args: str) -> None:
     elif comm not in ("init", config.__name__, download.__name__, database.__name__):
         raise UnknownCommand(comm)
 
-    db: Optional[Connection] = None
-
     check_update(__version__, "falocalrepo")
     check_update(__database_version__, "falocalrepo-database")
     check_update(__server_version__, "falocalrepo-server")
+
+    db: Optional[Connection] = None
 
     try:
         # Initialise and prepare database
