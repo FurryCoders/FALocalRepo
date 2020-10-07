@@ -114,7 +114,7 @@ def download_submission(api: FAAPI, db: Connection, sub_id: int) -> bool:
     if not sub.id:
         return False
 
-    save_submission(db, sub, sub_file)
+    save_submission(db, dict(sub), sub_file)
 
     return True
 
@@ -129,7 +129,7 @@ def download_journals(api: FAAPI, db: Connection, jrn_ids: List[str]):
 
 def download_journal(api: FAAPI, db: Connection, jrn_id: int):
     journal: Journal = api.get_journal(jrn_id)
-    save_journal(db, journal)
+    save_journal(db, dict(journal))
 
 
 def download_users_update(api: FAAPI, db: Connection, users: List[str] = None, folders: List[str] = None, stop: int = 1):
