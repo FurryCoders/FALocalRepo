@@ -86,8 +86,25 @@ def parse_args(args_raw: Iterable[str]) -> Tuple[Dict[str, str], List[str]]:
 
 
 def help_(comm: str = None, *_args: str) -> str:
+    """
+    USAGE
+        falocalrepo help [<setting>]
+
+    ARGUMENTS
+        <command>       Command to get the help of
+
+    AVAILABLE COMMANDS
+        help            Display the manual of help
+        init            Display the manual of init
+        config          Display the manual of config
+        download        Display the manual of download
+        database        Display the manual of database
+    """
+
     if not comm:
         return cleandoc(console.__doc__)
+    elif comm == help_.__name__.rstrip("_"):
+        return cleandoc(help_.__doc__)
     elif comm == init.__name__:
         return cleandoc(console.__doc__)
     elif comm == config.__name__:
