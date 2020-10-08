@@ -281,8 +281,8 @@ def database(db: Connection, comm: str = "", *args: str):
             print(str(datetime.fromtimestamp(float(time))), command)
     elif comm == "search-users":
         params: Dict[str, str] = parameters(args)
-        users: List[tuple] = select(db, users_table, ["*"], list(params.keys()), list(params.values()), True).fetchall()
-        print_users(users, users_indexes)
+        results: List[tuple] = select(db, users_table, ["*"], list(params.keys()), list(params.values()), True).fetchall()
+        print_users(results, users_indexes)
     elif comm == "search-submissions":
         results: List[tuple] = search_submissions(db, **{"order": ["AUTHOR", "ID"], **parameters_multi(args)})
         print_items(results, submissions_indexes)
