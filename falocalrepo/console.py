@@ -24,8 +24,11 @@ from falocalrepo_database import save_journal
 from falocalrepo_database import save_submission
 from falocalrepo_database import search_journals
 from falocalrepo_database import search_submissions
+from falocalrepo_database import select
 from falocalrepo_database import submissions_indexes
 from falocalrepo_database import update_database
+from falocalrepo_database import users_indexes
+from falocalrepo_database import users_table
 from falocalrepo_database import vacuum
 from falocalrepo_database import write_setting
 from falocalrepo_server import __version__ as __server_version__
@@ -37,6 +40,7 @@ from .commands import make_journal
 from .commands import make_submission
 from .commands import move_files_folder
 from .commands import print_items
+from .commands import print_users
 from .download import clean_username
 from .download import cookies_load
 from .download import cookies_read
@@ -242,6 +246,7 @@ def database(db: Connection, comm: str = "", *args: str):
     AVAILABLE COMMANDS
         info               Show database information
         history            Show commands history
+        search-users       Search users
         search-submissions Search submissions
         search-journals    Search submissions
         add-submission     Add a submission to the database manually
@@ -274,6 +279,10 @@ def database(db: Connection, comm: str = "", *args: str):
         history: List[List[str]] = read_history(db)
         for time, command in history:
             print(str(datetime.fromtimestamp(float(time))), command)
+    elif comm == "search-users":
+        params: Dict[str, str] = parameters(args)
+        users: List[tuple] = select(db, users_table, ["*"], list(params.keys()), list(params.values()), True).fetchall()
+        print_users(users, users_indexes)
     elif comm == "search-submissions":
         results: List[tuple] = search_submissions(db, **{"order": ["AUTHOR", "ID"], **parameters_multi(args)})
         print_items(results, submissions_indexes)
