@@ -194,13 +194,13 @@ falocalrepo database history
 ```
 * `search-users <param1>=<value1> ... [<paramN>=<valueN>]` search the users entries using metadata fields. Search parameters can be passed multiple times to act as OR values. The following search parameters are supported:
     * `username`
-    * `folders`
+    * `folders` gallery, scraps, favorites, mentions, or mentions_all
     * `gallery`
     * `scraps`
     * `favorites`
     * `mentions`
 * `search-submissions <param1>=<value1> ... [<paramN>=<valueN>]` search the submissions entries using metadata fields. Search parameters can be passed multiple times to act as OR values. The following search parameters are supported:
-    * `author` author
+    * `author`
     * `title`
     * `date`
     * `description` 
@@ -216,7 +216,7 @@ falocalrepo database search-submissions tags=%cat,%mouse% date=2020-% category=%
 falocalrepo database search-submissions tags=%cat% tags=%mouse% date=2020-% category=%artwork%
 ```
 * `search-journals <param1>=<value1> ... [<paramN>=<valueN>]` search the journals entries using metadata fields. Search parameters can be passed multiple times to act as OR values. The following search parameters are supported:
-    * `author` author
+    * `author`
     * `title`
     * `date`
     * `content`
