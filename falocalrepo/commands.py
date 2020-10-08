@@ -119,3 +119,35 @@ def print_items(subs: List[tuple], indexes: Dict[str, int]):
             f"{sub[index_date][:space_date]:<{space_date}} | " +
             sub[index_title][:(space_term - space_id - space_user - space_date - 10)]
         )
+
+
+def print_users(users: List[tuple], indexes: Dict[str, int]):
+    space_name: int = 15
+    space_folders: int = 10
+    space_folder: int = 10
+
+    index_name: int = indexes["USERNAME"]
+    index_folders: int = indexes["FOLDERS"]
+    index_gallery: int = indexes["GALLERY"]
+    index_scraps: int = indexes["SCRAPS"]
+    index_favorites: int = indexes["FAVORITES"]
+    index_mentions: int = indexes["MENTIONS"]
+
+    users.sort(key=lambda usr: usr[index_name])
+
+    print(
+        f"{'Username':^{space_name}} | {'Folders':^{space_folders}}" +
+        f" | {'Gallery':^{space_folder}} | {'Scraps':^{space_folder}}" +
+        f" | {'Favorites':^{space_folder}} | {'Mentions':^{space_folder}}"
+    )
+    for user in users:
+        folders: str = ",".join(set(map(lambda f: f[0], user[index_folders].split(","))))
+        gallery: int = len(user[index_gallery].split(",")) if user[index_gallery] else 0
+        scraps: int = len(user[index_scraps].split(",")) if user[index_scraps] else 0
+        favorites: int = len(user[index_favorites].split(",")) if user[index_favorites] else 0
+        mentions: int = len(user[index_mentions].split(",")) if user[index_mentions] else 0
+        print(
+            f"{user[index_name][:space_name]:<{space_name}} | {folders:^{space_folder}}" +
+            f" | {str(gallery):^{space_folder}} | {str(scraps):^{space_folder}}" +
+            f" | {str(favorites):^{space_folder}} | {str(mentions):^{space_folder}}"
+        )
