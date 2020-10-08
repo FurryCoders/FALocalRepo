@@ -12,6 +12,7 @@ from .console import console
 def main(args: List[str] = None):
     # Run main program
     args = argv[1:] if args is None else args
+    args = list(filter(bool, map(str.strip, args)))
     try:
         console(*args)
     except KeyboardInterrupt:
