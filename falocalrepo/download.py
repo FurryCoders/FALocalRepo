@@ -15,7 +15,7 @@ from typing import Union
 
 from faapi import FAAPI
 from faapi import Journal
-from faapi import SubPartial
+from faapi import SubmissionPartial
 from falocalrepo_database import edit_user_field_add
 from falocalrepo_database import edit_user_field_remove
 from falocalrepo_database import exist_journal
@@ -179,7 +179,7 @@ def download_user(api: FAAPI, db: Connection, user: str, folder: str, stop: int 
 
     downloader: Callable[
         [str, Union[str, int]],
-        Tuple[Union[List[SubPartial], List[Journal]], Union[int, str]]
+        Tuple[Union[List[SubmissionPartial], List[Journal]], Union[int, str]]
     ]
     if folder.endswith("!"):
         print(f"{folder} disabled")

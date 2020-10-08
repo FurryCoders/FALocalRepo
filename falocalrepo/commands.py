@@ -9,7 +9,7 @@ from typing import Tuple
 from typing import Union
 
 from faapi import Journal
-from faapi import Sub
+from faapi import Submission
 from falocalrepo_database import write_setting
 from requests import get as req_get
 
@@ -59,7 +59,7 @@ def make_submission(id_: Union[int, str], author: str, title: str,
                     gender: str, rating: str, tags: str = "",
                     description: str = "", file_url: str = "",
                     file_local_url: str = ""
-                    ) -> Tuple[Sub, Optional[bytes]]:
+                    ) -> Tuple[Submission, Optional[bytes]]:
     assert isinstance(id_, int) or (isinstance(id_, str) and id_.isdigit())
     assert int(id_) > 0
     assert isinstance(author, str) and author
@@ -74,7 +74,7 @@ def make_submission(id_: Union[int, str], author: str, title: str,
     assert isinstance(file_url, str)
     assert isinstance(file_local_url, str)
 
-    sub: Sub = Sub()
+    sub: Submission = Submission()
     sub_file: Optional[bytes] = None
 
     sub.id = int(id_)
