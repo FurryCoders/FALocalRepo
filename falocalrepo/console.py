@@ -355,7 +355,7 @@ def console(comm: str = "", *args: str) -> None:
     elif comm in ("-s", "--server"):
         print(__server_version__)
         return
-    elif comm not in ("init", config.__name__, download.__name__, database.__name__):
+    elif comm not in (init.__name__, config.__name__, download.__name__, database.__name__):
         raise UnknownCommand(comm)
 
     check_update(__version__, "falocalrepo")
