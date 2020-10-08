@@ -248,7 +248,7 @@ def database(db: Connection, comm: str = "", *args: str):
         history            Show commands history
         search-users       Search users
         search-submissions Search submissions
-        search-journals    Search submissions
+        search-journals    Search journals
         add-submission     Add a submission to the database manually
         add-journal        Add a journal to the database manually
         remove-users       Remove users from database
