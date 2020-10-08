@@ -85,7 +85,7 @@ def parse_args(args_raw: Iterable[str]) -> Tuple[Dict[str, str], List[str]]:
     return parameters(opts), args
 
 
-def help_message(comm: str = None, *_args: str) -> str:
+def help_(comm: str = None, *_args: str) -> str:
     if not comm:
         return cleandoc(console.__doc__)
     elif comm == init.__name__:
@@ -340,13 +340,13 @@ def console(comm: str = "", *args: str) -> None:
                       console.__doc__
 
     if not comm:
-        print(help_message())
+        print(help_())
         return
     elif comm in ("-h", "--help"):
-        print(help_message())
+        print(help_())
         return
     elif comm == "help":
-        print(help_message(*args))
+        print(help_(*args))
         return
     elif comm in ("-v", "--version"):
         print(__version__)
