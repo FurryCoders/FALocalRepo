@@ -88,6 +88,8 @@ def parse_args(args_raw: Iterable[str]) -> Tuple[Dict[str, str], List[str]]:
 def help_message(comm: str = None, *_args: str) -> str:
     if not comm:
         return cleandoc(console.__doc__)
+    elif comm == init.__name__:
+        return cleandoc(console.__doc__)
     elif comm == config.__name__:
         return cleandoc(config.__doc__)
     elif comm == download.__name__:
