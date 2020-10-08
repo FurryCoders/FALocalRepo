@@ -199,6 +199,9 @@ falocalrepo database history
     * `scraps`
     * `favorites`
     * `mentions`
+```
+falocalrepo database search-users folders=%gallery% gallery=%0012345678%
+```
 * `search-submissions <param1>=<value1> ... [<paramN>=<valueN>]` search the submissions entries using metadata fields. Search parameters can be passed multiple times to act as OR values. The following search parameters are supported:
     * `author`
     * `title`
