@@ -235,7 +235,7 @@ def download_user(api: FAAPI, db: Connection, user: str, folder: str, stop: int 
                 edit_user_field_add(db, user, folder.upper(), [str(item.id).zfill(10)])
             elif items_type == "journal":
                 print(f"[{'#' * 10}]")
-                save_journal(db, item)
+                save_journal(db, dict(item))
                 edit_user_field_add(db, user, folder.upper(), [str(item.id).zfill(10)])
                 items_total += 1
 
