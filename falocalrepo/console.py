@@ -89,6 +89,11 @@ def parse_args(args_raw: Iterable[str]) -> Tuple[Dict[str, str], List[str]]:
     return parameters(opts), args
 
 
+def check_update(version: str, package: str):
+    if (latest := latest_version(package)) and latest != version:
+        print(f"New {package} version available: {latest} > {version}")
+
+
 def help_(comm: str = None, *_args: str) -> str:
     """
     USAGE
@@ -119,11 +124,6 @@ def help_(comm: str = None, *_args: str) -> str:
         return cleandoc(database.__doc__)
     else:
         raise UnknownCommand(comm)
-
-
-def check_update(version: str, package: str):
-    if (latest := latest_version(package)) and latest != version:
-        print(f"New {package} version available: {latest} > {version}")
 
 
 def init():
@@ -281,7 +281,8 @@ def database(db: Connection, comm: str = "", *args: str):
             print(str(datetime.fromtimestamp(float(time))), command)
     elif comm == "search-users":
         params: Dict[str, str] = parameters(args)
-        results: List[tuple] = select(db, users_table, ["*"], list(params.keys()), list(params.values()), True).fetchall()
+        results: List[tuple] = select(db, users_table, ["*"], list(params.keys()), list(params.values()),
+                                      True).fetchall()
         print_users(results, users_indexes)
     elif comm == "search-submissions":
         results: List[tuple] = search_submissions(db, **{"order": ["AUTHOR", "ID"], **parameters_multi(args)})
