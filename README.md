@@ -151,7 +151,7 @@ The `download` command performs all download and repository update operations.
 
 Available operations are:
 
-* `update [stop=<n>] [<user1>,...,<userN>] [<folder1>,...,<folderN>]` update the repository by checking the previously downloaded folders (gallery, scraps, favorites or journals) of each user and stopping when it finds a submission that is already present in the repository. Can pass a list of users and/or folders that will be updated if in the database. To skip users, use `@` as argument. The `stop=<n>` option allows to stop updating after finding `n` submissions in a user's database entry, defaults to 1.
+* `update [stop=<n>] [<user1>,...,<userN>] [<folder1>,...,<folderN>]` update the repository by checking the previously downloaded folders (gallery, scraps, favorites or journals) of each user and stopping when it finds a submission that is already present in the repository. Can pass a list of users and/or folders that will be updated if in the database. To skip users, use `@` as argument. The `stop=<n>` option allows to stop updating after finding `n` submissions in a user's database entry, defaults to 1. If a user is deactivated, the folders in the database will be prepended with a ! and the user will be skipped when update is called again.
 ```
 falocalrepo download update stop=5
 ```
