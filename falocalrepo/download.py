@@ -138,10 +138,18 @@ def download_users_update(api: FAAPI, db: Connection, users: List[str] = None, f
     for user, user_folders in select_all(db, "USERS", ["USERNAME", "FOLDERS"]):
         if users and user not in users:
             continue
-        elif not api.user_exists(user):
-            print(f"User {user} not found")
-            edit_user_field_remove(db, user, "FOLDERS", ["gallery", "scraps"])
-            edit_user_field_add(db, user, "FOLDERS", ["!gallery", "!scraps"])
+        elif any(folder.startswith("!") for folder in user_folders.split(",")):
+            print(f"User {user} disabled")
+            continue
+        elif (user_exists := api.user_exists(user)) != 0:
+            if user_exists == 1:
+                print(f"User {user} disabled")
+                edit_user_field_remove(db, user, "FOLDERS", ["gallery", "scraps", "journals"])
+                edit_user_field_add(db, user, "FOLDERS", ["!gallery", "!scraps", "!journals"])
+            elif user_exists == 2:
+                print(f"User {user} not found")
+            else:
+                print(f"User {user} error {user_exists}")
             continue
         for folder in user_folders.split(","):
             if folders and folder not in folders:
@@ -158,6 +166,14 @@ def download_users_update(api: FAAPI, db: Connection, users: List[str] = None, f
 def download_users(api: FAAPI, db: Connection, users: List[str], folders: List[str]):
     for user, folder in ((u, f) for u in users for f in folders):
         print(f"Downloading: {user}/{folder}")
+        if (user_exists := api.user_exists(user)) != 0:
+            if user_exists == 1:
+                print(f"User {user} disabled")
+            elif user_exists == 2:
+                print(f"User {user} not found")
+            else:
+                print(f"User {user} error {user_exists}")
+            continue
         tot, fail = download_user(api, db, user, folder)
         print("Items downloaded:", tot)
         print("Items failed:", fail) if fail else None
@@ -172,10 +188,6 @@ def download_user(api: FAAPI, db: Connection, user: str, folder: str, stop: int 
     user = clean_username(user)
     space_term: int = get_terminal_size()[0]
     found_subs: int = 0
-
-    if not api.user_exists(user):
-        print(f"User {user} not found")
-        return 0, 0
 
     downloader: Callable[
         [str, Union[str, int]],
