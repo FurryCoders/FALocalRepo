@@ -264,16 +264,13 @@ def database(db: Connection, comm: str = "", *args: str):
         sub_n: int = int(read_setting(db, "SUBN"))
         usr_n: int = int(read_setting(db, "USRN"))
         jrn_n: int = int(read_setting(db, "JRNN"))
-        history: List[List[str]] = read_history(db)
+        history: List[Tuple[float, str]] = read_history(db)
         version: str = read_setting(db, "VERSION")
         print("Size        :", f"{size / 1e6:.1f}MB")
         print("Submissions :", sub_n)
         print("Users       :", usr_n)
         print("Journals    :", jrn_n)
-        print("History     :",
-              f"{str(datetime.fromtimestamp(float(history[-2][0])))} {history[-2][1]}"
-              if len(history) > 1 else ""
-              )
+        print("History     :", len(history) - 1)
         print("Version     :", version)
     elif comm == "history":
         for time, command in read_history(db):
