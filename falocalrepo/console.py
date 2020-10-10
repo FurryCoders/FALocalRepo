@@ -3,11 +3,6 @@ from inspect import cleandoc
 from os.path import getsize
 from re import match
 from sqlite3 import Connection
-from typing import Dict
-from typing import Iterable
-from typing import List
-from typing import Optional
-from typing import Tuple
 
 from faapi import FAAPI
 from falocalrepo_database import __version__ as __database_version__
@@ -33,6 +28,11 @@ from falocalrepo_database import vacuum
 from falocalrepo_database import write_setting
 from falocalrepo_server import __version__ as __server_version__
 from falocalrepo_server import server
+from typing import Dict
+from typing import Iterable
+from typing import List
+from typing import Optional
+from typing import Tuple
 
 from .__version__ import __version__
 from .commands import latest_version
@@ -276,8 +276,7 @@ def database(db: Connection, comm: str = "", *args: str):
               )
         print("Version     :", version)
     elif comm == "history":
-        history: List[List[str]] = read_history(db)
-        for time, command in history:
+        for time, command in read_history(db):
             print(str(datetime.fromtimestamp(float(time))), command)
     elif comm == "search-users":
         params: Dict[str, str] = parameters(args)
