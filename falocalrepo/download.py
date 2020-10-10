@@ -59,6 +59,33 @@ def clean_string(title: str) -> str:
     return str(re_sub(r"[^\x20-\x7E]", "", title.strip()))
 
 
+def download_submissions(api: FAAPI, db: Connection, sub_ids: List[str]):
+    if sub_ids_fail := list(filter(lambda i: not i.isdigit(), sub_ids)):
+        print("The following ID's are not correct:", *sub_ids_fail)
+    for sub_id in map(int, filter(lambda i: i.isdigit(), sub_ids)):
+        print(f"Downloading {sub_id:010} ", end="", flush=True)
+        download_submission(api, db, sub_id)
+
+
+def download_submission(api: FAAPI, db: Connection, sub_id: int) -> bool:
+    sub, _ = api.get_sub(sub_id, False)
+    sub_file: bytes = bytes()
+
+    try:
+        sub_file = download_submission_file(api, sub.file_url)
+    except KeyboardInterrupt:
+        raise
+    except (Exception, BaseException):
+        pass
+
+    if not sub.id:
+        return False
+
+    save_submission(db, dict(sub), sub_file)
+
+    return True
+
+
 def download_submission_file(api: FAAPI, sub_file_url: str, speed: int = 100) -> Optional[bytes]:
     bar: Bar = Bar(10)
 
@@ -88,33 +115,6 @@ def download_submission_file(api: FAAPI, sub_file_url: str, speed: int = 100) ->
         return None
     finally:
         bar.close()
-
-
-def download_submissions(api: FAAPI, db: Connection, sub_ids: List[str]):
-    if sub_ids_fail := list(filter(lambda i: not i.isdigit(), sub_ids)):
-        print("The following ID's are not correct:", *sub_ids_fail)
-    for sub_id in map(int, filter(lambda i: i.isdigit(), sub_ids)):
-        print(f"Downloading {sub_id:010} ", end="", flush=True)
-        download_submission(api, db, sub_id)
-
-
-def download_submission(api: FAAPI, db: Connection, sub_id: int) -> bool:
-    sub, _ = api.get_sub(sub_id, False)
-    sub_file: bytes = bytes()
-
-    try:
-        sub_file = download_submission_file(api, sub.file_url)
-    except KeyboardInterrupt:
-        raise
-    except (Exception, BaseException):
-        pass
-
-    if not sub.id:
-        return False
-
-    save_submission(db, dict(sub), sub_file)
-
-    return True
 
 
 def download_journals(api: FAAPI, db: Connection, jrn_ids: List[str]):
