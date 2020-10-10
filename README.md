@@ -202,7 +202,7 @@ falocalrepo database history
 ```
 falocalrepo database search-users folders=%gallery% gallery=%0012345678%
 ```
-* `search-submissions <param1>=<value1> ... [<paramN>=<valueN>]` search the submissions entries using metadata fields. Search parameters can be passed multiple times to act as OR values. The following search parameters are supported:
+* `search-submissions <param1>=<value1> ... [<paramN>=<valueN>]` search the submissions entries using metadata fields. Search parameters can be passed multiple times to act as OR values. Results sorting can be specified using the `order` parameter with values in SQLite [`ORDER BY` clause](https://sqlite.org/lang_select.html#the_order_by_clause) format, using submissions fields. The following search parameters are supported:
     * `author`
     * `title`
     * `date`
@@ -213,18 +213,18 @@ falocalrepo database search-users folders=%gallery% gallery=%0012345678%
     * `gender`
     * `rating`
 ```
-falocalrepo database search-submissions tags=%cat,%mouse% date=2020-% category=%artwork%
+falocalrepo database search-submissions tags=%cat,%mouse% date=2020-% category=%artwork% order="AUTHOR" order="ID"
 ```
 ```
 falocalrepo database search-submissions tags=%cat% tags=%mouse% date=2020-% category=%artwork%
 ```
-* `search-journals <param1>=<value1> ... [<paramN>=<valueN>]` search the journals entries using metadata fields. Search parameters can be passed multiple times to act as OR values. The following search parameters are supported:
+* `search-journals <param1>=<value1> ... [<paramN>=<valueN>]` search the journals entries using metadata fields. Search parameters can be passed multiple times to act as OR values. Results sorting can be specified using the `order` parameter with values in SQLite [`ORDER BY` clause](https://sqlite.org/lang_select.html#the_order_by_clause) format, using journals fields. The following search parameters are supported:
     * `author`
     * `title`
     * `date`
     * `content`
 ```
-falocalrepo database search-journals date=2020-% author=CatArtist
+falocalrepo database search-journals date=2020-% author=CatArtist order="ID DESC"
 ```
 ```
 falocalrepo database search-journals date=2020-% date=2019-% content=%commission%
