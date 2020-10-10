@@ -184,7 +184,7 @@ def download_user(api: FAAPI, db: Connection, user: str, folder: str, stop: int 
     page_n: int = 0
     user = clean_username(user)
     space_term: int = get_terminal_size()[0]
-    found_subs: int = 0
+    found_items: int = 0
 
     downloader: Callable[
         [str, Union[str, int]],
@@ -232,7 +232,7 @@ def download_user(api: FAAPI, db: Connection, user: str, folder: str, stop: int 
             elif exist_user_field_value(db, user, folder.upper(), str(item.id).zfill(10)):
                 bar.message("IS IN DB")
                 bar.close()
-                if stop and (found_subs := found_subs + 1) >= stop:
+                if stop and (found_items := found_items + 1) >= stop:
                     return items_total, items_failed
             elif isinstance(item, SubmissionPartial):
                 if exist_submission(db, item.id):
