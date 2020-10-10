@@ -190,7 +190,7 @@ def download_user(api: FAAPI, db: Connection, user: str, folder: str, stop: int 
         [str, Union[str, int]],
         Tuple[Union[List[SubmissionPartial], List[Journal]], Union[int, str]]
     ]
-    if folder.endswith("!"):
+    if folder.startswith("!"):
         print(f"{folder} disabled")
         return 0, 0
     elif folder.startswith("mentions"):
