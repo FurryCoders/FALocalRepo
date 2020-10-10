@@ -216,11 +216,11 @@ def download_user(api: FAAPI, db: Connection, user: str, folder: str, stop: int 
 
     while page:
         page_n += 1
-        space_title: int = space_term - 29 - (int(log10(page_n)) + 1)
+        space_title: int = space_term - 29 - int(log10(page_n)) - 1
         print(f"{page_n}    {user[:space_title]} ...", end="", flush=True)
         items, page = download(user, page)
         if not items:
-            print("\r" + (" " * 31), end="\r", flush=True)
+            print("\r" + (" " * (space_term - 1)), end="\r", flush=True)
         for i, item in enumerate(items, 1):
             print(
                 f"\r{page_n}/{i:02d} {item.id:010d} {clean_string(item.title)[:space_title]:<{space_title}} ",
