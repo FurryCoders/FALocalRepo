@@ -14,6 +14,37 @@ from falocalrepo_database import write_setting
 from requests import get as req_get
 
 
+class Bar:
+    def __init__(self, length: int = 0):
+        self.length: int = length
+        self.level: int = 0
+
+        print(f"[{' ' * self.length}]", end="\b" * (self.length + 1), flush=True)
+
+    def clear(self):
+        print("\b \b" * self.level, end="", flush=True)
+        self.level = 0
+
+    def delete(self):
+        self.clear()
+        print("\b" + (" " * (self.length + 2)), end="\b" * (self.length + 2), flush=True)
+
+    @staticmethod
+    def close():
+        print()
+
+    def update(self, total: int, current: int):
+        if (new_level := int((current / total) * self.length)) == self.level:
+            return
+        self.clear()
+        print("#" * new_level, end="", flush=True)
+        self.level = new_level
+
+    def message(self, message: str):
+        self.clear()
+        print(f"{message[:self.length]:^{self.length}}", end="", flush=True)
+
+
 def latest_version(package: str) -> str:
     try:
         res = req_get(f"https://pypi.org/pypi/{package}/json")
