@@ -282,14 +282,14 @@ def database(db: Connection, comm: str = "", *args: str):
     elif comm == "search-users":
         params: Dict[str, str] = parameters(args)
         results: List[tuple] = select(db, users_table, ["*"], list(params.keys()), list(params.values()),
-                                      True).fetchall()
+                                      like=True, order=["USERNAME"]).fetchall()
         print_users(results, users_indexes)
     elif comm == "search-submissions":
-        results: List[tuple] = search_submissions(db, **{"order": ["AUTHOR", "ID"], **parameters_multi(args)})
+        results: List[tuple] = search_submissions(db, **{"order": ["ID"], **parameters_multi(args)})
         print_items(results, submissions_indexes)
         print(f"Found {len(results)} results")
     elif comm == "search-journals":
-        results: List[tuple] = search_journals(db, **{"order": ["AUTHOR", "ID"], **parameters_multi(args)})
+        results: List[tuple] = search_journals(db, **{"order": ["ID"], **parameters_multi(args)})
         print_items(results, journals_indexes)
         print(f"Found {len(results)} results")
     elif comm == "add-submission":
