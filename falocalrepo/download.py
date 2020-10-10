@@ -180,7 +180,6 @@ def download_users(api: FAAPI, db: Connection, users: List[str], folders: List[s
 def download_user(api: FAAPI, db: Connection, user: str, folder: str, stop: int = 0) -> Tuple[int, int]:
     items_total: int = 0
     items_failed: int = 0
-    items_type: str = "sub"
     page: Union[int, str] = 1
     page_n: int = 0
     user = clean_username(user)
@@ -205,7 +204,6 @@ def download_user(api: FAAPI, db: Connection, user: str, folder: str, stop: int 
         page = "next"
         downloader = api.favorites
     elif folder == "journals":
-        items_type = "journal"
         downloader = api.journals
     else:
         raise UnknownFolder(folder)
@@ -237,24 +235,26 @@ def download_user(api: FAAPI, db: Connection, user: str, folder: str, stop: int 
                 bar.close()
                 if stop and (found_subs := found_subs + 1) >= stop:
                     return items_total, items_failed
-            elif items_type == "sub" and exist_submission(db, item.id):
-                bar.message("IS IN DB")
-                bar.close()
-                edit_user_field_add(db, user, folder.upper(), [str(item.id).zfill(10)])
-            elif items_type == "sub":
-                bar.delete()
-                if download_submission(api, db, item.id):
+            elif isinstance(item, SubmissionPartial):
+                if exist_submission(db, item.id):
+                    bar.message("IS IN DB")
+                    bar.close()
+                    edit_user_field_add(db, user, folder.upper(), [str(item.id).zfill(10)])
+                else:
+                    bar.delete()
+                    if download_submission(api, db, item.id):
+                        edit_user_field_add(db, user, folder.upper(), [str(item.id).zfill(10)])
+                        items_total += 1
+            elif isinstance(item, Journal):
+                if exist_journal(db, item.id):
+                    bar.message("IS IN DB")
+                    bar.close()
+                    edit_user_field_add(db, user, folder.upper(), [str(item.id).zfill(10)])
+                else:
+                    save_journal(db, dict(item))
+                    bar.update(1, 1)
+                    bar.close()
                     edit_user_field_add(db, user, folder.upper(), [str(item.id).zfill(10)])
                     items_total += 1
-            elif items_type == "journal" and exist_journal(db, item.id):
-                bar.message("IS IN DB")
-                bar.close()
-                edit_user_field_add(db, user, folder.upper(), [str(item.id).zfill(10)])
-            elif items_type == "journal":
-                save_journal(db, dict(item))
-                bar.update(1, 1)
-                bar.close()
-                edit_user_field_add(db, user, folder.upper(), [str(item.id).zfill(10)])
-                items_total += 1
 
     return items_total, items_failed
