@@ -98,7 +98,7 @@ def download_submission_file(api: FAAPI, sub_file_url: str, speed: int = 100) ->
 
         for chunk in file_stream.iter_content(chunk_size=1024):
             file_binary += chunk
-            bar.update(size, len(file_binary))
+            bar.update(size, len(file_binary)) if size else None
             sleep(1 / speed) if speed > 0 else None
 
         bar.update(1, 1)
