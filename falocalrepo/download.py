@@ -35,19 +35,19 @@ class UnknownFolder(Exception):
     pass
 
 
-def cookies_load(api: FAAPI, cookie_a: str, cookie_b: str):
+def load_cookies(api: FAAPI, cookie_a: str, cookie_b: str):
     api.load_cookies([
         {"name": "a", "value": cookie_a},
         {"name": "b", "value": cookie_b},
     ])
 
 
-def cookies_read(db: Connection) -> Tuple[str, str]:
+def read_cookies(db: Connection) -> Tuple[str, str]:
     cookies: Dict[str, str] = json_loads(read_setting(db, "COOKIES"))
     return cookies.get("a", ""), cookies.get("b", "")
 
 
-def cookies_write(db: Connection, a: str, b: str):
+def write_cookies(db: Connection, a: str, b: str):
     write_setting(db, "COOKIES", json_dumps({"a": a, "b": b}))
 
 

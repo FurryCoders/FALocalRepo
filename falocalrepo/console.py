@@ -3,6 +3,11 @@ from inspect import cleandoc
 from os.path import getsize
 from re import match
 from sqlite3 import Connection
+from typing import Dict
+from typing import Iterable
+from typing import List
+from typing import Optional
+from typing import Tuple
 
 from faapi import FAAPI
 from falocalrepo_database import __version__ as __database_version__
@@ -28,11 +33,6 @@ from falocalrepo_database import vacuum
 from falocalrepo_database import write_setting
 from falocalrepo_server import __version__ as __server_version__
 from falocalrepo_server import server
-from typing import Dict
-from typing import Iterable
-from typing import List
-from typing import Optional
-from typing import Tuple
 
 from .__version__ import __version__
 from .commands import latest_version
@@ -42,13 +42,13 @@ from .commands import move_files_folder
 from .commands import print_items
 from .commands import print_users
 from .download import clean_username
-from .download import cookies_load
-from .download import cookies_read
-from .download import cookies_write
 from .download import download_journals
 from .download import download_submissions
 from .download import download_users
 from .download import download_users_update
+from .download import load_cookies
+from .download import read_cookies
+from .download import write_cookies
 
 
 class MalformedCommand(Exception):
@@ -146,18 +146,18 @@ def config(db: Connection, comm: str = "", *args: str):
     """
 
     if not comm or comm == "list":
-        cookie_a, cookie_b = cookies_read(db)
+        cookie_a, cookie_b = read_cookies(db)
         folder: str = read_setting(db, "FILESFOLDER")
         print("cookie a:", cookie_a)
         print("cookie b:", cookie_b)
         print("folder  :", folder)
     elif comm == "cookies":
         if not args:
-            cookie_a, cookie_b = cookies_read(db)
+            cookie_a, cookie_b = read_cookies(db)
             print("cookie a:", cookie_a)
             print("cookie b:", cookie_b)
         elif len(args) == 2 and args[0] and args[1]:
-            cookies_write(db, args[0], args[1])
+            write_cookies(db, args[0], args[1])
         else:
             raise MalformedCommand("cookies needs two arguments")
     elif comm == "files-folder":
@@ -192,7 +192,7 @@ def download(db: Connection, comm: str = "", *args: str):
         raise MalformedCommand("download needs a command")
 
     api: FAAPI = FAAPI()
-    cookies_load(api, *cookies_read(db))
+    load_cookies(api, *read_cookies(db))
 
     if not api.connection_status:
         raise ConnectionError("FAAPI cannot connect to FA")
