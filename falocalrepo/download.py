@@ -220,8 +220,7 @@ def download_user(api: FAAPI, db: Connection, user: str, folder: str, stop: int 
             print("\r" + (" " * 31), end="\r", flush=True)
         for i, item in enumerate(items, 1):
             print(
-                f"\r{page_n}/{i:02d} {item.id:010d} " +
-                f"{clean_string(item.title)[:space_title]:<{space_title}} ",
+                f"\r{page_n}/{i:02d} {item.id:010d} {clean_string(item.title)[:space_title]:<{space_title}} ",
                 end="",
                 flush=True
             )
