@@ -16,6 +16,10 @@ from falocalrepo_database import check_errors
 from falocalrepo_database import connect_database
 from falocalrepo_database import count
 from falocalrepo_database import delete
+from falocalrepo_database import edit_user_remove_journal
+from falocalrepo_database import edit_user_remove_submission
+from falocalrepo_database import find_user_from_journal
+from falocalrepo_database import find_user_from_submission
 from falocalrepo_database import journals_indexes
 from falocalrepo_database import make_tables
 from falocalrepo_database import read_history
@@ -308,11 +312,15 @@ def database(db: Connection, comm: str = "", *args: str):
         for sub in args:
             print("Deleting", sub)
             delete(db, "SUBMISSIONS", "ID", int(sub))
+            for (user, *_) in find_user_from_submission(db, int(sub)).fetchall():
+                edit_user_remove_submission(db, user, int(sub))
             db.commit()
     elif comm == "remove-journals":
         for jrn in args:
             print("Deleting", jrn)
             delete(db, "JOURNALS", "ID", int(jrn))
+            for (user, *_) in find_user_from_journal(db, int(jrn)).fetchall():
+                edit_user_remove_journal(db, user, int(jrn))
             db.commit()
     elif comm == "server":
         opts, _ = parse_args(args)
