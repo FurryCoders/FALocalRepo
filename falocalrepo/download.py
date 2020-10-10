@@ -28,6 +28,8 @@ from falocalrepo_database import save_submission
 from falocalrepo_database import select_all
 from falocalrepo_database import write_setting
 
+from .commands import Bar
+
 
 class UnknownFolder(Exception):
     pass
@@ -58,9 +60,7 @@ def clean_string(title: str) -> str:
 
 
 def download_submission_file(api: FAAPI, sub_file_url: str, speed: int = 100) -> Optional[bytes]:
-    bar_length: int = 10
-    bar_pos: int = 0
-    print("[" + (" " * bar_length) + "]", end=("\b" * bar_length) + "\b", flush=True)
+    bar: Bar = Bar(10)
 
     try:
         if not (file_stream := api.session.get(sub_file_url, stream=True)).ok:
@@ -71,23 +71,23 @@ def download_submission_file(api: FAAPI, sub_file_url: str, speed: int = 100) ->
 
         for chunk in file_stream.iter_content(chunk_size=1024):
             file_binary += chunk
-            if size and len(file_binary) > (size / bar_length) * (bar_pos + 1):
-                bar_pos += 1
-                print("#", end="", flush=True)
+            bar.update(size, len(file_binary))
             sleep(1 / speed) if speed > 0 else None
 
-        print(("\b \b" * bar_pos) + "#" * bar_length, end="", flush=True)
+        bar.update(1, 1)
 
         file_stream.close()
 
         return file_binary
     except KeyboardInterrupt:
         print("\b\b  \b\b", end="")
-        print(("\b \b" * bar_pos) + f"{'CANCELLED':^{bar_length}}", end="", flush=True)
+        bar.message("INTERRUPT")
         raise
     except (Exception, BaseException):
-        print(("\b \b" * bar_pos) + f"{'FILE ERR':^{bar_length}}", end="", flush=True)
+        bar.message("FILE ERR")
         return None
+    finally:
+        bar.close()
 
 
 def download_submissions(api: FAAPI, db: Connection, sub_ids: List[str]):
@@ -108,8 +108,6 @@ def download_submission(api: FAAPI, db: Connection, sub_id: int) -> bool:
         raise
     except (Exception, BaseException):
         pass
-    finally:
-        print()
 
     if not sub.id:
         return False
@@ -229,25 +227,33 @@ def download_user(api: FAAPI, db: Connection, user: str, folder: str, stop: int 
                 end="",
                 flush=True
             )
+            bar: Bar = Bar(10)
             if not item.id:
                 items_failed += 1
-                print(f"[{'ID ERROR':^10}]")
+                bar.message("ID ERROR")
+                bar.close()
             elif exist_user_field_value(db, user, folder.upper(), str(item.id).zfill(10)):
-                print(f"[{'FOUND':^10}]")
+                bar.message("IS IN DB")
+                bar.close()
                 if stop and (found_subs := found_subs + 1) >= stop:
                     return items_total, items_failed
             elif items_type == "sub" and exist_submission(db, item.id):
-                print(f"[{'FOUND':^10}]")
+                bar.message("IS IN DB")
+                bar.close()
                 edit_user_field_add(db, user, folder.upper(), [str(item.id).zfill(10)])
-            elif items_type == "sub" and download_submission(api, db, item.id):
-                edit_user_field_add(db, user, folder.upper(), [str(item.id).zfill(10)])
-                items_total += 1
+            elif items_type == "sub":
+                bar.delete()
+                if download_submission(api, db, item.id):
+                    edit_user_field_add(db, user, folder.upper(), [str(item.id).zfill(10)])
+                    items_total += 1
             elif items_type == "journal" and exist_journal(db, item.id):
-                print(f"[{'FOUND':^10}]")
+                bar.message("IS IN DB")
+                bar.close()
                 edit_user_field_add(db, user, folder.upper(), [str(item.id).zfill(10)])
             elif items_type == "journal":
-                print(f"[{'#' * 10}]")
                 save_journal(db, dict(item))
+                bar.update(1, 1)
+                bar.close()
                 edit_user_field_add(db, user, folder.upper(), [str(item.id).zfill(10)])
                 items_total += 1
 
