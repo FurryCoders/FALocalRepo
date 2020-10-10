@@ -186,10 +186,9 @@ def download_user(api: FAAPI, db: Connection, user: str, folder: str, stop: int 
     space_term: int = get_terminal_size()[0]
     found_items: int = 0
 
-    downloader: Callable[
-        [str, Union[str, int]],
-        Tuple[List[Union[SubmissionPartial, Journal]], Union[int, str]]
-    ]
+    download: Callable[[str, Union[str, int]], Tuple[List[Union[SubmissionPartial, Journal]], Union[int, str]]]
+    exists: Callable[[Connection, int], bool]
+
     if folder.startswith("!"):
         print(f"{folder} disabled")
         return 0, 0
@@ -197,14 +196,18 @@ def download_user(api: FAAPI, db: Connection, user: str, folder: str, stop: int 
         print(f"Unsupported: {user}/{folder}")
         return 0, 0
     elif folder == "gallery":
-        downloader = api.gallery
+        download = api.gallery
+        exists = exist_submission
     elif folder == "scraps":
-        downloader = api.scraps
+        download = api.scraps
+        exists = exist_submission
     elif folder == "favorites":
         page = "next"
-        downloader = api.favorites
+        download = api.favorites
+        exists = exist_submission
     elif folder == "journals":
-        downloader = api.journals
+        download = api.journals
+        exists = exist_journal
     else:
         raise UnknownFolder(folder)
 
@@ -215,7 +218,7 @@ def download_user(api: FAAPI, db: Connection, user: str, folder: str, stop: int 
         page_n += 1
         space_title: int = space_term - 29 - (int(log10(page_n)) + 1)
         print(f"{page_n}    {user[:space_title]} ...", end="", flush=True)
-        items, page = downloader(user, page)
+        items, page = download(user, page)
         if not items:
             print("\r" + (" " * 31), end="\r", flush=True)
         for i, item in enumerate(items, 1):
@@ -234,26 +237,20 @@ def download_user(api: FAAPI, db: Connection, user: str, folder: str, stop: int 
                 bar.close()
                 if stop and (found_items := found_items + 1) >= stop:
                     return items_total, items_failed
+            elif exists(db, item.id):
+                bar.message("IS IN DB")
+                bar.close()
+                edit_user_field_add(db, user, folder.upper(), [str(item.id).zfill(10)])
             elif isinstance(item, SubmissionPartial):
-                if exist_submission(db, item.id):
-                    bar.message("IS IN DB")
-                    bar.close()
-                    edit_user_field_add(db, user, folder.upper(), [str(item.id).zfill(10)])
-                else:
-                    bar.delete()
-                    if download_submission(api, db, item.id):
-                        edit_user_field_add(db, user, folder.upper(), [str(item.id).zfill(10)])
-                        items_total += 1
-            elif isinstance(item, Journal):
-                if exist_journal(db, item.id):
-                    bar.message("IS IN DB")
-                    bar.close()
-                    edit_user_field_add(db, user, folder.upper(), [str(item.id).zfill(10)])
-                else:
-                    save_journal(db, dict(item))
-                    bar.update(1, 1)
-                    bar.close()
+                bar.delete()
+                if download_submission(api, db, item.id):
                     edit_user_field_add(db, user, folder.upper(), [str(item.id).zfill(10)])
                     items_total += 1
+            elif isinstance(item, Journal):
+                save_journal(db, dict(item))
+                bar.update(1, 1)
+                bar.close()
+                edit_user_field_add(db, user, folder.upper(), [str(item.id).zfill(10)])
+                items_total += 1
 
     return items_total, items_failed
