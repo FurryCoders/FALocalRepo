@@ -130,7 +130,7 @@ def download_journal(api: FAAPI, db: Connection, jrn_id: int):
     save_journal(db, dict(journal))
 
 
-def download_users_update(api: FAAPI, db: Connection, users: List[str] = None, folders: List[str] = None, stop: int = 1):
+def download_users_update(api: FAAPI, db: Connection, users: List[str], folders: List[str], stop: int = 1):
     tot: int = 0
     fail: int = 0
     for user, user_folders in select_all(db, "USERS", ["USERNAME", "FOLDERS"]):

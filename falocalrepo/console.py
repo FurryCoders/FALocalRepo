@@ -197,8 +197,8 @@ def download(db: Connection, comm: str = "", *args: str):
     if not api.connection_status:
         raise ConnectionError("FAAPI cannot connect to FA")
     elif comm == "update":
-        users: Optional[List[str]] = None
-        folders: Optional[List[str]] = None
+        users: List[str] = []
+        folders: List[str] = []
         opts, args = parse_args(args)
         if args and args[0] != "@":
             users_tmp: List[str] = list(filter(bool, map(clean_username, args[0].split(","))))
