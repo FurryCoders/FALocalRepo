@@ -188,7 +188,7 @@ def download_user(api: FAAPI, db: Connection, user: str, folder: str, stop: int 
 
     downloader: Callable[
         [str, Union[str, int]],
-        Tuple[Union[List[SubmissionPartial], List[Journal]], Union[int, str]]
+        Tuple[List[Union[SubmissionPartial, Journal]], Union[int, str]]
     ]
     if folder.startswith("!"):
         print(f"{folder} disabled")
