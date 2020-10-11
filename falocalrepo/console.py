@@ -311,7 +311,7 @@ def database(db: Connection, comm: str = "", *args: str):
     elif comm == "remove-users":
         for user in map(clean_username, args):
             print("Deleting", user)
-            delete(db, "USERS", "USERNAME", user)
+            delete(db, users_table, "USERNAME", user)
             db.commit()
     elif comm == "remove-submissions":
         for sub in args:
