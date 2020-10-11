@@ -197,8 +197,10 @@ def download(db: Connection, comm: str = "", *args: str):
     if not comm:
         raise MalformedCommand("download needs a command")
 
+    print((s := "Connecting... "), end="", flush=True)
     api: FAAPI = FAAPI()
     load_cookies(api, *read_cookies(db))
+    print("\r" + (" " * len(s)), end="\r", flush=True)
 
     if not api.connection_status:
         raise ConnectionError("FAAPI cannot connect to FA")
