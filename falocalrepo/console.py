@@ -21,6 +21,7 @@ from falocalrepo_database import edit_user_remove_submission
 from falocalrepo_database import find_user_from_journal
 from falocalrepo_database import find_user_from_submission
 from falocalrepo_database import journals_indexes
+from falocalrepo_database import journals_table
 from falocalrepo_database import make_tables
 from falocalrepo_database import read_history
 from falocalrepo_database import read_setting
@@ -30,6 +31,7 @@ from falocalrepo_database import search_journals
 from falocalrepo_database import search_submissions
 from falocalrepo_database import select
 from falocalrepo_database import submissions_indexes
+from falocalrepo_database import submissions_table
 from falocalrepo_database import update_database
 from falocalrepo_database import users_indexes
 from falocalrepo_database import users_table
@@ -311,14 +313,14 @@ def database(db: Connection, comm: str = "", *args: str):
     elif comm == "remove-submissions":
         for sub in args:
             print("Deleting", sub)
-            delete(db, "SUBMISSIONS", "ID", int(sub))
+            delete(db, submissions_table, "ID", int(sub))
             for (user, *_) in find_user_from_submission(db, int(sub)).fetchall():
                 edit_user_remove_submission(db, user, int(sub))
             db.commit()
     elif comm == "remove-journals":
         for jrn in args:
             print("Deleting", jrn)
-            delete(db, "JOURNALS", "ID", int(jrn))
+            delete(db, journals_table, "ID", int(jrn))
             for (user, *_) in find_user_from_journal(db, int(jrn)).fetchall():
                 edit_user_remove_journal(db, user, int(jrn))
             db.commit()
@@ -327,12 +329,12 @@ def database(db: Connection, comm: str = "", *args: str):
         server(**opts)
     elif comm == "check-errors":
         print("Checking submissions table for errors... ", end="", flush=True)
-        results: List[tuple] = check_errors(db, "SUBMISSIONS")
+        results: List[tuple] = check_errors(db, submissions_table)
         print("Done")
         if results:
             print_items(results, submissions_indexes)
         print("Checking journals table for errors... ", end="", flush=True)
-        results: List[tuple] = check_errors(db, "JOURNALS")
+        results: List[tuple] = check_errors(db, journals_table)
         print("Done")
         if results:
             print_items(results, journals_indexes)
