@@ -182,6 +182,8 @@ The `database` command allows to operate on the database. Used without an operat
 
 All search operations are conducted case-insensitively using the SQLite [`like`](https://sqlite.org/lang_expr.html#like) expression which allows for limited pattern matching. For example this expression can be used to search two words together separated by an unknown amount of characters `%cat%mouse%`. Fields missing wildcards will only match an exact result, i.e. `cat` will only match a field equal to `cat` tag whereas `%cat%` wil match a field that has contains `cat`.
 
+All search operations support the extra `order`, `limit`, and `offset` parameters with values in SQLite [`ORDER BY` clause](https://sqlite.org/lang_select.html#the_order_by_clause), [`LIMIT` clause](https://sqlite.org/lang_select.html#the_limit_clause) format, and [`OFFSET` clause](https://sqlite.org/lang_select.html#the_limit_clause). The `order` parameter supports all fields of the specific search command.
+
 Available operations are:
 
 * `info` show database information, statistics and version.
@@ -202,7 +204,7 @@ falocalrepo database history
 ```
 falocalrepo database search-users folders=%gallery% gallery=%0012345678%
 ```
-* `search-submissions <param1>=<value1> ... [<paramN>=<valueN>]` search the submissions entries using metadata fields. Search parameters can be passed multiple times to act as OR values. Results sorting can be specified using the `order` parameter with values in SQLite [`ORDER BY` clause](https://sqlite.org/lang_select.html#the_order_by_clause) format, using submissions fields. The following search parameters are supported:
+* `search-submissions <param1>=<value1> ... [<paramN>=<valueN>]` search the submissions entries using metadata fields. Search parameters can be passed multiple times to act as OR values. The following search parameters are supported:
     * `author`
     * `title`
     * `date`
@@ -218,7 +220,7 @@ falocalrepo database search-submissions tags=%cat,%mouse% date=2020-% category=%
 ```
 falocalrepo database search-submissions tags=%cat% tags=%mouse% date=2020-% category=%artwork%
 ```
-* `search-journals <param1>=<value1> ... [<paramN>=<valueN>]` search the journals entries using metadata fields. Search parameters can be passed multiple times to act as OR values. Results sorting can be specified using the `order` parameter with values in SQLite [`ORDER BY` clause](https://sqlite.org/lang_select.html#the_order_by_clause) format, using journals fields. The following search parameters are supported:
+* `search-journals <param1>=<value1> ... [<paramN>=<valueN>]` search the journals entries using metadata fields. Search parameters can be passed multiple times to act as OR values. The following search parameters are supported:
     * `author`
     * `title`
     * `date`
