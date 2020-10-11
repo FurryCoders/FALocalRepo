@@ -228,9 +228,8 @@ def download_user(api: FAAPI, db: Connection, user: str, folder: str, stop: int 
                 bar.message("ID ERROR")
                 bar.close()
             elif exist_user_field_value(db, user, folder.upper(), str(item.id).zfill(10)):
-                bar.message("IS IN DB")
-                bar.close()
                 if stop and (found_items := found_items + 1) >= stop:
+                    print("\r" + (" " * (space_term - 1)), end="\r", flush=True)
                     return items_total, items_failed
             elif exists(db, item.id):
                 bar.message("IS IN DB")
