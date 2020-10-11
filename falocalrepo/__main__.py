@@ -26,12 +26,15 @@ def main(args: List[str] = None):
     except DatabaseError as err:
         print(repr(err))
         exit(3)
+    except (TypeError, AssertionError) as err:
+        print(repr(err))
+        exit(4)
     except (Exception, BaseException) as err:
         with open("FA.log", "w") as f:
             print_exc(file=f)
             print(repr(err))
             print(f"Trace written to {f.name}")
-        exit(4)
+        exit(5)
 
 
 if __name__ == "__main__":
