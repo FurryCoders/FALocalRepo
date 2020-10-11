@@ -133,10 +133,11 @@ def download_journal(api: FAAPI, db: Connection, jrn_id: int):
 def download_users_update(api: FAAPI, db: Connection, users: List[str], folders: List[str], stop: int = 1):
     tot: int = 0
     fail: int = 0
-    for user, user_folders in select_all(db, "USERS", ["USERNAME", "FOLDERS"]):
+    for user, user_folders_str in select_all(db, "USERS", ["USERNAME", "FOLDERS"], ["USERNAME"]):
+        user_folders: List[str] = sorted(user_folders_str.split(","))
         if users and user not in users:
             continue
-        elif any(folder.startswith("!") for folder in user_folders.split(",")):
+        elif any(folder.startswith("!") for folder in user_folders):
             print(f"User {user} disabled")
             continue
         elif (user_exists := api.user_exists(user)) != 0:
@@ -149,9 +150,10 @@ def download_users_update(api: FAAPI, db: Connection, users: List[str], folders:
             else:
                 print(f"User {user} error {user_exists}")
             continue
-        for folder in user_folders.split(","):
-            if folders and folder not in folders:
-                continue
+        user_folders = [f for f in folders if f in user_folders] if folders else user_folders
+        if not user_folders:
+            print(f"User {user} no folders selected")
+        for folder in user_folders:
             print(f"Downloading: {user}/{folder}")
             tot_tmp, fail_tmp = download_user(api, db, user, folder, stop)
             tot += tot_tmp
