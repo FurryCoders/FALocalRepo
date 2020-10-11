@@ -162,14 +162,14 @@ def config(db: Connection, comm: str = "", *args: str):
             cookie_a, cookie_b = read_cookies(db)
             print("cookie a:", cookie_a)
             print("cookie b:", cookie_b)
-        elif len(args) == 2 and args[0] and args[1]:
+        elif len(args) == 2:
             write_cookies(db, args[0], args[1])
         else:
             raise MalformedCommand("cookies needs two arguments")
     elif comm == "files-folder":
         if not args:
             print("files folder:", read_setting(db, "FILESFOLDER"))
-        elif len(args) == 1 and args[0]:
+        elif len(args) == 1:
             move_files_folder(db, read_setting(db, "FILESFOLDER"), args[0])
         else:
             raise MalformedCommand("files-folder needs one argument")
@@ -216,14 +216,13 @@ def download(db: Connection, comm: str = "", *args: str):
             folders = sorted(set(folders_tmp), key=folders_tmp.index)
         download_users_update(api, db, users, folders, int(opts.get("stop", 1)))
     elif comm == "users":
-        if len(args) == 2 and args[0] and args[1]:
-            users_tmp: List[str] = list(filter(bool, map(clean_username, args[0].split(","))))
-            users: List[str] = sorted(set(users_tmp), key=users_tmp.index)
-            folders_tmp: List[str] = list(filter(bool, map(str.strip, args[1].split(","))))
-            folders: List[str] = sorted(set(folders_tmp), key=folders_tmp.index)
-            download_users(api, db, users, folders)
-        else:
+        if len(args) != 2:
             raise MalformedCommand("users needs two arguments")
+        users_tmp: List[str] = list(filter(bool, map(clean_username, args[0].split(","))))
+        users: List[str] = sorted(set(users_tmp), key=users_tmp.index)
+        folders_tmp: List[str] = list(filter(bool, map(str.strip, args[1].split(","))))
+        folders: List[str] = sorted(set(folders_tmp), key=folders_tmp.index)
+        download_users(api, db, users, folders)
     elif comm == "submissions":
         if not args:
             raise MalformedCommand("submissions needs at least one argument")
