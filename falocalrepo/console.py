@@ -29,7 +29,7 @@ from falocalrepo_database import save_journal
 from falocalrepo_database import save_submission
 from falocalrepo_database import search_journals
 from falocalrepo_database import search_submissions
-from falocalrepo_database import select
+from falocalrepo_database import search_users
 from falocalrepo_database import submissions_indexes
 from falocalrepo_database import submissions_table
 from falocalrepo_database import update_database
@@ -283,10 +283,9 @@ def database(db: Connection, comm: str = "", *args: str):
         for time, command in read_history(db):
             print(str(datetime.fromtimestamp(float(time))), command)
     elif comm == "search-users":
-        params: Dict[str, str] = parameters(args)
-        results: List[tuple] = select(db, users_table, ["*"], list(params.keys()), list(params.values()),
-                                      like=True, order=["USERNAME"]).fetchall()
+        results: List[tuple] = search_users(db, **{"order": ["USERNAME"], **parameters_multi(args)})
         print_users(results, users_indexes)
+        print(f"Found {len(results)} results")
     elif comm == "search-submissions":
         results: List[tuple] = search_submissions(db, **{"order": ["ID"], **parameters_multi(args)})
         print_items(results, submissions_indexes)
