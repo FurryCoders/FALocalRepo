@@ -185,7 +185,9 @@ def download_user(api: FAAPI, db: Connection, user: str, folder: str, stop: int 
     page: Union[int, str] = 1
     page_n: int = 0
     user = clean_username(user)
+    space_bar: int = 10
     space_term: int = get_terminal_size()[0]
+    space_line: int = space_term - (space_bar + 2 + 2)
     found_items: int = 0
 
     download: Callable[[str, Union[str, int]], Tuple[List[Union[SubmissionPartial, Journal]], Union[int, str]]]
@@ -223,8 +225,8 @@ def download_user(api: FAAPI, db: Connection, user: str, folder: str, stop: int 
         print("\r" + (" " * (space_term - 1)), end="\r", flush=True)
         for i, item in enumerate(items, 1):
             sub_string: str = f"{page_n}/{i:02d} {item.id:010d} {clean_string(item.title)}"
-            print(f"{sub_string[:space_term - 12 - 2]:<{space_term - 12 - 2}} ", end="", flush=True)
-            bar: Bar = Bar(10)
+            print(f"{sub_string[:space_line]:<{space_line}} ", end="", flush=True)
+            bar: Bar = Bar(space_bar)
             if not item.id:
                 items_failed += 1
                 bar.message("ID ERROR")
