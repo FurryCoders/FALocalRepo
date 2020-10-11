@@ -297,12 +297,14 @@ def database(db: Connection, comm: str = "", *args: str):
         print(f"Found {len(results)} results")
     elif comm == "add-submission":
         make_params = parameters(args)
+        make_params["id_"] = make_params.get("id", "")
         if "id" in make_params:
             del make_params["id"]
         sub, sub_file = make_submission(**make_params)
         save_submission(db, dict(sub), sub_file)
     elif comm == "add-journal":
         make_params = parameters(args)
+        make_params["id_"] = make_params.get("id", "")
         if "id" in make_params:
             del make_params["id"]
         save_journal(db, dict(make_journal(**make_params)))
