@@ -111,6 +111,8 @@ def download_submission_file(api: FAAPI, sub_file_url: str, speed: int = 100) ->
         return file_binary
     except KeyboardInterrupt:
         print("\b\b  \b\b", end="")
+        bar.delete()
+        bar.__init__(bar.length)
         bar.message("INTERRUPT")
         raise
     except (Exception, BaseException):
