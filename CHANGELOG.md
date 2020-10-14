@@ -1,5 +1,15 @@
 # Changelog
 
+## 3.10.11
+
+### Changes
+
+* faapi dependency set to 2.10.2
+
+### Fixes
+
+* Fix an error occurring when date format was set to "full" [faapi#1](https://gitlab.com/MatteoCampinoti94/FAAPI/-/issues/1)
+
 ## 3.10.10
 
 ### Changes
