@@ -1,3 +1,5 @@
+from math import ceil
+from math import log10
 from os import get_terminal_size
 from os.path import isdir
 from shutil import move
@@ -155,9 +157,14 @@ def print_items(subs: List[tuple], indexes: Dict[str, int]):
 
 
 def print_users(users: List[tuple], indexes: Dict[str, int]):
-    space_name: int = 15
-    space_folders: int = 10
-    space_folder: int = 10
+    space_folders: int = 7
+    space_folder: int = 9
+    space_term: int = 10000
+    try:
+        space_term = get_terminal_size()[0]
+    except IOError:
+        pass
+    space_name: int = space_term - (space_folders + 3) - ((space_folder + 3) * 4) - 1
 
     index_name: int = indexes["USERNAME"]
     index_folders: int = indexes["FOLDERS"]
@@ -168,19 +175,40 @@ def print_users(users: List[tuple], indexes: Dict[str, int]):
 
     users.sort(key=lambda usr: usr[index_name])
 
+    users = [
+        (
+            user[index_name],
+            user[index_folders].split(",") if user[index_folders] else [],
+            user[index_gallery].split(",") if user[index_gallery] else [],
+            user[index_scraps].split(",") if user[index_scraps] else [],
+            user[index_favorites].split(",") if user[index_favorites] else [],
+            user[index_mentions].split(",") if user[index_mentions] else []
+        )
+        for user in users
+    ]
+
+    space_name_max: int = max([len(user[0]) for user in users])
+    space_name = space_name_max if space_name > space_name_max else space_name
+    len_gallery_max: int = int(max([ceil(log10(len(user[2]))) if user[2] else 0 for user in users]))
+    len_scraps_max: int = int(max([ceil(log10(len(user[3]))) if user[3] else 0 for user in users]))
+    len_favorites_max: int = int(max([ceil(log10(len(user[4]))) if user[4] else 0 for user in users]))
+    len_mentions_max: int = int(max([ceil(log10(len(user[5]))) if user[5] else 0 for user in users]))
+
     print(
         f"{'Username':^{space_name}} | {'Folders':^{space_folders}}" +
         f" | {'Gallery':^{space_folder}} | {'Scraps':^{space_folder}}" +
         f" | {'Favorites':^{space_folder}} | {'Mentions':^{space_folder}}"
     )
     for user in users:
-        folders: str = ",".join(set(map(lambda f: f[0], user[index_folders].split(","))))
-        gallery: int = len(user[index_gallery].split(",")) if user[index_gallery] else 0
-        scraps: int = len(user[index_scraps].split(",")) if user[index_scraps] else 0
-        favorites: int = len(user[index_favorites].split(",")) if user[index_favorites] else 0
-        mentions: int = len(user[index_mentions].split(",")) if user[index_mentions] else 0
+        folders: str = ",".join(set(map(lambda f: f[0], user[1])))
+        gallery: int = len(user[2])
+        scraps: int = len(user[3])
+        favorites: int = len(user[4])
+        mentions: int = len(user[5])
         print(
-            f"{user[index_name][:space_name]:<{space_name}} | {folders:^{space_folder}}" +
-            f" | {str(gallery):^{space_folder}} | {str(scraps):^{space_folder}}" +
-            f" | {str(favorites):^{space_folder}} | {str(mentions):^{space_folder}}"
+            f"{user[index_name][:space_name]:<{space_name}} | {folders:^{space_folders}}" +
+            f" | {f'{gallery:>{len_gallery_max}}':^{space_folder}}" +
+            f" | {f'{scraps:>{len_scraps_max}}':^{space_folder}}" +
+            f" | {f'{favorites:>{len_favorites_max}}':^{space_folder}}" +
+            f" | {f'{mentions:>{len_mentions_max}}':^{space_folder}}"
         )
