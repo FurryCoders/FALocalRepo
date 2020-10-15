@@ -1,6 +1,8 @@
 from datetime import datetime
 from inspect import cleandoc
+from os.path import dirname
 from os.path import getsize
+from os.path import isfile
 from re import match
 from sqlite3 import Connection
 from typing import Dict
@@ -23,6 +25,7 @@ from falocalrepo_database import find_user_from_submission
 from falocalrepo_database import journals_indexes
 from falocalrepo_database import journals_table
 from falocalrepo_database import make_tables
+from falocalrepo_database import merge_database
 from falocalrepo_database import read_history
 from falocalrepo_database import read_setting
 from falocalrepo_database import save_journal
@@ -263,6 +266,7 @@ def database(db: Connection, comm: str = "", *args: str):
         remove-journals    Remove submissions from database
         server             Start local server to browse database
         check-errors       Check the database for errors
+        merge              Merge with a second database
         clean              Clean the database with the VACUUM function
     """
 
@@ -340,6 +344,20 @@ def database(db: Connection, comm: str = "", *args: str):
         print("Done")
         if results:
             print_items(results, journals_indexes)
+    elif comm == "merge":
+        if len(args) != 1:
+            raise MalformedCommand("merge needs one argument")
+        db2_path: str = args[0]
+        if not isfile(db2_path):
+            raise FileNotFoundError(f"Cannot find {db2_path}")
+        db2: Connection = connect_database(db2_path)
+        print(f"Merging with database {db2_path}... ", end="", flush=True)
+        try:
+            merge_database(db, ".", db2, dirname(db2_path))
+            print("Done")
+        except (Exception, BaseException) as err:
+            print("Error")
+            raise err
     elif comm == "clean":
         vacuum(db)
     else:
