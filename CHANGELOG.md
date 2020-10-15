@@ -4,7 +4,7 @@
 
 This new minor version bump updates the [falocalrepo-database](https://pypi.org/project/falocalrepo-database/) dependency to its latest version and adds a new `database merge` command. This new command allows to merge the database located in the current folder with a second database located in another folder.
 
-## Changes
+### Changes
 
 * falocalrepo-database dependency set to \~3.8.0
 * Add `database merge` command
