@@ -333,6 +333,7 @@ def database(db: Connection, comm: str = "", *args: str):
     elif comm == "server":
         opts, _ = parse_args(args)
         server(**opts)
+        print()
     elif comm == "check-errors":
         print("Checking submissions table for errors... ", end="", flush=True)
         results: List[tuple] = check_errors(db, submissions_table)
