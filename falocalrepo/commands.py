@@ -166,26 +166,21 @@ def print_users(users: List[tuple], indexes: Dict[str, int]):
         pass
     space_name: int = space_term - (space_folders + 3) - ((space_folder + 3) * 4) - 1
 
-    index_name: int = indexes["USERNAME"]
-    index_folders: int = indexes["FOLDERS"]
-    index_gallery: int = indexes["GALLERY"]
-    index_scraps: int = indexes["SCRAPS"]
-    index_favorites: int = indexes["FAVORITES"]
-    index_mentions: int = indexes["MENTIONS"]
-
     users.sort(key=lambda usr: usr[index_name])
 
     users = [
         (
-            user[index_name],
-            user[index_folders].split(",") if user[index_folders] else [],
-            user[index_gallery].split(",") if user[index_gallery] else [],
-            user[index_scraps].split(",") if user[index_scraps] else [],
-            user[index_favorites].split(",") if user[index_favorites] else [],
-            user[index_mentions].split(",") if user[index_mentions] else []
+            user[indexes["USERNAME"]],
+            f.split(",") if (f := user[indexes["FOLDERS"]]) else [],
+            f.split(",") if (f := user[indexes["GALLERY"]]) else [],
+            f.split(",") if (f := user[indexes["SCRAPS"]]) else [],
+            f.split(",") if (f := user[indexes["FAVORITES"]]) else [],
+            f.split(",") if (f := user[indexes["MENTIONS"]]) else []
         )
         for user in users
     ]
+
+    users.sort(key=lambda usr: usr[0])
 
     space_name_max: int = max([len(user[0]) for user in users])
     space_name = space_name_max if space_name > space_name_max else space_name
