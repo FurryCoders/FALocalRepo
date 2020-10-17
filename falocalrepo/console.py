@@ -63,6 +63,9 @@ from .download import read_cookies
 from .download import write_cookies
 
 
+database_name: str
+
+
 class MalformedCommand(Exception):
     pass
 
@@ -272,6 +275,7 @@ def database(db: Connection, comm: str = "", *args: str):
         merge              Merge with a second database
         clean              Clean the database with the VACUUM function
     """
+    global database_name
 
     if not comm or comm == "info":
         size: int = getsize("FA.db")
@@ -335,7 +339,7 @@ def database(db: Connection, comm: str = "", *args: str):
             db.commit()
     elif comm == "server":
         opts, _ = parse_args(args)
-        server(**opts)
+        server(database_name, **opts)
         print()
     elif comm == "check-errors":
         print("Checking submissions table for errors... ", end="", flush=True)
@@ -390,6 +394,7 @@ def console(comm: str = "", *args: str) -> None:
         download        Perform downloads
         database        Operate on the database
     """
+    global database_name
 
     console.__doc__ = f"    falocalrepo: {__version__}\n" + \
                       f"    falocalrepo-database: {__database_version__}\n" + \
@@ -425,17 +430,17 @@ def console(comm: str = "", *args: str) -> None:
 
     try:
         # Initialise and prepare database
-        db_name: str = "FA.db"
+        database_name = "FA.db"
 
         if db_path := environ.get("FALOCALREPO_DATABASE", None):
             db_folder: str = db_path
             if db_path.endswith(".db"):
-                db_name = basename(db_path)
+                database_name = basename(db_path)
                 db_folder = dirname(db_path)
 
             chdir(db_folder if db_folder else ".")
 
-        db = connect_database(db_name)
+        db = connect_database(database_name)
         make_tables(db)
         db = update_database(db)
 
