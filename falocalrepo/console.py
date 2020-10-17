@@ -356,16 +356,10 @@ def database(db: Connection, comm: str = "", *args: str):
         if len(args) != 1:
             raise MalformedCommand("merge needs one argument")
         db2_path: str = args[0]
-        if not isfile(db2_path):
-            raise FileNotFoundError(f"Cannot find {db2_path}")
-        db2: Connection = connect_database(db2_path)
-        print(f"Merging with database {db2_path}... ", end="", flush=True)
-        try:
+        with connect_database(db2_path) as db2:
+            print(f"Merging with database {db2_path}...")
             merge_database(db, ".", db2, dirname(db2_path))
             print("Done")
-        except (Exception, BaseException) as err:
-            print("Error")
-            raise err
     elif comm == "clean":
         vacuum(db)
     else:
