@@ -1,5 +1,8 @@
 from datetime import datetime
 from inspect import cleandoc
+from os import chdir
+from os import environ
+from os.path import basename
 from os.path import dirname
 from os.path import getsize
 from os.path import isfile
@@ -422,7 +425,17 @@ def console(comm: str = "", *args: str) -> None:
 
     try:
         # Initialise and prepare database
-        db = connect_database("FA.db")
+        db_name: str = "FA.db"
+
+        if db_path := environ.get("FALOCALREPO_DATABASE", None):
+            db_folder: str = db_path
+            if db_path.endswith(".db"):
+                db_name = basename(db_path)
+                db_folder = dirname(db_path)
+
+            chdir(db_folder if db_folder else ".")
+
+        db = connect_database(db_name)
         make_tables(db)
         db = update_database(db)
 
