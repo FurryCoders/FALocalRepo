@@ -192,16 +192,12 @@ def print_users(users: List[tuple], indexes: Dict[str, int]):
         f" | {'Gallery':^{space_folder}} | {'Scraps':^{space_folder}}" +
         f" | {'Favorites':^{space_folder}} | {'Mentions':^{space_folder}}"
     )
-    for user in users:
-        folders: str = ",".join(set(map(lambda f: f[0], user[1])))
-        gallery: int = len(user[2])
-        scraps: int = len(user[3])
-        favorites: int = len(user[4])
-        mentions: int = len(user[5])
+    for user, folders, gallery, scraps, favorites, mentions in users:
+        folders_min: str = ",".join(set(map(lambda f: f[0], folders)))
         print(
-            f"{user[index_name][:space_name]:<{space_name}} | {folders:^{space_folders}}" +
-            f" | {f'{gallery:>{len_gallery_max}}':^{space_folder}}" +
-            f" | {f'{scraps:>{len_scraps_max}}':^{space_folder}}" +
-            f" | {f'{favorites:>{len_favorites_max}}':^{space_folder}}" +
-            f" | {f'{mentions:>{len_mentions_max}}':^{space_folder}}"
+            f"{user[:space_name]:<{space_name}} | {folders_min:^{space_folders}}" +
+            f" | {f'{len(gallery):>{len_gallery_max}}':^{space_folder}}" +
+            f" | {f'{len(scraps):>{len_scraps_max}}':^{space_folder}}" +
+            f" | {f'{len(favorites):>{len_favorites_max}}':^{space_folder}}" +
+            f" | {f'{len(mentions):>{len_mentions_max}}':^{space_folder}}"
         )
