@@ -166,8 +166,6 @@ def print_users(users: List[tuple], indexes: Dict[str, int]):
         pass
     space_name: int = space_term - (space_folders + 3) - ((space_folder + 3) * 4) - 1
 
-    users.sort(key=lambda usr: usr[index_name])
-
     users = [
         (
             user[indexes["USERNAME"]],
