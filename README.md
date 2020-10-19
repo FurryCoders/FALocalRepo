@@ -161,9 +161,12 @@ falocalrepo download update @ gallery,scraps
 ```
 falocalrepo download update tom,jerry
 ```
-* `users <user1>,...,<userN> <folder1>,...,<folderN>` download specific user folders. Requires two arguments with comma separated users and folders.
+* `users <user1>,...,<userN> <folder1>,...,<folderN>` download specific user folders. Requires two arguments with comma separated users and folders. Prepending `list-` to a folder allows to list all remote and local items in that user folder without downloading them.
 ```
 falocalrepo download users tom,jerry gallery,scraps
+```
+```
+falocalrepo download users tom,jerry list-favorites
 ```
 * `submissions <id1> ... [<idN>]` download specific submissions. Requires submission ID's provided as separate arguments.
 ```
