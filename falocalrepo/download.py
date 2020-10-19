@@ -199,7 +199,7 @@ def download_user(api: FAAPI, db: Connection, user: str, folder: str, stop: int 
     exists: Callable[[Connection, int], bool]
 
     if folder.startswith("!"):
-        print(f"{folder} disabled")
+        print(f"{user}/{folder} disabled")
         return 0, 0
     elif folder.startswith("mentions"):
         print(f"Unsupported: {user}/{folder}")
