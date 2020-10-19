@@ -194,6 +194,7 @@ def download_user(api: FAAPI, db: Connection, user: str, folder: str, stop: int 
     space_term: int = get_terminal_size()[0]
     space_line: int = space_term - (space_bar + 2 + 2)
     found_items: int = 0
+    skip: bool = False
 
     download: Callable[[str, Union[str, int]], Tuple[List[Union[SubmissionPartial, Journal]], Union[int, str]]]
     exists: Callable[[Connection, int], bool]
@@ -201,27 +202,31 @@ def download_user(api: FAAPI, db: Connection, user: str, folder: str, stop: int 
     if folder.startswith("!"):
         print(f"{user}/{folder} disabled")
         return 0, 0
-    elif folder.startswith("mentions"):
+    elif folder in ("mentions", "mentions_all", "list-mentions", "list-mentions_all"):
         print(f"Unsupported: {user}/{folder}")
         return 0, 0
-    elif folder == "gallery":
+    elif folder in ("gallery", "list-gallery"):
         download = api.gallery
         exists = exist_submission
-    elif folder == "scraps":
+    elif folder in ("scraps", "list-scraps"):
         download = api.scraps
         exists = exist_submission
-    elif folder == "favorites":
+    elif folder in ("favorites", "list-favorites"):
         page = "next"
         download = api.favorites
         exists = exist_submission
-    elif folder == "journals":
+    elif folder in ("journals", "list-journals"):
         download = api.journals
         exists = exist_journal
     else:
         raise UnknownFolder(folder)
 
-    new_user(db, user)
-    edit_user_field_add(db, user, "FOLDERS", [folder.lower()])
+    if folder.startswith("list-"):
+        skip = True
+        folder = folder[5:]  # remove list- prefix
+    else:
+        new_user(db, user)
+        edit_user_field_add(db, user, "FOLDERS", [folder.lower()])
 
     while page:
         page_n += 1
@@ -246,6 +251,9 @@ def download_user(api: FAAPI, db: Connection, user: str, folder: str, stop: int 
                 bar.message("IS IN DB")
                 bar.close()
                 edit_user_field_add(db, user, folder.upper(), [str(item.id).zfill(10)])
+            elif skip:
+                bar.message("SKIPPED")
+                bar.close()
             elif isinstance(item, SubmissionPartial):
                 bar.delete()
                 if download_submission(api, db, item.id):
