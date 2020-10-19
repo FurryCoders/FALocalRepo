@@ -1,5 +1,21 @@
 # Changelog
 
+## 3.12.0
+
+This new minor bump adds a new `list-<folder>` option to the download users command. Using it allows to list all remote items present in a user folder without downloading them. Environmental variables are now supported starting with `FALOCALREPO_DATABASE` which allows to set a different path for the database and files folder root.
+
+### Changes
+
+* Add `list-<folder>` folders to download users command
+* Add `FALOCALREPO_DATABASE` environmental variable
+* falocalrepo-server dependency set to \~1.4.0
+* Remove subcommands arguments details from general help messages  
+
+### Fixes
+
+* Fix padding inconsistencies in users search results
+* Fix missing newline when server closes
+
 ## 3.11.0
 
 This new minor version bump updates the [falocalrepo-database](https://pypi.org/project/falocalrepo-database/) dependency to its latest version and adds a new `database merge` command. This new command allows to merge the database located in the current folder with a second database located in another folder.
