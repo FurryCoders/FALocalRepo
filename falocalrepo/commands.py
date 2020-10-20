@@ -38,7 +38,7 @@ class Bar:
     def update(self, total: int, current: int):
         if (new_level := int((current / total) * self.length)) == self.level:
             return
-        if (diff_level := new_level - self.level) < 0:
+        elif (diff_level := new_level - self.level) < 0:
             print("\b \b" * diff_level, end="", flush=True)
         else:
             print("#" * diff_level, end="", flush=True)
