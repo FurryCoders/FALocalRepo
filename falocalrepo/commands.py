@@ -71,12 +71,12 @@ def move_files_folder(db: Connection, folder_old: str, folder_new: str):
 def make_journal(id_: Union[int, str], author: str,
                  title: str, date: str, content: str = ""
                  ) -> Journal:
-    assert isinstance(id_, int) or (isinstance(id_, str) and id_.isdigit())
-    assert int(id_) > 0
-    assert isinstance(author, str) and author
-    assert isinstance(title, str) and title
-    assert isinstance(date, str) and date
-    assert isinstance(content, str)
+    id_ = int(id_)
+    assert id_ > 0, "id must be greater than 0"
+    assert isinstance(author, str) and author, "author must be of type str and not empty"
+    assert isinstance(title, str) and title, "title must be of type str and not empty"
+    assert isinstance(date, str) and date, "date must be of type str and not empty"
+    assert isinstance(content, str), "content must be of type str"
 
     journal = Journal()
 
@@ -95,19 +95,19 @@ def make_submission(id_: Union[int, str], author: str, title: str,
                     description: str = "", file_url: str = "",
                     file_local_url: str = ""
                     ) -> Tuple[Submission, Optional[bytes]]:
-    assert isinstance(id_, int) or (isinstance(id_, str) and id_.isdigit())
-    assert int(id_) > 0
-    assert isinstance(author, str) and author
-    assert isinstance(title, str) and title
-    assert isinstance(date, str) and date
-    assert isinstance(category, str) and category
-    assert isinstance(species, str) and species
-    assert isinstance(gender, str) and gender
-    assert isinstance(rating, str) and rating
-    assert isinstance(tags, str)
-    assert isinstance(description, str)
-    assert isinstance(file_url, str)
-    assert isinstance(file_local_url, str)
+    id_ = int(id_)
+    assert id_ > 0, "id must be greater than 0"
+    assert isinstance(author, str) and author, "author must be of type str and not empty"
+    assert isinstance(title, str) and title, "title must be of type str and not empty"
+    assert isinstance(date, str) and date, "date must be of type str and not empty"
+    assert isinstance(category, str) and category, "category must be of type str and not empty"
+    assert isinstance(species, str) and species, "species must be of type str and not empty"
+    assert isinstance(gender, str) and gender, "gender must be of type str and not empty"
+    assert isinstance(rating, str) and rating, "rating must be of type str and not empty"
+    assert isinstance(tags, str), "tags must be of type str"
+    assert isinstance(description, str), "description must be of type str"
+    assert isinstance(file_url, str), "file_url must be of type str"
+    assert isinstance(file_local_url, str), "file_local_url must be of type str"
 
     sub: Submission = Submission()
     sub_file: Optional[bytes] = None
