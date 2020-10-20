@@ -419,25 +419,23 @@ def console(comm: str = "", *args: str) -> None:
     check_update(__database_version__, "falocalrepo-database")
     check_update(__server_version__, "falocalrepo-server")
 
-    db: Optional[Connection] = None
+    # Initialise and prepare database
+    database_name = "FA.db"
+
+    if db_path := environ.get("FALOCALREPO_DATABASE", None):
+        print(f"Using FALOCALREPO_DATABASE: {db_path}")
+        db_folder: str = db_path
+        if db_path.endswith(".db"):
+            database_name = basename(db_path)
+            db_folder = dirname(db_path)
+
+        chdir(db_folder if db_folder else ".")
+
+    db: Connection = connect_database(database_name)
+    make_tables(db)
+    db = update_database(db)
 
     try:
-        # Initialise and prepare database
-        database_name = "FA.db"
-
-        if db_path := environ.get("FALOCALREPO_DATABASE", None):
-            print(f"Using FALOCALREPO_DATABASE: {db_path}")
-            db_folder: str = db_path
-            if db_path.endswith(".db"):
-                database_name = basename(db_path)
-                db_folder = dirname(db_path)
-
-            chdir(db_folder if db_folder else ".")
-
-        db = connect_database(database_name)
-        make_tables(db)
-        db = update_database(db)
-
         add_history(db, datetime.now().timestamp(), f"{comm} {' '.join(args)}".strip())
 
         if comm == init.__name__:
@@ -450,9 +448,9 @@ def console(comm: str = "", *args: str) -> None:
             database(db, *args)
     finally:
         # Close database and update totals
-        if db is not None:
-            write_setting(db, "USRN", str(count(db, "USERS")))
-            write_setting(db, "SUBN", str(count(db, "SUBMISSIONS")))
-            write_setting(db, "JRNN", str(count(db, "JOURNALS")))
-            db.commit()
-            db.close()
+        write_setting(db, "USRN", str(count(db, "USERS")))
+        write_setting(db, "SUBN", str(count(db, "SUBMISSIONS")))
+        write_setting(db, "JRNN", str(count(db, "JOURNALS")))
+        db.commit()
+        db.close()
+
