@@ -1,5 +1,15 @@
 # Changelog
 
+## 3.12.1
+
+### Changes
+
+* Print `FALOCALREPO_DATABASE` environmental variable if used
+
+### Fixes
+
+* Fix missing messages for assertion errors
+
 ## 3.12.0
 
 This new minor bump adds a new `list-<folder>` option to the download users command. Using it allows to list all remote items present in a user folder without downloading them. Environmental variables are now supported starting with `FALOCALREPO_DATABASE` which allows to set a different path for the database and files folder root.
