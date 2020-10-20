@@ -1,3 +1,5 @@
+from os import getcwd
+from os.path import join
 from sqlite3 import DatabaseError
 from sys import argv
 from sys import exit
@@ -30,7 +32,7 @@ def main(args: List[str] = None):
         print(repr(err))
         exit(4)
     except (Exception, BaseException) as err:
-        with open("FA.log", "w") as f:
+        with open(join(getcwd(), "FA.log"), "w") as f:
             print_exc(file=f)
             print(repr(err))
             print(f"Trace written to {f.name}")
