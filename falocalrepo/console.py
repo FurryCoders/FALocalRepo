@@ -386,10 +386,11 @@ def console(comm: str = "", *args: str) -> None:
     """
     global database_name
 
-    console.__doc__ = f"    falocalrepo: {__version__}\n" + \
-                      f"    falocalrepo-database: {__database_version__}\n" + \
-                      f"    falocalrepo-server: {__server_version__}\n" + \
-                      console.__doc__
+    console.__doc__ = f"""
+    falocalrepo: {__version__}
+    falocalrepo-database: {__database_version__}
+    falocalrepo-server: {__server_version__}
+    """ + console.__doc__
 
     if not comm:
         print(help_())
