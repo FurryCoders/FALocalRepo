@@ -2,9 +2,10 @@ from datetime import datetime
 from inspect import cleandoc
 from os import chdir
 from os import environ
-from os.path import basename
+from os.path import abspath
 from os.path import dirname
 from os.path import getsize
+from os.path import join
 from re import match
 from sqlite3 import Connection
 from typing import Dict
@@ -60,7 +61,7 @@ from .download import load_cookies
 from .download import read_cookies
 from .download import write_cookies
 
-database_name: str
+database_path: str
 
 
 class MalformedCommand(Exception):
@@ -271,10 +272,10 @@ def database(db: Connection, comm: str = "", *args: str):
         merge              Merge with a second database
         clean              Clean the database with the VACUUM function
     """
-    global database_name
+    global database_path
 
     if not comm or comm == "info":
-        size: int = getsize("FA.db")
+        size: int = getsize(database_path)
         sub_n: int = int(read_setting(db, "SUBN"))
         usr_n: int = int(read_setting(db, "USRN"))
         jrn_n: int = int(read_setting(db, "JRNN"))
@@ -335,7 +336,7 @@ def database(db: Connection, comm: str = "", *args: str):
             db.commit()
     elif comm == "server":
         opts, _ = parse_args(args)
-        server(database_name, **opts)
+        server(database_path, **opts)
         print()
     elif comm == "check-errors":
         print("Checking submissions table for errors... ", end="", flush=True)
@@ -384,7 +385,7 @@ def console(comm: str = "", *args: str) -> None:
         download        Perform downloads
         database        Operate on the database
     """
-    global database_name
+    global database_path
 
     console.__doc__ = f"""
     falocalrepo: {__version__}
@@ -418,18 +419,19 @@ def console(comm: str = "", *args: str) -> None:
     check_update(__server_version__, "falocalrepo-server")
 
     # Initialise and prepare database
-    database_name = "FA.db"
+    database_path = "FA.db"
 
     if db_path := environ.get("FALOCALREPO_DATABASE", None):
         print(f"Using FALOCALREPO_DATABASE: {db_path}")
-        db_folder: str = db_path
         if db_path.endswith(".db"):
-            database_name = basename(db_path)
-            db_folder = dirname(db_path)
+            database_path = db_path
+        else:
+            database_path = join(db_path, database_path)
 
-        chdir(db_folder if db_folder else ".")
+    database_path = abspath(database_path)
+    chdir(p if (p := dirname(database_path)) else ".")
 
-    db: Connection = connect_database(database_name)
+    db: Connection = connect_database(database_path)
     make_tables(db)
     db = update_database(db)
 
