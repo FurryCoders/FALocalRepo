@@ -426,6 +426,7 @@ def console(comm: str = "", *args: str) -> None:
         database_name = "FA.db"
 
         if db_path := environ.get("FALOCALREPO_DATABASE", None):
+            print(f"Using FALOCALREPO_DATABASE: {db_path}")
             db_folder: str = db_path
             if db_path.endswith(".db"):
                 database_name = basename(db_path)
