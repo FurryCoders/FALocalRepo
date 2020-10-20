@@ -5,13 +5,11 @@ from os import environ
 from os.path import basename
 from os.path import dirname
 from os.path import getsize
-from os.path import isfile
 from re import match
 from sqlite3 import Connection
 from typing import Dict
 from typing import Iterable
 from typing import List
-from typing import Optional
 from typing import Tuple
 
 from faapi import FAAPI
@@ -61,7 +59,6 @@ from .download import download_users_update
 from .download import load_cookies
 from .download import read_cookies
 from .download import write_cookies
-
 
 database_name: str
 
@@ -453,4 +450,3 @@ def console(comm: str = "", *args: str) -> None:
         write_setting(db, "JRNN", str(count(db, "JOURNALS")))
         db.commit()
         db.close()
-
