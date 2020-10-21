@@ -355,7 +355,7 @@ def database(db: Connection, comm: str = "", *args: str):
         db2_path: str = args[0]
         with connect_database(db2_path) as db2:
             print(f"Merging with database {db2_path}...")
-            merge_database(db, ".", db2, dirname(db2_path))
+            merge_database(db, d if (d := dirname(database_path)) else ".", db2, dirname(db2_path))
             print("Done")
     elif comm == "clean":
         vacuum(db)
