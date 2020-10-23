@@ -7,41 +7,14 @@ from os.path import dirname
 from os.path import getsize
 from os.path import join
 from re import match
-from sqlite3 import Connection
 from typing import Dict
 from typing import Iterable
 from typing import List
 from typing import Tuple
 
 from faapi import FAAPI
-from falocalrepo_database import __version__ as __database_version__
-from falocalrepo_database import add_history
-from falocalrepo_database import check_errors
-from falocalrepo_database import connect_database
-from falocalrepo_database import count
-from falocalrepo_database import delete
-from falocalrepo_database import edit_user_remove_journal
-from falocalrepo_database import edit_user_remove_submission
-from falocalrepo_database import find_user_from_journal
-from falocalrepo_database import find_user_from_submission
-from falocalrepo_database import journals_indexes
-from falocalrepo_database import journals_table
-from falocalrepo_database import make_tables
-from falocalrepo_database import merge_database
-from falocalrepo_database import read_history
-from falocalrepo_database import read_setting
-from falocalrepo_database import save_journal
-from falocalrepo_database import save_submission
-from falocalrepo_database import search_journals
-from falocalrepo_database import search_submissions
-from falocalrepo_database import search_users
-from falocalrepo_database import submissions_indexes
-from falocalrepo_database import submissions_table
-from falocalrepo_database import update_database
-from falocalrepo_database import users_indexes
-from falocalrepo_database import users_table
-from falocalrepo_database import vacuum
-from falocalrepo_database import write_setting
+from falocalrepo_database import FADatabase
+from falocalrepo_database.__version__ import __version__ as __database_version__
 from falocalrepo_server import __version__ as __server_version__
 from falocalrepo_server import server
 
@@ -59,9 +32,8 @@ from .download import download_users
 from .download import download_users_update
 from .download import load_cookies
 from .download import read_cookies
+from .download import save_submission
 from .download import write_cookies
-
-database_path: str
 
 
 class MalformedCommand(Exception):
@@ -143,7 +115,7 @@ def init():
     print("Database ready")
 
 
-def config(db: Connection, comm: str = "", *args: str):
+def config(db: FADatabase, comm: str = "", *args: str):
     """
     USAGE
         falocalrepo config [<setting>] [<value1>] ... [<valueN>]
@@ -160,7 +132,7 @@ def config(db: Connection, comm: str = "", *args: str):
 
     if not comm or comm == "list":
         cookie_a, cookie_b = read_cookies(db)
-        folder: str = read_setting(db, "FILESFOLDER")
+        folder: str = db.settings["FILESFOLDER"]
         print("cookie a:", cookie_a)
         print("cookie b:", cookie_b)
         print("folder  :", folder)
@@ -175,16 +147,17 @@ def config(db: Connection, comm: str = "", *args: str):
             raise MalformedCommand("cookies needs two arguments")
     elif comm == "files-folder":
         if not args:
-            print("files folder:", read_setting(db, "FILESFOLDER"))
+            print("files folder:", db.settings["FILESFOLDER"])
         elif len(args) == 1:
-            move_files_folder(db, read_setting(db, "FILESFOLDER"), args[0])
+            move_files_folder(db.settings["FILESFOLDER"], args[0])
+            db.settings["FILESFOLDER"] = args[0]
         else:
             raise MalformedCommand("files-folder needs one argument")
     else:
         raise UnknownCommand(f"config {comm}")
 
 
-def download(db: Connection, comm: str = "", *args: str):
+def download(db: FADatabase, comm: str = "", *args: str):
     """
     USAGE
         falocalrepo download <command> [<option>=<value>] [<arg1>] ... [<argN>]
@@ -245,7 +218,7 @@ def download(db: Connection, comm: str = "", *args: str):
         raise UnknownCommand(f"download {comm}")
 
 
-def database(db: Connection, comm: str = "", *args: str):
+def database(db: FADatabase, comm: str = "", *args: str):
     """
     USAGE
         falocalrepo database [<operation>] [<param1>=<value1>] ...
@@ -268,97 +241,85 @@ def database(db: Connection, comm: str = "", *args: str):
         remove-submissions Remove submissions from database
         remove-journals    Remove submissions from database
         server             Start local server to browse database
-        check-errors       Check the database for errors
         merge              Merge with a second database
         clean              Clean the database with the VACUUM function
     """
-    global database_path
 
     if not comm or comm == "info":
         size: int = getsize(database_path)
-        sub_n: int = int(read_setting(db, "SUBN"))
-        usr_n: int = int(read_setting(db, "USRN"))
-        jrn_n: int = int(read_setting(db, "JRNN"))
-        history: List[Tuple[float, str]] = read_history(db)
-        version: str = read_setting(db, "VERSION")
+        sub_n: int = int(db.settings["SUBN"])
+        usr_n: int = int(db.settings["USRN"])
+        jrn_n: int = int(db.settings["JRNN"])
+        history: int = len(db.settings.read_history()) - 1
+        version: str = db.settings["VERSION"]
         print("Size        :", f"{size / 1e6:.1f}MB")
         print("Submissions :", sub_n)
         print("Users       :", usr_n)
         print("Journals    :", jrn_n)
-        print("History     :", len(history) - 1)
+        print("History     :", history)
         print("Version     :", version)
     elif comm == "history":
-        for time, command in read_history(db):
+        for time, command in db.settings.read_history():
             print(str(datetime.fromtimestamp(float(time))), command)
     elif comm == "search-users":
-        results: List[tuple] = search_users(db, **{"order": ["USERNAME"], **parameters_multi(args)})
-        print_users(results, users_indexes)
+        results: List[dict] = list(
+            db.users.cursor_to_dict(db.users.select(parameters_multi(args), order=["USERNAME"], like=True)))
+        print_users(results)
         print(f"Found {len(results)} results")
     elif comm == "search-submissions":
-        results: List[tuple] = search_submissions(db, **{"order": ["ID"], **parameters_multi(args)})
-        print_items(results, submissions_indexes)
+        results: List[dict] = list(
+            db.submissions.cursor_to_dict(db.submissions.select(parameters_multi(args), order=["ID"], like=True)))
+        print_items(results)
         print(f"Found {len(results)} results")
     elif comm == "search-journals":
-        results: List[tuple] = search_journals(db, **{"order": ["ID"], **parameters_multi(args)})
-        print_items(results, journals_indexes)
+        results: List[dict] = list(
+            db.journals.cursor_to_dict(db.journals.select(parameters_multi(args), order=["ID"], like=True)))
+        print_items(results)
         print(f"Found {len(results)} results")
     elif comm == "add-submission":
         make_params = parameters(args)
         make_params["id_"] = make_params.get("id", "")
         if "id" in make_params:
             del make_params["id"]
-        sub, sub_file = make_submission(**make_params)
-        save_submission(db, dict(sub), sub_file)
+        save_submission(db, *make_submission(**make_params))
     elif comm == "add-journal":
         make_params = parameters(args)
         make_params["id_"] = make_params.get("id", "")
         if "id" in make_params:
             del make_params["id"]
-        save_journal(db, dict(make_journal(**make_params)))
+        db.journals.save_journal(dict(make_journal(**make_params)))
+        db.commit()
     elif comm == "remove-users":
         for user in map(clean_username, args):
             print("Deleting", user)
-            delete(db, users_table, "USERNAME", user)
-            db.commit()
+            del db.users[user]
     elif comm == "remove-submissions":
         for sub in args:
             print("Deleting", sub)
-            delete(db, submissions_table, "ID", int(sub))
-            for (user, *_) in find_user_from_submission(db, int(sub)).fetchall():
-                edit_user_remove_submission(db, user, int(sub))
+            del db.submissions[int(sub)]
+            for (user, *_) in db.users.find_from_submission(int(sub)):
+                db.users.remove_submission(user, int(sub))
             db.commit()
     elif comm == "remove-journals":
         for jrn in args:
             print("Deleting", jrn)
-            delete(db, journals_table, "ID", int(jrn))
-            for (user, *_) in find_user_from_journal(db, int(jrn)).fetchall():
-                edit_user_remove_journal(db, user, int(jrn))
+            del db.journals[int(jrn)]
+            for (user, *_) in db.users.find_from_journal(int(jrn)):
+                db.users.remove_journal(user, int(jrn))
             db.commit()
     elif comm == "server":
         opts, _ = parse_args(args)
-        server(database_path, **opts)
+        server(db.database_path, **opts)
         print()
-    elif comm == "check-errors":
-        print("Checking submissions table for errors... ", end="", flush=True)
-        results: List[tuple] = check_errors(db, submissions_table)
-        print("Done")
-        if results:
-            print_items(results, submissions_indexes)
-        print("Checking journals table for errors... ", end="", flush=True)
-        results: List[tuple] = check_errors(db, journals_table)
-        print("Done")
-        if results:
-            print_items(results, journals_indexes)
     elif comm == "merge":
         if len(args) != 1:
             raise MalformedCommand("merge needs one argument")
-        db2_path: str = args[0]
-        with connect_database(db2_path) as db2:
-            print(f"Merging with database {db2_path}...")
-            merge_database(db, d if (d := dirname(database_path)) else ".", db2, dirname(db2_path))
+        with FADatabase(args[0]) as db2:
+            print(f"Merging with database {db2.database_path}...")
+            db.update(db2)
             print("Done")
     elif comm == "clean":
-        vacuum(db)
+        db.vacuum()
     else:
         raise UnknownCommand(f"database {comm}")
 
@@ -385,7 +346,6 @@ def console(comm: str = "", *args: str) -> None:
         download        Perform downloads
         database        Operate on the database
     """
-    global database_path
 
     console.__doc__ = f"""
     falocalrepo: {__version__}
@@ -423,20 +383,15 @@ def console(comm: str = "", *args: str) -> None:
 
     if db_path := environ.get("FALOCALREPO_DATABASE", None):
         print(f"Using FALOCALREPO_DATABASE: {db_path}")
-        if db_path.endswith(".db"):
-            database_path = db_path
-        else:
-            database_path = join(db_path, database_path)
+        database_path = db_path if db_path.endswith(".db") else join(db_path, database_path)
 
     database_path = abspath(database_path)
     chdir(p if (p := dirname(database_path)) else ".")
 
-    db: Connection = connect_database(database_path)
-    make_tables(db)
-    db = update_database(db)
+    db: FADatabase = FADatabase(database_path)
 
     try:
-        add_history(db, datetime.now().timestamp(), f"{comm} {' '.join(args)}".strip())
+        db.settings.add_history(f"{comm} {' '.join(args)}".strip())
 
         if comm == init.__name__:
             init()
@@ -448,8 +403,8 @@ def console(comm: str = "", *args: str) -> None:
             database(db, *args)
     finally:
         # Close database and update totals
-        write_setting(db, "USRN", str(count(db, "USERS")))
-        write_setting(db, "SUBN", str(count(db, "SUBMISSIONS")))
-        write_setting(db, "JRNN", str(count(db, "JOURNALS")))
+        db.settings["USRN"] = str(len(db.users))
+        db.settings["SUBN"] = str(len(db.submissions))
+        db.settings["JRNN"] = str(len(db.journals))
         db.commit()
         db.close()

@@ -1,10 +1,8 @@
-from datetime import datetime
 from json import dumps as json_dumps
 from json import loads as json_loads
 from math import log10
 from os import get_terminal_size
 from re import sub as re_sub
-from sqlite3 import Connection
 from time import sleep
 from typing import Callable
 from typing import Dict
@@ -15,18 +13,9 @@ from typing import Union
 
 from faapi import FAAPI
 from faapi import Journal
+from faapi import Submission
 from faapi import SubmissionPartial
-from falocalrepo_database import edit_user_field_add
-from falocalrepo_database import edit_user_field_remove
-from falocalrepo_database import exist_journal
-from falocalrepo_database import exist_submission
-from falocalrepo_database import exist_user_field_value
-from falocalrepo_database import new_user
-from falocalrepo_database import read_setting
-from falocalrepo_database import save_journal
-from falocalrepo_database import save_submission
-from falocalrepo_database import select_all
-from falocalrepo_database import write_setting
+from falocalrepo_database import FADatabase
 
 from .commands import Bar
 
@@ -42,13 +31,14 @@ def load_cookies(api: FAAPI, cookie_a: str, cookie_b: str):
     ])
 
 
-def read_cookies(db: Connection) -> Tuple[str, str]:
-    cookies: Dict[str, str] = json_loads(read_setting(db, "COOKIES"))
+def read_cookies(db: FADatabase) -> Tuple[str, str]:
+    cookies: Dict[str, str] = json_loads(db.settings["COOKIES"])
     return cookies.get("a", ""), cookies.get("b", "")
 
 
-def write_cookies(db: Connection, a: str, b: str):
-    write_setting(db, "COOKIES", json_dumps({"a": a, "b": b}))
+def write_cookies(db: FADatabase, a: str, b: str):
+    db.settings["COOKIES"] = json_dumps({"a": a, "b": b})
+    db.commit()
 
 
 def clean_username(username: str) -> str:
@@ -59,7 +49,16 @@ def clean_string(title: str) -> str:
     return str(re_sub(r"[^\x20-\x7E]", "", title.strip()))
 
 
-def download_submissions(api: FAAPI, db: Connection, sub_ids: List[str]):
+def save_submission(db: FADatabase, sub: Submission, sub_file: Optional[bytes]):
+    sub_dict: dict = dict(sub)
+    sub_dict["FILELINK"] = sub_dict["file_url"]
+    del sub_dict["file_url"]
+    sub_dict["tags"] = ",".join(sorted(sub_dict["tags"], key=str.lower))
+    db.submissions.save_submission(sub_dict, sub_file)
+    db.commit()
+
+
+def download_submissions(api: FAAPI, db: FADatabase, sub_ids: List[str]):
     if sub_ids_fail := list(filter(lambda i: not i.isdigit(), sub_ids)):
         print("The following ID's are not correct:", *sub_ids_fail)
     for sub_id in map(int, filter(lambda i: i.isdigit(), sub_ids)):
@@ -67,7 +66,7 @@ def download_submissions(api: FAAPI, db: Connection, sub_ids: List[str]):
         download_submission(api, db, sub_id)
 
 
-def download_submission(api: FAAPI, db: Connection, sub_id: int) -> bool:
+def download_submission(api: FAAPI, db: FADatabase, sub_id: int) -> bool:
     sub, _ = api.get_sub(sub_id, False)
     sub_file: bytes = bytes()
 
@@ -81,7 +80,7 @@ def download_submission(api: FAAPI, db: Connection, sub_id: int) -> bool:
     if not sub.id:
         return False
 
-    save_submission(db, dict(sub), sub_file)
+    save_submission(db, sub, sub_file)
 
     return True
 
@@ -122,7 +121,7 @@ def download_submission_file(api: FAAPI, sub_file_url: str, speed: int = 100) ->
         bar.close()
 
 
-def download_journals(api: FAAPI, db: Connection, jrn_ids: List[str]):
+def download_journals(api: FAAPI, db: FADatabase, jrn_ids: List[str]):
     if sub_ids_fail := list(filter(lambda i: not i.isdigit(), jrn_ids)):
         print("The following ID's are not correct:", *sub_ids_fail)
     for sub_id in map(int, filter(lambda i: i.isdigit(), jrn_ids)):
@@ -130,15 +129,15 @@ def download_journals(api: FAAPI, db: Connection, jrn_ids: List[str]):
         download_journal(api, db, sub_id)
 
 
-def download_journal(api: FAAPI, db: Connection, jrn_id: int):
+def download_journal(api: FAAPI, db: FADatabase, jrn_id: int):
     journal: Journal = api.get_journal(jrn_id)
-    save_journal(db, dict(journal))
+    db.journals.save_journal(dict(journal))
 
 
-def download_users_update(api: FAAPI, db: Connection, users: List[str], folders: List[str], stop: int = 1):
+def download_users_update(api: FAAPI, db: FADatabase, users: List[str], folders: List[str], stop: int = 1):
     tot: int = 0
     fail: int = 0
-    for user, user_folders_str in select_all(db, "USERS", ["USERNAME", "FOLDERS"], ["USERNAME"]):
+    for user, user_folders_str in db.users.select(columns=["USERNAME", "FOLDERS"], order=["USERNAME"]):
         user_folders: List[str] = sorted(user_folders_str.split(","))
         if users and user not in users:
             continue
@@ -148,8 +147,8 @@ def download_users_update(api: FAAPI, db: Connection, users: List[str], folders:
         elif (user_exists := api.user_exists(user)) != 0:
             if user_exists == 1:
                 print(f"User {user} disabled")
-                edit_user_field_remove(db, user, "FOLDERS", ["gallery", "scraps", "journals"])
-                edit_user_field_add(db, user, "FOLDERS", ["!gallery", "!scraps", "!journals"])
+                db.users.disable_user(user)
+                db.commit()
             elif user_exists == 2:
                 print(f"User {user} not found")
             else:
@@ -165,10 +164,9 @@ def download_users_update(api: FAAPI, db: Connection, users: List[str], folders:
             fail += fail_tmp
     print("Items downloaded:", tot)
     print("Items failed:", fail) if fail else None
-    write_setting(db, "LASTUPDATE", str(datetime.now().timestamp()))
 
 
-def download_users(api: FAAPI, db: Connection, users: List[str], folders: List[str]):
+def download_users(api: FAAPI, db: FADatabase, users: List[str], folders: List[str]):
     for user, folder in ((u, f) for u in users for f in folders):
         print(f"Downloading: {user}/{folder}")
         if (user_exists := api.user_exists(user)) != 0:
@@ -184,7 +182,7 @@ def download_users(api: FAAPI, db: Connection, users: List[str], folders: List[s
         print("Items failed:", fail) if fail else None
 
 
-def download_user(api: FAAPI, db: Connection, user: str, folder: str, stop: int = 0) -> Tuple[int, int]:
+def download_user(api: FAAPI, db: FADatabase, user: str, folder: str, stop: int = 0) -> Tuple[int, int]:
     items_total: int = 0
     items_failed: int = 0
     page: Union[int, str] = 1
@@ -197,7 +195,7 @@ def download_user(api: FAAPI, db: Connection, user: str, folder: str, stop: int 
     skip: bool = False
 
     download: Callable[[str, Union[str, int]], Tuple[List[Union[SubmissionPartial, Journal]], Union[int, str]]]
-    exists: Callable[[Connection, int], bool]
+    exists: Callable[[int], bool]
 
     if folder.startswith("!"):
         print(f"{user}/{folder} disabled")
@@ -207,17 +205,17 @@ def download_user(api: FAAPI, db: Connection, user: str, folder: str, stop: int 
         return 0, 0
     elif folder in ("gallery", "list-gallery"):
         download = api.gallery
-        exists = exist_submission
+        exists = db.submissions.__contains__
     elif folder in ("scraps", "list-scraps"):
         download = api.scraps
-        exists = exist_submission
+        exists = db.submissions.__contains__
     elif folder in ("favorites", "list-favorites"):
         page = "next"
         download = api.favorites
-        exists = exist_submission
+        exists = db.submissions.__contains__
     elif folder in ("journals", "list-journals"):
         download = api.journals
-        exists = exist_journal
+        exists = db.journals.__contains__
     else:
         raise UnknownFolder(folder)
 
@@ -225,8 +223,9 @@ def download_user(api: FAAPI, db: Connection, user: str, folder: str, stop: int 
         skip = True
         folder = folder[5:]  # remove list- prefix
     else:
-        new_user(db, user)
-        edit_user_field_add(db, user, "FOLDERS", [folder.lower()])
+        db.users.new_user(user)
+        db.users.add_user_folder(user, folder)
+        db.commit()
 
     while page:
         page_n += 1
@@ -241,29 +240,32 @@ def download_user(api: FAAPI, db: Connection, user: str, folder: str, stop: int 
                 items_failed += 1
                 bar.message("ID ERROR")
                 bar.close()
-            elif exist_user_field_value(db, user, folder.upper(), str(item.id).zfill(10)):
+            elif str(item.id).zfill(10) in db.users[user][folder.upper()]:
                 if stop and (found_items := found_items + 1) >= stop:
                     print("\r" + (" " * (space_term - 1)), end="\r", flush=True)
                     return items_total, items_failed
                 bar.message("IS IN DB")
                 bar.close()
-            elif exists(db, item.id):
+            elif exists(item.id):
                 bar.message("IS IN DB")
+                db.users.add_item(user, folder, str(item.id).zfill(10))
+                db.commit()
                 bar.close()
-                edit_user_field_add(db, user, folder.upper(), [str(item.id).zfill(10)])
             elif skip:
                 bar.message("SKIPPED")
                 bar.close()
             elif isinstance(item, SubmissionPartial):
                 bar.delete()
                 if download_submission(api, db, item.id):
-                    edit_user_field_add(db, user, folder.upper(), [str(item.id).zfill(10)])
+                    db.users.add_submission(user, folder, item.id)
+                    db.commit()
                     items_total += 1
             elif isinstance(item, Journal):
-                save_journal(db, dict(item))
+                db.journals.save_journal(dict(item))
+                db.users.add_journal(user, item.id)
+                db.commit()
                 bar.update(1, 1)
                 bar.close()
-                edit_user_field_add(db, user, folder.upper(), [str(item.id).zfill(10)])
                 items_total += 1
 
     return items_total, items_failed

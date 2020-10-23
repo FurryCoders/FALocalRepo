@@ -3,7 +3,6 @@ from math import log10
 from os import get_terminal_size
 from os.path import isdir
 from shutil import move
-from sqlite3 import Connection
 from typing import Dict
 from typing import List
 from typing import Optional
@@ -12,7 +11,6 @@ from typing import Union
 
 from faapi import Journal
 from faapi import Submission
-from falocalrepo_database import write_setting
 from requests import get as req_get
 
 
@@ -60,8 +58,7 @@ def latest_version(package: str) -> str:
         return ""
 
 
-def move_files_folder(db: Connection, folder_old: str, folder_new: str):
-    write_setting(db, "FILESFOLDER", folder_new)
+def move_files_folder(folder_old: str, folder_new: str):
     if isdir(folder_old):
         print("Moving files to new location... ", end="", flush=True)
         move(folder_old, folder_new)
@@ -131,7 +128,7 @@ def make_submission(id_: Union[int, str], author: str, title: str,
     return sub, sub_file
 
 
-def print_items(subs: List[tuple], indexes: Dict[str, int]):
+def print_items(subs: List[Dict[str, Union[int, str]]]):
     space_id: int = 10
     space_user: int = 10
     space_date: int = 10
@@ -141,22 +138,17 @@ def print_items(subs: List[tuple], indexes: Dict[str, int]):
     except IOError:
         pass
 
-    index_id: int = indexes["ID"]
-    index_user: int = indexes["AUTHOR"]
-    index_date: int = indexes["UDATE"]
-    index_title: int = indexes["TITLE"]
-
     print(f"{'ID':^{space_id}} | {'User':^{space_user}} | {'Date':^{space_date}} | Title")
     for sub in subs:
         print(
-            f"{str(sub[index_id])[:space_id].zfill(space_id)} | " +
-            f"{sub[index_user][:space_user]:<{space_user}} | " +
-            f"{sub[index_date][:space_date]:<{space_date}} | " +
-            sub[index_title][:(space_term - space_id - space_user - space_date - 10)]
+            f"{str(sub['ID'])[:space_id].zfill(space_id)} | " +
+            f"{sub['AUTHOR'][:space_user]:<{space_user}} | " +
+            f"{sub['DATE'][:space_date]:<{space_date}} | " +
+            sub['TITLE'][:(space_term - space_id - space_user - space_date - 10)]
         )
 
 
-def print_users(users: List[tuple], indexes: Dict[str, int]):
+def print_users(users: List[Dict[str, str]]):
     space_folders: int = 7
     space_folder: int = 9
     space_term: int = 10000
@@ -166,38 +158,38 @@ def print_users(users: List[tuple], indexes: Dict[str, int]):
         pass
     space_name: int = space_term - (space_folders + 3) - ((space_folder + 3) * 4) - 1
 
-    users = [
+    users_fmt: List[tuple] = [
         (
-            user[indexes["USERNAME"]],
-            f.split(",") if (f := user[indexes["FOLDERS"]]) else [],
-            f.split(",") if (f := user[indexes["GALLERY"]]) else [],
-            f.split(",") if (f := user[indexes["SCRAPS"]]) else [],
-            f.split(",") if (f := user[indexes["FAVORITES"]]) else [],
-            f.split(",") if (f := user[indexes["MENTIONS"]]) else []
+            user["USERNAME"],
+            f.split(",") if (f := user["FOLDERS"]) else 0,
+            len(f.split(",")) if (f := user["GALLERY"]) else 0,
+            len(f.split(",")) if (f := user["SCRAPS"]) else 0,
+            len(f.split(",")) if (f := user["FAVORITES"]) else 0,
+            len(f.split(",")) if (f := user["MENTIONS"]) else 0
         )
         for user in users
     ]
 
-    users.sort(key=lambda usr: usr[0])
+    users_fmt.sort(key=lambda usr: usr[0])
 
-    space_name_max: int = max([len(user[0]) for user in users])
+    space_name_max: int = max([len(user[0]) for user in users_fmt])
     space_name = space_name_max if space_name > space_name_max else space_name
-    len_gallery_max: int = int(max([ceil(log10(len(user[2]))) if user[2] else 0 for user in users]))
-    len_scraps_max: int = int(max([ceil(log10(len(user[3]))) if user[3] else 0 for user in users]))
-    len_favorites_max: int = int(max([ceil(log10(len(user[4]))) if user[4] else 0 for user in users]))
-    len_mentions_max: int = int(max([ceil(log10(len(user[5]))) if user[5] else 0 for user in users]))
+    len_gallery_max: int = int(max([ceil(log10(user[2])) if user[2] else 0 for user in users_fmt]))
+    len_scraps_max: int = int(max([ceil(log10(user[3])) if user[3] else 0 for user in users_fmt]))
+    len_favorites_max: int = int(max([ceil(log10(user[4])) if user[4] else 0 for user in users_fmt]))
+    len_mentions_max: int = int(max([ceil(log10(user[5])) if user[5] else 0 for user in users_fmt]))
 
     print(
         f"{'Username':^{space_name}} | {'Folders':^{space_folders}}" +
         f" | {'Gallery':^{space_folder}} | {'Scraps':^{space_folder}}" +
         f" | {'Favorites':^{space_folder}} | {'Mentions':^{space_folder}}"
     )
-    for user, folders, gallery, scraps, favorites, mentions in users:
+    for user, folders, gallery, scraps, favorites, mentions in users_fmt:
         folders_min: str = ",".join(set(map(lambda f: f[0], folders)))
         print(
             f"{user[:space_name]:<{space_name}} | {folders_min:^{space_folders}}" +
-            f" | {f'{len(gallery):>{len_gallery_max}}':^{space_folder}}" +
-            f" | {f'{len(scraps):>{len_scraps_max}}':^{space_folder}}" +
-            f" | {f'{len(favorites):>{len_favorites_max}}':^{space_folder}}" +
-            f" | {f'{len(mentions):>{len_mentions_max}}':^{space_folder}}"
+            f" | {f'{gallery:>{len_gallery_max}}':^{space_folder}}" +
+            f" | {f'{scraps:>{len_scraps_max}}':^{space_folder}}" +
+            f" | {f'{favorites:>{len_favorites_max}}':^{space_folder}}" +
+            f" | {f'{mentions:>{len_mentions_max}}':^{space_folder}}"
         )
