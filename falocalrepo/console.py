@@ -1,9 +1,7 @@
 from datetime import datetime
 from inspect import cleandoc
-from os import chdir
 from os import environ
 from os.path import abspath
-from os.path import dirname
 from os.path import getsize
 from os.path import join
 from re import match
@@ -385,10 +383,7 @@ def console(comm: str = "", *args: str) -> None:
         print(f"Using FALOCALREPO_DATABASE: {db_path}")
         database_path = db_path if db_path.endswith(".db") else join(db_path, database_path)
 
-    database_path = abspath(database_path)
-    chdir(p if (p := dirname(database_path)) else ".")
-
-    db: FADatabase = FADatabase(database_path)
+    db: FADatabase = FADatabase(abspath(database_path))
 
     try:
         db.settings.add_history(f"{comm} {' '.join(args)}".strip())
