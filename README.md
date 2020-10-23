@@ -203,37 +203,18 @@ falocalrepo database info
 ```
 falocalrepo database history
 ```
-* `search-users <param1>=<value1> ... [<paramN>=<valueN>]` search the users entries using metadata fields. Search parameters can be passed multiple times to act as OR values. The following search parameters are supported:
-    * `username`
-    * `folders` gallery, scraps, favorites, mentions, or mentions_all
-    * `gallery`
-    * `scraps`
-    * `favorites`
-    * `mentions`
+* `search-users <param1>=<value1> ... [<paramN>=<valueN>]` search the users entries using metadata fields. Search parameters can be passed multiple times to act as OR values. All columns of the users table are supported: [#Users](#users). Parameters can be lowercase. 
 ```
 falocalrepo database search-users folders=%gallery% gallery=%0012345678%
 ```
-* `search-submissions <param1>=<value1> ... [<paramN>=<valueN>]` search the submissions entries using metadata fields. Search parameters can be passed multiple times to act as OR values. The following search parameters are supported:
-    * `author`
-    * `title`
-    * `date`
-    * `description` 
-    * `tags` alphabetically sorted tags (keywords)
-    * `category`
-    * `species`
-    * `gender`
-    * `rating`
+* `search-submissions <param1>=<value1> ... [<paramN>=<valueN>]` search the submissions entries using metadata fields. Search parameters can be passed multiple times to act as OR values. All columns of the submissions table are supported: [#Submissions](#submissions). Parameters can be lowercase. 
 ```
 falocalrepo database search-submissions tags=%cat,%mouse% date=2020-% category=%artwork% order="AUTHOR" order="ID"
 ```
 ```
 falocalrepo database search-submissions tags=%cat% tags=%mouse% date=2020-% category=%artwork%
 ```
-* `search-journals <param1>=<value1> ... [<paramN>=<valueN>]` search the journals entries using metadata fields. Search parameters can be passed multiple times to act as OR values. The following search parameters are supported:
-    * `author`
-    * `title`
-    * `date`
-    * `content`
+* `search-journals <param1>=<value1> ... [<paramN>=<valueN>]` search the journals entries using metadata fields. Search parameters can be passed multiple times to act as OR values.  All columns of the journals table are supported: [#Journals](#journals). Parameters can be lowercase. 
 ```
 falocalrepo database search-journals date=2020-% author=CatArtist order="ID DESC"
 ```
@@ -332,7 +313,7 @@ The submissions table contains the metadata of the submissions downloaded by the
 * `ID` the id of the submission
 * `AUTHOR` the username of the author (uploader) in full format
 * `TITLE`
-* `UDATE` upload date in the format YYYY-MM-DD
+* `DATE` upload date in the format YYYY-MM-DD
 * `DESCRIPTION` description in html format
 * `TAGS` keywords sorted alphanumerically and comma-separated
 * `CATEGORY`
@@ -350,14 +331,14 @@ The journals table contains the metadata of the journals downloaded by the progr
 * `ID` the id of the journal
 * `AUTHOR` the username of the author (uploader) in full format
 * `TITLE`
-* `UDATE` upload date in the format YYYY-MM-DD
+* `DATE` upload date in the format YYYY-MM-DD
 * `CONTENT` content in html format
 
 ## Submission Files
 
 Submission files are saved in a tiered tree structure based on their submission ID. ID's are zero-padded to 10 digits and then broken up in 5 segments of 2 digits; each of this segments represents a folder tha will be created in the tree.
 
-For example, a submission `1457893` will be padded to `0001457893` and divided into `00`, `01`, `45`, `78`, `93`. The submission file will then be saved as `00/01/45/78/93/submission.file` with the correct extension extracted from the file itself - FurAffinity links do not always contain the right extension and often confuse jpg and png.
+For example, a submission `1457893` will be padded to `0001457893` and divided into `00`, `01`, `45`, `78`, `93`. The submission file will then be saved as `00/01/45/78/93/submission.file` with the correct extension extracted from the file itself - FurAffinity links do not always contain the right extension.
 
 ## Upgrading Database
 
