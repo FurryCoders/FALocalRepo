@@ -165,8 +165,8 @@ def download(db: FADatabase, comm: str = "", *args: str):
         <arg>           Argument for the download command
 
     AVAILABLE COMMANDS
-        update          Update database using the users and folders already saved
         users           Download users
+        update          Update database using the users and folders already saved
         submissions     Download single submissions
         journals        Download single journals
     """
@@ -181,6 +181,14 @@ def download(db: FADatabase, comm: str = "", *args: str):
 
     if not api.connection_status:
         raise ConnectionError("FAAPI cannot connect to FA")
+    elif comm == "users":
+        if len(args) != 2:
+            raise MalformedCommand("users needs two arguments")
+        users_tmp: List[str] = list(filter(bool, map(clean_username, args[0].split(","))))
+        users: List[str] = sorted(set(users_tmp), key=users_tmp.index)
+        folders_tmp: List[str] = list(filter(bool, map(str.strip, args[1].split(","))))
+        folders: List[str] = sorted(set(folders_tmp), key=folders_tmp.index)
+        download_users(api, db, users, folders)
     elif comm == "update":
         users: List[str] = []
         folders: List[str] = []
@@ -192,14 +200,6 @@ def download(db: FADatabase, comm: str = "", *args: str):
             folders_tmp: List[str] = list(filter(bool, map(str.strip, args[1].split(","))))
             folders = sorted(set(folders_tmp), key=folders_tmp.index)
         download_users_update(api, db, users, folders, int(opts.get("stop", 1)))
-    elif comm == "users":
-        if len(args) != 2:
-            raise MalformedCommand("users needs two arguments")
-        users_tmp: List[str] = list(filter(bool, map(clean_username, args[0].split(","))))
-        users: List[str] = sorted(set(users_tmp), key=users_tmp.index)
-        folders_tmp: List[str] = list(filter(bool, map(str.strip, args[1].split(","))))
-        folders: List[str] = sorted(set(folders_tmp), key=folders_tmp.index)
-        download_users(api, db, users, folders)
     elif comm == "submissions":
         if not args:
             raise MalformedCommand("submissions needs at least one argument")
