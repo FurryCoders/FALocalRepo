@@ -1,5 +1,17 @@
 # Changelog
 
+## 3.13.0
+
+With this new release comes the all-new [falocalrepo-database](https://pypi.org/project/falocalrepo-database/) version 4. Some column names in the database have been changed and the insertion functions have been made safer with built-in checks. Search is now much more versatile and allows to query any columns in the users, submissions, and journals tables. Thanks to the new checks, the `database check-errors` command was removed, as the new checks remove the possibility of inserting erroneous data. The update function will notify of any faulty entry during the automatic update of the database.
+
+### Changes
+
+* falocalrepo-database dependency set to \~4.1.0
+* falocalrepo-server dependency set to \~1.5.0
+* Improve data-entry safety
+* Remove `database check-errors` command
+* Allow to use all table columns for submissions and journals search
+
 ## 3.12.1
 
 ### Changes
