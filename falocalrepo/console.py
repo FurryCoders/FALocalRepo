@@ -244,7 +244,7 @@ def database(db: FADatabase, comm: str = "", *args: str):
     """
 
     if not comm or comm == "info":
-        size: int = getsize(database_path)
+        size: int = getsize(db.database_path)
         sub_n: int = int(db.settings["SUBN"])
         usr_n: int = int(db.settings["USRN"])
         jrn_n: int = int(db.settings["JRNN"])
