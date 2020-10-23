@@ -1,6 +1,7 @@
 from os import getcwd
 from os.path import join
 from sqlite3 import DatabaseError
+from sqlite3 import IntegrityError
 from sys import argv
 from sys import exit
 from traceback import print_exc
@@ -25,7 +26,7 @@ def main(args: List[str] = None):
     except ConnectionError as err:
         print(repr(err))
         exit(2)
-    except DatabaseError as err:
+    except (DatabaseError, IntegrityError) as err:
         print(repr(err))
         exit(3)
     except (TypeError, AssertionError) as err:
