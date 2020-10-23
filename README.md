@@ -157,6 +157,17 @@ The `download` command performs all download and repository update operations.
 
 Available operations are:
 
+* `users <user1>[,...,<userN>] <folder1>[,...,<folderN>]` download specific user folders. Requires two arguments with comma separated users and folders. Prepending `list-` to a folder allows to list all remote items in a user folder without downloading them. Supported folders are:
+    * `gallery`
+    * `scraps`
+    * `favorites`
+    * `journals`
+```
+falocalrepo download users tom,jerry gallery,scraps,journals
+```
+```
+falocalrepo download users tom,jerry list-favorites
+```
 * `update [stop=<n>] [<user1>,...,<userN>] [<folder1>,...,<folderN>]` update the repository by checking the previously downloaded folders (gallery, scraps, favorites or journals) of each user and stopping when it finds a submission that is already present in the repository. Can pass a list of users and/or folders that will be updated if in the database. To skip users, use `@` as argument. The `stop=<n>` option allows to stop updating after finding `n` submissions in a user's database entry, defaults to 1. If a user is deactivated, the folders in the database will be prepended with a ! and the user will be skipped when update is called again.
 ```
 falocalrepo download update stop=5
@@ -166,13 +177,6 @@ falocalrepo download update @ gallery,scraps
 ```
 ```
 falocalrepo download update tom,jerry
-```
-* `users <user1>,...,<userN> <folder1>,...,<folderN>` download specific user folders. Requires two arguments with comma separated users and folders. Prepending `list-` to a folder allows to list all remote items in a user folder without downloading them.
-```
-falocalrepo download users tom,jerry gallery,scraps
-```
-```
-falocalrepo download users tom,jerry list-favorites
 ```
 * `submissions <id1> ... [<idN>]` download specific submissions. Requires submission ID's provided as separate arguments.
 ```
