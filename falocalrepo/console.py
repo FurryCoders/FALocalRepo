@@ -23,6 +23,7 @@ from .commands import make_submission
 from .commands import move_files_folder
 from .commands import print_items
 from .commands import print_users
+from .commands import search
 from .download import clean_username
 from .download import download_journals
 from .download import download_submissions
@@ -260,20 +261,11 @@ def database(db: FADatabase, comm: str = "", *args: str):
         for time, command in db.settings.read_history():
             print(str(datetime.fromtimestamp(float(time))), command)
     elif comm == "search-users":
-        results: List[dict] = list(
-            db.users.cursor_to_dict(db.users.select(parameters_multi(args), order=["USERNAME"], like=True)))
-        print_users(results)
-        print(f"Found {len(results)} results")
+        search(db.users, parameters_multi(args))
     elif comm == "search-submissions":
-        results: List[dict] = list(
-            db.submissions.cursor_to_dict(db.submissions.select(parameters_multi(args), order=["ID"], like=True)))
-        print_items(results)
-        print(f"Found {len(results)} results")
+        search(db.submissions, parameters_multi(args))
     elif comm == "search-journals":
-        results: List[dict] = list(
-            db.journals.cursor_to_dict(db.journals.select(parameters_multi(args), order=["ID"], like=True)))
-        print_items(results)
-        print(f"Found {len(results)} results")
+        search(db.journals, parameters_multi(args))
     elif comm == "add-submission":
         make_params = parameters(args)
         make_params["id_"] = make_params.get("id", "")

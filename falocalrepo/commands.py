@@ -11,6 +11,7 @@ from typing import Union
 
 from faapi import Journal
 from faapi import Submission
+from falocalrepo_database import FADatabaseTable
 from requests import get as req_get
 
 
@@ -126,6 +127,22 @@ def make_submission(id_: Union[int, str], author: str, title: str,
             sub_file = f.read()
 
     return sub, sub_file
+
+
+def search(table: FADatabaseTable, parameters: Dict[str, List[str]]):
+    parameters = {k.lower(): vs for k, vs in parameters.items()}
+    query: Dict[str, List[str]] = {k: vs for k, vs in parameters.items() if k not in map(str.lower, table.columns)}
+    results: List[Dict[str, Union[int, str]]] = list(table.cursor_to_dict(table.select(
+        query,
+        order=parameters.get("order", None),
+        limit=parameters.get("limit", None),
+        offset=parameters.get("offset", None)
+    )))
+    if table.table.lower() == "users":
+        print_users(results)
+    else:
+        print_items(results)
+    print(f"Found {len(results)} results")
 
 
 def print_items(subs: List[Dict[str, Union[int, str]]]):
