@@ -259,7 +259,7 @@ def database(db: FADatabase, comm: str = "", *args: str):
         print("Version     :", version)
     elif comm == "history":
         for time, command in db.settings.read_history():
-            print(str(datetime.fromtimestamp(float(time))), command)
+            print(str(datetime.fromtimestamp(time)), command)
     elif comm == "search-users":
         search(db.users, parameters_multi(args))
     elif comm == "search-submissions":
