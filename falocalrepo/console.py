@@ -12,7 +12,7 @@ from typing import Tuple
 
 from faapi import FAAPI
 from falocalrepo_database import FADatabase
-from falocalrepo_database.__version__ import __version__ as __database_version__
+from falocalrepo_database import __version__ as __database_version__
 from falocalrepo_server import __version__ as __server_version__
 from falocalrepo_server import server
 
