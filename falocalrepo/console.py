@@ -28,7 +28,6 @@ from .download import download_journals
 from .download import download_submissions
 from .download import download_users
 from .download import download_users_update
-from .download import load_cookies
 from .download import read_cookies
 from .download import save_submission
 from .download import write_cookies
