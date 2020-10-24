@@ -371,6 +371,7 @@ def console(comm: str = "", *args: str) -> None:
         database_path = db_path if db_path.endswith(".db") else join(db_path, database_path)
 
     db: FADatabase = FADatabase(abspath(database_path))
+    db.upgrade()
 
     try:
         db.settings.add_history(f"{comm} {' '.join(args)}".strip())
