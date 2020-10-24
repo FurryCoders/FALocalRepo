@@ -3,6 +3,7 @@ from inspect import cleandoc
 from os import environ
 from os.path import abspath
 from os.path import getsize
+from os.path import isfile
 from os.path import join
 from re import match
 from typing import Dict
@@ -297,6 +298,8 @@ def database(db: FADatabase, comm: str = "", *args: str):
     elif comm == "merge":
         if len(args) != 1:
             raise MalformedCommand("merge needs one argument")
+        elif not isfile(args[0]):
+            raise FileNotFoundError(f"No such file or directory: '{args[0]}'")
         with FADatabase(args[0]) as db2:
             print(f"Merging with database {db2.database_path}...")
             db.update(db2)
