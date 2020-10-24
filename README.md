@@ -145,9 +145,6 @@ Running the command alone will list the current values of the settings stored in
 Available settings are:
 
 * `list` list stored settings.
-```
-falocalrepo config list
-```
 * `cookies [<cookie a> <cookie b>]` the cookies stored in the database.
 ```
 falocalrepo config cookies 38565475-3421-3f21-7f63-3d341339737 356f5962-5a60-0922-1c11-65003b703038
@@ -208,13 +205,7 @@ All search operations support the extra `order`, `limit`, and `offset` parameter
 Available operations are:
 
 * `info` show database information, statistics and version.
-```
-falocalrepo database info
-```
 * `history` show commands history
-```
-falocalrepo database history
-```
 * `search-users [<param1>=<value1>] ... [<paramN>=<valueN>]` search the users entries using metadata fields. Search parameters can be passed multiple times to act as OR values. All columns of the users table are supported: [#Users](#users). Parameters can be lowercase. If no parameters are supplied, a list of all users will be returned instead.
 ```
 falocalrepo database search-users folders=%gallery% gallery=%0012345678%
