@@ -24,16 +24,8 @@ class UnknownFolder(Exception):
     pass
 
 
-def load_cookies(api: FAAPI, cookie_a: str, cookie_b: str):
-    api.load_cookies([
-        {"name": "a", "value": cookie_a},
-        {"name": "b", "value": cookie_b},
-    ])
-
-
-def read_cookies(db: FADatabase) -> Tuple[str, str]:
-    cookies: Dict[str, str] = json_loads(db.settings["COOKIES"])
-    return cookies.get("a", ""), cookies.get("b", "")
+def read_cookies(db: FADatabase) -> List[Dict[str, str]]:
+    return [{"name": n, "value": v} for n, v in json_loads(db.settings["COOKIES"]).items()]
 
 
 def write_cookies(db: FADatabase, a: str, b: str):

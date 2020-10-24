@@ -175,8 +175,7 @@ def download(db: FADatabase, comm: str = "", *args: str):
         raise MalformedCommand("download needs a command")
 
     print((s := "Connecting... "), end="", flush=True)
-    api: FAAPI = FAAPI()
-    load_cookies(api, *read_cookies(db))
+    api: FAAPI = FAAPI(read_cookies(db))
     print("\r" + (" " * len(s)), end="\r", flush=True)
 
     if not api.connection_status:
