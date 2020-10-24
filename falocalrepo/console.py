@@ -377,6 +377,7 @@ def console(comm: str = "", *args: str) -> None:
         db = FADatabase(abspath(database_path))
         db.upgrade()
         db.settings.add_history(f"{comm} {' '.join(args)}".strip())
+        db.commit()
 
         if comm == init.__name__:
             init()
