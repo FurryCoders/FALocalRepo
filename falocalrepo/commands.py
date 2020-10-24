@@ -131,7 +131,7 @@ def make_submission(id_: Union[int, str], author: str, title: str,
 
 def search(table: FADatabaseTable, parameters: Dict[str, List[str]]):
     parameters = {k.lower(): vs for k, vs in parameters.items()}
-    query: Dict[str, List[str]] = {k: vs for k, vs in parameters.items() if k not in map(str.lower, table.columns)}
+    query: Dict[str, List[str]] = {k: vs for k, vs in parameters.items() if k in list(map(str.lower, table.columns))}
     results: List[Dict[str, Union[int, str]]] = list(table.cursor_to_dict(table.select(
         query,
         order=parameters.get("order", [table.column_id]),
