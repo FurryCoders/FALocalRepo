@@ -6,7 +6,7 @@ With this new release comes the all-new [falocalrepo-database](https://pypi.org/
 
 ### Changes
 
-* falocalrepo-database dependency set to \~4.1.0
+* falocalrepo-database dependency set to \~4.2.0
 * falocalrepo-server dependency set to \~1.5.0
 * Improve data-entry safety
 * Remove `database check-errors` command
