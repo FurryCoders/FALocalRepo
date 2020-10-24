@@ -280,7 +280,6 @@ falocalrepo database remove-journals 123456 135724 876512
 ```
 falocalrepo database server host=127.0.0.1 port=5000
 ```
-* `check-errors` check the database for common errors and prints a list of entries that contain erroneous data. Requires no arguments.
 * `merge <path>` merge (or create) the database in the current folder with a second database located at `path`. `path` must point to the database file itself.
 ```
 falocalrepo database merge ~/Documents/FA/FA.db
