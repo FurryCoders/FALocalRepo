@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.13.3
+
+### Fixes
+
+* Fix search failing without limit and offset parameters
+
 ## 3.13.2
 
 ### Fixes
