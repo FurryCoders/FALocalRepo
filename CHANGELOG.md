@@ -1,5 +1,15 @@
 # Changelog
 
+## 3.13.5
+
+### Changes
+
+* Improve exception-catching of database errors
+
+### Fixes
+
+* Fix database transaction being left open and locking `VACUUM` operation 
+
 ## 3.13.4
 
 ### Fixes
