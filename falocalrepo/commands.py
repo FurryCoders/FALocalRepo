@@ -135,8 +135,8 @@ def search(table: FADatabaseTable, parameters: Dict[str, List[str]]):
     results: List[Dict[str, Union[int, str]]] = list(table.cursor_to_dict(table.select(
         query,
         order=parameters.get("order", None),
-        limit=parameters.get("limit", None),
-        offset=parameters.get("offset", None)
+        limit=int(parameters.get("limit", 0)),
+        offset=int(parameters.get("offset", 0))
     )))
     if table.table.lower() == "users":
         print_users(results)
