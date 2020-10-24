@@ -21,8 +21,6 @@ from .commands import latest_version
 from .commands import make_journal
 from .commands import make_submission
 from .commands import move_files_folder
-from .commands import print_items
-from .commands import print_users
 from .commands import search
 from .download import clean_username
 from .download import download_journals
