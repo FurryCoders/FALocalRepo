@@ -1,5 +1,12 @@
 # Changelog
 
+## 3.13.4
+
+### Fixes
+
+* Fix search filtering out column parameters
+* Fix search not using `like`
+
 ## 3.13.3
 
 ### Fixes
