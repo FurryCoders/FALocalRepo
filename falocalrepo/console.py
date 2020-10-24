@@ -371,10 +371,9 @@ def console(comm: str = "", *args: str) -> None:
         print(f"Using FALOCALREPO_DATABASE: {db_path}")
         database_path = db_path if db_path.endswith(".db") else join(db_path, database_path)
 
-    db: Optional[FADatabase] = None
+    db: FADatabase = FADatabase(abspath(database_path))
 
     try:
-        db = FADatabase(abspath(database_path))
         db.upgrade()
         db.settings.add_history(f"{comm} {' '.join(args)}".strip())
         db.commit()
