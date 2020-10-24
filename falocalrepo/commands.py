@@ -134,7 +134,7 @@ def search(table: FADatabaseTable, parameters: Dict[str, List[str]]):
     query: Dict[str, List[str]] = {k: vs for k, vs in parameters.items() if k not in map(str.lower, table.columns)}
     results: List[Dict[str, Union[int, str]]] = list(table.cursor_to_dict(table.select(
         query,
-        order=parameters.get("order", None),
+        order=parameters.get("order", [table.column_id]),
         limit=int(parameters.get("limit", 0)),
         offset=int(parameters.get("offset", 0))
     )))
