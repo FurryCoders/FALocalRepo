@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.13.2
+
+### Fixes
+
+* Fix missing database upgrade
+
 ## 3.13.1
 
 ### Fixes
