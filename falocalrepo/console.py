@@ -9,6 +9,7 @@ from re import match
 from typing import Dict
 from typing import Iterable
 from typing import List
+from typing import Optional
 from typing import Tuple
 
 from faapi import FAAPI
@@ -370,10 +371,11 @@ def console(comm: str = "", *args: str) -> None:
         print(f"Using FALOCALREPO_DATABASE: {db_path}")
         database_path = db_path if db_path.endswith(".db") else join(db_path, database_path)
 
-    db: FADatabase = FADatabase(abspath(database_path))
-    db.upgrade()
+    db: Optional[FADatabase] = None
 
     try:
+        db = FADatabase(abspath(database_path))
+        db.upgrade()
         db.settings.add_history(f"{comm} {' '.join(args)}".strip())
 
         if comm == init.__name__:
@@ -386,8 +388,9 @@ def console(comm: str = "", *args: str) -> None:
             database(db, *args)
     finally:
         # Close database and update totals
-        db.settings["USRN"] = str(len(db.users))
-        db.settings["SUBN"] = str(len(db.submissions))
-        db.settings["JRNN"] = str(len(db.journals))
-        db.commit()
-        db.close()
+        if db is not None:
+            db.settings["USRN"] = str(len(db.users))
+            db.settings["SUBN"] = str(len(db.submissions))
+            db.settings["JRNN"] = str(len(db.journals))
+            db.commit()
+            db.close()
