@@ -245,18 +245,12 @@ def database(db: FADatabase, comm: str = "", *args: str):
     """
 
     if not comm or comm == "info":
-        size: int = getsize(db.database_path)
-        sub_n: int = int(db.settings["SUBN"])
-        usr_n: int = int(db.settings["USRN"])
-        jrn_n: int = int(db.settings["JRNN"])
-        history: int = len(db.settings.read_history()) - 1
-        version: str = db.settings["VERSION"]
-        print("Size        :", f"{size / 1e6:.1f}MB")
-        print("Submissions :", sub_n)
-        print("Users       :", usr_n)
-        print("Journals    :", jrn_n)
-        print("History     :", history)
-        print("Version     :", version)
+        print("Size        :", f"{getsize(db.database_path) / 1e6:.1f}MB")
+        print("Submissions :", int(db.settings["SUBN"]))
+        print("Users       :", int(db.settings["USRN"]))
+        print("Journals    :", int(db.settings["JRNN"]))
+        print("History     :", len(db.settings.read_history()) - 1)
+        print("Version     :", db.settings["VERSION"])
     elif comm == "history":
         for time, command in db.settings.read_history():
             print(str(datetime.fromtimestamp(time)), command)
