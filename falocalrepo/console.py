@@ -277,6 +277,7 @@ def database(db: FADatabase, comm: str = "", *args: str):
         for user in map(clean_username, args):
             print("Deleting", user)
             del db.users[user]
+            db.commit()
     elif comm == "remove-submissions":
         for sub in args:
             print("Deleting", sub)
@@ -290,7 +291,7 @@ def database(db: FADatabase, comm: str = "", *args: str):
             del db.journals[int(jrn)]
             for (user, *_) in db.users.find_from_journal(int(jrn)):
                 db.users.remove_journal(user, int(jrn))
-            db.commit()
+        db.commit()
     elif comm == "server":
         opts, _ = parse_args(args)
         server(db.database_path, **opts)
@@ -301,6 +302,7 @@ def database(db: FADatabase, comm: str = "", *args: str):
         with FADatabase(args[0]) as db2:
             print(f"Merging with database {db2.database_path}...")
             db.update(db2)
+            db.commit()
             print("Done")
     elif comm == "clean":
         db.vacuum()
