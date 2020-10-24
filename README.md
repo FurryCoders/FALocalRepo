@@ -207,18 +207,18 @@ falocalrepo database info
 ```
 falocalrepo database history
 ```
-* `search-users <param1>=<value1> ... [<paramN>=<valueN>]` search the users entries using metadata fields. Search parameters can be passed multiple times to act as OR values. All columns of the users table are supported: [#Users](#users). Parameters can be lowercase. 
+* `search-users [<param1>=<value1>] ... [<paramN>=<valueN>]` search the users entries using metadata fields. Search parameters can be passed multiple times to act as OR values. All columns of the users table are supported: [#Users](#users). Parameters can be lowercase. If no parameters are supplied, a list of all users will be returned instead.
 ```
 falocalrepo database search-users folders=%gallery% gallery=%0012345678%
 ```
-* `search-submissions <param1>=<value1> ... [<paramN>=<valueN>]` search the submissions entries using metadata fields. Search parameters can be passed multiple times to act as OR values. All columns of the submissions table are supported: [#Submissions](#submissions). Parameters can be lowercase. 
+* `search-submissions [<param1>=<value1>] ... [<paramN>=<valueN>]` search the submissions entries using metadata fields. Search parameters can be passed multiple times to act as OR values. All columns of the submissions table are supported: [#Submissions](#submissions). Parameters can be lowercase. If no parameters are supplied, a list of all submissions will be returned instead.
 ```
 falocalrepo database search-submissions tags=%cat,%mouse% date=2020-% category=%artwork% order="AUTHOR" order="ID"
 ```
 ```
 falocalrepo database search-submissions tags=%cat% tags=%mouse% date=2020-% category=%artwork%
 ```
-* `search-journals <param1>=<value1> ... [<paramN>=<valueN>]` search the journals entries using metadata fields. Search parameters can be passed multiple times to act as OR values.  All columns of the journals table are supported: [#Journals](#journals). Parameters can be lowercase. 
+* `search-journals [<param1>=<value1>] ... [<paramN>=<valueN>]` search the journals entries using metadata fields. Search parameters can be passed multiple times to act as OR values.  All columns of the journals table are supported: [#Journals](#journals). Parameters can be lowercase. If no parameters are supplied, a list of all journals will be returned instead.
 ```
 falocalrepo database search-journals date=2020-% author=CatArtist order="ID DESC"
 ```
