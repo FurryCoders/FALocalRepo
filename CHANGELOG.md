@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.13.6
+
+### Fixes
+
+* Fix submissions with _ in the author name not being found with url formatted name
+
 ## 3.13.5
 
 ### Changes
