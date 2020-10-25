@@ -2,6 +2,7 @@ from math import ceil
 from math import log10
 from os import get_terminal_size
 from os.path import isdir
+from re import sub as re_sub
 from shutil import move
 from typing import Dict
 from typing import List
@@ -46,6 +47,14 @@ class Bar:
     def message(self, message: str):
         self.clear()
         print(f"{message[:self.length]:^{self.length}}", end="", flush=True)
+
+
+def clean_username(username: str) -> str:
+    return str(re_sub(r"[^a-zA-Z0-9\-.~,]", "", username.lower().strip()))
+
+
+def clean_string(title: str) -> str:
+    return str(re_sub(r"[^\x20-\x7E]", "", title.strip()))
 
 
 def latest_version(package: str) -> str:
@@ -129,21 +138,19 @@ def make_submission(id_: Union[int, str], author: str, title: str,
     return sub, sub_file
 
 
-def search(table: FADatabaseTable, parameters: Dict[str, List[str]]):
+def search(table: FADatabaseTable, parameters: Dict[str, List[str]]) -> List[Dict[str, Union[int, str]]]:
     parameters = {k.lower(): vs for k, vs in parameters.items()}
-    query: Dict[str, List[str]] = {k: vs for k, vs in parameters.items() if k in list(map(str.lower, table.columns))}
-    results: List[Dict[str, Union[int, str]]] = list(table.cursor_to_dict(table.select(
+    query: Dict[str, List[str]] = {k: vs for k, vs in parameters.items() if k not in ("order", "limit", "offset")}
+    if "author" in query:
+        query["replace(author, '_', '')"] = list(map(clean_username, query["author"]))
+        del query["author"]
+    return list(table.cursor_to_dict(table.select(
         query,
         like=True,
         order=parameters.get("order", [table.column_id]),
         limit=int(parameters.get("limit", 0)),
         offset=int(parameters.get("offset", 0))
     )))
-    if table.table.lower() == "users":
-        print_users(results)
-    else:
-        print_items(results)
-    print(f"Found {len(results)} results")
 
 
 def print_items(subs: List[Dict[str, Union[int, str]]]):

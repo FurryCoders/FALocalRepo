@@ -22,6 +22,8 @@ from .commands import latest_version
 from .commands import make_journal
 from .commands import make_submission
 from .commands import move_files_folder
+from .commands import print_items
+from .commands import print_users
 from .commands import search
 from .download import clean_username
 from .download import download_journals
@@ -252,11 +254,17 @@ def database(db: FADatabase, comm: str = "", *args: str):
         for time, command in db.settings.read_history():
             print(str(datetime.fromtimestamp(time)), command)
     elif comm == "search-users":
-        search(db.users, parameters_multi(args))
+        results: List[Dict[str, str]] = search(db.users, parameters_multi(args))
+        print_users(results)
+        print(f"Found {len(results)} results")
     elif comm == "search-submissions":
-        search(db.submissions, parameters_multi(args))
+        results: List[Dict[str, Union[int, str]]] = search(db.submissions, parameters_multi(args))
+        print_items(results)
+        print(f"Found {len(results)} results")
     elif comm == "search-journals":
-        search(db.journals, parameters_multi(args))
+        results: List[Dict[str, Union[int, str]]] = search(db.journals, parameters_multi(args))
+        print_items(results)
+        print(f"Found {len(results)} results")
     elif comm == "add-submission":
         make_params = parameters(args)
         make_params["id_"] = make_params.get("id", "")

@@ -2,7 +2,6 @@ from json import dumps as json_dumps
 from json import loads as json_loads
 from math import log10
 from os import get_terminal_size
-from re import sub as re_sub
 from time import sleep
 from typing import Callable
 from typing import Dict
@@ -18,6 +17,8 @@ from faapi import SubmissionPartial
 from falocalrepo_database import FADatabase
 
 from .commands import Bar
+from .commands import clean_string
+from .commands import clean_username
 
 
 class UnknownFolder(Exception):
@@ -31,14 +32,6 @@ def read_cookies(db: FADatabase) -> List[Dict[str, str]]:
 def write_cookies(db: FADatabase, a: str, b: str):
     db.settings["COOKIES"] = json_dumps({"a": a, "b": b})
     db.commit()
-
-
-def clean_username(username: str) -> str:
-    return str(re_sub(r"[^a-zA-Z0-9\-.~,]", "", username.lower().strip()))
-
-
-def clean_string(title: str) -> str:
-    return str(re_sub(r"[^\x20-\x7E]", "", title.strip()))
 
 
 def save_submission(db: FADatabase, sub: Submission, sub_file: Optional[bytes]):
