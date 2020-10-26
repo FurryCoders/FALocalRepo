@@ -69,7 +69,8 @@ The program needs cookies from a logged-in Fur Affinity session to download prot
 
 * `command` a static command keyword
 * `<arg>` `<param>` `<value>` an argument, parameter, value, etc... that must be provided to a command
-* `[<optional>]` an optional argument that can be omitted
+* `[<arg>]` an optional argument that can be omitted
+* `<arg1> | <arg2>` mutually exclusive arguments, only use one 
 
 ## Cookies
 
