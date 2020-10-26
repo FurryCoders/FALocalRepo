@@ -15,7 +15,7 @@ This program was born with the desire to provide a relatively easy-to-use method
 
 The data is stored into a SQLite database and the submissions files are saved in a tiered tree structure based on their ID's. Using SQLite instead of a client-server database makes the program to be extremely portable, only needing a working Python 3.8+ installation to work, and allows the downloaded data to be moved and backed up by simply moving/copying the database file and submission files folder.
 
-All download operations are performed through the custom Fur Affinity scraping library [faapi](https://pypi.org/project/faapi/), which is developed as a separate package also available on PyPi and [GitLab](https://gitlab.com/MatteoCampinoti94/FAAPI). To ensure proper crawling behavior the library strictly follows Fur Affinity's [robots.txt](https://www.furaffinity.net/robots.txt) in regards to allowed paths and crawl delay. Furthermore, submission files downloads are throttled to 100KB/s to ensure the program won't use too much bandwidth.
+All download operations are performed through the custom Fur Affinity scraping library [faapi](https://pypi.org/project/faapi/). To ensure proper crawling behavior the library strictly follows Fur Affinity's [robots.txt](https://www.furaffinity.net/robots.txt) in regards to allowed paths and crawl delay. Furthermore, submission files downloads are throttled to 100KB/s to ensure the program won't use too much bandwidth.
 
 The database and file-storage functions are handled independently by the [falocalrepo-database](https://pypi.org/project/falocalrepo-database/) package which performs all transactions, queries, and file operations.
 
