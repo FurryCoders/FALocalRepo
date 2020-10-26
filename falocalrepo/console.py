@@ -320,7 +320,7 @@ def database(db: FADatabase, comm: str = "", *args: str):
 def console(comm: str = "", *args: str) -> None:
     """
     USAGE
-        falocalrepo [-h] [-v] [-d] [<command>] [<arg1>] ... [<argN>]
+        falocalrepo [-h | -v | -d | -s] [<command>] [<arg1>] ... [<argN>]
 
     ARGUMENTS
         <command>       The command to execute
