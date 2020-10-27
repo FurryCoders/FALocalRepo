@@ -24,7 +24,7 @@ falocalrepo = "falocalrepo.__main__:main"
 python = "^3.8"
 faapi = "2.10.2"
 falocalrepo-database = "~4.2.0"
-falocalrepo-server = "~1.5.0"
+falocalrepo-server = "~1.6.0"
 
 [tool.poetry.dev-dependencies]
 
