@@ -10,6 +10,7 @@ from typing import Dict
 from typing import Iterable
 from typing import List
 from typing import Tuple
+from typing import Union
 
 from faapi import FAAPI
 from falocalrepo_database import FADatabase
