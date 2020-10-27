@@ -1,5 +1,16 @@
 # Changelog
 
+## 3.13.7
+
+### Changes
+
+* falocalrepo-server dependency set to \~1.6.0
+* Improve readme
+
+### Fixes
+
+* Fix usage pattern of main help
+
 ## 3.13.6
 
 ### Fixes
