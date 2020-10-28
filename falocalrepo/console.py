@@ -246,9 +246,9 @@ def database(db: FADatabase, comm: str = "", *args: str):
 
     if not comm or comm == "info":
         print("Size        :", f"{getsize(db.database_path) / 1e6:.1f}MB")
-        print("Submissions :", int(db.settings["SUBN"]))
-        print("Users       :", int(db.settings["USRN"]))
-        print("Journals    :", int(db.settings["JRNN"]))
+        print("Submissions :", len(db.submissions))
+        print("Users       :", len(db.users))
+        print("Journals    :", len(db.journals))
         print("History     :", len(db.settings.read_history()) - 1)
         print("Version     :", db.settings["VERSION"])
     elif comm == "history":
