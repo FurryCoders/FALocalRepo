@@ -87,7 +87,7 @@ def make_journal(id_: Union[int, str], author: str,
 
     journal = Journal()
 
-    journal.id = int(id_)
+    journal.id = id_
     journal.author = author
     journal.title = title
     journal.date = date
@@ -119,7 +119,7 @@ def make_submission(id_: Union[int, str], author: str, title: str,
     sub: Submission = Submission()
     sub_file: Optional[bytes] = None
 
-    sub.id = int(id_)
+    sub.id = id_
     sub.title = title
     sub.author = author
     sub.date = date
