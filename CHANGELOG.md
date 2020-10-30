@@ -1,5 +1,15 @@
 # Changelog
 
+## 3.13.8
+
+### Changes
+
+* More precise database info command output
+
+### Fixes
+
+* Fix missing import causing error when importing the module
+
 ## 3.13.7
 
 ### Changes
