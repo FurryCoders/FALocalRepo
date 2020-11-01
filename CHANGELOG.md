@@ -1,5 +1,15 @@
 # Changelog
 
+## 3.13.9
+
+### Changes
+
+* Exit with code 130 on KeyboardInterrupt (Ctrl-C)
+
+### Fixes
+
+* Fix users not being skipped during update if no folder matches manual folders argument
+
 ## 3.13.8
 
 ### Changes
