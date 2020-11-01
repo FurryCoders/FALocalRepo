@@ -126,6 +126,8 @@ def download_users_update(api: FAAPI, db: FADatabase, users: List[str], folders:
         user_folders: List[str] = sorted(user_folders_str.split(","))
         if users and user not in users:
             continue
+        elif folders and not any(f in folders for f in user_folders):
+            continue
         elif any(folder.startswith("!") for folder in user_folders):
             print(f"User {user} disabled")
             continue
