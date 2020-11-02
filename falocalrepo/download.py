@@ -52,7 +52,7 @@ def download_submissions(api: FAAPI, db: FADatabase, sub_ids: List[str]):
 
 
 def download_submission(api: FAAPI, db: FADatabase, sub_id: int) -> bool:
-    sub, _ = api.get_sub(sub_id, False)
+    sub, _ = api.get_submission(sub_id, False)
     sub_file: bytes = bytes()
 
     try:
