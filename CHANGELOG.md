@@ -1,5 +1,12 @@
 # Changelog
 
+## 3.13.10
+
+### Changes
+
+* faapi dependency set to \~2.11.0
+* Changed order of `database info` output
+
 ## 3.13.9
 
 ### Changes
