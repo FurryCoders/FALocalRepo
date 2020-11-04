@@ -13,6 +13,7 @@ from typing import Tuple
 from typing import Union
 
 from faapi import FAAPI
+from faapi import __version__ as __faapi_version__
 from falocalrepo_database import FADatabase
 from falocalrepo_database import __version__ as __database_version__
 from falocalrepo_server import __version__ as __server_version__
@@ -369,6 +370,7 @@ def console(comm: str = "", *args: str) -> None:
         raise UnknownCommand(comm)
 
     check_update(__version__, "falocalrepo")
+    check_update(__faapi_version__, "faapi")
     check_update(__database_version__, "falocalrepo-database")
     check_update(__server_version__, "falocalrepo-server")
 
