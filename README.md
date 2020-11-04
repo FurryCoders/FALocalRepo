@@ -56,7 +56,7 @@ Python 3.8 or above is needed to run this program, all other dependencies are ha
 To upgrade the `falocalrepo` and its dependencies, use pip to upgrade all three components.
 
 ```shell
-python3 -m pip install --upgrade falocalrepo falocalrepo-database falocalrepo-server
+python3 -m pip install --upgrade falocalrepo faapi falocalrepo-database falocalrepo-server
 ```
 
 A message will be displayed when running the program if there is an update available for any component.
