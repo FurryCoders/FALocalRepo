@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.13.11
+
+### Changes
+
+* check for faapi updates
+
 ## 3.13.10
 
 ### Changes
