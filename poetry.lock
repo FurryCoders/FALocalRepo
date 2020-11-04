@@ -50,7 +50,7 @@ python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
 
 [[package]]
 name = "faapi"
-version = "2.11.0"
+version = "2.11.1"
 description = "Python module to implement API-like functionality for the FurAffinity.net website."
 category = "main"
 optional = false
@@ -263,8 +263,8 @@ click = [
     {file = "click-7.1.2.tar.gz", hash = "sha256:d2b5255c7c6349bc1bd1e59e08cd12acbbd63ce649f2588755783aa94dfb6b1a"},
 ]
 faapi = [
-    {file = "faapi-2.11.0-py3-none-any.whl", hash = "sha256:40f183dff1ae1469f8fdb8f4ad024895e4f0b36a437b1e4087dc9226a1a87873"},
-    {file = "faapi-2.11.0.tar.gz", hash = "sha256:49bf3ff380b7dfb0844a46b74a2baa831a6da6f02cf62357298107adcf26a8cc"},
+    {file = "faapi-2.11.1-py3-none-any.whl", hash = "sha256:e277b736d43d5962a3903ecde2b68a41c6109caa987967bc1a04939de320b2a9"},
+    {file = "faapi-2.11.1.tar.gz", hash = "sha256:9183bd4ef0ef7e408226b81fe26f7244280a3ef56168b9825f795979c539b62e"},
 ]
 falocalrepo-database = [
     {file = "falocalrepo-database-4.2.2.tar.gz", hash = "sha256:294ba1f4249cf70bbb2fc93af281ea1ee4a77837e6019ab10eb3388d6d08ca49"},
