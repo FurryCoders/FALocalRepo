@@ -344,6 +344,7 @@ def console(comm: str = "", *args: str) -> None:
 
     console.__doc__ = f"""
     falocalrepo: {__version__}
+    faapi: {__faapi_version__}
     falocalrepo-database: {__database_version__}
     falocalrepo-server: {__server_version__}
     """ + console.__doc__
