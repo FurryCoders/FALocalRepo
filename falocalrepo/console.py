@@ -344,9 +344,9 @@ def console(comm: str = "", *args: str) -> None:
 
     console.__doc__ = f"""
     falocalrepo: {__version__}
-    faapi: {__faapi_version__}
     falocalrepo-database: {__database_version__}
     falocalrepo-server: {__server_version__}
+    faapi: {__faapi_version__}
     """ + console.__doc__
 
     if not comm:
@@ -371,9 +371,9 @@ def console(comm: str = "", *args: str) -> None:
         raise UnknownCommand(comm)
 
     check_update(__version__, "falocalrepo")
-    check_update(__faapi_version__, "faapi")
     check_update(__database_version__, "falocalrepo-database")
     check_update(__server_version__, "falocalrepo-server")
+    check_update(__faapi_version__, "faapi")
 
     # Initialise and prepare database
     database_path = "FA.db"
