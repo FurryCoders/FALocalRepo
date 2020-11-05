@@ -5,19 +5,15 @@ from sqlite3 import IntegrityError
 from sys import argv
 from sys import exit
 from traceback import print_exc
-from typing import List
 
 from .console import MalformedCommand
 from .console import UnknownCommand
 from .console import console
 
 
-def main(args: List[str] = None):
-    # Run main program
-    args = argv[1:] if args is None else args
-    args = list(filter(bool, map(str.strip, args)))
+def main():
     try:
-        console(*args)
+        console(*filter(bool, map(str.strip, argv[1:])))
     except KeyboardInterrupt:
         print()
         exit(130)
@@ -42,4 +38,4 @@ def main(args: List[str] = None):
 
 
 if __name__ == "__main__":
-    main(argv)
+    main()
