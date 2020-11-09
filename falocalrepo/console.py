@@ -6,6 +6,7 @@ from os.path import getsize
 from os.path import isfile
 from os.path import join
 from re import match
+from typing import Callable
 from typing import Dict
 from typing import Iterable
 from typing import List
@@ -46,7 +47,7 @@ class UnknownCommand(Exception):
 
 
 def docstring_parameter(*args, **kwargs):
-    def inner(obj):
+    def inner(obj: {__doc__}) -> {__doc__}:
         obj.__doc__ = obj.__doc__.format(*args, **kwargs)
         return obj
 
