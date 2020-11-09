@@ -109,15 +109,58 @@ def help_(comm1: str = None, comm2: str = "", *_args: str) -> str:
 
     if not comm:
         return cleandoc(console.__doc__)
-    elif comm1 == help_.__name__.rstrip("_"):
-        return cleandoc(help_.__doc__)
-    elif comm1 == init.__name__:
-        return cleandoc(init.__doc__)
-    else:
-        try:
-            return cleandoc(eval(f"{comm}.__doc__"))
-        except NameError:
-            raise UnknownCommand(f"{comm1} {comm2}".strip())
+    elif comm1 == (f := help_).__name__.rstrip("_"):
+        return cleandoc(f.__doc__)
+    elif comm1 == (f := init).__name__:
+        return cleandoc(f.__doc__)
+    elif comm == (f := config).__name__:
+        return cleandoc(f.__doc__)
+    elif comm == (f := config_list).__name__:
+        return cleandoc(f.__doc__)
+    elif comm == (f := config_cookies).__name__:
+        return cleandoc(f.__doc__)
+    elif comm == (f := config_files_folder).__name__:
+        return cleandoc(f.__doc__)
+    elif comm == (f := download).__name__:
+        return cleandoc(f.__doc__)
+    elif comm == (f := download_users).__name__:
+        return cleandoc(f.__doc__)
+    elif comm == (f := download_update).__name__:
+        return cleandoc(f.__doc__)
+    elif comm == (f := download_submissions).__name__:
+        return cleandoc(f.__doc__)
+    elif comm == (f := download_journals).__name__:
+        return cleandoc(f.__doc__)
+    elif comm == (f := database).__name__:
+        return cleandoc(f.__doc__)
+    elif comm == (f := database_info).__name__:
+        return cleandoc(f.__doc__)
+    elif comm == (f := database_history).__name__:
+        return cleandoc(f.__doc__)
+    elif comm == (f := database_search_users).__name__:
+        return cleandoc(f.__doc__)
+    elif comm == (f := database_search_submissions).__name__:
+        return cleandoc(f.__doc__)
+    elif comm == (f := database_search_journals).__name__:
+        return cleandoc(f.__doc__)
+    elif comm == (f := database_add_submission).__name__:
+        return cleandoc(f.__doc__)
+    elif comm == (f := database_add_journal).__name__:
+        return cleandoc(f.__doc__)
+    elif comm == (f := database_remove_users).__name__:
+        return cleandoc(f.__doc__)
+    elif comm == (f := database_remove_submissions).__name__:
+        return cleandoc(f.__doc__)
+    elif comm == (f := database_remove_journals).__name__:
+        return cleandoc(f.__doc__)
+    elif comm == (f := database_server).__name__:
+        return cleandoc(f.__doc__)
+    elif comm == (f := database_merge).__name__:
+        return cleandoc(f.__doc__)
+    elif comm == (f := database_clean).__name__:
+        return cleandoc(f.__doc__)
+
+    raise UnknownCommand(f"{comm1} {comm2}".strip())
 
 
 def init():
