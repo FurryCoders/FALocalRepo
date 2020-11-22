@@ -6,7 +6,6 @@ from os.path import getsize
 from os.path import isfile
 from os.path import join
 from re import match
-from typing import Callable
 from typing import Dict
 from typing import Iterable
 from typing import List
