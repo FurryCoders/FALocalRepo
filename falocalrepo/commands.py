@@ -186,10 +186,10 @@ def print_users(users: List[Dict[str, str]]):
         (
             user["USERNAME"],
             f.split(",") if (f := user["FOLDERS"]) else 0,
-            len(f.split(",")) if (f := user["GALLERY"]) else 0,
-            len(f.split(",")) if (f := user["SCRAPS"]) else 0,
-            len(f.split(",")) if (f := user["FAVORITES"]) else 0,
-            len(f.split(",")) if (f := user["MENTIONS"]) else 0
+            (f.count(",") + 1) if (f := user["GALLERY"]) else 0,
+            (f.count(",") + 1) if (f := user["SCRAPS"]) else 0,
+            (f.count(",") + 1) if (f := user["FAVORITES"]) else 0,
+            (f.count(",") + 1) if (f := user["MENTIONS"]) else 0
         )
         for user in users
     ]
