@@ -810,7 +810,8 @@ def console(comm: str = "", *args: str) -> None:
     faapi: {3}
 
     USAGE
-        falocalrepo [-h | -v | -d | -s] [<command> [<operation>] [<arg1> ... <argN>]]
+        falocalrepo [-h | -v | -d | -s] [<command> [<operation>] [<arg1> ...
+                    <argN>]]
 
     ARGUMENTS
         <command>       The command to execute
