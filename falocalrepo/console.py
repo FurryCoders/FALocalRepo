@@ -882,8 +882,5 @@ def console(comm: str = "", *args: str) -> None:
     finally:
         # Close database and update totals
         if db is not None:
-            db.settings["USRN"] = str(len(db.users))
-            db.settings["SUBN"] = str(len(db.submissions))
-            db.settings["JRNN"] = str(len(db.journals))
             db.commit()
             db.close()
