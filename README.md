@@ -23,7 +23,7 @@ The [falocalrepo-server](https://pypi.org/project/falocalrepo-server/) package i
 
 ## Contents
 
-1. [Installation & Update](#installation--update)
+1. [Installation and Update](#installation-and-update)
 1. [How to Read Usage Instructions](#how-to-read-usage-instructions)
 1. [Cookies](#cookies)
 1. [Usage](#usage)
@@ -43,7 +43,7 @@ The [falocalrepo-server](https://pypi.org/project/falocalrepo-server/) package i
 1. [Issues](#issues)
 1. [Appendix](#appendix)
 
-## Installation & Update
+## Installation and Update
 
 To install the program it is sufficient to use Python pip and get the package `falocalrepo`.
 
