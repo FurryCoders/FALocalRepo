@@ -4,7 +4,7 @@
 
 ### Changes
 
-* check for faapi updates
+* Check for faapi updates
 
 ## 3.13.10
 
