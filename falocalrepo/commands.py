@@ -155,21 +155,23 @@ def search(table: FADatabaseTable, parameters: Dict[str, List[str]]) -> List[Dic
 
 
 def print_items(items: List[Dict[str, Union[int, str]]]):
-    space_id: int = 10
-    space_user: int = 10
-    space_date: int = 10
-    space_term: int = 10000
+    space_term: int
+
     try:
         space_term = get_terminal_size()[0]
     except IOError:
-        pass
+        space_term = 10000
+
+    space_id: int = 10
+    space_user: int = max([len(item["AUTHOR"]) for item in items] + [10])
+    space_date: int = 10
 
     print(f"{'ID':^{space_id}} | {'User':^{space_user}} | {'Date':^{space_date}} | Title")
     for item in items:
         print(
-            f"{str(item['ID'])[:space_id].zfill(space_id)} | " +
-            f"{item['AUTHOR'][:space_user]:<{space_user}} | " +
-            f"{item['DATE'][:space_date]:<{space_date}} | " +
+            f"{str(item['ID']).zfill(space_id)} | " +
+            f"{item['AUTHOR']:<{space_user}} | " +
+            f"{item['DATE']} | " +
             item['TITLE'][:(space_term - space_id - space_user - space_date - 10)]
         )
 
