@@ -48,8 +48,8 @@ class Bar:
         print(f"{message[:self.length]:^{self.length}}", end="", flush=True)
 
 
-def clean_username(username: str) -> str:
-    return str(re_sub(r"[^a-zA-Z0-9\-.~,]", "", username.lower().strip()))
+def clean_username(username: str, exclude: str = "") -> str:
+    return str(re_sub(rf"[^a-zA-Z0-9\-.~,{exclude}]", "", username.lower().strip()))
 
 
 def clean_string(title: str) -> str:
@@ -141,7 +141,7 @@ def search(table: FADatabaseTable, parameters: Dict[str, List[str]]) -> List[Dic
     parameters = {k.lower(): vs for k, vs in parameters.items()}
     query: Dict[str, List[str]] = {k: vs for k, vs in parameters.items() if k not in ("order", "limit", "offset")}
     if "author" in query:
-        query["replace(author, '_', '')"] = list(map(clean_username, query["author"]))
+        query["replace(author, '_', '')"] = list(map(lambda u: clean_username(u, "%"), query["author"]))
         del query["author"]
     return list(table.cursor_to_dict(table.select(
         query,
