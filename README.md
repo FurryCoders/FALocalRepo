@@ -124,15 +124,18 @@ Cookies need to be set manually with the config command before the program will 
 
 ### Help
 
-`help [<command>]`
+`help [<command> [<operations>]]`
 
-The `help` command gives information on the usage of the program and its commands. Run alone for help on the whole program and with a single argument to get help for a specific command.
+The `help` command gives information on the usage of the program and its commands and operations.
 
 ```
 falocalrepo help
 ```
 ```
 falocalrepo help download
+```
+```
+falocalrepo help database search-users
 ```
 
 ### Init
