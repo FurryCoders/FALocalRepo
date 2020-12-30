@@ -1,5 +1,13 @@
 # Changelog
 
+## 3.13.13
+
+### Changes
+
+* Improved usage patterns, instructions, and general language in both help messages and readme
+* falocalrepo-database dependency set to \~4.3.0
+    * Removed counters from `SETTINGS` table
+
 ## 3.13.12
 
 ### Changes
