@@ -91,7 +91,7 @@ Running without arguments will prompt a help message with all the available opti
 Generally, commands need to be in the following format:
 
 ```
-falocalrepo [-h | -v | -d | -s] <command> [<arg1>] ... [<argN>]
+falocalrepo [-h | -v | -d | -s] [<command> [<operation>] [<arg1> ... <argN>]]
 ```
 
 Available options are:
