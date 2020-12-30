@@ -1,5 +1,19 @@
 # Changelog
 
+## 3.13.12
+
+### Changes
+
+* Separate all commands and subcommands into separate functions
+* Add help for subcommands with descriptions and examples
+* Improved efficiency of search and results printing
+
+### Fixes
+
+* Fix % not working AUTHOR and USERNAME fields
+* Fix USERNAME field not being cleaned when performing users search
+* Fix an error when users search found 0 results
+
 ## 3.13.11
 
 ### Changes
