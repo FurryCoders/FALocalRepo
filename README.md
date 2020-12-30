@@ -109,7 +109,7 @@ Available commands are:
 * `download` perform downloads
 * `database` operate on the database
 
-_Note:_ all the commands with the exception of `help` will create and initialise the database if it is not present in the folder
+_Note:_ all the commands except `help` will create and initialise the database if it is not present in the folder
 
 When the database is first initialised, it defaults the submissions files folder to `FA.files`. This value can be changed using the [`config` command](#configuration).
 
