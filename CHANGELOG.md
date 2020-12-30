@@ -148,8 +148,6 @@ This new minor version bump updates the [falocalrepo-database](https://pypi.org/
 
 * removed unused filetype dependency
 
----
-
 ## 3.10.9
 
 ### Changes
@@ -162,8 +160,6 @@ This new minor version bump updates the [falocalrepo-database](https://pypi.org/
 
 * fix id parameter error when manually adding submissions/journals
 
----
-
 ## 3.10.8
 
 ### Changes
@@ -173,8 +169,6 @@ This new minor version bump updates the [falocalrepo-database](https://pypi.org/
 ### Fixes
 
 * Fix output error when submission is found in user entry
-
----
 
 ## 3.10.7
 
@@ -187,8 +181,6 @@ This new minor version bump updates the [falocalrepo-database](https://pypi.org/
 
 * Fix some errors in README
 
----
-
 ## 3.10.6
 
 ### Changes
@@ -199,8 +191,6 @@ This new minor version bump updates the [falocalrepo-database](https://pypi.org/
 ### Fixes
 
 * Fix submissions not being removed from users' entries with `database remove-submissions` command
-
----
 
 ## 3.10.5
 
@@ -214,8 +204,6 @@ This new minor version bump updates the [falocalrepo-database](https://pypi.org/
 
 * Fix download error caused by faapi version 2.10.0
 
----
-
 ## 3.10.4
 
 ### Changes
@@ -223,15 +211,11 @@ This new minor version bump updates the [falocalrepo-database](https://pypi.org/
 * faapi dependency set to 2.10.0
 * Better detection of deactivated users with updated faapi methods
 
----
-
 ## 3.10.3
 
 ### Changes
 
 * faapi dependency set to 2.9.1
-
----
 
 ## 3.10.2
 
@@ -239,15 +223,11 @@ This new minor version bump updates the [falocalrepo-database](https://pypi.org/
 
 * Fix error error with users journals download
 
----
-
 ## 3.10.1
 
 ### Changes
 
 * faapi dependency set to 2.9.0
-
----
 
 ## 3.10.0
 
@@ -263,28 +243,21 @@ Added a new `database search-users` command to search the users table using all 
 
 * Fix error in database command help
 
----
-
 ## 3.9.2
 
 ### Changes
 
 * Small optimisation to database init and update process
 
-
 ### Fixes
 
 * Fixed erroneous general help message
-
----
 
 ## 3.9.1
 
 ### Fixes
 
 * Fix bug occurring when saving submissions/journals into the database
-
----
 
 ## 3.9.0 - 100th Release!
 
@@ -306,8 +279,6 @@ More exceptions are caught now and exit with a specific code; unforeseen excepti
 
 * Fix error with manual submissions and journals
 
----
-
 ## 3.8.2
 
 ### Changes
@@ -318,15 +289,11 @@ More exceptions are caught now and exit with a specific code; unforeseen excepti
 
 * Fix missing instructions for download help
 
----
-
 ## 3.8.1
 
 ### Fixes
 
 * Removed some lines of code used for debugging version 3.8.0 (now yanked)
-
----
 
 ## 3.8.0
 
@@ -341,8 +308,6 @@ From this release all database functions are handled separately by the new [falo
 ### Fixes
 
 * Fixed an error in the description of tables in the readme
-
----
 
 ## 3.7.5
 
@@ -360,15 +325,11 @@ The `download journals` command is now fixed and calling the correct function. T
 * Fixed `download journals`
 * Added missing journals counter in database info output
 
----
-
 ## 3.7.4
 
 ### Changes
 
 * Update faapi dependency to 2.8.3
-
----
 
 ## 3.7.3
 
@@ -387,8 +348,6 @@ Background changes and fixes. The `main_console` function was renamed to `consol
 
 * Fix indentation of help messages
 
----
-
 ## 3.7.2
 
 falocalrepo-server dependency has been updated to use the latest above 1.1.1. Command defaults to init if no command is passed.
@@ -398,15 +357,11 @@ falocalrepo-server dependency has been updated to use the latest above 1.1.1. Co
 * Update falocalrepo-server dependency to ^1.1.1
 * Default to init command if no command is passed
 
----
-
 ## 3.7.1
 
 ### Changes
 
 * Update falocalrepo-server dependency to 1.1.1
-
----
 
 ## 3.7.0
 
@@ -425,8 +380,6 @@ A few small bugs have also been fixed.
 * Fix erroneous FurAffinity theme name in readme
 * Fix missing entry in table of contents
 
----
-
 ## 3.6.2
 
 ### Changes
@@ -436,8 +389,6 @@ A few small bugs have also been fixed.
 ### Fixes
 
 * Fix missing information in readme
-
----
 
 ## 3.6.1
 
@@ -450,8 +401,6 @@ A few small bugs have also been fixed.
 
 * Fix wildcards being removed from author parameter when searching
 * Fix uppercase parameters not matching
-
----
 
 ## 3.6.0
 
@@ -475,8 +424,6 @@ A few bugs have also been resolved, error messages have been improved, and more 
 * Fix incorrect error message when passing an unknown database command
 * Fix error caused by the options arguments parser
 
----
-
 ## 3.5.4
 
 A new stop option has been added to the download update command to modify the number of submisisons after which the program stops looking through a user's folder. The database update from 2.7 to 3 has been upgraded and now files are found directly in the submission folder.
@@ -486,15 +433,11 @@ A new stop option has been added to the download update command to modify the nu
 * Add stop option to download update
 * Improved file-finding for database update from 2.7 to 3
 
----
-
 ## 3.5.3
 
 ### Fixes
 
 * Fix a SQLite Cursor error
-
----
 
 ## 3.5.2
 
@@ -508,15 +451,11 @@ A new stop option has been added to the download update command to modify the nu
 
 * Fix missing exception when database receives an unknown subcommand
 
----
-
 ## 3.5.1
 
 ### Fixes
 
 * Fix an import error
-
----
 
 ## 3.5.0
 
@@ -534,8 +473,6 @@ The output of the `download users` command has been generalised so it does not u
 
 * Fix missing information in help message and readme
 * Fix output of download users command not being generalised
-
----
 
 ## 3.4.0
 
@@ -556,8 +493,6 @@ A few errors in the readme have also been solved.
 
 * Fix readme errors
 
----
-
 ## 3.3.5
 
 ### Fixes
@@ -566,15 +501,11 @@ A few errors in the readme have also been solved.
 * Fixes version when updating database from 3.0 to 3.1
 * Disabled folders do not trigger an error when using download update
 
----
-
 ## 3.3.4
 
 ### Fixes
 
 * Fix users folders not being properly ported when updating database from 2.7 to 3.0
-
----
 
 ## 3.3.3
 
@@ -583,23 +514,17 @@ A few errors in the readme have also been solved.
 * Fix file download bar spacing
 * Fix settings not porting over when updating database from 3.0.0 to 3.1.0
 
----
-
 ## 3.3.2
 
 ### Fixes
 
 * Fix spacing when download page goes over 100
 
----
-
 ## 3.3.1
 
 ### Fixes
 
 * Fix readme not including new information about database version 3.1.0
-
----
 
 ## 3.3.0
 
@@ -614,15 +539,11 @@ Database version has been updated to 3.1.0; the "extras" folder has been renamed
 * Database updated to 3.1.0
   * Extras renamed to mentions
 
----
-
 ## 3.2.5
 
 ### Fixes
 
 * Fix output bug when downloading single submissions
-
----
 
 ## 3.2.4
 
@@ -631,8 +552,6 @@ Fixes a but that caused tiered paths to overlap if the submission ID ended with 
 ### Fixes
 
 * Tiered path for submssions ID's ended with zeroes
-
----
 
 ## 3.2.3
 
@@ -643,8 +562,6 @@ Order of users and folders passed to download users/update is maintained. Submis
 * Maintain order of users and folders passed to download
 * Do not redownload submissions if already present in submissions table
 
----
-
 ## 3.2.2
 
 Submissions titles are now cleaned of non-ASCII characters before printing them to screen. Non-ASCII characters would break the spacing of the download output.
@@ -652,8 +569,6 @@ Submissions titles are now cleaned of non-ASCII characters before printing them 
 ### Fixes
 
 * Fix output of submissions titles with non-ASCII characters breaking spacing
-
----
 
 ## 3.2.1
 
@@ -663,8 +578,6 @@ Fix old database having the wrong version in the name when backing it after upda
 
 * Fix database backup name up when updating from 2.7.0
 
----
-
 ## 3.2.0
 
 Download update now allows to pass a list of users and/or folders to restrict the update to those.
@@ -672,8 +585,6 @@ Download update now allows to pass a list of users and/or folders to restrict th
 ### Changes
 
 * Pass users and/or folders to download update
-
----
 
 ## 3.1.9
 
@@ -683,8 +594,6 @@ Database search now allows to use either display or URL author usernames; i.e. `
 
 * Accept both display and URL author usernames in database search
 
----
-
 ## 3.1.8
 
 Exceptions raised during database updates are caught and any pending changes are committed before the exception is raised again.
@@ -692,8 +601,6 @@ Exceptions raised during database updates are caught and any pending changes are
 ### Changes
 
 * Safely commit and close when catching exceptions during database updates
-
----
 
 ## 3.1.7
 
@@ -704,8 +611,6 @@ The memory usage of database select (i.e. read) operations has been reduced by u
 * Database select operations return sqlite3 cursors to reduce memory usage
 * Database update speed increased by reducing the number of commits
 
----
-
 ## 3.1.6
 
 Fixes an output error in the database update function and improves the way settings and statistics are written in the database, using UPDATE instead of INSERT OR REPLACE
@@ -715,8 +620,6 @@ Fixes an output error in the database update function and improves the way setti
 * Database update output error
 * Settings are updated instead of inserted
 
----
-
 ## 3.1.5
 
 Improve database update function by saving the ID's of the submissions files that weren't found during the transfer.
@@ -724,8 +627,6 @@ Improve database update function by saving the ID's of the submissions files tha
 ### Changes
 
 * Save ID's of submisions not found during database update
-
----
 
 ## 3.1.4
 
@@ -735,8 +636,6 @@ Updated requirement [FAAPI](https://gitlab.com/MatteoCampinoti94/FAAPI) to versi
 
 * Use FAAPI 2.6.0
 
----
-
 ## 3.1.3
 
 If the now unsupported "extras" folder is encountered during update, it now prints a warning and skips to the next.
@@ -744,8 +643,6 @@ If the now unsupported "extras" folder is encountered during update, it now prin
 ### Changes
 
 * Explicitely warn about extras folders
-
----
 
 ## 3.1.2
 
@@ -755,8 +652,6 @@ Fixed an IOError that happened when trying to pipe the database search output to
 
 * IOError when piping search results
 
----
-
 ## 3.1.1
 
 Fix a version error. Database version was set to 3.1.0 instead of the program version.
@@ -764,8 +659,6 @@ Fix a version error. Database version was set to 3.1.0 instead of the program ve
 ### Fixes
 
 * Fix versions
-
----
 
 ## 3.1.0
 
@@ -779,8 +672,6 @@ The database search command now allows to pass a parameter multiple times to act
 
 * Database search accepts OR parameters
 
----
-
 ## 3.0.3
 
 This releases fixes counters not being updated in the new database when updating from version 2.7.
@@ -792,8 +683,6 @@ Readme has also been improved with more informations about issues and contributi
 ### Fixes
 
 * Database update function updates counters of new database
-
----
 
 ## 3.0.2
 
@@ -807,13 +696,9 @@ Small patch to fix a search bug and output the number of results found with sear
 
 * Output total number of results found by search
 
----
-
 ## 3.0.1
 
 This release is only a minor fix to change the PyPi classifier for development status of the program from beta to stable.
-
----
 
 ## 3.0.0
 
@@ -848,8 +733,6 @@ The last big change is in regards to the packaging and distribution of the progr
 
 * [falocalrepo on PyPi.org](https://pypi.org/project/falocalrepo/)
 
----
-
 ## 2.10.2
 
 Reduced the number of indexes created and made the whole process safer. Also, interruption is now available during indexing.
@@ -857,8 +740,6 @@ Reduced the number of indexes created and made the whole process safer. Also, in
 PS: Linux release is once again bigger than it should. Will work on finding a more permanent fix.
 
 **Warning**: Binaries are for 64bit systems only
-
----
 
 ## 2.10.1
 
@@ -875,8 +756,6 @@ PS: Linux release is once again bigger than it should. Will work on finding a mo
 
 **Warning**: Binaries are for 64bit systems only
 
----
-
 ## 2.10
 
 Thanks to a special Python module created by yours truly, Windows users can now enjoy the program with safe interruption support. The module can be found on GitHub &rarr; [SignalBlock](https://github.com/MatteoCampinoti94/PythonSignalBlocking-CrossPlatform).<br>
@@ -889,8 +768,6 @@ New log events have been added for SIGINT (CTRL-C interruption) detection and da
 PS: Linux release is once again bigger than it should. Will work on finding a more permanent fix.
 
 **Warning**: Binaries are for 64bit systems only
-
----
 
 ## 2.9
 
@@ -910,8 +787,6 @@ PS: Linux release is once again bigger than it should. Will work on finding a mo
 
 **Warning**: Binaries are for 64bit systems only
 
----
-
 ## 2.8.1
 
 Just a small fix for an incorrect check in the analysis of submissions values.
@@ -919,8 +794,6 @@ Just a small fix for an incorrect check in the analysis of submissions values.
 PS: Linux release is once again bigger than it should. Will work on finding a more permanent fix.
 
 **Warning**: Binaries are for 64bit systems only
-
----
 
 ## 2.8
 
@@ -936,8 +809,6 @@ PS: Linux release is once again bigger than it should. Will work on finding a mo
 
 **Warning**: Binaries are for 64bit systems only
 
----
-
 ## 2.7.4
 
 Fixed an error in the URL used to search extras. An OR was missing and would stop some results from showing up.
@@ -947,8 +818,6 @@ Users selected for download/update are now properly sorted.
 PS: Linux release is once again bigger than it should. Will work on finding a more permanent fix.
 
 **Warning**: Binaries are for 64bit systems only
-
----
 
 ## 2.7.3
 
@@ -961,8 +830,6 @@ The header describing the various columns during download/update now reflects th
 PS: Linux release is once again bigger than it should. Will work on finding a more permanent fix.
 
 **Warning**: Binaries are for 64bit systems only
-
----
 
 ## 2.7.2
 
@@ -978,8 +845,6 @@ PS: Linux release is once again bigger than it should. Will work on finding a mo
 
 **Warning**: Binaries are for 64bit systems only
 
----
-
 ## 2.7.1
 
 Just a fix for an output error in the v2.6 to v2.7 upgrade function.
@@ -987,8 +852,6 @@ Just a fix for an output error in the v2.6 to v2.7 upgrade function.
 PS: Linux release is once again bigger than it should. Will work on finding a more permanent fix.
 
 **Warning**: Binaries are for 64bit systems only
-
----
 
 ## 2.7
 
@@ -1005,8 +868,6 @@ A few things have been improved around the program and some bugs removed.
 PS: Linux release is once again bigger than it should. Will work on finding a more permanent fix.
 
 **Warning**: Binaries are for 64bit systems only
-
----
 
 ## 2.6
 
@@ -1030,8 +891,6 @@ Update 2018/05/02: Linux binary was compiled with an error, it is fixed now
 
 **Warning**: Binaries are for 64bit systems only
 
----
-
 ## 2.5
 
 The program is now capable of running searches on the main website. If there no results can be found in the local database the user will be automatically asked if they want to perform the search online instead.
@@ -1048,8 +907,6 @@ PS: I have no idea why but this release for Linux is over twice the size of prev
 
 **Warning**: Binaries are for 64bit systems only
 
----
-
 ## 2.4
 
 The search has been completely rewritten and should now be a lot faster. It is also now possible to search inside specific sections of a user.<br>
@@ -1060,8 +917,6 @@ A few small bugs have been fixed.
 PS: I have no idea why but this release for Linux is over twice the size of previus ones. Will work on fixing it.
 
 **Warning**: Binaries are for 64bit systems only
-
----
 
 ## 2.3
 
@@ -1075,8 +930,6 @@ A few bugs have been squashed and some functions have been improved.
 PS: I have no idea why but this release for Linux is over twice the size of previus ones. Will work on fixing it.
 
 **Warning**: Binaries are for 64bit systems only
-
----
 
 ## 2.2
 
@@ -1094,8 +947,6 @@ PS: I have no idea why but this release for Linux is over twice the size of the 
 
 **Warning**: Binaries are for 64bit systems only
 
----
-
 ## 2.1
 
 With this release all bugs with the users database are fixed and the informations are properly stored and saved.
@@ -1106,15 +957,11 @@ A big number of bugs have been fixed as well, for the full list see the [commits
 
 **Warning**: Binaries are for 64bit systems only
 
----
-
 ## 2.0.1
 
 Fixed a bug in the update functions.
 
 **Warning**: Binaries are for 64bit systems only
-
----
 
 ## 2.0
 
@@ -1130,29 +977,22 @@ The new favorites page on the forum can now be handled correctly.
 
 **Warning**: Binaries are for 64bit systems only
 
----
-
 ## 1.5.1
 
 CTRL-C and CTRL-D can now be used to return to the main menu from input fields (e.g. username/sections/options)
 
 Various small fixes
 
-
 **Extra**: My gpg key was mistakenly deleted, thus all previous verified commits now show up as unverified.<br>
 This new release is now verified
 
 **Warning**: Binaries are for 64bit systems only
-
----
 
 ## 1.5
 
 This new version comes with the usual fixes and a whole new menu entry to analyze the database and repair it. More information in the readme.
 
 **Warning**: Binaries are for 64bit systems only
-
----
 
 ## 1.4
 
@@ -1164,8 +1004,6 @@ Version has been bumped up to 1.4 skipping 1.3 due to the two major additions.
 
 **Warning**: Binaries are for 64bit systems only
 
----
-
 ## 1.2.1
 
 Small fix to make sure the infos table has the database name value created empty, to ensure compatibility with planned gui.
@@ -1173,8 +1011,6 @@ Small fix to make sure the infos table has the database name value created empty
 Other changes are under-the-hood: moved some functions around and into modules to improve clarity and modularity.
 
 **Warning**: Binaries are for 64bit systems only
-
----
 
 ## 1.2
 
@@ -1195,8 +1031,6 @@ The table is created with all values reset to 0 in case it is not present so it'
 
 **Warning**: Binaries are for 64bit systems only
 
----
-
 ## 1.1.2
 
 The program can now be run on windows as well!
@@ -1204,8 +1038,6 @@ The program can now be run on windows as well!
 Unfortunately due to missing libraries on windows automatic filetype management and safe exit do NOT work so be careful.
 
 **Warning**: Binaries are for 64bit systems only
-
----
 
 ## 1.1.1
 
@@ -1216,8 +1048,6 @@ Fixed a small bug in the sync code when using the Force option
 A small search script has been added in the FA_tools folder
 
 **Warning**: binary is for Linux 64bit only
-
----
 
 ## 1.1
 
@@ -1232,8 +1062,6 @@ Better placement of interrupts for safe manual exit
 General bugfixes
 
 **Warning**: binary is for Linux 64bit only
-
----
 
 ## 1.0
 
