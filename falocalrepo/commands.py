@@ -198,7 +198,7 @@ def print_users(users: List[Dict[str, str]]):
 
     users_fmt.sort(key=lambda usr: usr[0])
 
-    space_name_max: int = max([len(user[0]) for user in users_fmt])
+    space_name_max: int = max([len(user[0]) for user in users_fmt] + [10])
     space_name = space_name_max if space_name > space_name_max else space_name
     len_gallery_max: int = int(max([ceil(log10(user[2])) if user[2] else 0 for user in users_fmt]))
     len_scraps_max: int = int(max([ceil(log10(user[3])) if user[3] else 0 for user in users_fmt]))
