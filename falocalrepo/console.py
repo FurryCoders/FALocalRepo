@@ -495,8 +495,7 @@ def database_search_submissions(db: FADatabase, *args: str):
             date=2020-% category=%artwork%
     """
 
-    results: List[Dict[str, Union[int, str]]] = search(db.submissions,
-                                                       parameters_multi(args))
+    results: List[Dict[str, Union[int, str]]] = search(db.submissions, parameters_multi(args))
     print_items(results)
     print(f"Found {len(results)} results")
 
@@ -524,8 +523,7 @@ def database_search_journals(db: FADatabase, *args: str):
             content=%commission%
     """
 
-    results: List[Dict[str, Union[int, str]]] = search(db.journals,
-                                                       parameters_multi(args))
+    results: List[Dict[str, Union[int, str]]] = search(db.journals, parameters_multi(args))
     print_items(results)
     print(f"Found {len(results)} results")
 
