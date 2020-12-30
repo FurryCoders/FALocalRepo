@@ -226,7 +226,7 @@ def config_files_folder(db: FADatabase, *args: str):
 def config(db: FADatabase, comm: str = "", *args: str):
     """
     USAGE
-        falocalrepo config [<setting>] [<value1>] ... [<valueN>]
+        falocalrepo config [<setting> [<value1>] ... [<valueN>]]
 
     ARGUMENTS
         <setting>       Setting to read/edit
@@ -293,7 +293,7 @@ def download_update(db: FADatabase, api: FAAPI, *args: str):
 
     ARGUMENTS
         <stop n>    Number of submissions to find in database before stopping,
-                    defaults to 0
+                    defaults to 1
         <user>      Username
         <folder>    One of gallery, scraps, favorites, journals
 
@@ -377,12 +377,12 @@ def download_journals(db: FADatabase, api: FAAPI, *args: str):
 def download(db: FADatabase, comm: str = "", *args: str):
     """
     USAGE
-        falocalrepo download <command> [<option>=<value>] [<arg1>] ... [<argN>]
+        falocalrepo download <operation> [<option>=<value>] [<arg1>] ... [<argN>]
 
     ARGUMENTS
+        <operation>     The download operation to execute
         <option>        Option for the download command
         <value>         Value of an option
-        <command>       The download command to execute
         <arg>           Argument for the download command
 
     AVAILABLE COMMANDS
@@ -730,8 +730,7 @@ def database_clean(db: FADatabase):
 def database(db: FADatabase, comm: str = "", *args: str):
     """
     USAGE
-        falocalrepo database [<operation>] [<param1>=<value1>] ...
-                    [<paramN>=<valueN>]
+        falocalrepo database [<operation> [<param1>=<value1> ... <paramN>=<valueN>]]
 
     ARGUMENTS
         <operation>         The database operation to execute
@@ -811,11 +810,12 @@ def console(comm: str = "", *args: str) -> None:
     faapi: {3}
 
     USAGE
-        falocalrepo [-h | -v | -d | -s] [<command>] [<arg1>] ... [<argN>]
+        falocalrepo [-h | -v | -d | -s] [<command> [<operation>] [<arg1> ... <argN>]]
 
     ARGUMENTS
         <command>       The command to execute
-        <arg>           The arguments of the command
+        <operation>     The operation to execute for the given command
+        <arg>           The arguments of the command or operation
 
     GLOBAL OPTIONS
         -h, --help      Display this help message
