@@ -13,9 +13,9 @@ Pure Python program to download any user's gallery/scraps/favorites from the Fur
 
 This program was born with the desire to provide a relatively easy-to-use method for FA users to download submissions that they care about from the forum.
 
-The data is stored into a SQLite database and the submissions files are saved in a tiered tree structure based on their ID's. Using SQLite instead of a client-server database makes the program to be extremely portable, only needing a working Python 3.8+ installation to work, and allows the downloaded data to be moved and backed up by simply moving/copying the database file and submission files folder.
+The data is stored into a SQLite database, and the submissions files are saved in a tiered tree structure based on their ID's. Using SQLite instead of a client-server database makes the program to be extremely portable, only needing a working Python 3.8+ installation to work, and allows the downloaded data to be moved and backed up by simply moving/copying the database file and submission files folder.
 
-All download operations are performed through the custom Fur Affinity scraping library [faapi](https://pypi.org/project/faapi/). To ensure proper crawling behavior the library strictly follows Fur Affinity's [robots.txt](https://www.furaffinity.net/robots.txt) in regards to allowed paths and crawl delay. Furthermore, submission files downloads are throttled to 100KB/s to ensure the program won't use too much bandwidth.
+All download operations are performed through the custom Fur Affinity scraping library [faapi](https://pypi.org/project/faapi/). To ensure proper crawling behavior the library strictly follows Fur Affinity's [robots.txt](https://www.furaffinity.net/robots.txt) in regard to allowed paths and crawl delay. Furthermore, submission files downloads are throttled to 100 KB/s to ensure the program won't use too much bandwidth.
 
 The database and file-storage functions are handled independently by the [falocalrepo-database](https://pypi.org/project/falocalrepo-database/) package which performs all transactions, queries, and file operations.
 
@@ -119,7 +119,7 @@ Cookies need to be set manually with the config command before the program will 
 
 `falocalrepo` supports the following environmental variables:
 
-* `FALOCALREPO_DATABASE` sets a path for the database rather than using the current folder. If the path basename ends with `.db` -- e.g. `~/Documents/FA/MyFA.db` -- , then a database file will be created/opened with that name. Otherwise, the path will be considered a folder and a database named "FA.db" will be created therein.
+* `FALOCALREPO_DATABASE` sets a path for the database rather than using the current folder. If the path basename ends with `.db` -- e.g. `~/Documents/FA/MyFA.db` -- , then a database file will be created/opened with that name. Otherwise, the path will be considered a folder, and a database named "FA.db" will be created therein.
 
 ### Help
 
@@ -171,7 +171,7 @@ The `download` command performs all download and repository update operations.
 
 Available operations are:
 
-* `users <user1>[,...,<userN>] <folder1>[,...,<folderN>]` download specific user folders. Requires two arguments with comma separated users and folders. Prepending `list-` to a folder allows to list all remote items in a user folder without downloading them. Supported folders are:
+* `users <user1>[,...,<userN>] <folder1>[,...,<folderN>]` download specific user folders. Requires two arguments with comma-separated users and folders. Prepending `list-` to a folder allows to list all remote items in a user folder without downloading them. Supported folders are:
     * `gallery`
     * `scraps`
     * `favorites`
@@ -182,7 +182,7 @@ falocalrepo download users tom,jerry gallery,scraps,journals
 ```
 falocalrepo download users tom,jerry list-favorites
 ```
-* `update [stop=<n>] [<user1>,...,<userN>] [<folder1>,...,<folderN>]` update the repository by checking the previously downloaded folders (gallery, scraps, favorites or journals) of each user and stopping when it finds a submission that is already present in the repository. Can pass a list of users and/or folders that will be updated if in the database. To skip users, use `@` as argument. The `stop=<n>` option allows to stop updating after finding `n` submissions in a user's database entry, defaults to 1. If a user is deactivated, the folders in the database will be prepended with a ! and the user will be skipped when update is called again.
+* `update [stop=<n>] [<user1>,...,<userN>] [<folder1>,...,<folderN>]` update the repository by checking the previously downloaded folders (gallery, scraps, favorites or journals) of each user and stopping when it finds a submission that is already present in the repository. Can pass a list of users and/or folders that will be updated if in the database. To skip users, use `@` as argument. The `stop=<n>` option allows to stop the update after finding `n` submissions in a user's database entry, defaults to 1. If a user is deactivated, the folders in the database will be prepended with a '!', and the user will be skipped when update is called again.
 ```
 falocalrepo download update stop=5
 ```
@@ -192,11 +192,11 @@ falocalrepo download update @ gallery,scraps
 ```
 falocalrepo download update tom,jerry
 ```
-* `submissions <id1> ... [<idN>]` download specific submissions. Requires submission ID's provided as separate arguments.
+* `submissions <id1> ... [<idN>]` download specific submissions. Requires submission IDs provided as separate arguments.
 ```
 falocalrepo download submissions 12345678 13572468 87651234
 ```
-* `journals <id1> ... [<idN>]` download specific journals. Requires journal ID's provided as separate arguments.
+* `journals <id1> ... [<idN>]` download specific journals. Requires journal IDs provided as separate arguments.
 ```
 falocalrepo download journals 123456 135724 876512
 ```
@@ -205,9 +205,9 @@ falocalrepo download journals 123456 135724 876512
 
 `database [<operation> [<param1>=<value1> ... <paramN>=<valueN>]]`
 
-The `database` command allows to operate on the database. Used without an operation command shows the database information, statistics (number of users and submissions and time of last update), and version.
+The `database` command allows operating on the database. Used without an operation command shows the database information, statistics (number of users and submissions and time of last update), and version.
 
-All search operations are conducted case-insensitively using the SQLite [`like`](https://sqlite.org/lang_expr.html#like) expression which allows for limited pattern matching. For example this expression can be used to search two words together separated by an unknown amount of characters `%cat%mouse%`. Fields missing wildcards will only match an exact result, i.e. `cat` will only match a field equal to `cat` tag whereas `%cat%` wil match a field that has contains `cat`.
+All search operations are conducted case-insensitively using the SQLite [`like`](https://sqlite.org/lang_expr.html#like) expression which allows for a limited pattern matching. For example this expression can be used to search two words together separated by an unknown amount of characters `%cat%mouse%`. Fields missing wildcards will only match an exact result, i.e. `cat` will only match a field equal to `cat` tag whereas `%cat%` wil match a field that has contains `cat`.
 
 All search operations support the extra `order`, `limit`, and `offset` parameters with values in SQLite [`ORDER BY` clause](https://sqlite.org/lang_select.html#the_order_by_clause), [`LIMIT` clause](https://sqlite.org/lang_select.html#the_limit_clause) format, and [`OFFSET` clause](https://sqlite.org/lang_select.html#the_limit_clause). The `order` parameter supports all fields of the specific search command.
 
@@ -305,7 +305,7 @@ The settings table contains settings for the program and statistics of the datab
 
 ### Users
 
-The users table contains a list of all the users that have been download with the program, the folders that have been downloaded and the submissions found in each of those.
+The users table contains a list of all the users that have been download with the program, the folders that have been downloaded, and the submissions found in each of those.
 
 Each entry contains the following fields:
 
@@ -347,7 +347,7 @@ The journals table contains the metadata of the journals downloaded by the progr
 
 ## Submission Files
 
-Submission files are saved in a tiered tree structure based on their submission ID. ID's are zero-padded to 10 digits and then broken up in 5 segments of 2 digits; each of this segments represents a folder tha will be created in the tree.
+Submission files are saved in a tiered tree structure based on their submission ID. IDs are zero-padded to 10 digits and then broken up in 5 segments of 2 digits; each of these segments represents a folder tha will be created in the tree.
 
 For example, a submission `1457893` will be padded to `0001457893` and divided into `00`, `01`, `45`, `78`, `93`. The submission file will then be saved as `00/01/45/78/93/submission.file` with the correct extension extracted from the file itself - Fur Affinity links do not always contain the right extension.
 
@@ -361,7 +361,7 @@ For details on upgrades and changes between database versions, see [falocalrepo-
 
 ## Contributing
 
-Al contributions and suggestions are welcome!
+All contributions and suggestions are welcome!
 
 The only requirement is that any merge request must be sent to the GitLab project as the one on GitHub is only a mirror: [GitLab/FALocalRepo](https://gitlab.com/MatteoCampinoti94/FALocalRepo)
 
