@@ -158,7 +158,7 @@ This new minor version bump updates the [falocalrepo-database](https://pypi.org/
 * falocalrepo-server dependency set to \~1.3.4
 * Improved `search-users` command
 
-## Fixes
+### Fixes
 
 * fix id parameter error when manually adding submissions/journals
 
@@ -170,7 +170,7 @@ This new minor version bump updates the [falocalrepo-database](https://pypi.org/
 
 * Add output while waiting for faapi to connect
 
-## Fixes
+### Fixes
 
 * Fix output error when submission is found in user entry
 
@@ -183,7 +183,7 @@ This new minor version bump updates the [falocalrepo-database](https://pypi.org/
 * Do not display last found match in download update
 * Sort update folders when none is provided
 
-## Fixes
+### Fixes
 
 * Fix some errors in README
 
@@ -196,7 +196,7 @@ This new minor version bump updates the [falocalrepo-database](https://pypi.org/
 * Display length of commands history instead of last command
 * Improved progress background functions
 
-## Fixes
+### Fixes
 
 * Fix submissions not being removed from users' entries with `database remove-submissions` command
 
@@ -210,7 +210,7 @@ This new minor version bump updates the [falocalrepo-database](https://pypi.org/
 * Default database search order to ID/USERNAME
 * Add some information on `order` parameter for database searches in readme
 
-## Fixes
+### Fixes
 
 * Fix download error caused by faapi version 2.10.0
 
@@ -253,13 +253,13 @@ This new minor version bump updates the [falocalrepo-database](https://pypi.org/
 
 Added a new `database search-users` command to search the users table using all the collected metadata. The readme has been improved slightly with better explanations. A small error in the database command help message was fixed.
 
-## Changes
+### Changes
 
 * Add `database search-users` command
 * Add help for `help` and `init` commands
 * Improve explanation of SQLite `like` expression
 
-## Fixes
+### Fixes
 
 * Fix error in database command help
 
@@ -272,7 +272,7 @@ Added a new `database search-users` command to search the users table using all 
 * Small optimisation to database init and update process
 
 
-## Fixes
+### Fixes
 
 * Fixed erroneous general help message
 
@@ -286,9 +286,7 @@ Added a new `database search-users` command to search the users table using all 
 
 ---
 
-## 3.9.0
-
-## 100th Release!
+## 3.9.0 - 100th Release!
 
 Both the database and server modules have been update to versions 3.5.0 and 1.3.1 respectively. The database now holds a history of all commands (except for version printing and help) instead of just last start and last update, and A new `database history` command was added to print the commands history.
 
@@ -296,7 +294,7 @@ When a non-help command is used, the program now checks for updates to its compo
 
 More exceptions are caught now and exit with a specific code; unforeseen exceptions are also caught and their trace saved to FA.log.
 
-## Changes
+### Changes
 
 * falocalrepo-database dependency set to \~3.5.0
 * falocalrepo-server dependency set to \~1.3.1
@@ -304,7 +302,7 @@ More exceptions are caught now and exit with a specific code; unforeseen excepti
 * Catch ConnectionError and sqlite3.DatabaseError
 * Catch general Exception and BaseException and print trace to FA.log
 
-## Fixes
+### Fixes
 
 * Fix error with manual submissions and journals
 
@@ -316,7 +314,7 @@ More exceptions are caught now and exit with a specific code; unforeseen excepti
 
 * Added `-s`, `--server` option to print version of falocalrepo-server used by the program
 
-## Fixes
+### Fixes
 
 * Fix missing instructions for download help
 
@@ -334,13 +332,13 @@ More exceptions are caught now and exit with a specific code; unforeseen excepti
 
 From this release all database functions are handled separately by the new [falocalrepo-database](https://pypi.org/project/falocalrepo-database/) package. The package is also used in [falocalrepo-server](https://pypi.org/project/falocalrepo-server/) allowing the falocalrepo console to be updated more easily.
 
-## Changes
+### Changes
 
 * removed database functions in favor of [falocalrepo-database](https://pypi.org/project/falocalrepo-database/)
 * falocalrepo-database dependency set to ~3.2.4
 * falocalrepo-server dependency set to ~1.2.2
 
-## Fixes
+### Fixes
 
 * Fixed an error in the description of tables in the readme
 
@@ -350,14 +348,14 @@ From this release all database functions are handled separately by the new [falo
 
 The `download journals` command is now fixed and calling the correct function. Two sub-commands aliases have been added: `config list` and `database info` which act as `config` and `database` respectively when called without arguments. Database size in MB (base 10) and last start have been added to `database info` output, missing journals counter in database info has also been added. falocalrepo-server dependency updated to ^1.1.3.
 
-## Changes
+### Changes
 
 * `database info` command to display database information
 * `config list` command to list settings stored in database
 * Database size and last start added to database info output
 * falocalrepo-server dependency updated to ^1.1.3
 
-## Fixes
+### Fixes
 
 * Fixed `download journals`
 * Added missing journals counter in database info output
@@ -376,7 +374,7 @@ The `download journals` command is now fixed and calling the correct function. T
 
 Background changes and fixes. The `main_console` function was renamed to `console` and is now the only direct export of the package, falocalrepo-server dependency has been updated to ^1.1.2, help messages have been slightly reformatted, and command does not dwfault to `init` when absent.
 
-## Changes
+### Changes
 
 * Update falocalrepo-server dependency to ^1.1.2
 * Update help messages with falocalrepo, database and falocalrepo-server versions
@@ -385,7 +383,7 @@ Background changes and fixes. The `main_console` function was renamed to `consol
 * LASTART value is not set when using `init`
 * Calling without a command shows help, doesn't default to `init`
 
-## Fixes
+### Fixes
 
 * Fix indentation of help messages
 
@@ -395,7 +393,7 @@ Background changes and fixes. The `main_console` function was renamed to `consol
 
 falocalrepo-server dependency has been updated to use the latest above 1.1.1. Command defaults to init if no command is passed.
 
-## Changes
+### Changes
 
 * Update falocalrepo-server dependency to ^1.1.1
 * Default to init command if no command is passed
@@ -416,12 +414,12 @@ The server interface has been moved to its own separate package [falocalrepo-ser
 
 A few small bugs have also been fixed.
 
-## Changes
+### Changes
 
 * Transfer falocalrepo-server to its own package
 * Make falocalrepo-server a dependency
 
-## Fixes
+### Fixes
 
 * Fix incorrect exception in download journals command
 * Fix erroneous FurAffinity theme name in readme
@@ -435,7 +433,7 @@ A few small bugs have also been fixed.
 
 * Removed `/user/<username>` server shortcut in favor of `/submissions/<username>/` and `/journals/<username>/`
 
-## Fixes
+### Fixes
 
 * Fix missing information in readme
 
@@ -448,7 +446,7 @@ A few small bugs have also been fixed.
 * New order parameter for server search
 * Reorder server search results by clicking on results headers
 
-## Fixes
+### Fixes
 
 * Fix wildcards being removed from author parameter when searching
 * Fix uppercase parameters not matching
@@ -465,14 +463,14 @@ Command line search commands now support `order`, `limit` and `offset` parameter
 
 A few bugs have also been resolved, error messages have been improved, and more information has been added to the readme regarding search wildcards.
 
-## Changes
+### Changes
 
 * New server interface to search database
 * `order`, `limit` and `offset` parameters for database search commands
 * More detailed exceptions for command errors
 * More information regarding wildcards in readme
 
-## Fixes
+### Fixes
 
 * Fix incorrect error message when passing an unknown database command
 * Fix error caused by the options arguments parser
@@ -483,7 +481,7 @@ A few bugs have also been resolved, error messages have been improved, and more 
 
 A new stop option has been added to the download update command to modify the number of submisisons after which the program stops looking through a user's folder. The database update from 2.7 to 3 has been upgraded and now files are found directly in the submission folder.
 
-## Changes
+### Changes
 
 * Add stop option to download update
 * Improved file-finding for database update from 2.7 to 3
@@ -506,7 +504,7 @@ A new stop option has been added to the download update command to modify the nu
 * FAAPI has been updated to version 2.8.1
   * Check connection status before running download commands
 
-## Fixes
+### Fixes
 
 * Fix missing exception when database receives an unknown subcommand
 
@@ -528,11 +526,11 @@ The help message and readme have been fixed and missing information has been add
 
 The output of the `download users` command has been generalised so it does not use "submissions" even when downloading journals; uses "items" instead.
 
-## Changes
+### Changes
 
 * Add database command to search journals
 
-## Fixes
+### Fixes
 
 * Fix missing information in help message and readme
 * Fix output of download users command not being generalised
@@ -547,14 +545,14 @@ The previous `database manual-entry` command has been changed to `database add-s
 
 A few errors in the readme have also been solved.
 
-## Changes
+### Changes
 
 * Database version 3.2.0
   * Add `JOURNALS` table
   * Add `JOURNALS` field in the `USERS` table
 * Download users' journals
 
-## Fixes
+### Fixes
 
 * Fix readme errors
 
@@ -607,11 +605,11 @@ A few errors in the readme have also been solved.
 
 Database version has been updated to 3.1.0; the "extras" folder has been renamed "mentions". Order of submissions ID's is maintained when downloading single submissions.
 
-## Fixes
+### Fixes
 
 * Maintain order of submission ID's when downloading single submissions
 
-## Changes
+### Changes
 
 * Database updated to 3.1.0
   * Extras renamed to mentions
@@ -630,7 +628,7 @@ Database version has been updated to 3.1.0; the "extras" folder has been renamed
 
 Fixes a but that caused tiered paths to overlap if the submission ID ended with zeroes.
 
-## Fixes
+### Fixes
 
 * Tiered path for submssions ID's ended with zeroes
 
@@ -640,7 +638,7 @@ Fixes a but that caused tiered paths to overlap if the submission ID ended with 
 
 Order of users and folders passed to download users/update is maintained. Submissions already in the database but not in user entry are not downloaded again.
 
-## Fixes
+### Fixes
 
 * Maintain order of users and folders passed to download
 * Do not redownload submissions if already present in submissions table
@@ -651,7 +649,7 @@ Order of users and folders passed to download users/update is maintained. Submis
 
 Submissions titles are now cleaned of non-ASCII characters before printing them to screen. Non-ASCII characters would break the spacing of the download output.
 
-## Fixes
+### Fixes
 
 * Fix output of submissions titles with non-ASCII characters breaking spacing
 
@@ -661,7 +659,7 @@ Submissions titles are now cleaned of non-ASCII characters before printing them 
 
 Fix old database having the wrong version in the name when backing it after updating from verison 2.7.0.
 
-## Fixes
+### Fixes
 
 * Fix database backup name up when updating from 2.7.0
 
@@ -671,7 +669,7 @@ Fix old database having the wrong version in the name when backing it after upda
 
 Download update now allows to pass a list of users and/or folders to restrict the update to those.
 
-## Changes
+### Changes
 
 * Pass users and/or folders to download update
 
@@ -681,7 +679,7 @@ Download update now allows to pass a list of users and/or folders to restrict th
 
 Database search now allows to use either display or URL author usernames; i.e. `Pippo_Pluto` is equal to `pippopluto`.
 
-## Changes
+### Changes
 
 * Accept both display and URL author usernames in database search
 
@@ -691,7 +689,7 @@ Database search now allows to use either display or URL author usernames; i.e. `
 
 Exceptions raised during database updates are caught and any pending changes are committed before the exception is raised again.
 
-## Changes
+### Changes
 
 * Safely commit and close when catching exceptions during database updates
 
@@ -701,7 +699,7 @@ Exceptions raised during database updates are caught and any pending changes are
 
 The memory usage of database select (i.e. read) operations has been reduced by using [sqlite3 cursors](https://docs.python.org/3/library/sqlite3.html#cursor-objects) instead of lists. The speed of the database update function has been greatly improved by reducing database commits to one every 10000 processed entries (1000 for the users table).
 
-## Changes
+### Changes
 
 * Database select operations return sqlite3 cursors to reduce memory usage
 * Database update speed increased by reducing the number of commits
@@ -712,7 +710,7 @@ The memory usage of database select (i.e. read) operations has been reduced by u
 
 Fixes an output error in the database update function and improves the way settings and statistics are written in the database, using UPDATE instead of INSERT OR REPLACE
 
-## Fixes
+### Fixes
 
 * Database update output error
 * Settings are updated instead of inserted
@@ -723,7 +721,7 @@ Fixes an output error in the database update function and improves the way setti
 
 Improve database update function by saving the ID's of the submissions files that weren't found during the transfer.
 
-## Changes
+### Changes
 
 * Save ID's of submisions not found during database update
 
@@ -733,7 +731,7 @@ Improve database update function by saving the ID's of the submissions files tha
 
 Updated requirement [FAAPI](https://gitlab.com/MatteoCampinoti94/FAAPI) to version 2.6.0.
 
-## Changes
+### Changes
 
 * Use FAAPI 2.6.0
 
@@ -743,7 +741,7 @@ Updated requirement [FAAPI](https://gitlab.com/MatteoCampinoti94/FAAPI) to versi
 
 If the now unsupported "extras" folder is encountered during update, it now prints a warning and skips to the next.
 
-## Changes
+### Changes
 
 * Explicitely warn about extras folders
 
@@ -753,7 +751,7 @@ If the now unsupported "extras" folder is encountered during update, it now prin
 
 Fixed an IOError that happened when trying to pipe the database search output to a file.
 
-## Fixes
+### Fixes
 
 * IOError when piping search results
 
@@ -763,7 +761,7 @@ Fixed an IOError that happened when trying to pipe the database search output to
 
 Fix a version error. Database version was set to 3.1.0 instead of the program version.
 
-## Fixes
+### Fixes
 
 * Fix versions
 
@@ -773,11 +771,11 @@ Fix a version error. Database version was set to 3.1.0 instead of the program ve
 
 The database search command now allows to pass a parameter multiple times to act as OR values for the same field. The readme has been slightly improved and some errors in it have been fixed.
 
-## Fixes
+### Fixes
 
 * Readme typos and errors
 
-## Changes
+### Changes
 
 * Database search accepts OR parameters
 
@@ -791,7 +789,7 @@ Under the hood changes include exporting the main console function so that the p
 
 Readme has also been improved with more informations about issues and contributing.
 
-## Fixes
+### Fixes
 
 * Database update function updates counters of new database
 
@@ -801,11 +799,11 @@ Readme has also been improved with more informations about issues and contributi
 
 Small patch to fix a search bug and output the number of results found with search.
 
-## Fixes
+### Fixes
 
 * Fix search crash when using description parameter
 
-## Changes
+### Changes
 
 * Output total number of results found by search
 
@@ -835,7 +833,7 @@ All database functions have been completely overhauled and are now _considerably
 
 The last big change is in regards to the packaging and distribution of the program. falocalrepo is now a PyPi package, easily installed with a single pip command. All dependencies have also been packaged and distributed on PyPi and are handled without the need for git submodules. The new distribution method allows to run falocalrepo in any folder, without the need to have the program itself stored with the database.
 
-## Changes
+### Changes
 
 * Use FAAPI package to separate scraper developement from interface
 * Support for new FA's interface
@@ -846,7 +844,7 @@ The last big change is in regards to the packaging and distribution of the progr
 * Command line help
 * Distribution via PyPi
 
-## Distribution
+### Distribution
 
 * [falocalrepo on PyPi.org](https://pypi.org/project/falocalrepo/)
 
