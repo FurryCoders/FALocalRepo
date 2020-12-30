@@ -24,7 +24,6 @@ The [falocalrepo-server](https://pypi.org/project/falocalrepo-server/) package i
 ## Contents
 
 1. [Installation and Update](#installation-and-update)
-1. [How to Read Usage Instructions](#how-to-read-usage-instructions)
 1. [Cookies](#cookies)
 1. [Usage](#usage)
     1. [Help](#help)
@@ -65,13 +64,6 @@ The program needs cookies from a logged-in Fur Affinity session to download prot
 
 **Warning**: Fur Affinity theme template must be set to "modern". Can be changed at [furaffinity.net/controls/settings/](https://www.furaffinity.net/controls/settings/).
 
-## How to Read Usage Instructions
-
-* `command` a static command keyword
-* `<arg>` `<param>` `<value>` an argument, parameter, value, etc... that must be provided to a command
-* `[<arg>]` an optional argument that can be omitted
-* `<arg1> | <arg2>` mutually exclusive arguments, only use one 
-
 ## Cookies
 
 The scraping library used by this program needs two specific cookies from a logged-in Fur Affinity session. These are cookie `a` and cookie `b`.
@@ -84,6 +76,12 @@ Alternatively, the storage inspection tool of a desktop browser can also be used
 To set the cookies use the `config cookies` command. See [#Configuration](#configuration) for more details.
 
 ## Usage
+
+> **How to Read Usage Instructions**
+> * `command` a static command keyword
+> * `<arg>` `<param>` `<value>` an argument, parameter, value, etc... that must be provided to a command
+> * `[<arg>]` an optional argument that can be omitted
+> * `<arg1> | <arg2>` mutually exclusive arguments, only use one
 
 To run the program, simply call `falocalrepo` in your shell after installation.
 
