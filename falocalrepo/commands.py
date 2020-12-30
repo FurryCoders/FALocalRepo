@@ -143,6 +143,8 @@ def search(table: FADatabaseTable, parameters: Dict[str, List[str]]) -> List[Dic
     if "author" in query:
         query["replace(author, '_', '')"] = list(map(lambda u: clean_username(u, "%"), query["author"]))
         del query["author"]
+    if "username" in query:
+        query["username"] = list(map(lambda u: clean_username(u, "%"), query["username"]))
     return list(table.cursor_to_dict(table.select(
         query,
         like=True,
