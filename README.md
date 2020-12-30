@@ -146,7 +146,7 @@ It can be used to create the database and then manually edit it, or to update it
 
 ### Configuration
 
-`config [<setting>] [<value1>] ... [<valueN>]`
+`config [<setting> [<value1>] ... [<valueN>]]`
 
 The `config` command allows to change the settings used by the program.
 
@@ -204,7 +204,7 @@ falocalrepo download journals 123456 135724 876512
 
 ### Database
 
-`database [<operation>] [<param1>=<value1>] ... [<paramN>=<valueN>]`
+`database [<operation> [<param1>=<value1> ... <paramN>=<valueN>]]`
 
 The `database` command allows to operate on the database. Used without an operation command shows the database information, statistics (number of users and submissions and time of last update), and version.
 
