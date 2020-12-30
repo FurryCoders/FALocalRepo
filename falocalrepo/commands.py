@@ -152,7 +152,7 @@ def search(table: FADatabaseTable, parameters: Dict[str, List[str]]) -> List[Dic
     )))
 
 
-def print_items(subs: List[Dict[str, Union[int, str]]]):
+def print_items(items: List[Dict[str, Union[int, str]]]):
     space_id: int = 10
     space_user: int = 10
     space_date: int = 10
@@ -163,12 +163,12 @@ def print_items(subs: List[Dict[str, Union[int, str]]]):
         pass
 
     print(f"{'ID':^{space_id}} | {'User':^{space_user}} | {'Date':^{space_date}} | Title")
-    for sub in subs:
+    for item in items:
         print(
-            f"{str(sub['ID'])[:space_id].zfill(space_id)} | " +
-            f"{sub['AUTHOR'][:space_user]:<{space_user}} | " +
-            f"{sub['DATE'][:space_date]:<{space_date}} | " +
-            sub['TITLE'][:(space_term - space_id - space_user - space_date - 10)]
+            f"{str(item['ID'])[:space_id].zfill(space_id)} | " +
+            f"{item['AUTHOR'][:space_user]:<{space_user}} | " +
+            f"{item['DATE'][:space_date]:<{space_date}} | " +
+            item['TITLE'][:(space_term - space_id - space_user - space_date - 10)]
         )
 
 
