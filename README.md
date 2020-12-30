@@ -26,6 +26,7 @@ The [falocalrepo-server](https://pypi.org/project/falocalrepo-server/) package i
 1. [Installation and Update](#installation-and-update)
 1. [Cookies](#cookies)
 1. [Usage](#usage)
+    1. [Environmental Variables](#environmental-variables)
     1. [Help](#help)
     1. [Init](#init)
     1. [Configuration](#configuration)
