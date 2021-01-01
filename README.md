@@ -111,6 +111,8 @@ Available commands are:
 
 _Note:_ all the commands except `help` will create and initialise the database if it is not present in the folder
 
+_Note:_ only one instance of the program is allowed at any given time
+
 When the database is first initialised, it defaults the submissions files folder to `FA.files`. This value can be changed using the [`config` command](#configuration).
 
 Cookies need to be set manually with the config command before the program will be able to access protected pages.
