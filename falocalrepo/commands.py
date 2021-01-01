@@ -13,6 +13,8 @@ from typing import Union
 from faapi import Journal
 from faapi import Submission
 from falocalrepo_database import FADatabaseTable
+from psutil import Process
+from psutil import pids
 from requests import get as req_get
 
 
@@ -46,6 +48,10 @@ class Bar:
     def message(self, message: str):
         self.clear()
         print(f"{message[:self.length]:^{self.length}}", end="", flush=True)
+
+
+def check_process(process: str) -> bool:
+    return any(map(lambda p: "python" in p.name().lower() and process in p.cmdline(), map(Process, pids())))
 
 
 def clean_username(username: str, exclude: str = "") -> str:
