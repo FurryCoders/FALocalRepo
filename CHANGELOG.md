@@ -1,5 +1,15 @@
 # Changelog
 
+## 3.13.14
+
+### Changes
+
+* Check for other running instances of `falocalrepo` and raise exception if any is found
+
+### Fixes
+
+* Fix a line-wrapping error in the main help message
+
 ## 3.13.13
 
 ### Changes
