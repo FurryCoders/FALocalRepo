@@ -88,7 +88,7 @@ To run the program, simply call `falocalrepo` in your shell after installation.
 
 Running without arguments will prompt a help message with all the available options and commands.
 
-Generally, commands need to be in the following format:
+The usage pattern for the program is as follows:
 
 ```
 falocalrepo [-h | -v | -d | -s] [<command> [<operation>] [<arg1> ... <argN>]]
