@@ -7,6 +7,7 @@ from sys import exit
 from traceback import print_exc
 
 from .console import MalformedCommand
+from .console import MultipleInstances
 from .console import UnknownCommand
 from .console import console
 
@@ -20,21 +21,24 @@ def main():
     except (MalformedCommand, UnknownCommand) as err:
         print(repr(err))
         exit(1)
-    except ConnectionError as err:
+    except MultipleInstances as err:
         print(repr(err))
         exit(2)
-    except (DatabaseError, IntegrityError) as err:
+    except ConnectionError as err:
         print(repr(err))
         exit(3)
-    except (TypeError, AssertionError) as err:
+    except (DatabaseError, IntegrityError) as err:
         print(repr(err))
         exit(4)
+    except (TypeError, AssertionError) as err:
+        print(repr(err))
+        exit(5)
     except (Exception, BaseException) as err:
         with open(join(getcwd(), "FA.log"), "w") as f:
             print_exc(file=f)
             print(repr(err))
             print(f"Trace written to {f.name}")
-        exit(5)
+        exit(6)
 
 
 if __name__ == "__main__":
