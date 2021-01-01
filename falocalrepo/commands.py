@@ -51,7 +51,10 @@ class Bar:
 
 
 def check_process(process: str) -> bool:
-    return any(map(lambda p: "python" in p.name().lower() and process in p.cmdline(), map(Process, pids())))
+    return any(map(
+        lambda p: "python" in p.name().lower() and any(process in cmd for cmd in p.cmdline()),
+        map(Process, pids())
+    ))
 
 
 def clean_username(username: str, exclude: str = "") -> str:
