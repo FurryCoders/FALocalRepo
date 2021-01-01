@@ -20,6 +20,7 @@ from falocalrepo_server import __version__ as __server_version__
 from falocalrepo_server import server
 
 from .__version__ import __version__
+from .commands import check_process
 from .commands import latest_version
 from .commands import make_journal
 from .commands import make_submission
@@ -42,6 +43,10 @@ class MalformedCommand(Exception):
 
 
 class UnknownCommand(Exception):
+    pass
+
+
+class MultipleInstances(Exception):
     pass
 
 
@@ -852,6 +857,8 @@ def console(comm: str = "", *args: str) -> None:
         return
     elif comm not in (init.__name__, config.__name__, download.__name__, database.__name__):
         raise UnknownCommand(comm)
+    elif check_process(p := "falocalrepo"):
+        raise MultipleInstances(f"Another instance of {p} was detected")
 
     check_update(__version__, "falocalrepo")
     check_update(__database_version__, "falocalrepo-database")
