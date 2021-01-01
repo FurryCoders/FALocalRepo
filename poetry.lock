@@ -10,8 +10,8 @@ python-versions = "*"
 soupsieve = {version = ">1.2", markers = "python_version >= \"3.0\""}
 
 [package.extras]
-html5lib = ["html5lib"]
 lxml = ["lxml"]
+html5lib = ["html5lib"]
 
 [[package]]
 name = "certifi"
@@ -34,11 +34,11 @@ requests = ">=2.6.1"
 
 [[package]]
 name = "chardet"
-version = "3.0.4"
+version = "4.0.0"
 description = "Universal encoding detector for Python 2 and 3"
 category = "main"
 optional = false
-python-versions = "*"
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
 
 [[package]]
 name = "click"
@@ -50,41 +50,41 @@ python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
 
 [[package]]
 name = "faapi"
-version = "2.11.2"
+version = "2.11.4"
 description = "Python module to implement API-like functionality for the FurAffinity.net website."
 category = "main"
 optional = false
 python-versions = ">=3.8,<4.0"
 
 [package.dependencies]
-beautifulsoup4 = ">=4.9.1,<4.10.0"
-cfscrape = ">=2.1.1,<2.2.0"
-lxml = ">=4.6.0,<4.7.0"
-python-dateutil = ">=2.8.1,<2.9.0"
-requests = ">=2.24.0,<2.25.0"
+python-dateutil = ">=2.8.1,<3.0.0"
+beautifulsoup4 = ">=4.9.1,<5.0.0"
+lxml = ">=4.6.0,<5.0.0"
+requests = ">=2.24.0,<3.0.0"
+cfscrape = ">=2.1.1,<3.0.0"
 
 [[package]]
 name = "falocalrepo-database"
-version = "4.3.0"
+version = "4.3.1"
 description = "Database functionality for falocalrepo."
 category = "main"
 optional = false
 python-versions = ">=3.8,<4.0"
 
 [package.dependencies]
-filetype = ">=1.0.7,<1.1.0"
+filetype = ">=1.0.7,<2.0.0"
 
 [[package]]
 name = "falocalrepo-server"
-version = "1.6.5"
+version = "1.6.6"
 description = "Web interface for falocalrepo."
 category = "main"
 optional = false
 python-versions = ">=3.8,<4.0"
 
 [package.dependencies]
+flask = ">=1.1.2,<2.0.0"
 falocalrepo-database = ">=4.3.0,<4.4.0"
-flask = "1.1.2"
 
 [[package]]
 name = "filetype"
@@ -103,15 +103,15 @@ optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
 
 [package.dependencies]
-click = ">=5.1"
 itsdangerous = ">=0.24"
 Jinja2 = ">=2.10.1"
+click = ">=5.1"
 Werkzeug = ">=0.15"
 
 [package.extras]
-dev = ["pytest", "coverage", "tox", "sphinx", "pallets-sphinx-themes", "sphinxcontrib-log-cabinet", "sphinx-issues"]
-docs = ["sphinx", "pallets-sphinx-themes", "sphinxcontrib-log-cabinet", "sphinx-issues"]
 dotenv = ["python-dotenv"]
+docs = ["sphinx", "pallets-sphinx-themes", "sphinxcontrib-log-cabinet", "sphinx-issues"]
+dev = ["pytest", "coverage", "tox", "sphinx", "pallets-sphinx-themes", "sphinxcontrib-log-cabinet", "sphinx-issues"]
 
 [[package]]
 name = "idna"
@@ -152,10 +152,10 @@ optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, != 3.4.*"
 
 [package.extras]
+source = ["Cython (>=0.29.7)"]
 cssselect = ["cssselect (>=0.7)"]
 html5 = ["html5lib"]
 htmlsoup = ["beautifulsoup4"]
-source = ["Cython (>=0.29.7)"]
 
 [[package]]
 name = "markupsafe"
@@ -178,17 +178,17 @@ six = ">=1.5"
 
 [[package]]
 name = "requests"
-version = "2.24.0"
+version = "2.25.1"
 description = "Python HTTP for Humans."
 category = "main"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
 
 [package.dependencies]
-certifi = ">=2017.4.17"
-chardet = ">=3.0.2,<4"
 idna = ">=2.5,<3"
-urllib3 = ">=1.21.1,<1.25.0 || >1.25.0,<1.25.1 || >1.25.1,<1.26"
+certifi = ">=2017.4.17"
+chardet = ">=3.0.2,<5"
+urllib3 = ">=1.21.1,<1.27"
 
 [package.extras]
 security = ["pyOpenSSL (>=0.14)", "cryptography (>=1.3.4)"]
@@ -212,7 +212,7 @@ python-versions = ">=3.5"
 
 [[package]]
 name = "urllib3"
-version = "1.25.11"
+version = "1.26.2"
 description = "HTTP library with thread-safe connection pooling, file post, and more."
 category = "main"
 optional = false
@@ -232,8 +232,8 @@ optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
 
 [package.extras]
-dev = ["pytest", "pytest-timeout", "coverage", "tox", "sphinx", "pallets-sphinx-themes", "sphinx-issues"]
 watchdog = ["watchdog"]
+dev = ["pytest", "pytest-timeout", "coverage", "tox", "sphinx", "pallets-sphinx-themes", "sphinx-issues"]
 
 [metadata]
 lock-version = "1.1"
@@ -255,24 +255,24 @@ cfscrape = [
     {file = "cfscrape-2.1.1.tar.gz", hash = "sha256:7c5ef94554e0d6ee7de7cd0d42051526e716ce6c0357679ee0b82c49e189e2ef"},
 ]
 chardet = [
-    {file = "chardet-3.0.4-py2.py3-none-any.whl", hash = "sha256:fc323ffcaeaed0e0a02bf4d117757b98aed530d9ed4531e3e15460124c106691"},
-    {file = "chardet-3.0.4.tar.gz", hash = "sha256:84ab92ed1c4d4f16916e05906b6b75a6c0fb5db821cc65e70cbd64a3e2a5eaae"},
+    {file = "chardet-4.0.0-py2.py3-none-any.whl", hash = "sha256:f864054d66fd9118f2e67044ac8981a54775ec5b67aed0441892edb553d21da5"},
+    {file = "chardet-4.0.0.tar.gz", hash = "sha256:0d6f53a15db4120f2b08c94f11e7d93d2c911ee118b6b30a04ec3ee8310179fa"},
 ]
 click = [
     {file = "click-7.1.2-py2.py3-none-any.whl", hash = "sha256:dacca89f4bfadd5de3d7489b7c8a566eee0d3676333fbb50030263894c38c0dc"},
     {file = "click-7.1.2.tar.gz", hash = "sha256:d2b5255c7c6349bc1bd1e59e08cd12acbbd63ce649f2588755783aa94dfb6b1a"},
 ]
 faapi = [
-    {file = "faapi-2.11.2-py3-none-any.whl", hash = "sha256:51f1428add00d6dcd04f1e94f864c9a1f2baea13ea754d2074e2c2f79d285016"},
-    {file = "faapi-2.11.2.tar.gz", hash = "sha256:939f7ae8357c3a01aed64e7e9fc21adb3cc4dd4c81dce22df54c469ff4c9deb4"},
+    {file = "faapi-2.11.4-py3-none-any.whl", hash = "sha256:6267d4e2ac68a2d3770820a8833917dcf5d49ab743257af976ee14e9aadcbef5"},
+    {file = "faapi-2.11.4.tar.gz", hash = "sha256:64d1971c7793f36ce08a6fdde890a01fe043c17cb24db149bb317bb68289ce29"},
 ]
 falocalrepo-database = [
-    {file = "falocalrepo-database-4.3.0.tar.gz", hash = "sha256:49418834f721fadfeb2c94791f84d17f4c8906670f69cbe8dc752506c7b5d9a0"},
-    {file = "falocalrepo_database-4.3.0-py3-none-any.whl", hash = "sha256:630fe7b1598049d796491d9153aec269914179be66f040c8806e8a76a312abd6"},
+    {file = "falocalrepo-database-4.3.1.tar.gz", hash = "sha256:0b360f82cecb6a68c7aa366a28726ea8c983e8f3b5aa24895aaa388f3eeae714"},
+    {file = "falocalrepo_database-4.3.1-py3-none-any.whl", hash = "sha256:1f260cf0b782ae7d35e4e02088ed2c345ee607926eeea9ba4b593013aa8d2d56"},
 ]
 falocalrepo-server = [
-    {file = "falocalrepo-server-1.6.5.tar.gz", hash = "sha256:7a4bf63564cb53bc289e3721e37211f80a2e5142333944bba3eab1f0d34b9053"},
-    {file = "falocalrepo_server-1.6.5-py3-none-any.whl", hash = "sha256:c10274e694ccbfac4386b53b5c1a01d92d85197c38026eafd1e3d83d5fb94f95"},
+    {file = "falocalrepo-server-1.6.6.tar.gz", hash = "sha256:f6346871f06de890f78e3e1ced3bbc02d2818cc7b17c807db1411a484ed382b1"},
+    {file = "falocalrepo_server-1.6.6-py3-none-any.whl", hash = "sha256:35b193a3eca2cf78080f66cc8df4da9c0413b409ec1eb2823ef1d63f6f8a2bc2"},
 ]
 filetype = [
     {file = "filetype-1.0.7-py2.py3-none-any.whl", hash = "sha256:353369948bb1c09b8b3ea3d78390b5586e9399bff9aab894a1dff954e31a66f6"},
@@ -373,8 +373,8 @@ python-dateutil = [
     {file = "python_dateutil-2.8.1-py2.py3-none-any.whl", hash = "sha256:75bb3f31ea686f1197762692a9ee6a7550b59fc6ca3a1f4b5d7e32fb98e2da2a"},
 ]
 requests = [
-    {file = "requests-2.24.0-py2.py3-none-any.whl", hash = "sha256:fe75cc94a9443b9246fc7049224f75604b113c36acb93f87b80ed42c44cbb898"},
-    {file = "requests-2.24.0.tar.gz", hash = "sha256:b3559a131db72c33ee969480840fff4bb6dd111de7dd27c8ee1f820f4f00231b"},
+    {file = "requests-2.25.1-py2.py3-none-any.whl", hash = "sha256:c210084e36a42ae6b9219e00e48287def368a26d03a048ddad7bfee44f75871e"},
+    {file = "requests-2.25.1.tar.gz", hash = "sha256:27973dd4a904a4f13b263a19c866c13b92a39ed1c964655f025f3f8d3d75b804"},
 ]
 six = [
     {file = "six-1.15.0-py2.py3-none-any.whl", hash = "sha256:8b74bedcbbbaca38ff6d7491d76f2b06b3592611af620f8426e82dddb04a5ced"},
@@ -385,8 +385,8 @@ soupsieve = [
     {file = "soupsieve-2.1.tar.gz", hash = "sha256:6dc52924dc0bc710a5d16794e6b3480b2c7c08b07729505feab2b2c16661ff6e"},
 ]
 urllib3 = [
-    {file = "urllib3-1.25.11-py2.py3-none-any.whl", hash = "sha256:f5321fbe4bf3fefa0efd0bfe7fb14e90909eb62a48ccda331726b4319897dd5e"},
-    {file = "urllib3-1.25.11.tar.gz", hash = "sha256:8d7eaa5a82a1cac232164990f04874c594c9453ec55eef02eab885aa02fc17a2"},
+    {file = "urllib3-1.26.2-py2.py3-none-any.whl", hash = "sha256:d8ff90d979214d7b4f8ce956e80f4028fc6860e4431f731ea4a8c08f23f99473"},
+    {file = "urllib3-1.26.2.tar.gz", hash = "sha256:19188f96923873c92ccb987120ec4acaa12f0461fa9ce5d3d0772bc965a39e08"},
 ]
 werkzeug = [
     {file = "Werkzeug-1.0.1-py2.py3-none-any.whl", hash = "sha256:2de2a5db0baeae7b2d2664949077c2ac63fbd16d98da0ff71837f7d1dea3fd43"},
