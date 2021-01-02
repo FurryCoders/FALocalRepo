@@ -857,7 +857,7 @@ def console(comm: str = "", *args: str) -> None:
         return
     elif comm not in (init.__name__, config.__name__, download.__name__, database.__name__):
         raise UnknownCommand(comm)
-    elif check_process(p := "falocalrepo"):
+    elif check_process(p := "falocalrepo") > 1:
         raise MultipleInstances(f"Another instance of {p} was detected")
 
     check_update(__version__, "falocalrepo")
