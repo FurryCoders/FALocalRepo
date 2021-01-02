@@ -93,7 +93,7 @@ def check_update(version: str, package: str):
         print(f"New {package} version available: {latest} > {version}")
 
 
-def help_(comm1: str = None, comm2: str = "", *_args: str) -> str:
+def help_(comm: str = None, op: str = "", *_args: str) -> str:
     """
     USAGE
         falocalrepo help [<command> [<operation>]]
@@ -110,16 +110,15 @@ def help_(comm1: str = None, comm2: str = "", *_args: str) -> str:
         database        Display the manual of database
     """
 
-    comm = f"{comm1}_{comm2.replace('-', '_')}" if comm2 else comm1
+    comm = f"{comm}_{op.replace('-', '_')}" if op else comm1
 
     if not comm:
         return cleandoc(console.__doc__)
-    elif comm1 == help_.__name__.rstrip("_"):
+    elif comm == help_.__name__.rstrip("_"):
         return cleandoc(help_.__doc__)
-    elif comm1 == init.__name__:
-        return cleandoc(init.__doc__)
 
     for func in [
+        init,
         config,
         config_list,
         config_cookies,
@@ -147,7 +146,7 @@ def help_(comm1: str = None, comm2: str = "", *_args: str) -> str:
         if comm == func.__name__:
             return cleandoc(func.__doc__)
 
-    raise UnknownCommand(f"{comm1} {comm2}".strip())
+    raise UnknownCommand(f"{comm} {op}".strip())
 
 
 def init():
