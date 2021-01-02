@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.13.16
+
+### Fixes
+
+* Fix _ not working when searching AUTHOR and USERNAME fields
+
 ## 3.13.15
 
 ### Fixes
