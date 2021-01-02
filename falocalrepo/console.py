@@ -246,11 +246,13 @@ def config(db: FADatabase, comm: str = "", *args: str):
         The config command allows to change the settings used by the program.
     """
 
-    if not comm or comm == "list":
+    if not comm:
         config_list(db)
-    elif comm == "cookies":
+    elif (comm := f"{config.__name__}_{comm}") == config_list.__name__:
+        config_list(db)
+    elif comm == config_cookies.__name__:
         config_cookies(db, *args)
-    elif comm == "files-folder":
+    elif comm == config_files_folder.__name__:
         config_files_folder(db, *args)
     else:
         raise UnknownCommand(f"config {comm}")
@@ -410,13 +412,13 @@ def download(db: FADatabase, comm: str = "", *args: str):
 
     if not api.connection_status:
         raise ConnectionError("FAAPI cannot connect to FA")
-    elif comm == "users":
+    elif (comm := f"{download.__name__}_{comm}") == download_users.__name__:
         download_users(db, api, *args)
-    elif comm == "update":
+    elif comm == download_update.__name__:
         download_update(db, api, *args)
-    elif comm == "submissions":
+    elif comm == download_submissions.__name__:
         download_submissions(db, api, *args)
-    elif comm == "journals":
+    elif comm == download_journals.__name__:
         download_journals(db, api, *args)
     else:
         raise UnknownCommand(f"download {comm}")
@@ -776,31 +778,33 @@ def database(db: FADatabase, comm: str = "", *args: str):
         specific search command.
     """
 
-    if not comm or comm == "info":
+    if not comm:
         database_info(db)
-    elif comm == "history":
+    elif (comm := f"{database.__name__}_{comm}".replace("-", "_")) == database_info.__name__:
+        database_info(db)
+    elif comm == database_history.__name__:
         database_history(db)
-    elif comm == "search-users":
+    elif comm == database_search_users.__name__:
         database_search_users(db, *args)
-    elif comm == "search-submissions":
+    elif comm == database_search_submissions.__name__:
         database_search_submissions(db, *args)
-    elif comm == "search-journals":
+    elif comm == database_search_journals.__name__:
         database_search_journals(db, *args)
-    elif comm == "add-submission":
+    elif comm == database_add_submission.__name__:
         database_add_submission(db, *args)
-    elif comm == "add-journal":
+    elif comm == database_add_journal.__name__:
         database_add_journal(db, *args)
-    elif comm == "remove-users":
+    elif comm == database_remove_users.__name__:
         database_remove_users(db, *args)
-    elif comm == "remove-submissions":
+    elif comm == database_remove_submissions.__name__:
         database_remove_submissions(db, *args)
-    elif comm == "remove-journals":
+    elif comm == database_remove_journals.__name__:
         database_remove_journals(db, *args)
-    elif comm == "server":
+    elif comm == database_server.__name__:
         database_server(db, *args)
-    elif comm == "merge":
+    elif comm == database_merge.__name__:
         database_merge(db, *args)
-    elif comm == "clean":
+    elif comm == database_clean.__name__:
         database_clean(db)
     else:
         raise UnknownCommand(f"database {comm}")
