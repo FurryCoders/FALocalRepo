@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.13.15
+
+### Fixes
+
+* Fix error with instance checking causing the program to fail at start
+
 ## 3.13.14
 
 ### Changes
