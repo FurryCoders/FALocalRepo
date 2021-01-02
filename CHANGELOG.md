@@ -40,7 +40,7 @@
 
 ### Fixes
 
-* Fix % not working AUTHOR and USERNAME fields
+* Fix % not working when searching AUTHOR and USERNAME fields
 * Fix USERNAME field not being cleaned when performing users search
 * Fix an error when users search found 0 results
 
