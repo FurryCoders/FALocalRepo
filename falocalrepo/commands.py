@@ -50,11 +50,11 @@ class Bar:
         print(f"{message[:self.length]:^{self.length}}", end="", flush=True)
 
 
-def check_process(process: str) -> bool:
-    return any(map(
+def check_process(process: str) -> int:
+    return len(list(filter(
         lambda p: "python" in p.name().lower() and any(process in cmd for cmd in p.cmdline()),
         map(Process, pids())
-    ))
+    )))
 
 
 def clean_username(username: str, exclude: str = "") -> str:
