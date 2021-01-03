@@ -110,7 +110,7 @@ def help_(comm: str = None, op: str = "", *_args: str) -> str:
         database        Display the manual of database
     """
 
-    comm = f"{comm}_{op.replace('-', '_')}" if op else comm1
+    comm = f"{comm}_{op.replace('-', '_')}" if op else comm
 
     if not comm:
         return cleandoc(console.__doc__)
