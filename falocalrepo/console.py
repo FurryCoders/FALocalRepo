@@ -96,9 +96,11 @@ def parse_args(args_raw: Iterable[str]) -> Tuple[Dict[str, str], List[str]]:
     return parameters(opts), args
 
 
-def check_update(version: str, package: str):
+def check_update(version: str, package: str) -> bool:
     if (latest := latest_version(package)) and latest != version:
         print(f"New {package} version available: {latest} > {version}")
+        return True
+    return False
 
 
 def help_(comm: str = None, op: str = "", *_rest) -> str:
@@ -801,7 +803,7 @@ def console(comm: str = "", *args: str) -> None:
     faapi: {3}
 
     USAGE
-        falocalrepo [-h | -v | -d | -s] [<command> [<operation>] [<arg1> ...
+        falocalrepo [-h | -v | -d | -s | -u] [<command> [<operation>] [<arg1> ...
                     <argN>]]
 
     ARGUMENTS
@@ -814,6 +816,7 @@ def console(comm: str = "", *args: str) -> None:
         -v, --version   Display version
         -d, --database  Display database version
         -s, --server    Display server version
+        -u, --updates   Check for updates on PyPi
 
     AVAILABLE COMMANDS
         help            Display the manual of a command
@@ -841,15 +844,18 @@ def console(comm: str = "", *args: str) -> None:
     elif comm in ("-s", "--server"):
         print(__server_version__)
         return
+    elif comm in ("-u", "--updates"):
+        v = check_update(__version__, "falocalrepo")
+        v += check_update(__database_version__, "falocalrepo-database")
+        v += check_update(__server_version__, "falocalrepo-server")
+        v += check_update(__faapi_version__, "faapi")
+        if not v:
+            print("No updates available")
+        return
     elif comm not in (init.__name__, config.__name__, download.__name__, database.__name__):
         raise UnknownCommand(comm)
     elif check_process(p := "falocalrepo") > 1:
         raise MultipleInstances(f"Another instance of {p} was detected")
-
-    check_update(__version__, "falocalrepo")
-    check_update(__database_version__, "falocalrepo-database")
-    check_update(__server_version__, "falocalrepo-server")
-    check_update(__faapi_version__, "faapi")
 
     # Initialise and prepare database
     database_path = "FA.db"
