@@ -6,6 +6,7 @@ from os.path import getsize
 from os.path import isfile
 from os.path import join
 from re import match
+from typing import Callable
 from typing import Dict
 from typing import Iterable
 from typing import List
@@ -48,6 +49,13 @@ class UnknownCommand(Exception):
 
 class MultipleInstances(Exception):
     pass
+
+
+def raiser(e: Exception) -> Callable[[], None]:
+    def inner(*_):
+        raise e
+
+    return inner
 
 
 def docstring_parameter(*args, **kwargs):
@@ -93,7 +101,7 @@ def check_update(version: str, package: str):
         print(f"New {package} version available: {latest} > {version}")
 
 
-def help_(comm: str = None, op: str = "", *_args: str) -> str:
+def help_(comm: str = None, op: str = "", *_rest) -> str:
     """
     USAGE
         falocalrepo help [<command> [<operation>]]
@@ -110,43 +118,39 @@ def help_(comm: str = None, op: str = "", *_args: str) -> str:
         database        Display the manual of database
     """
 
-    comm = f"{comm}_{op.replace('-', '_')}" if op else comm
+    f = {
+        "": console,
+        "help": help_,
+        "init": init,
+        "config": config,
+        "config_list": config_list,
+        "config_cookies": config_cookies,
+        "config_files-folder": config_files_folder,
+        "download": download,
+        "download_users": download_users,
+        "download_update": download_update,
+        "download_submissions": download_submissions,
+        "download_journals": download_journals,
+        "database": database,
+        "database_info": database_info,
+        "database_history": database_history,
+        "database_search-users": database_search_users,
+        "database_search-submissions": database_search_submissions,
+        "database_search-journals": database_search_journals,
+        "database_add-submission": database_add_submission,
+        "database_add-journal": database_add_journal,
+        "database_remove-users": database_remove_users,
+        "database_remove-submissions": database_remove_submissions,
+        "database_remove-journals": database_remove_journals,
+        "database_server": database_server,
+        "database_merge": database_merge,
+        "database_clean": database_clean,
+    }.get(f"{comm}_{op}" if op else comm, None)
 
-    if not comm:
-        return cleandoc(console.__doc__)
-    elif comm == help_.__name__.rstrip("_"):
-        return cleandoc(help_.__doc__)
-
-    for func in [
-        init,
-        config,
-        config_list,
-        config_cookies,
-        config_files_folder,
-        download,
-        download_users,
-        download_update,
-        download_submissions,
-        download_journals,
-        database,
-        database_info,
-        database_history,
-        database_search_users,
-        database_search_submissions,
-        database_search_journals,
-        database_add_submission,
-        database_add_journal,
-        database_remove_users,
-        database_remove_submissions,
-        database_remove_journals,
-        database_server,
-        database_merge,
-        database_clean,
-    ]:
-        if comm == func.__name__:
-            return cleandoc(func.__doc__)
-
-    raise UnknownCommand(f"{comm} {op}".strip())
+    if f is None:
+        raise UnknownCommand(f"{comm} {op}".strip())
+    else:
+        return cleandoc(f.__doc__)
 
 
 def init():
@@ -165,7 +169,7 @@ def init():
     print("Database ready")
 
 
-def config_list(db: FADatabase):
+def config_list(db: FADatabase, *_rest):
     """
     USAGE
         falocalrepo config list
@@ -245,16 +249,12 @@ def config(db: FADatabase, comm: str = "", *args: str):
         The config command allows to change the settings used by the program.
     """
 
-    if not comm:
-        config_list(db)
-    elif (comm := f"{config.__name__}_{comm}") == config_list.__name__:
-        config_list(db)
-    elif comm == config_cookies.__name__:
-        config_cookies(db, *args)
-    elif comm == config_files_folder.__name__:
-        config_files_folder(db, *args)
-    else:
-        raise UnknownCommand(f"config {comm}")
+    {
+        "": config_list,
+        "list": config_list,
+        "cookies": config_cookies,
+        "files_folder": config_files_folder,
+    }.get(comm, raiser(UnknownCommand(f"config {comm}")))(db, *args)
 
 
 def download_users(db: FADatabase, api: FAAPI, *args: str):
@@ -411,19 +411,16 @@ def download(db: FADatabase, comm: str = "", *args: str):
 
     if not api.connection_status:
         raise ConnectionError("FAAPI cannot connect to FA")
-    elif (comm := f"{download.__name__}_{comm}") == download_users.__name__:
-        download_users(db, api, *args)
-    elif comm == download_update.__name__:
-        download_update(db, api, *args)
-    elif comm == download_submissions.__name__:
-        download_submissions(db, api, *args)
-    elif comm == download_journals.__name__:
-        download_journals(db, api, *args)
-    else:
-        raise UnknownCommand(f"download {comm}")
+
+    {
+        "users": download_users,
+        "update": download_update,
+        "submissions": download_submissions,
+        "journals": download_journals,
+    }.get(comm, raiser(UnknownCommand(f"download {comm}")))(db, api, *args)
 
 
-def database_info(db: FADatabase):
+def database_info(db: FADatabase, *_rest):
     """
     USAGE
         falocalrepo database info
@@ -720,7 +717,7 @@ def database_merge(db: FADatabase, *args: str):
         print("Done")
 
 
-def database_clean(db: FADatabase):
+def database_clean(db: FADatabase, *_rest):
     """
     USAGE
         falocalrepo database clean
@@ -777,36 +774,22 @@ def database(db: FADatabase, comm: str = "", *args: str):
         specific search command.
     """
 
-    if not comm:
-        database_info(db)
-    elif (comm := f"{database.__name__}_{comm}".replace("-", "_")) == database_info.__name__:
-        database_info(db)
-    elif comm == database_history.__name__:
-        database_history(db)
-    elif comm == database_search_users.__name__:
-        database_search_users(db, *args)
-    elif comm == database_search_submissions.__name__:
-        database_search_submissions(db, *args)
-    elif comm == database_search_journals.__name__:
-        database_search_journals(db, *args)
-    elif comm == database_add_submission.__name__:
-        database_add_submission(db, *args)
-    elif comm == database_add_journal.__name__:
-        database_add_journal(db, *args)
-    elif comm == database_remove_users.__name__:
-        database_remove_users(db, *args)
-    elif comm == database_remove_submissions.__name__:
-        database_remove_submissions(db, *args)
-    elif comm == database_remove_journals.__name__:
-        database_remove_journals(db, *args)
-    elif comm == database_server.__name__:
-        database_server(db, *args)
-    elif comm == database_merge.__name__:
-        database_merge(db, *args)
-    elif comm == database_clean.__name__:
-        database_clean(db)
-    else:
-        raise UnknownCommand(f"database {comm}")
+    {
+        "": database_info,
+        "info": database_info,
+        "history": database_history,
+        "search-users": database_search_users,
+        "search-submissions": database_search_submissions,
+        "search-journals": database_search_journals,
+        "add-submission": database_add_submission,
+        "add-journal": database_add_journal,
+        "remove-users": database_remove_users,
+        "remove-submissions": database_remove_submissions,
+        "remove-journals": database_remove_journals,
+        "server": database_server,
+        "merge": database_merge,
+        "clean": database_clean,
+    }.get(comm, raiser(UnknownCommand(f"database {comm}")))(db, *args)
 
 
 @docstring_parameter(__version__, __database_version__, __server_version__, __faapi_version__)
