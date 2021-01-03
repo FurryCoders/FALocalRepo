@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.13.17
+
+### Fixes
+
+* Fix error in help function
+
 ## 3.13.16
 
 ### Fixes
