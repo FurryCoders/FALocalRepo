@@ -59,7 +59,7 @@ To upgrade the `falocalrepo` and its dependencies, use pip to upgrade all three 
 python3 -m pip install --upgrade falocalrepo faapi falocalrepo-database falocalrepo-server
 ```
 
-A message will be displayed when running the program if there is an update available for any component.
+To check for updates use the `--updates` option when launching the program. A message will be if there is an update available for any component.
 
 The program needs cookies from a logged-in Fur Affinity session to download protected pages. Without the cookies the program can still download publicly available pages, but others will return empty. See [#Cookies](#cookies) for more details on which cookies to use.
 
@@ -91,7 +91,7 @@ Running without arguments will prompt a help message with all the available opti
 The usage pattern for the program is as follows:
 
 ```
-falocalrepo [-h | -v | -d | -s] [<command> [<operation>] [<arg1> ... <argN>]]
+falocalrepo [-h | -v | -d | -s | -u] [<command> [<operation>] [<arg1> ... <argN>]]
 ```
 
 Available options are:
@@ -100,6 +100,7 @@ Available options are:
 * `-v, --version` show program version
 * `-d, --database` show database version
 * `-s, --server` show server version
+* `-u, --updates` check for updates on PyPi
 
 Available commands are:
 
