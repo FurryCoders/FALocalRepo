@@ -1,5 +1,15 @@
 # Changelog
 
+### 3.14.0
+
+### Changes
+
+* Add `-u`/`--updates` option to check for updates on PyPi instead of checking when program starts
+
+### Fixes
+
+* Fix incorrect UnknownCommand exceptions
+
 ## 3.13.17
 
 ### Fixes
