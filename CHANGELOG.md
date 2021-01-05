@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.14.1
+
+### Fixes
+
+* Fix an error when users search found 0 results
+
 ## 3.14.0
 
 ### Changes
