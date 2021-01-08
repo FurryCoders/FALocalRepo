@@ -7,7 +7,7 @@
 [![issues_gitlab](https://img.shields.io/badge/dynamic/json?logo=gitlab&color=orange&label=issues&suffix=%20open&query=%24.length&url=https%3A%2F%2Fgitlab.com%2Fapi%2Fv4%2Fprojects%2Fmatteocampinoti94%252Ffalocalrepo%2Fissues%3Fstate%3Dopened)](https://gitlab.com/MatteoCampinoti94/FALocalRepo/issues)
 [![issues_github](https://img.shields.io/github/issues/matteocampinoti94/falocalrepo?logo=github&color=blue)](https://github.com/MatteoCampinoti94/FALocalRepo/issues)
 
-Pure Python program to download any user's gallery/scraps/favorites from the Fur Affinity forum in an easily handled database.
+Pure Python program to download any user's gallery/scraps/favorites from the FurAffinity forum in an easily handled database.
 
 ## Introduction
 
@@ -15,7 +15,7 @@ This program was born with the desire to provide a relatively easy-to-use method
 
 The data is stored into a SQLite database, and the submissions files are saved in a tiered tree structure based on their ID's. Using SQLite instead of a client-server database makes the program to be extremely portable, only needing a working Python 3.8+ installation to work, and allows the downloaded data to be moved and backed up by simply moving/copying the database file and submission files folder.
 
-All download operations are performed through the custom Fur Affinity scraping library [faapi](https://pypi.org/project/faapi/). To ensure proper crawling behavior the library strictly follows Fur Affinity's [robots.txt](https://www.furaffinity.net/robots.txt) in regard to allowed paths and crawl delay. Furthermore, submission files downloads are throttled to 100 KB/s to ensure the program won't use too much bandwidth.
+All download operations are performed through the custom FurAffinity scraping library [faapi](https://pypi.org/project/faapi/). To ensure proper crawling behavior the library strictly follows FurAffinity's [robots.txt](https://www.furaffinity.net/robots.txt) in regard to allowed paths and crawl delay. Furthermore, submission files downloads are throttled to 100 KB/s to ensure the program won't use too much bandwidth.
 
 The database and file-storage functions are handled independently by the [falocalrepo-database](https://pypi.org/project/falocalrepo-database/) package which performs all transactions, queries, and file operations.
 
@@ -61,13 +61,13 @@ python3 -m pip install --upgrade falocalrepo faapi falocalrepo-database falocalr
 
 To check for updates use the `--updates` option when launching the program. A message will be if there is an update available for any component.
 
-The program needs cookies from a logged-in Fur Affinity session to download protected pages. Without the cookies the program can still download publicly available pages, but others will return empty. See [#Cookies](#cookies) for more details on which cookies to use.
+The program needs cookies from a logged-in FurAffinity session to download protected pages. Without the cookies the program can still download publicly available pages, but others will return empty. See [#Cookies](#cookies) for more details on which cookies to use.
 
-**Warning**: Fur Affinity theme template must be set to "modern". Can be changed at [furaffinity.net/controls/settings/](https://www.furaffinity.net/controls/settings/).
+**Warning**: FurAffinity theme template must be set to "modern". Can be changed at [furaffinity.net/controls/settings/](https://www.furaffinity.net/controls/settings/).
 
 ## Cookies
 
-The scraping library used by this program needs two specific cookies from a logged-in Fur Affinity session. These are cookie `a` and cookie `b`.
+The scraping library used by this program needs two specific cookies from a logged-in FurAffinity session. These are cookie `a` and cookie `b`.
 
 As of 2020-08-09 these take the form of hexadecimal strings like `356f5962-5a60-0922-1c11-65003b703038`.
 
@@ -350,7 +350,7 @@ The journals table contains the metadata of the journals downloaded by the progr
 
 Submission files are saved in a tiered tree structure based on their submission ID. IDs are zero-padded to 10 digits and then broken up in 5 segments of 2 digits; each of these segments represents a folder tha will be created in the tree.
 
-For example, a submission `1457893` will be padded to `0001457893` and divided into `00`, `01`, `45`, `78`, `93`. The submission file will then be saved as `00/01/45/78/93/submission.file` with the correct extension extracted from the file itself - Fur Affinity links do not always contain the right extension.
+For example, a submission `1457893` will be padded to `0001457893` and divided into `00`, `01`, `45`, `78`, `93`. The submission file will then be saved as `00/01/45/78/93/submission.file` with the correct extension extracted from the file itself - FurAffinity links do not always contain the right extension.
 
 ## Upgrading Database
 
