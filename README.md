@@ -236,6 +236,13 @@ falocalrepo database search-journals date=2020-% author=CatArtist order="ID DESC
 ```
 falocalrepo database search-journals date=2020-% date=2019-% content=%commission%
 ```
+* `add-user <param1>=<value1> ... <paramN>=<valueN>` add a user to the database manually. If the user is already present, the `folders` parameter will overwrite the existing value if given. The following parameters are necessary for a user entry to be accepted:
+    * `username`<br>
+  The following parameters are optional:
+    * `folders`
+```
+falocalrepo database add-user username=tom folders=gallery,scraps
+```
 * `add-submission <param1>=<value1> ... <paramN>=<valueN>` add a submission to the database manually. The submission file is not downloaded and can instead be provided with the extra parameter `file_local_url`. The following parameters are necessary for a submission entry to be accepted:
     * `id` submission id
     * `title`
