@@ -533,6 +533,39 @@ def database_search_journals(db: FADatabase, *args: str):
     print(f"Found {len(results)} results")
 
 
+def database_add_user(db: FADatabase, *args):
+    """
+    USAGE
+        falocalrepo database add-user <param1>=<value1> ... <paramN>=<valueN>
+
+    ARGUMENTS
+        <param>     Make parameter
+        <value>     Value of the parameter
+
+    DESCRIPTION
+        Add a user to the database manually. If the user is already present, the
+        folders parameter will overwrite the existing value if given. The following
+        parameters are necessary for a user entry to be accepted:
+            * 'username'
+        The following parameters are optional:
+            * 'folders'
+
+    EXAMPLES
+        falocalrepo database add-user username=tom folders=gallery,scraps
+    """
+
+    make_params: Dict[str, str] = parameters(args)
+    db.users.new_user(username) if (username := make_params["username"]) not in db.users else None
+    if make_params.get("folders", None) is not None:
+        folders: List[str] = db.users[username]["FOLDERS"].split(",")
+        folders_new: List[str] = make_params["folders"].split(",")
+        for f in folders:
+            db.users.remove_user_folder(username, f) if f not in folders_new else None
+        for f in folders_new:
+            db.users.add_user_folder(username, f) if f not in folders else None
+    db.commit()
+
+
 def database_add_submission(db: FADatabase, *args: str):
     """
     USAGE
@@ -748,6 +781,7 @@ def database(db: FADatabase, comm: str = "", *args: str):
         search-users        Search users
         search-submissions  Search submissions
         search-journals     Search journals
+        add-user            Add a user to the database manually
         add-submission      Add a submission to the database manually
         add-journal         Add a journal to the database manually
         remove-users        Remove users from database
@@ -783,6 +817,7 @@ def database(db: FADatabase, comm: str = "", *args: str):
         "search-users": database_search_users,
         "search-submissions": database_search_submissions,
         "search-journals": database_search_journals,
+        "add-user": database_add_user,
         "add-submission": database_add_submission,
         "add-journal": database_add_journal,
         "remove-users": database_remove_users,
