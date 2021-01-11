@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.15.0
+
+### Changes
+
+* Add `database add-user` command to manually add a user to the database
+
 ## 3.14.1
 
 ### Fixes
