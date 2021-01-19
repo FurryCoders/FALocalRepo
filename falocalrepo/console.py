@@ -13,7 +13,6 @@ from typing import List
 from typing import Tuple
 from typing import Union
 
-from faapi import FAAPI
 from faapi import __version__ as __faapi_version__
 from falocalrepo_database import FADatabase
 from falocalrepo_database import __version__ as __database_version__
@@ -259,7 +258,7 @@ def config(db: FADatabase, comm: str = "", *args: str):
     }.get(comm, raiser(UnknownCommand(f"config {comm}")))(db, *args)
 
 
-def download_users(db: FADatabase, api: FAAPI, *args: str):
+def download_users(db: FADatabase, *args: str):
     """
     USAGE
         falocalrepo download users <user1>[,...,<userN>] <folder1>[,...,<folderN>]
@@ -290,10 +289,10 @@ def download_users(db: FADatabase, api: FAAPI, *args: str):
     users: List[str] = sorted(set(users_tmp), key=users_tmp.index)
     folders_tmp: List[str] = list(filter(bool, map(str.strip, args[1].split(","))))
     folders: List[str] = sorted(set(folders_tmp), key=folders_tmp.index)
-    download_users_(api, db, users, folders)
+    download_users_(db, users, folders)
 
 
-def download_update(db: FADatabase, api: FAAPI, *args: str):
+def download_update(db: FADatabase, *args: str):
     """
     USAGE
         falocalrepo download update [stop=<stop n>] [<user1>,...,<userN>]
@@ -333,10 +332,10 @@ def download_update(db: FADatabase, api: FAAPI, *args: str):
         folders_tmp: List[str] = list(
             filter(bool, map(str.strip, args[1].split(","))))
         folders = sorted(set(folders_tmp), key=folders_tmp.index)
-    download_users_update(api, db, users, folders, int(opts.get("stop", 1)))
+    download_users_update(db, users, folders, int(opts.get("stop", 1)))
 
 
-def download_submissions(db: FADatabase, api: FAAPI, *args: str):
+def download_submissions(db: FADatabase, *args: str):
     """
     USAGE
         falocalrepo download submissions <id1> ... [<idN>]
@@ -356,10 +355,10 @@ def download_submissions(db: FADatabase, api: FAAPI, *args: str):
         raise MalformedCommand("submissions needs at least one argument")
     sub_ids_tmp: List[str] = list(filter(str.isdigit, args))
     sub_ids: List[str] = sorted(set(sub_ids_tmp), key=sub_ids_tmp.index)
-    download_submissions_(api, db, sub_ids)
+    download_submissions_(db, sub_ids)
 
 
-def download_journals(db: FADatabase, api: FAAPI, *args: str):
+def download_journals(db: FADatabase, *args: str):
     """
     USAGE
         falocalrepo download journals <id1> ... [<idN>]
@@ -379,7 +378,7 @@ def download_journals(db: FADatabase, api: FAAPI, *args: str):
         raise MalformedCommand("journals needs at least one argument")
     journal_ids_tmp: List[str] = list(filter(str.isdigit, args))
     journal_ids: List[str] = sorted(set(journal_ids_tmp), key=journal_ids_tmp.index)
-    download_journals_(api, db, journal_ids)
+    download_journals_(db, journal_ids)
 
 
 def download(db: FADatabase, comm: str = "", *args: str):
@@ -407,19 +406,12 @@ def download(db: FADatabase, comm: str = "", *args: str):
     if not comm:
         raise MalformedCommand("download needs a command")
 
-    print((s := "Connecting... "), end="", flush=True)
-    api: FAAPI = FAAPI(read_cookies(db))
-    print("\r" + (" " * len(s)), end="\r", flush=True)
-
-    if not api.connection_status:
-        raise ConnectionError("FAAPI cannot connect to FA")
-
     {
         "users": download_users,
         "update": download_update,
         "submissions": download_submissions,
         "journals": download_journals,
-    }.get(comm, raiser(UnknownCommand(f"download {comm}")))(db, api, *args)
+    }.get(comm, raiser(UnknownCommand(f"download {comm}")))(db, *args)
 
 
 def database_info(db: FADatabase, *_rest):

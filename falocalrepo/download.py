@@ -3,6 +3,7 @@ from json import loads as json_loads
 from math import log10
 from os import get_terminal_size
 from time import sleep
+from typing import Any
 from typing import Callable
 from typing import Dict
 from typing import List
@@ -34,21 +35,29 @@ def write_cookies(db: FADatabase, a: str, b: str):
     db.commit()
 
 
-def save_submission(db: FADatabase, sub: Submission, sub_file: Optional[bytes]):
-    sub_dict: dict = dict(sub)
-    sub_dict["FILELINK"] = sub_dict["file_url"]
-    del sub_dict["file_url"]
-    sub_dict["tags"] = ",".join(sorted(sub_dict["tags"], key=str.lower))
-    db.submissions.save_submission(sub_dict, sub_file)
-    db.commit()
+def load_api(db: FADatabase) -> FAAPI:
+    print((s := "Connecting... "), end="", flush=True)
+    api: FAAPI = FAAPI(read_cookies(db))
+    print("\r" + (" " * len(s)), end="\r", flush=True)
+
+    if not api.connection_status:
+        raise ConnectionError("FAAPI cannot connect to FA")
+
+    return api
 
 
-def download_submissions(api: FAAPI, db: FADatabase, sub_ids: List[str]):
-    if sub_ids_fail := list(filter(lambda i: not i.isdigit(), sub_ids)):
-        print("The following ID's are not correct:", *sub_ids_fail)
-    for sub_id in map(int, filter(lambda i: i.isdigit(), sub_ids)):
-        print(f"Downloading {sub_id:010} ", end="", flush=True)
-        download_submission(api, db, sub_id)
+def download_items(db: FADatabase, item_ids: List[str], f: Callable[[FAAPI, FADatabase, int], Any]):
+    if item_ids_fail := list(filter(lambda i: not i.isdigit(), item_ids)):
+        print("The following ID's are not correct:", *item_ids_fail)
+    item_ids = list(filter(lambda i: i.isdigit(), item_ids))
+    api: Optional[FAAPI] = load_api(db) if item_ids else None
+    for item_id in map(int, filter(lambda i: i.isdigit(), item_ids)):
+        print(f"Downloading {item_id:010} ", end="", flush=True)
+        f(api, db, item_id)
+
+
+def download_submissions(db: FADatabase, sub_ids: List[str]):
+    download_items(db, sub_ids, download_submission)
 
 
 def download_submission(api: FAAPI, db: FADatabase, sub_id: int) -> bool:
@@ -106,12 +115,17 @@ def download_submission_file(api: FAAPI, sub_file_url: str, speed: int = 100) ->
         bar.close()
 
 
-def download_journals(api: FAAPI, db: FADatabase, jrn_ids: List[str]):
-    if sub_ids_fail := list(filter(lambda i: not i.isdigit(), jrn_ids)):
-        print("The following ID's are not correct:", *sub_ids_fail)
-    for sub_id in map(int, filter(lambda i: i.isdigit(), jrn_ids)):
-        print(f"Downloading {sub_id:010} ", end="", flush=True)
-        download_journal(api, db, sub_id)
+def save_submission(db: FADatabase, sub: Submission, sub_file: Optional[bytes]):
+    sub_dict: dict = dict(sub)
+    sub_dict["FILELINK"] = sub_dict["file_url"]
+    del sub_dict["file_url"]
+    sub_dict["tags"] = ",".join(sorted(sub_dict["tags"], key=str.lower))
+    db.submissions.save_submission(sub_dict, sub_file)
+    db.commit()
+
+
+def download_journals(db: FADatabase, jrn_ids: List[str]):
+    download_items(db, jrn_ids, download_journal)
 
 
 def download_journal(api: FAAPI, db: FADatabase, jrn_id: int):
@@ -119,9 +133,10 @@ def download_journal(api: FAAPI, db: FADatabase, jrn_id: int):
     db.journals.save_journal(dict(journal))
 
 
-def download_users_update(api: FAAPI, db: FADatabase, users: List[str], folders: List[str], stop: int = 1):
+def download_users_update(db: FADatabase, users: List[str], folders: List[str], stop: int = 1):
     tot: int = 0
     fail: int = 0
+    api: Optional[FAAPI] = None
     for user, user_folders_str in db.users.select(columns=["USERNAME", "FOLDERS"], order=["USERNAME"]):
         user_folders: List[str] = sorted(user_folders_str.split(","))
         if users and user not in users:
@@ -131,7 +146,9 @@ def download_users_update(api: FAAPI, db: FADatabase, users: List[str], folders:
         elif any(folder.startswith("!") for folder in user_folders):
             print(f"User {user} disabled")
             continue
-        elif (user_exists := api.user_exists(user)) != 0:
+
+        api = load_api(db) if api is None else api
+        if (user_exists := api.user_exists(user)) != 0:
             if user_exists == 1:
                 print(f"User {user} disabled")
                 db.users.disable_user(user)
@@ -153,8 +170,10 @@ def download_users_update(api: FAAPI, db: FADatabase, users: List[str], folders:
     print("Items failed:", fail) if fail else None
 
 
-def download_users(api: FAAPI, db: FADatabase, users: List[str], folders: List[str]):
+def download_users(db: FADatabase, users: List[str], folders: List[str]):
+    api: Optional[FAAPI] = None
     for user, folder in ((u, f) for u in users for f in folders):
+        api = load_api(db) if api is None else api
         print(f"Downloading: {user}/{folder}")
         if (user_exists := api.user_exists(user)) != 0:
             if user_exists == 1:
