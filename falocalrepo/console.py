@@ -200,9 +200,8 @@ def config_cookies(db: FADatabase, *args: str):
     """
 
     if not args:
-        cookie_a, cookie_b = read_cookies(db)
-        print("cookie a:", cookie_a)
-        print("cookie b:", cookie_b)
+        for c in read_cookies(db):
+            print(f"cookie {c['name']}:", c['value'])
     elif len(args) == 2:
         write_cookies(db, args[0], args[1])
     else:
