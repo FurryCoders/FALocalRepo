@@ -1,5 +1,12 @@
 # Changelog
 
+## 3.15.3
+
+### Changes
+
+* FAAPI (from [faapi](https://pypi.org/project/faapi)) is not loaded until needed. Commands structure is checked before connection is attempted
+* Cookies are listed as-are to allow checking for errors (e.g. incorrect `name` field)
+
 ## 3.15.2
 
 ### Changes
