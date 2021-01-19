@@ -76,7 +76,7 @@ filetype = ">=1.0.7,<2.0.0"
 
 [[package]]
 name = "falocalrepo-server"
-version = "1.7.1"
+version = "1.7.2"
 description = "Web interface for falocalrepo."
 category = "main"
 optional = false
@@ -282,8 +282,8 @@ falocalrepo-database = [
     {file = "falocalrepo_database-4.3.1-py3-none-any.whl", hash = "sha256:1f260cf0b782ae7d35e4e02088ed2c345ee607926eeea9ba4b593013aa8d2d56"},
 ]
 falocalrepo-server = [
-    {file = "falocalrepo-server-1.7.1.tar.gz", hash = "sha256:efbadf136b1ab255e2f28a593b1218df152bbe2e72417f636f74ec0d5e85603a"},
-    {file = "falocalrepo_server-1.7.1-py3-none-any.whl", hash = "sha256:6112e67acf5e4422459cc6b918ee6816a090c0b62c2c5c794da33a458a92c00e"},
+    {file = "falocalrepo-server-1.7.2.tar.gz", hash = "sha256:01dac5685dea7f5786899aff71678ef1618a3a7d3365ae372d32c5357c609ed3"},
+    {file = "falocalrepo_server-1.7.2-py3-none-any.whl", hash = "sha256:f1c4ce17ed4fe8eef0435d8cdc9133989c5e825ef647e3dc23dbe6020b1de2fc"},
 ]
 filetype = [
     {file = "filetype-1.0.7-py2.py3-none-any.whl", hash = "sha256:353369948bb1c09b8b3ea3d78390b5586e9399bff9aab894a1dff954e31a66f6"},
