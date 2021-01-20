@@ -1,7 +1,7 @@
 from math import ceil
 from math import log10
 from os import get_terminal_size
-from os.path import isdir
+from os.path import isdir, split
 from re import sub as re_sub
 from shutil import move
 from typing import Dict
@@ -52,7 +52,7 @@ class Bar:
 
 def check_process(process: str) -> int:
     return len(list(filter(
-        lambda p: "python" in p.name().lower() and any(process in cmd for cmd in p.cmdline()),
+        lambda p: "python" in p.name().lower() and any(process in split(cmd) for cmd in p.cmdline()),
         map(Process, pids())
     )))
 
