@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.15.4
+
+### Fixes
+
+* The multiple instance check will not be triggered by modules that contain `falocalrepo` in their name (e.g. `falocalrepo-server`)
+
 ## 3.15.3
 
 ### Changes
