@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.15.5
+
+### Changes
+
+* falocalrepo-server dependency set to \~1.8.0
+
 ## 3.15.4
 
 ### Fixes
