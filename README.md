@@ -342,6 +342,7 @@ The submissions table contains the metadata of the submissions downloaded by the
 * `FILELINK` the remote URL of the submission file
 * `FILEEXT` the extensions of the downloaded file. Can be empty if the file contained errors and could not be recognised upon download
 * `FILESAVED` 1 if the file was successfully downloaded and saved, 0 if there was an error during download
+* `FAVORITE` a comma-separate list of users that have "faved" the submission, it's filled only when downloading/updating a user's favorites folder
 
 ### Journals
 
