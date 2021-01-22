@@ -1,5 +1,15 @@
 # Changelog
 
+## 3.15.7
+
+### Changes
+
+* Add support for `FALOCALREPO_DEBUG` environmental variable
+
+### Fixes
+
+* Fix help message not displaying when no commands were passed
+
 ## 3.15.6
 
 ### Changes
