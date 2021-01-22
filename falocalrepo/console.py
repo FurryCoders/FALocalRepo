@@ -102,7 +102,7 @@ def check_update(version: str, package: str) -> bool:
     return False
 
 
-def help_(comm: str = None, op: str = "", *_rest) -> str:
+def help_(comm: str = "", op: str = "", *_rest) -> str:
     """
     USAGE
         falocalrepo help [<command> [<operation>]]
