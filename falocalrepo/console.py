@@ -883,6 +883,9 @@ def console(comm: str = "", *args: str) -> None:
     elif check_process(p := "falocalrepo") > 1:
         raise MultipleInstances(f"Another instance of {p} was detected")
 
+    if environ.get("FALOCALREPO_DEBUG", None):
+        print(f"Using FALOCALREPO_DEBUG")
+
     # Initialise and prepare database
     database_path = "FA.db"
 
