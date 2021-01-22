@@ -1,5 +1,12 @@
 # Changelog
 
+## 3.15.6
+
+### Changes
+
+* falocalrepo-database dependency set to \~4.4.0
+    * Support new `FAVORITE` column for submission entries
+
 ## 3.15.5
 
 ### Changes
