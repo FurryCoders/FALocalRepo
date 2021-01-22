@@ -20,27 +20,27 @@ def main():
         print()
         exit(130)
     except (MalformedCommand, UnknownCommand) as err:
-        print_exc(file=stdout) if environ.get("FALOCALREPO_DEBUG", None) else None
+        print_exc(file=stdout) if environ.get("FALOCALREPO_DEBUG", None) is not None else None
         print(repr(err))
         exit(1)
     except MultipleInstances as err:
-        print_exc(file=stdout) if environ.get("FALOCALREPO_DEBUG", None) else None
+        print_exc(file=stdout) if environ.get("FALOCALREPO_DEBUG", None) is not None else None
         print(repr(err))
         exit(2)
     except ConnectionError as err:
-        print_exc(file=stdout) if environ.get("FALOCALREPO_DEBUG", None) else None
+        print_exc(file=stdout) if environ.get("FALOCALREPO_DEBUG", None) is not None else None
         print(repr(err))
         exit(3)
     except (DatabaseError, IntegrityError) as err:
-        print_exc(file=stdout) if environ.get("FALOCALREPO_DEBUG", None) else None
+        print_exc(file=stdout) if environ.get("FALOCALREPO_DEBUG", None) is not None else None
         print(repr(err))
         exit(4)
     except (TypeError, AssertionError) as err:
-        print_exc(file=stdout) if environ.get("FALOCALREPO_DEBUG", None) else None
+        print_exc(file=stdout) if environ.get("FALOCALREPO_DEBUG", None) is not None else None
         print(repr(err))
         exit(5)
     except (Exception, BaseException) as err:
-        print_exc(file=stdout) if environ.get("FALOCALREPO_DEBUG", None) else None
+        print_exc(file=stdout) if environ.get("FALOCALREPO_DEBUG", None) is not None else None
         with open(join(getcwd(), "FA.log"), "w") as f:
             print_exc(file=f)
             print(repr(err))
