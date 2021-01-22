@@ -254,6 +254,9 @@ def download_user(api: FAAPI, db: FADatabase, user: str, folder: str, stop: int 
                 bar.close()
             elif exists(item.id):
                 bar.message("IS IN DB")
+                if folder == "favorites":
+                    db.submissions.set_favorite(item.id, user)
+                    db.commit()
                 db.users.add_item(user, folder, str(item.id).zfill(10))
                 db.commit()
                 bar.close()
@@ -263,6 +266,9 @@ def download_user(api: FAAPI, db: FADatabase, user: str, folder: str, stop: int 
             elif isinstance(item, SubmissionPartial):
                 bar.delete()
                 if download_submission(api, db, item.id):
+                    if folder == "favorites":
+                        db.submissions.set_favorite(item.id, user)
+                        db.commit()
                     db.users.add_submission(user, folder, item.id)
                     db.commit()
                     items_total += 1
