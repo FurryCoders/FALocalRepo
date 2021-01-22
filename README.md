@@ -123,6 +123,7 @@ Cookies need to be set manually with the config command before the program will 
 `falocalrepo` supports the following environmental variables:
 
 * `FALOCALREPO_DATABASE` sets a path for the database rather than using the current folder. If the path basename ends with `.db` -- e.g. `~/Documents/FA/MyFA.db` -- , then a database file will be created/opened with that name. Otherwise, the path will be considered a folder, and a database named "FA.db" will be created therein.
+* `FALOCALREPO_DEBUG` always print traceback of caught exceptions, regardless of whether they are known or not.
 
 ### Help
 
