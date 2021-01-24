@@ -58,7 +58,7 @@ def check_process(process: str) -> int:
 
 
 def clean_username(username: str, exclude: str = "") -> str:
-    return str(re_sub(rf"[^a-zA-Z0-9\-.~,{exclude}]", "", username.lower().strip()))
+    return str(re_sub(rf"[^a-zA-Z0-9\-.~{exclude}]", "", username.lower().strip()))
 
 
 def clean_string(title: str) -> str:
