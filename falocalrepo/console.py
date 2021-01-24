@@ -97,7 +97,7 @@ def parse_args(args_raw: Iterable[str]) -> Tuple[Dict[str, str], List[str]]:
 
 def check_update(version: str, package: str) -> bool:
     if (latest := latest_version(package)) and latest != version:
-        print(f"New {package} version available: {latest} > {version}")
+        print(f"New {package} version available: {version} > {latest}")
         return True
     return False
 
