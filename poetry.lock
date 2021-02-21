@@ -50,7 +50,7 @@ python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
 
 [[package]]
 name = "faapi"
-version = "2.15.0"
+version = "2.15.1"
 description = "Python module to implement API-like functionality for the FurAffinity.net website."
 category = "main"
 optional = false
@@ -65,7 +65,7 @@ requests = ">=2.24.0,<3.0.0"
 
 [[package]]
 name = "falocalrepo-database"
-version = "4.5.4"
+version = "4.5.5"
 description = "Database functionality for falocalrepo."
 category = "main"
 optional = false
@@ -292,12 +292,12 @@ click = [
     {file = "click-7.1.2.tar.gz", hash = "sha256:d2b5255c7c6349bc1bd1e59e08cd12acbbd63ce649f2588755783aa94dfb6b1a"},
 ]
 faapi = [
-    {file = "faapi-2.15.0-py3-none-any.whl", hash = "sha256:244551d7a78a0bc6f026eaa98c81666d2dfeefaa3bb342d60d0e8b9cc475ab8d"},
-    {file = "faapi-2.15.0.tar.gz", hash = "sha256:77ae0e686f3ab09a7f3f3fb9854098fe9ebd54c77f286cb520d55ab6eda4aa54"},
+    {file = "faapi-2.15.1-py3-none-any.whl", hash = "sha256:30f360600384438aed458732a409e48c8eb93ba6162d2bc8101d06a649434569"},
+    {file = "faapi-2.15.1.tar.gz", hash = "sha256:6fc6290121e2a1f85b1c70a5cb4f973efda055e2046fbd9ed0eb67d07c71e4b2"},
 ]
 falocalrepo-database = [
-    {file = "falocalrepo-database-4.5.4.tar.gz", hash = "sha256:33a99a70b6741802abe277855fbd2f7c7e32f190239c7a02622a23b1faefdbd5"},
-    {file = "falocalrepo_database-4.5.4-py3-none-any.whl", hash = "sha256:9ab20748571c243b47e0f076881294de5f997723a4f52dc2c678f631d3b0a0c8"},
+    {file = "falocalrepo-database-4.5.5.tar.gz", hash = "sha256:2929a2531608fd8e9e9855e04664e672767d643d9e882ce52bc66be5be871b70"},
+    {file = "falocalrepo_database-4.5.5-py3-none-any.whl", hash = "sha256:c755336ebc47a3c4443d21366b7affce8c827ae1c3e4af92f85f84392120baab"},
 ]
 falocalrepo-server = [
     {file = "falocalrepo-server-1.8.9.tar.gz", hash = "sha256:2c109e4dc18361fe532e6cf0b3a4a8aa16b9ab47c958fb4240aab9831b4b8f4e"},
