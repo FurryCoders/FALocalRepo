@@ -200,7 +200,7 @@ def config_cookies(db: FADatabase, *args: str):
         Read or modify stored cookies.
 
     EXAMPLES
-        falocalrepo config cookies a=abcd-1234 b=efgh-5678
+        falocalrepo config cookies a=a1b2c3d4-1234 b=e5f6g7h8-5678
     """
 
     if not args:
