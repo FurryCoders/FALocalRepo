@@ -671,8 +671,6 @@ def database_remove_submissions(db: FADatabase, *args: str):
     for sub in args:
         print("Deleting", sub)
         del db.submissions[int(sub)]
-        for (user, *_) in db.users.find_from_submission(int(sub)):
-            db.users.remove_submission(user, int(sub))
         db.commit()
 
 
@@ -691,8 +689,6 @@ def database_remove_journals(db: FADatabase, *args: str):
     for jrn in args:
         print("Deleting", jrn)
         del db.journals[int(jrn)]
-        for (user, *_) in db.users.find_from_journal(int(jrn)):
-            db.users.remove_journal(user, int(jrn))
     db.commit()
 
 
