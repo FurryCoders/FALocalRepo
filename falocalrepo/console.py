@@ -189,14 +189,18 @@ def config_list(db: FADatabase, *_rest):
 def config_cookies(db: FADatabase, *args: str):
     """
     USAGE
-        falocalrepo config cookies [<cookie a> <cookie b>]
+        falocalrepo config cookies [<cookie1 name>=<cookie1 value>] ...
+                    [<cookieN name>=<cookieN value>]
 
     ARGUMENTS
-        <cookie a>  Cookie a from a valid login session
-        <cookie b>  Cookie b from a valid login session
+        <cookie name>   The name of the cookie (e.g. a)
+        <cookie value>  The value of the cookie
 
     DESCRIPTION
         Read or modify stored cookies.
+
+    EXAMPLES
+        falocalrepo config cookies a=abcd-1234 b=efgh-5678
     """
 
     if not args:
