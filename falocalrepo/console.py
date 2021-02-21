@@ -150,8 +150,8 @@ def help_(comm: str = "", op: str = "", *_rest) -> str:
 
     if f is None:
         raise UnknownCommand(f"{comm} {op}".strip())
-    else:
-        return cleandoc(f.__doc__)
+
+    return cleandoc(f.__doc__)
 
 
 def init():
