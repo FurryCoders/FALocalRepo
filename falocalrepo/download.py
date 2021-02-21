@@ -11,8 +11,12 @@ from typing import Optional
 from typing import Tuple
 from typing import Union
 
+from faapi import DisabledAccount
 from faapi import FAAPI
 from faapi import Journal
+from faapi import NoticeMessage
+from faapi import ParsingError
+from faapi import ServerError
 from faapi import Submission
 from faapi import SubmissionPartial
 from falocalrepo_database import FADatabase
@@ -56,52 +60,33 @@ def download_items(db: FADatabase, item_ids: List[str], f: Callable[[FAAPI, FADa
         f(api, db, item_id)
 
 
-def download_submissions(db: FADatabase, sub_ids: List[str]):
-    download_items(db, sub_ids, download_submission)
-
-
-def download_submission(api: FAAPI, db: FADatabase, sub_id: int) -> bool:
-    sub, _ = api.get_submission(sub_id, False)
-    sub_file: bytes = bytes()
-
-    try:
-        sub_file = download_submission_file(api, sub.file_url)
-    except KeyboardInterrupt:
-        raise
-    except (Exception, BaseException):
-        pass
-
-    if not sub.id:
-        return False
-
-    save_submission(db, sub, sub_file)
-
-    return True
+def save_submission(db: FADatabase, sub: Submission, sub_file: Optional[bytes]):
+    sub_dict: dict = dict(sub)
+    sub_dict["filelink"] = sub_dict["file_url"]
+    del sub_dict["file_url"]
+    sub_dict["tags"] = ",".join(sorted(sub_dict["tags"], key=str.lower))
+    sub_dict["mentions"] = ",".join(sorted(sub_dict["mentions"], key=str.lower))
+    db.submissions.save_submission(sub_dict, sub_file)
+    db.commit()
 
 
 def download_submission_file(api: FAAPI, sub_file_url: str, speed: int = 100) -> Optional[bytes]:
     bar: Bar = Bar(10)
+    file_binary: Optional[bytes] = bytes()
 
     try:
-        if not (file_stream := api.session.get(sub_file_url, stream=True)).ok:
+        with api.session.get(sub_file_url, stream=True) as file_stream:
             file_stream.raise_for_status()
+            size: int = int(file_stream.headers.get("Content-Length", 0))
+            if not size:
+                file_binary = file_stream.content
+            else:
+                for chunk in file_stream.iter_content(chunk_size=1024):
+                    file_binary += chunk
+                    bar.update(size, len(file_binary)) if size else None
+                    sleep(1 / speed) if speed > 0 else None
 
-        size: int = int(file_stream.headers.get("Content-Length", 0))
-        file_binary: Optional[bytes] = bytes()
-
-        if not size:
-            file_binary = file_stream.content
-        else:
-            for chunk in file_stream.iter_content(chunk_size=1024):
-                file_binary += chunk
-                bar.update(size, len(file_binary)) if size else None
-                sleep(1 / speed) if speed > 0 else None
-
-        bar.update(1, 1)
-
-        file_stream.close()
-
-        return file_binary
+            bar.update(1, 1)
     except KeyboardInterrupt:
         print("\b\b  \b\b", end="")
         bar.delete()
@@ -110,22 +95,25 @@ def download_submission_file(api: FAAPI, sub_file_url: str, speed: int = 100) ->
         raise
     except (Exception, BaseException):
         bar.message("FILE ERR")
-        return None
+        file_binary = None
     finally:
         bar.close()
 
-
-def save_submission(db: FADatabase, sub: Submission, sub_file: Optional[bytes]):
-    sub_dict: dict = dict(sub)
-    sub_dict["FILELINK"] = sub_dict["file_url"]
-    del sub_dict["file_url"]
-    sub_dict["tags"] = ",".join(sorted(sub_dict["tags"], key=str.lower))
-    db.submissions.save_submission(sub_dict, sub_file)
-    db.commit()
+    return file_binary
 
 
-def download_journals(db: FADatabase, jrn_ids: List[str]):
-    download_items(db, jrn_ids, download_journal)
+def download_submission(api: FAAPI, db: FADatabase, sub_id: int) -> bool:
+    try:
+        sub: Submission = api.get_submission(sub_id, False)[0]
+        sub_file: Optional[bytes] = download_submission_file(api, sub.file_url)
+        save_submission(db, sub, sub_file)
+        return True
+    except ParsingError:
+        return False
+
+
+def download_submissions(db: FADatabase, sub_ids: List[str]):
+    download_items(db, sub_ids, download_submission)
 
 
 def download_journal(api: FAAPI, db: FADatabase, jrn_id: int):
@@ -133,59 +121,68 @@ def download_journal(api: FAAPI, db: FADatabase, jrn_id: int):
     db.journals.save_journal(dict(journal))
 
 
+def download_journals(db: FADatabase, jrn_ids: List[str]):
+    download_items(db, jrn_ids, download_journal)
+
+
 def download_users_update(db: FADatabase, users: List[str], folders: List[str], stop: int = 1):
-    tot: int = 0
-    fail: int = 0
     api: Optional[FAAPI] = None
-    for user, user_folders_str in db.users.select(columns=["USERNAME", "FOLDERS"], order=["USERNAME"]):
-        user_folders: List[str] = sorted(user_folders_str.split(","))
-        if users and user not in users:
-            continue
-        elif folders and not any(f in folders for f in user_folders):
-            continue
-        elif any(folder.startswith("!") for folder in user_folders):
+    tot, fail = 0, 0
+
+    users = list(set(map(clean_username, users)))
+    users_db: List[dict] = sorted(
+        filter(lambda u: u["USERNAME"] in users, db.users),
+        key=lambda u: users.index(u["USERNAME"]))
+
+    for user, user_folders in ((u["USERNAME"], u["FOLDERS"].split(",")) for u in users_db):
+        if any(folder.startswith("!") for folder in user_folders):
             print(f"User {user} disabled")
             continue
-
-        api = load_api(db) if api is None else api
-        if (user_exists := api.user_exists(user)) != 0:
-            if user_exists == 1:
-                print(f"User {user} disabled")
-                db.users.disable_user(user)
-                db.commit()
-            elif user_exists == 2:
-                print(f"User {user} not found")
-            else:
-                print(f"User {user} error {user_exists}")
+        elif not (user_folders := [f for f in folders if f in user_folders] if folders else user_folders):
             continue
-        user_folders = [f for f in folders if f in user_folders] if folders else user_folders
-        if not user_folders:
-            print(f"User {user} no folders selected")
-        for folder in user_folders:
-            print(f"Downloading: {user}/{folder}")
-            tot_tmp, fail_tmp = download_user(api, db, user, folder, stop)
-            tot += tot_tmp
-            fail += fail_tmp
+        try:
+            api = load_api(db) if api is None else api
+            for folder in user_folders:
+                print(f"Updating: {user}/{folder}")
+                tot_, fail_ = download_user(api, db, user, folder, stop)
+                tot += tot_
+                fail += fail_
+        except DisabledAccount:
+            print(f"User {user} disabled")
+            db.users.disable_user(user)
+            db.commit()
+        except ServerError:
+            print(f"User {user} not found")
+        except ParsingError as err:
+            print(f"User {user} error: {repr(err)}")
+            continue
+
     print("Items downloaded:", tot)
     print("Items failed:", fail) if fail else None
 
 
 def download_users(db: FADatabase, users: List[str], folders: List[str]):
     api: Optional[FAAPI] = None
-    for user, folder in ((u, f) for u in users for f in folders):
-        api = load_api(db) if api is None else api
-        print(f"Downloading: {user}/{folder}")
-        if (user_exists := api.user_exists(user)) != 0:
-            if user_exists == 1:
-                print(f"User {user} disabled")
-            elif user_exists == 2:
-                print(f"User {user} not found")
-            else:
-                print(f"User {user} error {user_exists}")
-            continue
-        tot, fail = download_user(api, db, user, folder)
-        print("Items downloaded:", tot)
-        print("Items failed:", fail) if fail else None
+    for user in users:
+        user_is_new: bool = user not in db.users
+        try:
+            api = load_api(db) if api is None else api
+            for folder in folders:
+                print(f"Downloading: {user}/{folder}")
+                tot, fail = download_user(api, db, user, folder)
+                print("Items downloaded:", tot)
+                print("Items failed:", fail) if fail else None
+        except DisabledAccount:
+            print(f"User {user} disabled")
+            db.users.disable_user(user)
+            db.commit()
+        except NoticeMessage:
+            print(f"User {user} not found")
+            if user_is_new:
+                del db.users[user]
+                db.commit()
+        except ParsingError as err:
+            print(f"User {user} error: {repr(err)}")
 
 
 def download_user(api: FAAPI, db: FADatabase, user: str, folder: str, stop: int = 0) -> Tuple[int, int]:
@@ -205,9 +202,6 @@ def download_user(api: FAAPI, db: FADatabase, user: str, folder: str, stop: int 
 
     if folder.startswith("!"):
         print(f"{user}/{folder} disabled")
-        return 0, 0
-    elif folder in ("mentions", "mentions_all", "list-mentions", "list-mentions_all"):
-        print(f"Unsupported: {user}/{folder}")
         return 0, 0
     elif folder in ("gallery", "list-gallery"):
         download = api.gallery
@@ -236,8 +230,12 @@ def download_user(api: FAAPI, db: FADatabase, user: str, folder: str, stop: int 
     while page:
         page_n += 1
         print(f"{page_n}    {user[:space_term - int(log10(page_n)) - 8 - 1]} ...", end="", flush=True)
-        items, page = download(user, page)
-        print("\r" + (" " * (space_term - 1)), end="\r", flush=True)
+        try:
+            items, page = download(user, page)
+        except (Exception, BaseException):
+            raise
+        finally:
+            print("\r" + (" " * (space_term - 1)), end="\r", flush=True)
         for i, item in enumerate(items, 1):
             sub_string: str = f"{page_n}/{i:02d} {item.id:010d} {clean_string(item.title)}"
             print(f"{sub_string[:space_line]:<{space_line}} ", end="", flush=True)
@@ -246,19 +244,17 @@ def download_user(api: FAAPI, db: FADatabase, user: str, folder: str, stop: int 
                 items_failed += 1
                 bar.message("ID ERROR")
                 bar.close()
-            elif str(item.id).zfill(10) in db.users[user][folder.upper()]:
-                if stop and (found_items := found_items + 1) >= stop:
-                    print("\r" + (" " * (space_term - 1)), end="\r", flush=True)
-                    return items_total, items_failed
-                bar.message("IS IN DB")
-                bar.close()
             elif exists(item.id):
                 bar.message("IS IN DB")
                 if folder == "favorites":
-                    db.submissions.set_favorite(item.id, user)
+                    found_items += db.submissions.add_favorite(item.id, user)
                     db.commit()
-                db.users.add_item(user, folder, str(item.id).zfill(10))
-                db.commit()
+                else:
+                    found_items += 1
+                if stop and found_items >= stop:
+                    print("\r" + (" " * (space_term - 1)), end="\r", flush=True)
+                    page = 0
+                    break
                 bar.close()
             elif skip:
                 bar.message("SKIPPED")
@@ -267,15 +263,11 @@ def download_user(api: FAAPI, db: FADatabase, user: str, folder: str, stop: int 
                 bar.delete()
                 if download_submission(api, db, item.id):
                     if folder == "favorites":
-                        db.submissions.set_favorite(item.id, user)
+                        db.submissions.add_favorite(item.id, user)
                         db.commit()
-                    db.users.add_submission(user, folder, item.id)
-                    db.commit()
                     items_total += 1
             elif isinstance(item, Journal):
                 db.journals.save_journal(dict(item))
-                db.users.add_journal(user, item.id)
-                db.commit()
                 bar.update(1, 1)
                 bar.close()
                 items_total += 1
