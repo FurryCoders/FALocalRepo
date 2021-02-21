@@ -30,8 +30,8 @@ def read_cookies(db: FADatabase) -> List[Dict[str, str]]:
     return [{"name": n, "value": v} for n, v in json_loads(db.settings["COOKIES"]).items()]
 
 
-def write_cookies(db: FADatabase, a: str, b: str):
-    db.settings["COOKIES"] = json_dumps({"a": a, "b": b})
+def write_cookies(db: FADatabase, **cookies):
+    db.settings["COOKIES"] = json_dumps(cookies)
     db.commit()
 
 

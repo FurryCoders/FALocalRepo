@@ -203,7 +203,7 @@ def config_cookies(db: FADatabase, *args: str):
         for c in read_cookies(db):
             print(f"cookie {c['name']}:", c['value'])
     elif len(args) == 2:
-        write_cookies(db, args[0], args[1])
+        write_cookies(db, **parse_args(args)[0])
     else:
         raise MalformedCommand("cookies needs two arguments")
 
