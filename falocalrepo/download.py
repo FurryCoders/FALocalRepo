@@ -63,8 +63,6 @@ def save_submission(db: FADatabase, sub: Submission, sub_file: Optional[bytes]):
     sub_dict: dict = dict(sub)
     sub_dict["filelink"] = sub_dict["file_url"]
     del sub_dict["file_url"]
-    sub_dict["tags"] = ",".join(sorted(sub_dict["tags"], key=str.lower))
-    sub_dict["mentions"] = ",".join(sorted(sub_dict["mentions"], key=str.lower))
     db.submissions.save_submission(sub_dict, sub_file)
     db.commit()
 
