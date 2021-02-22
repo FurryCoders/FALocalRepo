@@ -158,9 +158,9 @@ Running the command alone will list the current values of the settings stored in
 Available settings are:
 
 * `list` list stored settings.
-* `cookies [<cookie a> <cookie b>]` the cookies stored in the database.
+* `cookies [<cookie1 name>=<cookie1 value>] ... [<cookieN name>=<cookieN value>]` the cookies stored in the database.
 ```
-falocalrepo config cookies 38565475-3421-3f21-7f63-3d341339737 356f5962-5a60-0922-1c11-65003b703038
+falocalrepo config cookies a=38565475-3421-3f21-7f63-3d341339737 b=356f5962-5a60-0922-1c11-65003b703038
 ```
 * `files-folder [<new folder>]` the folder used to store submission files. This can be any path relative to the folder of the database. If a new value is given, the program will move any files to the new location.
 ```
@@ -252,7 +252,8 @@ falocalrepo database add-user username=tom folders=gallery,scraps
     * `category`
     * `species`
     * `gender`
-    * `rating`<br>
+    * `rating`
+    * `folder` gallery or scraps<br>
 The following parameters are optional:
     * `tags` comma-separated tags
     * `description`
