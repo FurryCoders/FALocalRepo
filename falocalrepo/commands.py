@@ -100,6 +100,9 @@ def make_journal(id_: Union[int, str], author: str,
     journal.title = title
     journal.date = date
     journal.content = content
+    journal.mentions = sorted(set(filter(bool, map(clean_username, findall(
+        r'<a[^>]*href="(?:(?:https?://)?(?:www.)?furaffinity.net)?/user/([^/">]+)"',
+        content)))))
 
     return journal
 
