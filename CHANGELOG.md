@@ -1,5 +1,19 @@
 # Changelog
 
+## 3.16.0
+
+### Changes
+
+* `config cookies` command now takes parameters to allow for any number and name of cookies
+* falocalrepo-database dependency set to \~4.7.0
+  * Support new `MENTIONS` and `USERUPDATE` columns for journals and submission entries
+* faapi dependency set to \~2.15.0
+  * Remove calls to check user existence/status and instead rely on faapi exceptions
+  
+### Fixes
+
+* Fix submission tags not being sorted when adding a submission manually with `database add-submission` 
+
 ## 3.15.7
 
 ### Changes
