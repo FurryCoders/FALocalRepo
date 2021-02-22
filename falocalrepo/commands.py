@@ -1,7 +1,6 @@
-from math import ceil
-from math import log10
 from os import get_terminal_size
-from os.path import isdir, split
+from os.path import isdir
+from os.path import split
 from re import sub as re_sub
 from shutil import move
 from typing import Dict
