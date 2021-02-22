@@ -1,5 +1,12 @@
 # Changelog
 
+## 3.16.3
+
+### Fixes
+
+* Fix error when sorting users during update
+* Fix disabled users being printed even when not selected for updated
+
 ## 3.16.2
 
 ### Fixes
