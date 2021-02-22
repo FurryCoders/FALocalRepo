@@ -59,11 +59,11 @@ def download_items(db: FADatabase, item_ids: List[str], f: Callable[[FAAPI, FADa
         f(api, db, item_id)
 
 
-def save_submission(db: FADatabase, sub: Submission, sub_file: Optional[bytes]):
+def save_submission(db: FADatabase, sub: Submission, sub_file: Optional[bytes], user_update: bool = False):
     sub_dict: dict = dict(sub)
     sub_dict["filelink"] = sub_dict["file_url"]
     del sub_dict["file_url"]
-    db.submissions.save_submission(sub_dict, sub_file)
+    db.submissions.save_submission({**sub_dict, "USERUPDATE": int(user_update)}, sub_file)
     db.commit()
 
 
@@ -99,11 +99,11 @@ def download_submission_file(api: FAAPI, sub_file_url: str, speed: int = 100) ->
     return file_binary
 
 
-def download_submission(api: FAAPI, db: FADatabase, sub_id: int) -> bool:
+def download_submission(api: FAAPI, db: FADatabase, sub_id: int, user_update: bool = False) -> bool:
     try:
         sub: Submission = api.get_submission(sub_id, False)[0]
         sub_file: Optional[bytes] = download_submission_file(api, sub.file_url)
-        save_submission(db, sub, sub_file)
+        save_submission(db, sub, sub_file, user_update)
         return True
     except ParsingError:
         return False
@@ -195,24 +195,24 @@ def download_user(api: FAAPI, db: FADatabase, user: str, folder: str, stop: int 
     skip: bool = False
 
     download: Callable[[str, Union[str, int]], Tuple[List[Union[SubmissionPartial, Journal]], Union[int, str]]]
-    exists: Callable[[int], bool]
+    exists: Callable[[int], Optional[dict]]
 
     if folder.startswith("!"):
         print(f"{user}/{folder} disabled")
         return 0, 0
     elif folder in ("gallery", "list-gallery"):
         download = api.gallery
-        exists = db.submissions.__contains__
+        exists = db.submissions.__getitem__
     elif folder in ("scraps", "list-scraps"):
         download = api.scraps
-        exists = db.submissions.__contains__
+        exists = db.submissions.__getitem__
     elif folder in ("favorites", "list-favorites"):
         page = "next"
         download = api.favorites
-        exists = db.submissions.__contains__
+        exists = db.submissions.__getitem__
     elif folder in ("journals", "list-journals"):
         download = api.journals
-        exists = db.journals.__contains__
+        exists = db.journals.__getitem__
     else:
         raise UnknownFolder(folder)
 
@@ -241,13 +241,19 @@ def download_user(api: FAAPI, db: FADatabase, user: str, folder: str, stop: int 
                 items_failed += 1
                 bar.message("ID ERROR")
                 bar.close()
-            elif exists(item.id):
+            elif item_ := exists(item.id):
                 bar.message("IS IN DB")
                 if folder == "favorites":
                     found_items += db.submissions.add_favorite(item.id, user)
                     db.commit()
                 else:
-                    found_items += 1
+                    found_items += item_["USERUPDATE"]
+                    if folder in ("gallery", "scraps"):
+                        db.submissions.update({"USERUPDATE": 1}, item.id)
+                        db.submissions.set_folder(item.id, folder)
+                    elif folder == "journals":
+                        db.journals.update({"USERUPDATE": 1}, item.id)
+                    db.commit()
                 if stop and found_items >= stop:
                     print("\r" + (" " * (space_term - 1)), end="\r", flush=True)
                     page = 0
@@ -258,13 +264,13 @@ def download_user(api: FAAPI, db: FADatabase, user: str, folder: str, stop: int 
                 bar.close()
             elif isinstance(item, SubmissionPartial):
                 bar.delete()
-                if download_submission(api, db, item.id):
+                if download_submission(api, db, item.id, folder != "favorites"):
                     if folder == "favorites":
                         db.submissions.add_favorite(item.id, user)
                         db.commit()
                     items_total += 1
             elif isinstance(item, Journal):
-                db.journals.save_journal(dict(item))
+                db.journals.save_journal({**dict(item), "USERUPDATE": 1})
                 bar.update(1, 1)
                 bar.close()
                 items_total += 1
