@@ -288,8 +288,7 @@ def download_users(db: FADatabase, *args: str):
     if len(args) != 2:
         raise MalformedCommand("users needs two arguments")
 
-    users_tmp: List[str] = list(
-        filter(bool, map(clean_username, args[0].split(","))))
+    users_tmp: List[str] = list(filter(bool, map(clean_username, args[0].split(","))))
     users: List[str] = sorted(set(users_tmp), key=users_tmp.index)
     folders_tmp: List[str] = list(filter(bool, map(str.strip, args[1].split(","))))
     folders: List[str] = sorted(set(folders_tmp), key=folders_tmp.index)
@@ -329,12 +328,10 @@ def download_update(db: FADatabase, *args: str):
     folders: List[str] = []
     opts, args = parse_args(args)
     if args and args[0] != "@":
-        users_tmp: List[str] = list(
-            filter(bool, map(clean_username, args[0].split(","))))
+        users_tmp: List[str] = list(filter(bool, map(clean_username, args[0].split(","))))
         users = sorted(set(users_tmp), key=users_tmp.index)
     if args[1:] and args[1] != "@":
-        folders_tmp: List[str] = list(
-            filter(bool, map(str.strip, args[1].split(","))))
+        folders_tmp: List[str] = list(filter(bool, map(str.strip, args[1].split(","))))
         folders = sorted(set(folders_tmp), key=folders_tmp.index)
     download_users_update(db, users, folders, int(opts.get("stop", 1)))
 
