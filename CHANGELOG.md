@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.16.1
+
+### Fixes
+
+* Fix missing information in README
+
 ## 3.16.0
 
 ### Changes
