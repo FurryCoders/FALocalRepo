@@ -321,11 +321,6 @@ Each entry contains the following fields:
 
 * `USERNAME` The URL username of the user (no underscores or spaces)
 * `FOLDERS` the folders downloaded for that specific user.
-* `GALLERY`
-* `SCRAPS`
-* `FAVORITES`
-* `MENTIONS` this is a legacy entry used by the program up to version 2.11.2 (was named `EXTRAS`)
-* `JOURNALS`
 
 ### Submissions
 
@@ -345,6 +340,9 @@ The submissions table contains the metadata of the submissions downloaded by the
 * `FILEEXT` the extensions of the downloaded file. Can be empty if the file contained errors and could not be recognised upon download
 * `FILESAVED` 1 if the file was successfully downloaded and saved, 0 if there was an error during download
 * `FAVORITE` a comma-separate list of users that have "faved" the submission, it's filled only when downloading/updating a user's favorites folder
+* `MENTIONS` a comma-separate list of users that are mentioned in the submission description as links
+* `FOLDER` the folder of the submission (`gallery` or `scraps`)
+* `USERUPDATE` whether the submission was added as a user update or favorite/single entry
 
 ### Journals
 
@@ -355,6 +353,7 @@ The journals table contains the metadata of the journals downloaded by the progr
 * `TITLE`
 * `DATE` upload date in the format YYYY-MM-DD
 * `CONTENT` content in html format
+* `USERUPDATE` whether the journal was added as a user update or favorite/single entry
 
 ## Submission Files
 
