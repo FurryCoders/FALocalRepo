@@ -353,6 +353,7 @@ The journals table contains the metadata of the journals downloaded by the progr
 * `TITLE`
 * `DATE` upload date in the format YYYY-MM-DD
 * `CONTENT` content in html format
+* `MENTIONS` a comma-separate list of users that are mentioned in the journal content as links
 * `USERUPDATE` whether the journal was added as a user update or favorite/single entry
 
 ## Submission Files
