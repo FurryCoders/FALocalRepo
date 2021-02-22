@@ -584,6 +584,7 @@ def database_add_submission(db: FADatabase, *args: str):
             * 'species'
             * 'gender'
             * 'rating'
+            * 'folder' gallery or scraps
         The following parameters are optional:
             * 'tags' comma-separated tags
             * 'description'
@@ -597,7 +598,7 @@ def database_add_submission(db: FADatabase, *args: str):
             species='Unspecified / Any' gender=Any rating=General \\
             tags=cat,mouse,cartoon description="$(cat description.html)" \\
             file_url='http://remote.url/to/submission.file' \\
-            file_local_url='path/to/submission.file'
+            file_local_url='path/to/submission.file' folder=gallery
     """
 
     make_params = parameters(args)
