@@ -249,7 +249,7 @@ def download_user(api: FAAPI, db: FADatabase, user: str, folder: str, stop: int 
             elif item_ := exists(item.id):
                 bar.message("IS IN DB")
                 if folder == "favorites":
-                    found_items += db.submissions.add_favorite(item.id, user)
+                    found_items += not db.submissions.add_favorite(item.id, user)
                     db.commit()
                 else:
                     found_items += item_["USERUPDATE"]
