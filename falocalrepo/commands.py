@@ -193,40 +193,12 @@ def print_users(users: List[Dict[str, str]]):
         space_term = get_terminal_size()[0]
     except IOError:
         pass
+
+    space_name_max: int = max([len(u["USERNAME"]) for u in users]) if users else 10
     space_name: int = space_term - (space_folders + 3) - ((space_folder + 3) * 4) - 1
-
-    users_fmt: List[tuple] = [
-        (
-            user["USERNAME"],
-            f.split(",") if (f := user["FOLDERS"]) else 0,
-            (f.count(",") + 1) if (f := user["GALLERY"]) else 0,
-            (f.count(",") + 1) if (f := user["SCRAPS"]) else 0,
-            (f.count(",") + 1) if (f := user["FAVORITES"]) else 0,
-            (f.count(",") + 1) if (f := user["MENTIONS"]) else 0
-        )
-        for user in users
-    ]
-
-    users_fmt.sort(key=lambda usr: usr[0])
-
-    space_name_max: int = max([len(u[0]) for u in users_fmt]) if users_fmt else 10
     space_name = space_name_max if space_name > space_name_max else space_name
-    len_gallery_max: int = int(max([ceil(log10(u[2])) if u[2] else 0 for u in users_fmt])) if users_fmt else 0
-    len_scraps_max: int = int(max([ceil(log10(u[3])) if u[3] else 0 for u in users_fmt])) if users_fmt else 0
-    len_favorites_max: int = int(max([ceil(log10(u[4])) if u[4] else 0 for u in users_fmt])) if users_fmt else 0
-    len_mentions_max: int = int(max([ceil(log10(u[5])) if u[5] else 0 for u in users_fmt])) if users_fmt else 0
 
-    print(
-        f"{'Username':^{space_name}} | {'Folders':^{space_folders}}" +
-        f" | {'Gallery':^{space_folder}} | {'Scraps':^{space_folder}}" +
-        f" | {'Favorites':^{space_folder}} | {'Mentions':^{space_folder}}"
-    )
-    for user, folders, gallery, scraps, favorites, mentions in users_fmt:
-        folders_min: str = ",".join(set(map(lambda f: f[0], folders)))
-        print(
-            f"{user[:space_name]:<{space_name}} | {folders_min:^{space_folders}}" +
-            f" | {f'{gallery:>{len_gallery_max}}':^{space_folder}}" +
-            f" | {f'{scraps:>{len_scraps_max}}':^{space_folder}}" +
-            f" | {f'{favorites:>{len_favorites_max}}':^{space_folder}}" +
-            f" | {f'{mentions:>{len_mentions_max}}':^{space_folder}}"
-        )
+    print(f"{'Username':^{space_name}} | {'Folders':^{space_folders}}")
+    for user in sorted(users, key=lambda usr: usr["USERNAME"].lower()):
+        folders_min: str = ",".join(set(map(lambda f: f[0], user["FOLDERS"])))
+        print(f"{user['USERNAME'][:space_name]:<{space_name}} | {folders_min:^{space_folders}}")
