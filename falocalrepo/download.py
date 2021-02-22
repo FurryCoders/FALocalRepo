@@ -137,10 +137,10 @@ def download_users_update(db: FADatabase, users: List[str], folders: List[str], 
         key=lambda u: users.index(u["USERNAME"]) if users else u["USERNAME"])
 
     for user, user_folders in ((u["USERNAME"], u["FOLDERS"].split(",")) for u in users_db):
-        if any(folder.startswith("!") for folder in user_folders):
-            print(f"User {user} disabled")
+        if not (user_folders := [f for f in folders if f in user_folders] if folders else user_folders):
             continue
-        elif not (user_folders := [f for f in folders if f in user_folders] if folders else user_folders):
+        elif any(folder.startswith("!") for folder in user_folders):
+            print(f"User {user} disabled")
             continue
         try:
             api = load_api(db) if api is None else api
