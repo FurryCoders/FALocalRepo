@@ -16,7 +16,6 @@ from faapi import FAAPI
 from faapi import Journal
 from faapi import NoticeMessage
 from faapi import ParsingError
-from faapi import ServerError
 from faapi import Submission
 from faapi import SubmissionPartial
 from falocalrepo_database import FADatabase
@@ -151,7 +150,7 @@ def download_users_update(db: FADatabase, users: List[str], folders: List[str], 
             print(f"User {user} disabled")
             db.users.disable_user(user)
             db.commit()
-        except ServerError:
+        except NoticeMessage:
             print(f"User {user} not found")
         except ParsingError as err:
             print(f"User {user} error: {repr(err)}")
