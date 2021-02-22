@@ -134,7 +134,7 @@ def download_users_update(db: FADatabase, users: List[str], folders: List[str], 
     users = list(set(map(clean_username, users)))
     users_db: List[dict] = sorted(
         filter(lambda u: not users or u["USERNAME"] in users, db.users),
-        key=lambda u: users.index(u["USERNAME"]))
+        key=lambda u: users.index(u["USERNAME"]) if users else u["USERNAME"])
 
     for user, user_folders in ((u["USERNAME"], u["FOLDERS"].split(",")) for u in users_db):
         if any(folder.startswith("!") for folder in user_folders):
