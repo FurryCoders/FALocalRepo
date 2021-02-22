@@ -1,6 +1,7 @@
 from os import get_terminal_size
 from os.path import isdir
 from os.path import split
+from re import findall
 from re import sub as re_sub
 from shutil import move
 from typing import Dict
@@ -107,7 +108,7 @@ def make_submission(id_: Union[int, str], author: str, title: str,
                     date: str, category: str, species: str,
                     gender: str, rating: str, tags: str = "",
                     description: str = "", file_url: str = "",
-                    file_local_url: str = ""
+                    file_local_url: str = "", folder: str = ""
                     ) -> Tuple[Submission, Optional[bytes]]:
     id_ = int(id_)
     assert id_ > 0, "id must be greater than 0"
@@ -122,6 +123,7 @@ def make_submission(id_: Union[int, str], author: str, title: str,
     assert isinstance(description, str), "description must be of type str"
     assert isinstance(file_url, str), "file_url must be of type str"
     assert isinstance(file_local_url, str), "file_local_url must be of type str"
+    assert isinstance(folder, str), "folder must be of type str"
 
     sub: Submission = Submission()
     sub_file: Optional[bytes] = None
@@ -137,6 +139,10 @@ def make_submission(id_: Union[int, str], author: str, title: str,
     sub.rating = rating
     sub.description = description
     sub.file_url = file_url
+    sub.folder = folder
+    sub.mentions = sorted(set(filter(bool, map(clean_username, findall(
+        r'<a[^>]*href="(?:(?:https?://)?(?:www.)?furaffinity.net)?/user/([^/">]+)"',
+        description)))))
 
     if file_local_url:
         with open(file_local_url, "rb") as f:
