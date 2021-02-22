@@ -135,7 +135,7 @@ def make_submission(id_: Union[int, str], author: str, title: str,
     sub.title = title
     sub.author = author
     sub.date = date
-    sub.tags = list(filter(bool, map(str.strip, tags.split(","))))
+    sub.tags = sorted(filter(bool, map(str.strip, tags.split(","))))
     sub.category = category
     sub.species = species
     sub.gender = gender
