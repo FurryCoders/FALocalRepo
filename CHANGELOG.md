@@ -1,5 +1,13 @@
 # Changelog
 
+## 3.16.2
+
+### Fixes
+
+* Fix update not working if no users are passed
+* Fix update not finding favorites in the database
+* Fix missing version 3.16.1 in the changelog
+
 ## 3.16.1
 
 ### Fixes
