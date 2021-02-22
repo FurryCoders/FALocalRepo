@@ -113,9 +113,14 @@ def download_submissions(db: FADatabase, sub_ids: List[str]):
     download_items(db, sub_ids, download_submission)
 
 
+def save_journal(db: FADatabase, journal: Journal, user_update: bool = False):
+    db.journals.save_journal({**dict(journal), "USERUPDATE": int(user_update)})
+    db.commit()
+
+
 def download_journal(api: FAAPI, db: FADatabase, jrn_id: int):
     journal: Journal = api.get_journal(jrn_id)
-    db.journals.save_journal(dict(journal))
+    save_journal(db, journal)
 
 
 def download_journals(db: FADatabase, jrn_ids: List[str]):
@@ -270,7 +275,7 @@ def download_user(api: FAAPI, db: FADatabase, user: str, folder: str, stop: int 
                         db.commit()
                     items_total += 1
             elif isinstance(item, Journal):
-                db.journals.save_journal({**dict(item), "USERUPDATE": 1})
+                save_journal(db, item, folder == "journals")
                 bar.update(1, 1)
                 bar.close()
                 items_total += 1
