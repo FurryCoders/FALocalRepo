@@ -34,6 +34,7 @@ from .download import download_submissions as download_submissions_
 from .download import download_users as download_users_
 from .download import download_users_update
 from .download import read_cookies
+from .download import save_journal
 from .download import save_submission
 from .download import write_cookies
 
@@ -603,7 +604,7 @@ def database_add_submission(db: FADatabase, *args: str):
     make_params["id_"] = make_params.get("id", "")
     if "id" in make_params:
         del make_params["id"]
-    save_submission(db, *make_submission(**make_params))
+    save_submission(db, *make_submission(**make_params), user_update=False)
 
 
 def database_add_journal(db: FADatabase, *args: str):
@@ -634,8 +635,7 @@ def database_add_journal(db: FADatabase, *args: str):
     make_params["id_"] = make_params.get("id", "")
     if "id" in make_params:
         del make_params["id"]
-    db.journals.save_journal(dict(make_journal(**make_params)))
-    db.commit()
+    save_journal(db, make_journal(**make_params), user_update=False)
 
 
 def database_remove_users(db: FADatabase, *args: str):
