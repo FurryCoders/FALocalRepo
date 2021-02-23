@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.16.8
+
+### Fixes
+
+* Remove test code that interfered with item clearing on update stop
+
 ## 3.16.7
 
 ### Changes
