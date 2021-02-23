@@ -5,6 +5,7 @@
 ### Fixes
 
 * Fix update not finding changed folders correctly
+* Fix update considering items as updated for users' galleries/scraps even when downloaded as favorites
 
 ## 3.16.4
 
@@ -39,13 +40,13 @@
 
 * `config cookies` command now takes parameters to allow for any number and name of cookies
 * falocalrepo-database dependency set to \~4.7.0
-  * Support new `MENTIONS` and `USERUPDATE` columns for journals and submission entries
+    * Support new `MENTIONS` and `USERUPDATE` columns for journals and submission entries
 * faapi dependency set to \~2.15.0
-  * Remove calls to check user existence/status and instead rely on faapi exceptions
-  
+    * Remove calls to check user existence/status and instead rely on faapi exceptions
+
 ### Fixes
 
-* Fix submission tags not being sorted when adding a submission manually with `database add-submission` 
+* Fix submission tags not being sorted when adding a submission manually with `database add-submission`
 
 ## 3.15.7
 
@@ -74,13 +75,15 @@
 
 ### Fixes
 
-* The multiple instance check will not be triggered by modules that contain `falocalrepo` in their name (e.g. `falocalrepo-server`)
+* The multiple instance check will not be triggered by modules that contain `falocalrepo` in their name (
+  e.g. `falocalrepo-server`)
 
 ## 3.15.3
 
 ### Changes
 
-* FAAPI (from [faapi](https://pypi.org/project/faapi)) is not loaded until needed. Commands structure is checked before connection is attempted
+* FAAPI (from [faapi](https://pypi.org/project/faapi)) is not loaded until needed. Commands structure is checked before
+  connection is attempted
 * Cookies are listed as-are to allow checking for errors (e.g. incorrect `name` field)
 
 ## 3.15.2
@@ -225,7 +228,7 @@
 
 ### Fixes
 
-* Fix database transaction being left open and locking `VACUUM` operation 
+* Fix database transaction being left open and locking `VACUUM` operation
 
 ## 3.13.4
 
@@ -254,7 +257,12 @@
 
 ## 3.13.0
 
-With this new release comes the all-new [falocalrepo-database](https://pypi.org/project/falocalrepo-database/) version 4. Some column names in the database have been changed and the insertion functions have been made safer with built-in checks. Search is now much more versatile and allows to query any columns in the users, submissions, and journals tables. Thanks to the new checks, the `database check-errors` command was removed, as the new checks remove the possibility of inserting erroneous data. The update function will notify of any faulty entry during the automatic update of the database.
+With this new release comes the all-new [falocalrepo-database](https://pypi.org/project/falocalrepo-database/) version
+4. Some column names in the database have been changed and the insertion functions have been made safer with built-in
+checks. Search is now much more versatile and allows to query any columns in the users, submissions, and journals
+tables. Thanks to the new checks, the `database check-errors` command was removed, as the new checks remove the
+possibility of inserting erroneous data. The update function will notify of any faulty entry during the automatic update
+of the database.
 
 ### Changes
 
@@ -276,14 +284,16 @@ With this new release comes the all-new [falocalrepo-database](https://pypi.org/
 
 ## 3.12.0
 
-This new minor bump adds a new `list-<folder>` option to the download users command. Using it allows to list all remote items present in a user folder without downloading them. Environmental variables are now supported starting with `FALOCALREPO_DATABASE` which allows to set a different path for the database and files folder root.
+This new minor bump adds a new `list-<folder>` option to the download users command. Using it allows to list all remote
+items present in a user folder without downloading them. Environmental variables are now supported starting
+with `FALOCALREPO_DATABASE` which allows to set a different path for the database and files folder root.
 
 ### Changes
 
 * Add `list-<folder>` folders to download users command
 * Add `FALOCALREPO_DATABASE` environmental variable
 * falocalrepo-server dependency set to \~1.4.0
-* Remove subcommands arguments details from general help messages  
+* Remove subcommands arguments details from general help messages
 
 ### Fixes
 
@@ -292,7 +302,9 @@ This new minor bump adds a new `list-<folder>` option to the download users comm
 
 ## 3.11.0
 
-This new minor version bump updates the [falocalrepo-database](https://pypi.org/project/falocalrepo-database/) dependency to its latest version and adds a new `database merge` command. This new command allows to merge the database located in the current folder with a second database located in another folder.
+This new minor version bump updates the [falocalrepo-database](https://pypi.org/project/falocalrepo-database/)
+dependency to its latest version and adds a new `database merge` command. This new command allows to merge the database
+located in the current folder with a second database located in another folder.
 
 ### Changes
 
@@ -307,7 +319,8 @@ This new minor version bump updates the [falocalrepo-database](https://pypi.org/
 
 ### Fixes
 
-* Fix an error occurring when date format was set to "full" [faapi#1](https://gitlab.com/MatteoCampinoti94/FAAPI/-/issues/1)
+* Fix an error occurring when date format was set to "
+  full" [faapi#1](https://gitlab.com/MatteoCampinoti94/FAAPI/-/issues/1)
 
 ## 3.10.10
 
@@ -398,7 +411,8 @@ This new minor version bump updates the [falocalrepo-database](https://pypi.org/
 
 ## 3.10.0
 
-Added a new `database search-users` command to search the users table using all the collected metadata. The readme has been improved slightly with better explanations. A small error in the database command help message was fixed.
+Added a new `database search-users` command to search the users table using all the collected metadata. The readme has
+been improved slightly with better explanations. A small error in the database command help message was fixed.
 
 ### Changes
 
@@ -428,11 +442,14 @@ Added a new `database search-users` command to search the users table using all 
 
 ## 3.9.0 - 100th Release!
 
-Both the database and server modules have been update to versions 3.5.0 and 1.3.1 respectively. The database now holds a history of all commands (except for version printing and help) instead of just last start and last update, and A new `database history` command was added to print the commands history.
+Both the database and server modules have been update to versions 3.5.0 and 1.3.1 respectively. The database now holds a
+history of all commands (except for version printing and help) instead of just last start and last update, and A
+new `database history` command was added to print the commands history.
 
 When a non-help command is used, the program now checks for updates to its components and prints them to screen.
 
-More exceptions are caught now and exit with a specific code; unforeseen exceptions are also caught and their trace saved to FA.log.
+More exceptions are caught now and exit with a specific code; unforeseen exceptions are also caught and their trace
+saved to FA.log.
 
 ### Changes
 
@@ -464,7 +481,10 @@ More exceptions are caught now and exit with a specific code; unforeseen excepti
 
 ## 3.8.0
 
-From this release all database functions are handled separately by the new [falocalrepo-database](https://pypi.org/project/falocalrepo-database/) package. The package is also used in [falocalrepo-server](https://pypi.org/project/falocalrepo-server/) allowing the falocalrepo console to be updated more easily.
+From this release all database functions are handled separately by the
+new [falocalrepo-database](https://pypi.org/project/falocalrepo-database/) package. The package is also used
+in [falocalrepo-server](https://pypi.org/project/falocalrepo-server/) allowing the falocalrepo console to be updated
+more easily.
 
 ### Changes
 
@@ -478,7 +498,10 @@ From this release all database functions are handled separately by the new [falo
 
 ## 3.7.5
 
-The `download journals` command is now fixed and calling the correct function. Two sub-commands aliases have been added: `config list` and `database info` which act as `config` and `database` respectively when called without arguments. Database size in MB (base 10) and last start have been added to `database info` output, missing journals counter in database info has also been added. falocalrepo-server dependency updated to ^1.1.3.
+The `download journals` command is now fixed and calling the correct function. Two sub-commands aliases have been
+added: `config list` and `database info` which act as `config` and `database` respectively when called without
+arguments. Database size in MB (base 10) and last start have been added to `database info` output, missing journals
+counter in database info has also been added. falocalrepo-server dependency updated to ^1.1.3.
 
 ### Changes
 
@@ -500,7 +523,9 @@ The `download journals` command is now fixed and calling the correct function. T
 
 ## 3.7.3
 
-Background changes and fixes. The `main_console` function was renamed to `console` and is now the only direct export of the package, falocalrepo-server dependency has been updated to ^1.1.2, help messages have been slightly reformatted, and command does not dwfault to `init` when absent.
+Background changes and fixes. The `main_console` function was renamed to `console` and is now the only direct export of
+the package, falocalrepo-server dependency has been updated to ^1.1.2, help messages have been slightly reformatted, and
+command does not dwfault to `init` when absent.
 
 ### Changes
 
@@ -517,7 +542,8 @@ Background changes and fixes. The `main_console` function was renamed to `consol
 
 ## 3.7.2
 
-falocalrepo-server dependency has been updated to use the latest above 1.1.1. Command defaults to init if no command is passed.
+falocalrepo-server dependency has been updated to use the latest above 1.1.1. Command defaults to init if no command is
+passed.
 
 ### Changes
 
@@ -532,7 +558,9 @@ falocalrepo-server dependency has been updated to use the latest above 1.1.1. Co
 
 ## 3.7.0
 
-The server interface has been moved to its own separate package [falocalrepo-server](https://pypi.org/project/falocalrepo-server/) for ease of development, and it is now a dependency of falocalrepo.
+The server interface has been moved to its own separate
+package [falocalrepo-server](https://pypi.org/project/falocalrepo-server/) for ease of development, and it is now a
+dependency of falocalrepo.
 
 A few small bugs have also been fixed.
 
@@ -571,13 +599,18 @@ A few small bugs have also been fixed.
 
 ## 3.6.0
 
-A new `database server` command has been added, which starts a Flask server that allows to search the local database and visualise submissions and journals in a friendly GUI.
+A new `database server` command has been added, which starts a Flask server that allows to search the local database and
+visualise submissions and journals in a friendly GUI.
 
-The web interface allows to search the database using the same options and methods as the `database search-submissions` and `database search-journals` commands.
+The web interface allows to search the database using the same options and methods as the `database search-submissions`
+and `database search-journals` commands.
 
-Command line search commands now support `order`, `limit` and `offset` parameters for finer control of database searches. For a more in-depth explanation refer to the [SQLite SELECT documentation](https://sqlite.org/lang_select.html).
+Command line search commands now support `order`, `limit` and `offset` parameters for finer control of database
+searches. For a more in-depth explanation refer to
+the [SQLite SELECT documentation](https://sqlite.org/lang_select.html).
 
-A few bugs have also been resolved, error messages have been improved, and more information has been added to the readme regarding search wildcards.
+A few bugs have also been resolved, error messages have been improved, and more information has been added to the readme
+regarding search wildcards.
 
 ### Changes
 
@@ -593,7 +626,9 @@ A few bugs have also been resolved, error messages have been improved, and more 
 
 ## 3.5.4
 
-A new stop option has been added to the download update command to modify the number of submisisons after which the program stops looking through a user's folder. The database update from 2.7 to 3 has been upgraded and now files are found directly in the submission folder.
+A new stop option has been added to the download update command to modify the number of submisisons after which the
+program stops looking through a user's folder. The database update from 2.7 to 3 has been upgraded and now files are
+found directly in the submission folder.
 
 ### Changes
 
@@ -612,7 +647,7 @@ A new stop option has been added to the download update command to modify the nu
 
 * Error checking now includes the Journals table
 * FAAPI has been updated to version 2.8.1
-  * Check connection status before running download commands
+    * Check connection status before running download commands
 
 ### Fixes
 
@@ -626,11 +661,13 @@ A new stop option has been added to the download update command to modify the nu
 
 ## 3.5.0
 
-The new `database search-journals` command allows to search journals by author, title, date and content. The old submissions search command is now called `search-submissions`.
+The new `database search-journals` command allows to search journals by author, title, date and content. The old
+submissions search command is now called `search-submissions`.
 
 The help message and readme have been fixed and missing information has been added.
 
-The output of the `download users` command has been generalised so it does not use "submissions" even when downloading journals; uses "items" instead.
+The output of the `download users` command has been generalised so it does not use "submissions" even when downloading
+journals; uses "items" instead.
 
 ### Changes
 
@@ -643,7 +680,11 @@ The output of the `download users` command has been generalised so it does not u
 
 ## 3.4.0
 
-The program now uses [FAAPI](https://gitlab.com/MatteoCampinoti94/FAAPI) version 2.7.3, which supports downloading users journals. The database has been updated to version 3.2.0 to support this change with a new `JOURNALS` table and a `JOURNALS` field in the `USERS` table. Journals can be download with the `download users` command as any other folder (gallery, scraps, etc...) or with the `download journals` command by supplying journal ID's. Journals can also be added manually using the `database add-journal` command. A corresponding `database remove-journals` has also been added.
+The program now uses [FAAPI](https://gitlab.com/MatteoCampinoti94/FAAPI) version 2.7.3, which supports downloading users
+journals. The database has been updated to version 3.2.0 to support this change with a new `JOURNALS` table and
+a `JOURNALS` field in the `USERS` table. Journals can be download with the `download users` command as any other
+folder (gallery, scraps, etc...) or with the `download journals` command by supplying journal ID's. Journals can also be
+added manually using the `database add-journal` command. A corresponding `database remove-journals` has also been added.
 
 The previous `database manual-entry` command has been changed to `database add-submission`.
 
@@ -652,8 +693,8 @@ A few errors in the readme have also been solved.
 ### Changes
 
 * Database version 3.2.0
-  * Add `JOURNALS` table
-  * Add `JOURNALS` field in the `USERS` table
+    * Add `JOURNALS` table
+    * Add `JOURNALS` field in the `USERS` table
 * Download users' journals
 
 ### Fixes
@@ -695,7 +736,8 @@ A few errors in the readme have also been solved.
 
 ## 3.3.0
 
-Database version has been updated to 3.1.0; the "extras" folder has been renamed "mentions". Order of submissions ID's is maintained when downloading single submissions.
+Database version has been updated to 3.1.0; the "extras" folder has been renamed "mentions". Order of submissions ID's
+is maintained when downloading single submissions.
 
 ### Fixes
 
@@ -704,7 +746,7 @@ Database version has been updated to 3.1.0; the "extras" folder has been renamed
 ### Changes
 
 * Database updated to 3.1.0
-  * Extras renamed to mentions
+    * Extras renamed to mentions
 
 ## 3.2.5
 
@@ -722,7 +764,8 @@ Fixes a but that caused tiered paths to overlap if the submission ID ended with 
 
 ## 3.2.3
 
-Order of users and folders passed to download users/update is maintained. Submissions already in the database but not in user entry are not downloaded again.
+Order of users and folders passed to download users/update is maintained. Submissions already in the database but not in
+user entry are not downloaded again.
 
 ### Fixes
 
@@ -731,7 +774,8 @@ Order of users and folders passed to download users/update is maintained. Submis
 
 ## 3.2.2
 
-Submissions titles are now cleaned of non-ASCII characters before printing them to screen. Non-ASCII characters would break the spacing of the download output.
+Submissions titles are now cleaned of non-ASCII characters before printing them to screen. Non-ASCII characters would
+break the spacing of the download output.
 
 ### Fixes
 
@@ -763,7 +807,8 @@ Database search now allows to use either display or URL author usernames; i.e. `
 
 ## 3.1.8
 
-Exceptions raised during database updates are caught and any pending changes are committed before the exception is raised again.
+Exceptions raised during database updates are caught and any pending changes are committed before the exception is
+raised again.
 
 ### Changes
 
@@ -771,7 +816,10 @@ Exceptions raised during database updates are caught and any pending changes are
 
 ## 3.1.7
 
-The memory usage of database select (i.e. read) operations has been reduced by using [sqlite3 cursors](https://docs.python.org/3/library/sqlite3.html#cursor-objects) instead of lists. The speed of the database update function has been greatly improved by reducing database commits to one every 10000 processed entries (1000 for the users table).
+The memory usage of database select (i.e. read) operations has been reduced by
+using [sqlite3 cursors](https://docs.python.org/3/library/sqlite3.html#cursor-objects) instead of lists. The speed of
+the database update function has been greatly improved by reducing database commits to one every 10000 processed
+entries (1000 for the users table).
 
 ### Changes
 
@@ -780,7 +828,8 @@ The memory usage of database select (i.e. read) operations has been reduced by u
 
 ## 3.1.6
 
-Fixes an output error in the database update function and improves the way settings and statistics are written in the database, using UPDATE instead of INSERT OR REPLACE
+Fixes an output error in the database update function and improves the way settings and statistics are written in the
+database, using UPDATE instead of INSERT OR REPLACE
 
 ### Fixes
 
@@ -829,7 +878,8 @@ Fix a version error. Database version was set to 3.1.0 instead of the program ve
 
 ## 3.1.0
 
-The database search command now allows to pass a parameter multiple times to act as OR values for the same field. The readme has been slightly improved and some errors in it have been fixed.
+The database search command now allows to pass a parameter multiple times to act as OR values for the same field. The
+readme has been slightly improved and some errors in it have been fixed.
 
 ### Fixes
 
@@ -843,7 +893,8 @@ The database search command now allows to pass a parameter multiple times to act
 
 This releases fixes counters not being updated in the new database when updating from version 2.7.
 
-Under the hood changes include exporting the main console function so that the package can be imported and called with arguments from other Python scripts.
+Under the hood changes include exporting the main console function so that the package can be imported and called with
+arguments from other Python scripts.
 
 Readme has also been improved with more informations about issues and contributing.
 
@@ -865,7 +916,8 @@ Small patch to fix a search bug and output the number of results found with sear
 
 ## 3.0.1
 
-This release is only a minor fix to change the PyPi classifier for development status of the program from beta to stable.
+This release is only a minor fix to change the PyPi classifier for development status of the program from beta to
+stable.
 
 ## 3.0.0
 
@@ -873,17 +925,27 @@ This release is only a minor fix to change the PyPi classifier for development s
 
 Release 3.0.0 marks a complete change in how the program is run, its capabilities and future developement.
 
-Following the change of interface in January 2020, version 2 stopped working, but with this new release the tool can once again get content from FurAffinity and is much simpler to update to support future changes to FA's web interface.
+Following the change of interface in January 2020, version 2 stopped working, but with this new release the tool can
+once again get content from FurAffinity and is much simpler to update to support future changes to FA's web interface.
 
-This change was achieved thanks to the FAAPI package (from the same author of FALocalRepo [FAAPI@PyPi.org](https://pypi.org/project/faapi)). All scraping functions are now independent of the interface, allowing for much quicker
+This change was achieved thanks to the FAAPI package (from the same author of
+FALocalRepo [FAAPI@PyPi.org](https://pypi.org/project/faapi)). All scraping functions are now independent of the
+interface, allowing for much quicker
 
-The interface of the program was changed from an interactive menu to a command line tool. This allows for much quicker execution of commands, simpler code and automation via shell scripts.
+The interface of the program was changed from an interactive menu to a command line tool. This allows for much quicker
+execution of commands, simpler code and automation via shell scripts.
 
-The database has been updated and is now over 50% lighter for large numbers of downloaded submissions. Furthermore, it now holds the cookies used by the scraper, reducing the program footprint.
+The database has been updated and is now over 50% lighter for large numbers of downloaded submissions. Furthermore, it
+now holds the cookies used by the scraper, reducing the program footprint.
 
-All database functions have been completely overhauled and are now _considerably_ faster, especially searching. Using a 500k submissions table and a modern SSD drive, searching for a specific tag takes 0,90s on average, and searching for a string in the descriptions takes only 1,30s. Time may vary depending on search parameters and drive speed.
+All database functions have been completely overhauled and are now _considerably_ faster, especially searching. Using a
+500k submissions table and a modern SSD drive, searching for a specific tag takes 0,90s on average, and searching for a
+string in the descriptions takes only 1,30s. Time may vary depending on search parameters and drive speed.
 
-The last big change is in regards to the packaging and distribution of the program. falocalrepo is now a PyPi package, easily installed with a single pip command. All dependencies have also been packaged and distributed on PyPi and are handled without the need for git submodules. The new distribution method allows to run falocalrepo in any folder, without the need to have the program itself stored with the database.
+The last big change is in regards to the packaging and distribution of the program. falocalrepo is now a PyPi package,
+easily installed with a single pip command. All dependencies have also been packaged and distributed on PyPi and are
+handled without the need for git submodules. The new distribution method allows to run falocalrepo in any folder,
+without the need to have the program itself stored with the database.
 
 ### Changes
 
@@ -902,7 +964,8 @@ The last big change is in regards to the packaging and distribution of the progr
 
 ## 2.10.2
 
-Reduced the number of indexes created and made the whole process safer. Also, interruption is now available during indexing.
+Reduced the number of indexes created and made the whole process safer. Also, interruption is now available during
+indexing.
 
 PS: Linux release is once again bigger than it should. Will work on finding a more permanent fix.
 
@@ -910,12 +973,13 @@ PS: Linux release is once again bigger than it should. Will work on finding a mo
 
 ## 2.10.1
 
-Extras' `e` option has been changed to search for ':iconusername:' and ':usernameicon:' only in the descriptions as searching in keywords too caused too many false positives in case the username was a common word/phrase.
+Extras' `e` option has been changed to search for ':iconusername:' and ':usernameicon:' only in the descriptions as
+searching in keywords too caused too many false positives in case the username was a common word/phrase.
 
 Extras' `E` options has been changed to search 'username' in submissions' titles too.
 
-A new 'warning' log type has been added for errors and exceptions. These will be saved in the log file regardless of other settings.
-The log also has a new column for the type of log event: 'N', 'V', or 'W'
+A new 'warning' log type has been added for errors and exceptions. These will be saved in the log file regardless of
+other settings. The log also has a new column for the type of log event: 'N', 'V', or 'W'
 
 A small output error was also fixed.
 
@@ -925,10 +989,13 @@ PS: Linux release is once again bigger than it should. Will work on finding a mo
 
 ## 2.10
 
-Thanks to a special Python module created by yours truly, Windows users can now enjoy the program with safe interruption support. The module can be found on GitHub &rarr; [SignalBlock](https://github.com/MatteoCampinoti94/PythonSignalBlocking-CrossPlatform).<br>
+Thanks to a special Python module created by yours truly, Windows users can now enjoy the program with safe interruption
+support. The module can be found on GitHub
+&rarr; [SignalBlock](https://github.com/MatteoCampinoti94/PythonSignalBlocking-CrossPlatform).<br>
 More information on the feature can be found in the README.
 
-A new function has been added to the program to correctly detect version differences as the old method was causing errors with some versions.
+A new function has been added to the program to correctly detect version differences as the old method was causing
+errors with some versions.
 
 New log events have been added for SIGINT (CTRL-C interruption) detection and database version.
 
@@ -938,9 +1005,11 @@ PS: Linux release is once again bigger than it should. Will work on finding a mo
 
 ## 2.9
 
-Added logging to the program if launched with '--log' or '--logv' as argument (the latter logs ALL operations, thus the v of verbose). Log is saved in a file named 'FA.log' and is trimmed to the last 10000 lines at each program start.
+Added logging to the program if launched with '--log' or '--logv' as argument (the latter logs ALL operations, thus the
+v of verbose). Log is saved in a file named 'FA.log' and is trimmed to the last 10000 lines at each program start.
 
-A new  'slow' option has been added to the download/update sections to throttle speed even further down by adding a delay of 1,5 seconds between submissions downloads.
+A new  'slow' option has been added to the download/update sections to throttle speed even further down by adding a
+delay of 1,5 seconds between submissions downloads.
 
 A critical bug in the update function has been fixed.
 
@@ -968,7 +1037,8 @@ A new entry has been added to the repair menu to analyze all the tables without 
 
 Download and update have a new 'dbonly' option that allows to add the entries to the database without saving any file.
 
-Unforeseen errors are now caught and displayed without being too verbose. To display errors normally the program can be run with the option '--debug'.
+Unforeseen errors are now caught and displayed without being too verbose. To display errors normally the program can be
+run with the option '--debug'.
 
 An important bug has been fixed in the repair section. A missing return was breaking the INFOS table rapair.
 
@@ -988,11 +1058,15 @@ PS: Linux release is once again bigger than it should. Will work on finding a mo
 
 ## 2.7.3
 
-The search URL has been modified to avoid false positives by specifically searching only the description and keywords. The default search employed by FA looks for search terms inside submissions filenames as well and it could cause false positives.
+The search URL has been modified to avoid false positives by specifically searching only the description and keywords.
+The default search employed by FA looks for search terms inside submissions filenames as well and it could cause false
+positives.
 
 Unforeseen errors are now caught by the main script and their information displayed before exiting the program.
 
-The header describing the various columns during download/update now reflects the new status output introduced with [v2.7](https://github.com/MatteoCampinoti94/FALocalRepo/releases/tag/v2.7) and fixed in [v2.7.1](https://github.com/MatteoCampinoti94/FALocalRepo/releases/tag/v2.7.1).
+The header describing the various columns during download/update now reflects the new status output introduced
+with [v2.7](https://github.com/MatteoCampinoti94/FALocalRepo/releases/tag/v2.7) and fixed
+in [v2.7.1](https://github.com/MatteoCampinoti94/FALocalRepo/releases/tag/v2.7.1).
 
 PS: Linux release is once again bigger than it should. Will work on finding a more permanent fix.
 
@@ -1024,11 +1098,16 @@ PS: Linux release is once again bigger than it should. Will work on finding a mo
 
 New outputs have been added at the start of the program to show what it is doing instead of showing an empty screen.
 
-Download and update status output has been overhauled. The current operation is now showed in a small bracketed area at the right end of the terminal screen. A progress bar is also shown when the submission file is downloaded (not all files support this).
+Download and update status output has been overhauled. The current operation is now showed in a small bracketed area at
+the right end of the terminal screen. A progress bar is also shown when the submission file is downloaded (not all files
+support this).
 
-A new INDEX entry has been added to the INFOS table, it is used to save the update status of the indexes used in the search function. Its values are either '0' if they are not up to date or '1' if they are.
+A new INDEX entry has been added to the INFOS table, it is used to save the update status of the indexes used in the
+search function. Its values are either '0' if they are not up to date or '1' if they are.
 
-Together with the new INDEX entry a new 'noindex' option has been added to the download/update section. If passed then the program will not rebuild indexes after the download/update operation is completed and will set the INDEX entry to '0' if new submissions where downloaded.
+Together with the new INDEX entry a new 'noindex' option has been added to the download/update section. If passed then
+the program will not rebuild indexes after the download/update operation is completed and will set the INDEX entry to '
+0' if new submissions where downloaded.
 
 A few things have been improved around the program and some bugs removed.
 
@@ -1040,13 +1119,15 @@ PS: Linux release is once again bigger than it should. Will work on finding a mo
 
 Submissions descriptions are now saved in the database together with the submissions data.
 
-Search has been updated to work with the new description field so it is now possible to search descriptions both offline in the database and online with the web search.<br>
+Search has been updated to work with the new description field so it is now possible to search descriptions both offline
+in the database and online with the web search.<br>
 Case sensitivity can now be turned on/off with 'case' option in both normal and regex mode (but not online).<br>
 Indexes have been added to quicken the search.
 
 User entries have been slightly altered too: `NAME` column was changed to `USER` and `NAMEFULL` to `USERFULL`.
 
-Repair has been improved with a new menu and a section dedicated to the `INFOS` table as well as shortcuts to optimize the database or re-index it.
+Repair has been improved with a new menu and a section dedicated to the `INFOS` table as well as shortcuts to optimize
+the database or re-index it.
 
 Upgrade functions have also been improved with lower memory usage.
 
@@ -1060,11 +1141,13 @@ Update 2018/05/02: Linux binary was compiled with an error, it is fixed now
 
 ## 2.5
 
-The program is now capable of running searches on the main website. If there no results can be found in the local database the user will be automatically asked if they want to perform the search online instead.
+The program is now capable of running searches on the main website. If there no results can be found in the local
+database the user will be automatically asked if they want to perform the search online instead.
 
 A new 'options' field in the search menu allows to enable regex syntax and to search the website directly.
 
-Local search can now match multiple users. For example if there are users 'tiger' and 'liger' in the database using 'iger' in the user field will match both of them.
+Local search can now match multiple users. For example if there are users 'tiger' and 'liger' in the database using '
+iger' in the user field will match both of them.
 
 Search output has also been improved.
 
@@ -1076,8 +1159,10 @@ PS: I have no idea why but this release for Linux is over twice the size of prev
 
 ## 2.4
 
-The search has been completely rewritten and should now be a lot faster. It is also now possible to search inside specific sections of a user.<br>
-Regex support has been disabled for now as it was hard to use and slowed the search down for everyone. A future update will add an option to use regex.
+The search has been completely rewritten and should now be a lot faster. It is also now possible to search inside
+specific sections of a user.<br>
+Regex support has been disabled for now as it was hard to use and slowed the search down for everyone. A future update
+will add an option to use regex.
 
 A few small bugs have been fixed.
 
@@ -1088,7 +1173,9 @@ PS: I have no idea why but this release for Linux is over twice the size of prev
 ## 2.3
 
 From this release the USERS table will also contain the "full" version of a user's nickname.<br>
-In earlier versions user 'Tiger_Artist' would be saved only as 'tigerartist', the username used as url on the website. However from now on the USERS table will also contain the original name choosen by the user in a new column called 'NAMEFULL'.
+In earlier versions user 'Tiger_Artist' would be saved only as 'tigerartist', the username used as url on the website.
+However from now on the USERS table will also contain the original name choosen by the user in a new column called '
+NAMEFULL'.
 
 The database version has been bumped up to 2.3 as well.
 
@@ -1104,13 +1191,15 @@ This new release is only a minor upgrade.
 
 A new function has been added to check the cookies file for common errors in case a session cannot be created.
 
-The cookies file has also been renamed to `FA.cookies.json` so that it can be opened properly as a json file for editing. The program will take care of renaming the file.
+The cookies file has also been renamed to `FA.cookies.json` so that it can be opened properly as a json file for
+editing. The program will take care of renaming the file.
 
 Uncaught exceptions have also been taken care of when loading the cookies file.
 
 Latest updates in the program used for reading keystrokes and text have also been included in these latest binaries.
 
-PS: I have no idea why but this release for Linux is over twice the size of the previus one. Will work on fixing it for the next release.
+PS: I have no idea why but this release for Linux is over twice the size of the previus one. Will work on fixing it for
+the next release.
 
 **Warning**: Binaries are for 64bit systems only
 
@@ -1118,9 +1207,11 @@ PS: I have no idea why but this release for Linux is over twice the size of the 
 
 With this release all bugs with the users database are fixed and the informations are properly stored and saved.
 
-The repair function has been expanded to include the users table. Repeating users, empty ones, names with capital letters and/or underscores and empty sections/folders fields will be automatically corrected by the program.
+The repair function has been expanded to include the users table. Repeating users, empty ones, names with capital
+letters and/or underscores and empty sections/folders fields will be automatically corrected by the program.
 
-A big number of bugs have been fixed as well, for the full list see the [commits](https://github.com/MatteoCampinoti94/FALocalRepo/compare/v2.0.1...bdea9c2).
+A big number of bugs have been fixed as well, for the full list see
+the [commits](https://github.com/MatteoCampinoti94/FALocalRepo/compare/v2.0.1...bdea9c2).
 
 **Warning**: Binaries are for 64bit systems only
 
@@ -1134,11 +1225,13 @@ Fixed a bug in the update functions.
 
 Big update and main version bump.
 
-The program now also saves category, species, gender and rating of downloaded submissions. These can also be used during search.
+The program now also saves category, species, gender and rating of downloaded submissions. These can also be used during
+search.
 
 Format ofthe on-screen output has ben completely changed for downloads and updates.
 
-Databases can now be upgraded from earlier versions. Files from previous versions are backed up during the upgrade process. Submissions that are no longer present on the forum will be saved with default, generalized values.
+Databases can now be upgraded from earlier versions. Files from previous versions are backed up during the upgrade
+process. Submissions that are no longer present on the forum will be saved with default, generalized values.
 
 The new favorites page on the forum can now be handled correctly.
 
@@ -1157,7 +1250,8 @@ This new release is now verified
 
 ## 1.5
 
-This new version comes with the usual fixes and a whole new menu entry to analyze the database and repair it. More information in the readme.
+This new version comes with the usual fixes and a whole new menu entry to analyze the database and repair it. More
+information in the readme.
 
 **Warning**: Binaries are for 64bit systems only
 
@@ -1165,7 +1259,8 @@ This new version comes with the usual fixes and a whole new menu entry to analyz
 
 The program now has a GUI! It is very simple and console-based, only a prototype of the planned one.
 
-Search has also been added with its own menu entry, submissions can be searched for author, title and tags with regex support.
+Search has also been added with its own menu entry, submissions can be searched for author, title and tags with regex
+support.
 
 Version has been bumped up to 1.4 skipping 1.3 due to the two major additions.
 
@@ -1173,7 +1268,8 @@ Version has been bumped up to 1.4 skipping 1.3 due to the two major additions.
 
 ## 1.2.1
 
-Small fix to make sure the infos table has the database name value created empty, to ensure compatibility with planned gui.
+Small fix to make sure the infos table has the database name value created empty, to ensure compatibility with planned
+gui.
 
 Other changes are under-the-hood: moved some functions around and into modules to improve clarity and modularity.
 
@@ -1185,6 +1281,7 @@ Filetype detection now works reliably across Windows and Unix platforms!
 Unfortunately safe exit still doesn't work reliably on Windows so it's still disabled on it.
 
 A new informations table has been added to the database which stores:
+
 * name of the database (for use in future versions)
 * number of users
 * number of submission
@@ -1193,8 +1290,8 @@ A new informations table has been added to the database which stores:
 * time of last download start, in seconds since epoch
 * duration of last download in seconds
 
-The table is created with all values reset to 0 in case it is not present so it's perfectly compatible with older versions.
-
+The table is created with all values reset to 0 in case it is not present so it's perfectly compatible with older
+versions.
 
 **Warning**: Binaries are for 64bit systems only
 
@@ -1218,11 +1315,13 @@ A small search script has been added in the FA_tools folder
 
 ## 1.1
 
-Main change is usage of [cfscrape](https://github.com/Anorov/cloudflare-scrape) to bypass cloudflare wait at first request
+Main change is usage of [cfscrape](https://github.com/Anorov/cloudflare-scrape) to bypass cloudflare wait at first
+request
 
 Improved printout & printout for checks
 
-If a user was disabled gallery, scraps and favorites are disabled in the database as well and only extras are downloaded if passed in sections
+If a user was disabled gallery, scraps and favorites are disabled in the database as well and only extras are downloaded
+if passed in sections
 
 Better placement of interrupts for safe manual exit
 
