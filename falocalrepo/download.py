@@ -260,7 +260,7 @@ def download_user(api: FAAPI, db: FADatabase, user: str, folder: str, stop: int 
                 db.commit()
                 bar.message("IS IN DB")
                 if stop and found_items >= stop:
-                    print("\r" + (" " * (space_term - 1)), end="\r", flush=True) if stop > 1 else bar.close()
+                    print("\r" + (" " * (space_term - 1)), end="\r", flush=True) if stop < 2 else bar.close()
                     page = 0
                     break
                 bar.close()
