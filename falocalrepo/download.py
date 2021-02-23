@@ -250,15 +250,13 @@ def download_user(api: FAAPI, db: FADatabase, user: str, folder: str, stop: int 
                 bar.message("IS IN DB")
                 if folder == "favorites":
                     found_items += not db.submissions.add_favorite(item.id, user)
-                    db.commit()
-                else:
+                elif folder in ("gallery", "scraps"):
+                    db.submissions.update({"USERUPDATE": 1}, item.id) if not item_["USERUPDATE"] else None
+                    found_items += db.submissions.set_folder(item.id, folder)
+                elif folder == "journals":
+                    db.journals.update({"USERUPDATE": 1}, item.id) if not item_["USERUPDATE"] else None
                     found_items += item_["USERUPDATE"]
-                    if folder in ("gallery", "scraps"):
-                        db.submissions.update({"USERUPDATE": 1}, item.id)
-                        db.submissions.set_folder(item.id, folder)
-                    elif folder == "journals":
-                        db.journals.update({"USERUPDATE": 1}, item.id)
-                    db.commit()
+                db.commit()
                 if stop and found_items >= stop:
                     print("\r" + (" " * (space_term - 1)), end="\r", flush=True)
                     page = 0
