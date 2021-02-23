@@ -1,5 +1,12 @@
 # Changelog
 
+## 3.16.6
+
+### Fixes
+
+* Fix output error for users search results
+* Remove unnecessary debug call
+
 ## 3.16.5
 
 ### Fixes
