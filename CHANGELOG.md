@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.16.4
+
+### Fixes
+
+* Fix early stop when update found a submission that changed folder
+
 ## 3.16.3
 
 ### Fixes
