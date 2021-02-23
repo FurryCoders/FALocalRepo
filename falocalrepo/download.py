@@ -247,7 +247,6 @@ def download_user(api: FAAPI, db: FADatabase, user: str, folder: str, stop: int 
                 bar.message("ID ERROR")
                 bar.close()
             elif item_ := exists(item.id):
-                bar.message("IS IN DB")
                 if folder == "favorites":
                     found_items += not db.submissions.add_favorite(item.id, user)
                 elif folder in ("gallery", "scraps"):
@@ -257,6 +256,7 @@ def download_user(api: FAAPI, db: FADatabase, user: str, folder: str, stop: int 
                     db.journals.update({"USERUPDATE": 1}, item.id) if not item_["USERUPDATE"] else None
                     found_items += item_["USERUPDATE"]
                 db.commit()
+                bar.message("IS IN DB")
                 if stop and found_items >= stop:
                     print("\r" + (" " * (space_term - 1)), end="\r", flush=True) if stop > 1 else bar.close()
                     page = 0
