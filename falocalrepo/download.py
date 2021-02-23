@@ -246,7 +246,9 @@ def download_user(api: FAAPI, db: FADatabase, user: str, folder: str, stop: int 
                 items_failed += 1
                 bar.message("ID ERROR")
                 bar.close()
-            elif item_ := exists(item.id):
+                continue
+            bar.message("SEARCH DB")
+            if item_ := exists(item.id):
                 if folder == "favorites":
                     found_items += not db.submissions.add_favorite(item.id, user)
                 elif folder in ("gallery", "scraps"):
