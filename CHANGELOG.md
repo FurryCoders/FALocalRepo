@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.16.5
+
+### Fixes
+
+* Fix update not finding changed folders correctly
+
 ## 3.16.4
 
 ### Fixes
