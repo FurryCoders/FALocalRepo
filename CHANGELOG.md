@@ -1,5 +1,17 @@
 # Changelog
 
+## 3.16.7
+
+### Changes
+
+* When using a stop number higher than 1 for `download update`, the last found item is not cleared
+* Do not display `IS IN DB` message until all database transactions are complete
+* Display `SEARCH DB` message while checking of a submission/journal is already in the database
+
+### Fixes
+
+* Fix an error in the completion bar function
+
 ## 3.16.6
 
 ### Fixes
