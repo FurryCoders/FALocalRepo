@@ -47,7 +47,8 @@ class Bar:
 
     def message(self, message: str):
         self.clear()
-        print(f"{message[:self.length]:^{self.length}}", end="", flush=True)
+        self.level = len(message := f"{(message[:self.length]):^{self.length}}")
+        print(message, end="", flush=True)
 
 
 def check_process(process: str) -> int:
