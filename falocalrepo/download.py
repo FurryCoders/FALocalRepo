@@ -252,7 +252,7 @@ def download_user(api: FAAPI, db: FADatabase, user: str, folder: str, stop: int 
                     found_items += not db.submissions.add_favorite(item.id, user)
                 elif folder in ("gallery", "scraps"):
                     db.submissions.update({"USERUPDATE": 1}, item.id) if not item_["USERUPDATE"] else None
-                    found_items += db.submissions.set_folder(item.id, folder)
+                    found_items += not db.submissions.set_folder(item.id, folder)
                 elif folder == "journals":
                     db.journals.update({"USERUPDATE": 1}, item.id) if not item_["USERUPDATE"] else None
                     found_items += item_["USERUPDATE"]
