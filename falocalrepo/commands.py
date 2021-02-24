@@ -19,15 +19,19 @@ from requests import get as req_get
 
 
 class Bar:
-    def __init__(self, length: int = 0):
+    def __init__(self, length: int = 0, *, message: str = ""):
         self.length: int = length
         self.level: int = 0
+        self.message_: str = ""
 
         print(f"[{' ' * self.length}]", end="\b" * (self.length + 1), flush=True)
+
+        self.message(message) if message else None
 
     def clear(self):
         print("\b \b" * self.level, end="", flush=True)
         self.level = 0
+        self.message_ = ""
 
     def delete(self):
         self.clear()
@@ -38,6 +42,8 @@ class Bar:
         print()
 
     def update(self, total: int, current: int):
+        self.clear() if self.message_ else None
+
         if (new_level := int((current / total) * self.length)) == self.level:
             return
 
@@ -49,6 +55,7 @@ class Bar:
         self.clear()
         self.level = len(message := f"{(message[:self.length]):^{self.length}}")
         print(message, end="", flush=True)
+        self.message_: str = message
 
 
 def check_process(process: str) -> int:
