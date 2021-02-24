@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.16.9
+
+### Fixes
+
+* Fix `IS IN DB` message remaining when downloading journals
+
 ## 3.16.8
 
 ### Fixes
