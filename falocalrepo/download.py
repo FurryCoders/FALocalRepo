@@ -131,7 +131,8 @@ def download_users_update(db: FADatabase, users: List[str], folders: List[str], 
     api: Optional[FAAPI] = None
     tot, fail = 0, 0
 
-    users = list(set(map(clean_username, users)))
+    users = list(map(clean_username, users))
+    users = sorted(set(users), key=users.index)
     users_db: List[dict] = sorted(
         filter(lambda u: not users or u["USERNAME"] in users, db.users),
         key=lambda u: users.index(u["USERNAME"]) if users else u["USERNAME"])
@@ -165,7 +166,8 @@ def download_users_update(db: FADatabase, users: List[str], folders: List[str], 
 
 def download_users(db: FADatabase, users: List[str], folders: List[str]):
     api: Optional[FAAPI] = None
-    for user in users:
+    users = list(map(clean_username, users))
+    for user in sorted(set(users), key=users.index):
         user_is_new: bool = user not in db.users
         try:
             api = load_api(db) if api is None else api
