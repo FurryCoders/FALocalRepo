@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.16.10
+
+### Fixes
+
+* Fix sorting of users used in download arguments
+
 ## 3.16.9
 
 ### Fixes
