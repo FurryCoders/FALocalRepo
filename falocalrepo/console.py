@@ -346,7 +346,7 @@ def download_submissions(db: FADatabase, *args: str):
 
     DESCRIPTION
         Download specific submissions. Requires submission ID's provided as separate
-        arguments.
+        arguments. If the submission is already in the database it is ignored.
 
     EXAMPLES
         falocalrepo download submissions 12345678 13572468 87651234
@@ -369,7 +369,7 @@ def download_journals(db: FADatabase, *args: str):
 
     DESCRIPTION
         Download specific journals. Requires journal ID's provided as separate
-        arguments.
+        arguments. If the journal is already in the database it is ignored.
 
     EXAMPLES
         falocalrepo download journals 123456 135724 876512
