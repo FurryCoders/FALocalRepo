@@ -1,5 +1,15 @@
 # Changelog
 
+## 3.16.11
+
+### Changes
+
+* `download submissions` and `download journals` never overwrite items already in the database
+
+### Fixes
+
+* Fix printing errors with `download submissions` and `download journals` that occurred if items where already in the database
+
 ## 3.16.10
 
 ### Fixes
