@@ -101,6 +101,9 @@ def download_submission_file(api: FAAPI, sub_file_url: str, speed: int = 100) ->
 
 def download_submission(api: FAAPI, db: FADatabase, sub_id: int, user_update: bool = False) -> bool:
     try:
+        if sub_id in db.submissions:
+            Bar(length=10, message="IS IN DB").close()
+            return True
         sub: Submission = api.get_submission(sub_id, False)[0]
         sub_file: Optional[bytes] = download_submission_file(api, sub.file_url)
         save_submission(db, sub, sub_file, user_update)
@@ -119,6 +122,9 @@ def save_journal(db: FADatabase, journal: Journal, user_update: bool = False):
 
 
 def download_journal(api: FAAPI, db: FADatabase, jrn_id: int):
+    if jrn_id in db.journals:
+        Bar(length=10, message="IS IN DB").close()
+        return True
     journal: Journal = api.get_journal(jrn_id)
     save_journal(db, journal)
 
