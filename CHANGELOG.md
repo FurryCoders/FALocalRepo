@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.16.12
+
+### Fixes
+
+* Fix error when opening help for `database add-user`
+
 ## 3.16.11
 
 ### Changes
