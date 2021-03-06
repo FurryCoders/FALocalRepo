@@ -19,6 +19,7 @@ from faapi import ParsingError
 from faapi import Submission
 from faapi import SubmissionPartial
 from falocalrepo_database import FADatabase
+from urllib3.exceptions import IncompleteRead
 
 from .commands import Bar
 from .commands import clean_string
@@ -82,6 +83,9 @@ def download_submission_file(api: FAAPI, sub_file_url: str, speed: int = 100) ->
                     file_binary += chunk
                     bar.update(size, len(file_binary)) if size else None
                     sleep(1 / speed) if speed > 0 else None
+
+            if size and (l := len(file_binary)) != size:
+                raise IncompleteRead(l, size - l)
 
             bar.update(1, 1)
     except KeyboardInterrupt:
