@@ -141,6 +141,7 @@ def help_(comm: str = "", op: str = "", *_rest) -> str:
         "database_search-journals": database_search_journals,
         "database_add-submission": database_add_submission,
         "database_add-journal": database_add_journal,
+        "database_add-user": database_add_user,
         "database_remove-users": database_remove_users,
         "database_remove-submissions": database_remove_submissions,
         "database_remove-journals": database_remove_journals,
