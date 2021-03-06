@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.16.13
+
+### Changes
+
+* Check downloaded size against requests headers before saving submission files
+
 ## 3.16.12
 
 ### Fixes
