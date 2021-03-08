@@ -151,7 +151,7 @@ def download_users_update(db: FADatabase, users: List[str], folders: List[str], 
         if not (user_folders := [f for f in folders if f in user_folders] if folders else user_folders):
             continue
         elif any(folder.startswith("!") for folder in user_folders):
-            print(f"User {user} disabled")
+            print(f"User {user} deactivated")
             continue
         try:
             api = load_api(db) if api is None else api
@@ -161,7 +161,7 @@ def download_users_update(db: FADatabase, users: List[str], folders: List[str], 
                 tot += tot_
                 fail += fail_
         except DisabledAccount:
-            print(f"User {user} disabled")
+            print(f"User {user} deactivated")
             db.users.disable_user(user)
             db.commit()
         except NoticeMessage:
@@ -215,7 +215,7 @@ def download_user(api: FAAPI, db: FADatabase, user: str, folder: str, stop: int 
     exists: Callable[[int], Optional[dict]]
 
     if folder.startswith("!"):
-        print(f"{user}/{folder} disabled")
+        print(f"{user}/{folder} deactivated")
         return 0, 0
     elif folder in ("gallery", "list-gallery"):
         download = api.gallery
