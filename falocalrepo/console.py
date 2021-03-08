@@ -299,14 +299,16 @@ def download_users(db: FADatabase, *args: str):
 def download_update(db: FADatabase, *args: str):
     """
     USAGE
-        falocalrepo download update [stop=<stop n>] [<user1>,...,<userN>]
-                    [<folder1>,...,<folderN>]
+        falocalrepo download update [stop=<stop n>] [deactivated=<deactivated>]
+                    [<user1>,...,<userN>] [<folder1>,...,<folderN>]
 
     ARGUMENTS
-        <stop n>    Number of submissions to find in database before stopping,
-                    defaults to 1
-        <user>      Username
-        <folder>    One of gallery, scraps, favorites, journals
+        <stop n>       Number of submissions to find in database before stopping,
+                       defaults to 1
+        <deactivated>  Set to 'true' to check previously deactivated users, other
+                       values are ignored
+        <user>         Username
+        <folder>       One of gallery, scraps, favorites, journals
 
     DESCRIPTION
         Update the repository by checking the previously downloaded folders
@@ -316,8 +318,8 @@ def download_update(db: FADatabase, *args: str):
         skip users, use '@' as argument. The 'stop=<n>' option allows to stop
         updating after finding n submissions in a user's database entry, defaults
         to 1. If a user is deactivated, the folders in the database will be
-        prepended with a '!' and the user will be skipped when update is called
-        again.
+        prepended with a '!'. Deactivated users will be skipped when update is
+        called, unless the '<deactivated>' option is set to 'true'.
 
     EXAMPLES
         falocalrepo download update stop=5
@@ -334,7 +336,7 @@ def download_update(db: FADatabase, *args: str):
     if args[1:] and args[1] != "@":
         folders_tmp: List[str] = list(filter(bool, map(str.strip, args[1].split(","))))
         folders = sorted(set(folders_tmp), key=folders_tmp.index)
-    download_users_update(db, users, folders, int(opts.get("stop", 1)))
+    download_users_update(db, users, folders, int(opts.get("stop", 1)), opts.get("deactivated", "").lower() == "true")
 
 
 def download_submissions(db: FADatabase, *args: str):

@@ -223,19 +223,20 @@ falocalrepo download users tom,jerry gallery,scraps,journals
 falocalrepo download users tom,jerry list-favorites
 ```
 
-* `update [stop=<n>] [<user1>,...,<userN>] [<folder1>,...,<folderN>]` update the repository by checking the previously
-  downloaded folders (gallery, scraps, favorites or journals) of each user and stopping when it finds a submission that
-  is already present in the repository. Can pass a list of users and/or folders that will be updated if in the database.
-  To skip users, use `@` as argument. The `stop=<n>` option allows to stop the update after finding `n` submissions in a
-  user's database entry, defaults to 1. If a user is deactivated, the folders in the database will be prepended with
-  a '!', and the user will be skipped when update is called again.
+* `update [stop=<n>] [deactivated=<deactivated>] [<user1>,...,<userN>] [<folder1>,...,<folderN>]` update the repository
+  by checking the previously downloaded folders (gallery, scraps, favorites or journals) of each user and stopping when
+  it finds a submission that is already present in the repository. Can pass a list of users and/or folders that will be
+  updated if in the database. To skip users, use `@` as argument. The `stop=<n>` option allows to stop the update after
+  finding `n` submissions in a user's database entry, defaults to 1. If a user is deactivated, the folders in the
+  database will be prepended with a '!'. Deactivated users will be skipped when update is called, unless
+  the `<deactivated>` option is set to `true`.
 
 ```
 falocalrepo download update stop=5
 ```
 
 ```
-falocalrepo download update @ gallery,scraps
+falocalrepo download update deactivated=true @ gallery,scraps
 ```
 
 ```
