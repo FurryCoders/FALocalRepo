@@ -1,5 +1,12 @@
 # Changelog
 
+## 3.17.0
+
+### Changes
+
+* Add `deactivated` option to the `download update` command to check previously deactivated users again
+* Use "deactivated" instead of "disabled" in output messages 
+
 ## 3.16.13
 
 ### Changes
