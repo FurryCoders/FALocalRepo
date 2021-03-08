@@ -137,7 +137,7 @@ def download_journals(db: FADatabase, jrn_ids: List[str]):
     download_items(db, jrn_ids, download_journal)
 
 
-def download_users_update(db: FADatabase, users: List[str], folders: List[str], stop: int = 1):
+def download_users_update(db: FADatabase, users: List[str], folders: List[str], stop: int = 1, deactivated: bool = False):
     api: Optional[FAAPI] = None
     tot, fail = 0, 0
 
@@ -150,14 +150,14 @@ def download_users_update(db: FADatabase, users: List[str], folders: List[str], 
     for user, user_folders in ((u["USERNAME"], u["FOLDERS"].split(",")) for u in users_db):
         if not (user_folders := [f for f in folders if f in user_folders] if folders else user_folders):
             continue
-        elif any(folder.startswith("!") for folder in user_folders):
+        elif not deactivated and any(folder.startswith("!") for folder in user_folders):
             print(f"User {user} deactivated")
             continue
         try:
             api = load_api(db) if api is None else api
             for folder in user_folders:
                 print(f"Updating: {user}/{folder}")
-                tot_, fail_ = download_user(api, db, user, folder, stop)
+                tot_, fail_ = download_user(api, db, user, folder.strip("!"), stop)
                 tot += tot_
                 fail += fail_
         except DisabledAccount:
