@@ -323,7 +323,7 @@ def download_update(db: FADatabase, *args: str):
 
     EXAMPLES
         falocalrepo download update stop=5
-        falocalrepo download update @ gallery,scraps
+        falocalrepo download update deactivated=true @ gallery,scraps
         falocalrepo download update tom,jerry
     """
 
