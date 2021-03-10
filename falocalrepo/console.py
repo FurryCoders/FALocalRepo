@@ -51,7 +51,7 @@ class MultipleInstances(Exception):
     pass
 
 
-def raiser(e: Exception) -> Callable[[], None]:
+def raiser(e: Exception) -> Callable[[...], None]:
     def inner(*_):
         raise e
 
