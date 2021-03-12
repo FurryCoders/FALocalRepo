@@ -203,7 +203,9 @@ falocalrepo config files-folder SubmissionFiles
 
 `download <operation> [<option>=<value>] [<arg1>] ... [<argN>]`
 
-The `download` command performs all download and repository update operations.
+The `download` command performs all download and repository update operations. Submission thumbnails are downloaded
+alongside the main data and are stored as `thumbnail.jpg` in the submission folder (
+see [Submission Files](#submission-files)).
 
 Available operations are:
 
