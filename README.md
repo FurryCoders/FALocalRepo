@@ -339,6 +339,7 @@ falocalrepo database add-user username=tom folders=gallery,scraps
     * `species`
     * `gender`
     * `rating`
+    * `type` image, text, music, or flash
     * `folder` gallery or scraps<br>
       The following parameters are optional:
     * `tags` comma-separated tags
@@ -348,7 +349,7 @@ falocalrepo database add-user username=tom folders=gallery,scraps
 
 ```
 falocalrepo database add-submission id=12345678 'title=cat & mouse' author=CartoonArtist \
-    date=2020-08-09 category=Artwork 'species=Unspecified / Any' gender=Any rating=General \
+    date=2020-08-09 category=Artwork 'species=Unspecified / Any' gender=Any rating=General type=image \
     tags=cat,mouse,cartoon 'description=There once were a cat named Tom and a mouse named Jerry.' \
     'file_url=http://remote.url/to/submission.file' file_local_url=path/to/submission.file
 ```
