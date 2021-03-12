@@ -61,10 +61,7 @@ def download_items(db: FADatabase, item_ids: List[str], f: Callable[[FAAPI, FADa
 
 
 def save_submission(db: FADatabase, sub: Submission, sub_file: Optional[bytes], user_update: bool = False):
-    sub_dict: dict = dict(sub)
-    sub_dict["filelink"] = sub_dict["file_url"]
-    del sub_dict["file_url"]
-    db.submissions.save_submission({**sub_dict, "USERUPDATE": int(user_update)}, sub_file)
+    db.submissions.save_submission({**dict(sub), "USERUPDATE": int(user_update)}, sub_file)
     db.commit()
 
 
@@ -147,7 +144,7 @@ def download_users_update(db: FADatabase, users: List[str], folders: List[str], 
         filter(lambda u: not users or u["USERNAME"] in users, db.users),
         key=lambda u: users.index(u["USERNAME"]) if users else u["USERNAME"])
 
-    for user, user_folders in ((u["USERNAME"], u["FOLDERS"].split(",")) for u in users_db):
+    for user, user_folders in ((u["USERNAME"], u["FOLDERS"]) for u in users_db):
         if not (user_folders := [f for f in folders if f in user_folders] if folders else user_folders):
             continue
         elif not deactivated and any(folder.startswith("!") for folder in user_folders):
@@ -165,7 +162,7 @@ def download_users_update(db: FADatabase, users: List[str], folders: List[str], 
             continue
         except DisabledAccount:
             print(f"User {user} deactivated")
-            db.users.disable_user(user)
+            db.users.deactivate_user(user)
             db.commit()
         except NoticeMessage:
             print(f"User {user} not found")
@@ -194,7 +191,7 @@ def download_users(db: FADatabase, users: List[str], folders: List[str]):
             return
         except DisabledAccount:
             print(f"User {user} disabled")
-            db.users.disable_user(user)
+            db.users.deactivate_user(user)
             db.commit()
         except NoticeMessage:
             print(f"User {user} not found")

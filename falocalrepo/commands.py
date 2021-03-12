@@ -216,5 +216,5 @@ def print_users(users: List[Dict[str, str]]):
 
     print(f"{'Username':^{space_name}} | {'Folders':^{space_folders}}")
     for user in sorted(users, key=lambda usr: usr["USERNAME"].lower()):
-        folders_min: str = ",".join(set(map(lambda f: f[0], user["FOLDERS"].split(","))))
+        folders_min: str = " ".join(sorted(f[0] for f in user["FOLDERS"]))
         print(f"{user['USERNAME'][:space_name]:<{space_name}} | {folders_min:^{space_folders}}")

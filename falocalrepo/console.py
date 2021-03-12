@@ -488,9 +488,9 @@ def database_search_submissions(db: FADatabase, *args: str):
         supplied, a list of all submissions will be returned instead.
 
     EXAMPLES
-        falocalrepo database search-submissions tags=%cat,%mouse% date=2020-% \\
+        falocalrepo database search-submissions tags=%|cat|%|mouse|% date=2020-% \\
             category=%artwork% order="AUTHOR" order="ID"
-        falocalrepo database search-submissions tags=%cat% tags=%mouse% \\
+        falocalrepo database search-submissions tags=%|cat|% tags=%|mouse|% \\
             date=2020-% category=%artwork%
     """
 
