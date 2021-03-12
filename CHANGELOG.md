@@ -1,5 +1,14 @@
 # Changelog
 
+## 3.18.0
+
+### Changes
+
+* falocalrepo-database dependency set to \~4.9.0
+  * Support new `TYPE` column in `SUBMISSIONS`
+* faapi dependency set to \~2.17.0
+  * Download submissions thumbnails
+
 ## 3.17.2
 
 ### Changes
