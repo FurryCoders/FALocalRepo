@@ -595,7 +595,7 @@ def database_add_submission(db: FADatabase, *args: str):
     EXAMPLES
         falocalrepo database add-submission id=12345678 title='cat & mouse' \\
             author=CartoonArtist date=2020-08-09 category=Artwork \\
-            species='Unspecified / Any' gender=Any rating=General \\
+            species='Unspecified / Any' gender=Any rating=General type=image \\
             tags=cat,mouse,cartoon description="$(cat description.html)" \\
             file_url='http://remote.url/to/submission.file' \\
             file_local_url='path/to/submission.file' folder=gallery
