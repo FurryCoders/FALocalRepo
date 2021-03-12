@@ -582,6 +582,7 @@ def database_add_submission(db: FADatabase, *args: str):
             * 'species'
             * 'gender'
             * 'rating'
+            * 'type' image, text, music, or flash
             * 'folder' gallery or scraps
         The following parameters are optional:
             * 'tags' comma-separated tags
@@ -601,8 +602,11 @@ def database_add_submission(db: FADatabase, *args: str):
 
     make_params = parameters(args)
     make_params["id_"] = make_params.get("id", "")
+    make_params["type_"] = make_params.get("type", "")
     if "id" in make_params:
         del make_params["id"]
+    if "type" in make_params:
+        del make_params["type_"]
     save_submission(db, *make_submission(**make_params), user_update=False)
 
 
