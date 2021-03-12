@@ -110,9 +110,8 @@ def download_submission(api: FAAPI, db: FADatabase, submission: Union[int, Submi
         sub: Submission = api.get_submission(sub_id, False)[0]
         if not sub.thumbnail_url and isinstance(submission, SubmissionPartial):
             sub.thumbnail_url = submission.thumbnail_url
-        thumb: bool = bool(sub.thumbnail_url)
-        sub_file: Optional[bytes] = download_submission_file(api, sub.file_url, bar=7 if thumb else 10)
-        if thumb:
+        sub_file: Optional[bytes] = download_submission_file(api, sub.file_url, bar=7 if sub.thumbnail_url else 10)
+        if sub.thumbnail_url:
             sub_thumbnail: Optional[bytes] = download_submission_file(api, sub.thumbnail_url, speed=0, bar=1)
             db.submissions.save_submission_file(sub.id, sub_thumbnail, "thumbnail", "jpg", False)
         save_submission(db, sub, sub_file, user_update)
