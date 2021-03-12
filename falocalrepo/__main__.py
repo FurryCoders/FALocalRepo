@@ -4,8 +4,8 @@ from os.path import join
 from sqlite3 import DatabaseError
 from sqlite3 import IntegrityError
 from sys import argv
-from sys import stderr
 from sys import exit
+from sys import stderr
 from traceback import print_exc
 
 from .console import MalformedCommand
