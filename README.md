@@ -268,6 +268,7 @@ All search operations are conducted case-insensitively using the SQLite [`like`]
 expression which allows for a limited pattern matching. For example this expression can be used to search two words
 together separated by an unknown amount of characters `%cat%mouse%`. Fields missing wildcards will only match an exact
 result, i.e. `cat` will only match a field equal to `cat` tag whereas `%cat%` wil match a field that has contains `cat`.
+Bars (`|`) can be used to isolate individual items in list fields.
 
 All search operations support the extra `order`, `limit`, and `offset` parameters with values in
 SQLite [`ORDER BY` clause](https://sqlite.org/lang_select.html#the_order_by_clause)
@@ -285,7 +286,7 @@ Available operations are:
   returned instead.
 
 ```
-falocalrepo database search-users folders=%gallery% gallery=%0012345678%
+falocalrepo database search-users folders=%gallery%
 ```
 
 * `search-submissions [<param1>=<value1>] ... [<paramN>=<valueN>]` search the submissions entries using metadata fields.
@@ -294,11 +295,11 @@ falocalrepo database search-users folders=%gallery% gallery=%0012345678%
   submissions will be returned instead.
 
 ```
-falocalrepo database search-submissions tags=%cat,%mouse% date=2020-% category=%artwork% order="AUTHOR" order="ID"
+falocalrepo database search-submissions tags=%|cat|%|mouse|% date=2020-% category=%artwork% order="AUTHOR" order="ID"
 ```
 
 ```
-falocalrepo database search-submissions tags=%cat% tags=%mouse% date=2020-% category=%artwork%
+falocalrepo database search-submissions author='CatArtist' tags=%|cat|% tags=%|mouse|% date=2020-% category=%artwork%
 ```
 
 * `search-journals [<param1>=<value1>] ... [<paramN>=<valueN>]` search the journals entries using metadata fields.
@@ -408,6 +409,11 @@ from a submission page.
 
 To store all this information, the database uses four tables: `SETTINGS`, `USERS`, `SUBMISSIONS` and `JOURNALS`.
 
+> **How Lists Are Stored**<br>
+> Some fields in the database table contain lists of items. These are stored as strings, with each item surrounded by
+> bars (`|`). This allows to properly separate and search individual items regardless of their position in the list.<br>
+> `|item1||item2|`<br>
+
 ### Settings
 
 The settings table contains settings for the program and statistics of the database.
@@ -426,7 +432,7 @@ downloaded, and the submissions found in each of those.
 Each entry contains the following fields:
 
 * `USERNAME` The URL username of the user (no underscores or spaces)
-* `FOLDERS` the folders downloaded for that specific user.
+* `FOLDERS` the folders downloaded for that specific user, sorted and bar-separated
 
 ### Submissions
 
@@ -437,18 +443,17 @@ The submissions table contains the metadata of the submissions downloaded by the
 * `TITLE`
 * `DATE` upload date in the format YYYY-MM-DD
 * `DESCRIPTION` description in html format
-* `TAGS` keywords sorted alphanumerically and comma-separated
+* `TAGS` keywords sorted alphanumerically and bar-separated
 * `CATEGORY`
 * `SPECIES`
 * `GENDER`
 * `RATING`
-* `FILELINK` the remote URL of the submission file
+* `FILEURL` the remote URL of the submission file
 * `FILEEXT` the extensions of the downloaded file. Can be empty if the file contained errors and could not be recognised
   upon download
 * `FILESAVED` 1 if the file was successfully downloaded and saved, 0 if there was an error during download
-* `FAVORITE` a comma-separate list of users that have "faved" the submission, it's filled only when downloading/updating
-  a user's favorites folder
-* `MENTIONS` a comma-separate list of users that are mentioned in the submission description as links
+* `FAVORITE` a bar-separated list of users that have "faved" the submission
+* `MENTIONS` a bar-separated list of users that are mentioned in the submission description as links
 * `FOLDER` the folder of the submission (`gallery` or `scraps`)
 * `USERUPDATE` whether the submission was added as a user update or favorite/single entry
 
@@ -461,7 +466,7 @@ The journals table contains the metadata of the journals downloaded by the progr
 * `TITLE`
 * `DATE` upload date in the format YYYY-MM-DD
 * `CONTENT` content in html format
-* `MENTIONS` a comma-separate list of users that are mentioned in the journal content as links
+* `MENTIONS` a bar-separated list of users that are mentioned in the journal content as links
 * `USERUPDATE` whether the journal was added as a user update or favorite/single entry
 
 ## Submission Files
