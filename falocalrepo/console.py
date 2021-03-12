@@ -792,7 +792,8 @@ def database(db: FADatabase, comm: str = "", *args: str):
         expression can be used to search two words together separated by an unknown
         amount of characters '%cat%mouse%'. Fields missing wildcards will only match
         an exact result, i.e. 'cat' will only match a field equal to 'cat' tag
-        whereas '%cat%' wil match a field that has contains 'cat'.
+        whereas '%cat%' wil match a field that has contains 'cat'. Bars ('|') can be
+        used to isolate individual items in list fields.
 
         All search operations support the extra 'order', 'limit', and 'offset'
         parameters with values in SQLite 'ORDER BY' clause, 'LIMIT' clause format,
