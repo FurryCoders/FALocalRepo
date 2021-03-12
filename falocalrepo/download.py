@@ -100,12 +100,16 @@ def download_submission_file(api: FAAPI, sub_file_url: str, *, speed: int = 100,
     return file_binary
 
 
-def download_submission(api: FAAPI, db: FADatabase, sub_id: int, user_update: bool = False) -> bool:
+def download_submission(api: FAAPI, db: FADatabase, submission: Union[int, SubmissionPartial], user_update: bool = False
+                        ) -> bool:
     try:
+        sub_id: int = submission.id if isinstance(submission, SubmissionPartial) else submission
         if sub_id in db.submissions:
             Bar(length=10, message="IS IN DB").close()
             return True
         sub: Submission = api.get_submission(sub_id, False)[0]
+        if not sub.thumbnail_url and isinstance(submission, SubmissionPartial):
+            sub.thumbnail_url = submission.thumbnail_url
         thumb: bool = bool(sub.thumbnail_url)
         sub_file: Optional[bytes] = download_submission_file(api, sub.file_url, bar=7 if thumb else 10)
         if thumb:
@@ -290,7 +294,7 @@ def download_user(api: FAAPI, db: FADatabase, user: str, folder: str, stop: int 
                 bar.close()
             elif isinstance(item, SubmissionPartial):
                 bar.delete()
-                if download_submission(api, db, item.id, folder != "favorites"):
+                if download_submission(api, db, item, folder != "favorites"):
                     if folder == "favorites":
                         db.submissions.add_favorite(item.id, user)
                         db.commit()
