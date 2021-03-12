@@ -65,8 +65,8 @@ def save_submission(db: FADatabase, sub: Submission, sub_file: Optional[bytes], 
     db.commit()
 
 
-def download_submission_file(api: FAAPI, sub_file_url: str, speed: int = 100) -> Optional[bytes]:
-    bar: Bar = Bar(10)
+def download_submission_file(api: FAAPI, sub_file_url: str, *, speed: int = 100, bar: int = 10) -> Optional[bytes]:
+    bar: Bar = Bar(bar)
     file_binary: Optional[bytes] = bytes()
 
     try:
@@ -89,13 +89,13 @@ def download_submission_file(api: FAAPI, sub_file_url: str, speed: int = 100) ->
         print("\b\b  \b\b", end="")
         bar.delete()
         bar.__init__(bar.length)
-        bar.message("INTERRUPT")
+        bar.message("STOP")
         raise
     except (Exception, BaseException):
-        bar.message("FILE ERR")
+        bar.message("ERR")
         file_binary = None
     finally:
-        bar.close()
+        bar.close("]")
 
     return file_binary
 
@@ -106,11 +106,17 @@ def download_submission(api: FAAPI, db: FADatabase, sub_id: int, user_update: bo
             Bar(length=10, message="IS IN DB").close()
             return True
         sub: Submission = api.get_submission(sub_id, False)[0]
-        sub_file: Optional[bytes] = download_submission_file(api, sub.file_url)
+        thumb: bool = bool(sub.thumbnail_url)
+        sub_file: Optional[bytes] = download_submission_file(api, sub.file_url, bar=7 if thumb else 10)
+        if thumb:
+            sub_thumbnail: Optional[bytes] = download_submission_file(api, sub.thumbnail_url, speed=0, bar=1)
+            db.submissions.save_submission_file(sub.id, sub_thumbnail, "thumbnail", "jpg", False)
         save_submission(db, sub, sub_file, user_update)
         return True
     except ParsingError:
         return False
+    finally:
+        print()
 
 
 def download_submissions(db: FADatabase, sub_ids: List[str]):
