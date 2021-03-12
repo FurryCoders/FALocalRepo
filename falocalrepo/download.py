@@ -160,6 +160,9 @@ def download_users_update(db: FADatabase, users: List[str], folders: List[str], 
                 tot_, fail_ = download_user(api, db, user, folder.strip("!"), stop)
                 tot += tot_
                 fail += fail_
+        except UnknownFolder as err:
+            print(f"Unknown folder: {err.args[0]}")
+            continue
         except DisabledAccount:
             print(f"User {user} deactivated")
             db.users.disable_user(user)
@@ -186,6 +189,9 @@ def download_users(db: FADatabase, users: List[str], folders: List[str]):
                 tot, fail = download_user(api, db, user, folder)
                 print("Items downloaded:", tot)
                 print("Items failed:", fail) if fail else None
+        except UnknownFolder as err:
+            print(f"Unknown folder: {err.args[0]}")
+            return
         except DisabledAccount:
             print(f"User {user} disabled")
             db.users.disable_user(user)
