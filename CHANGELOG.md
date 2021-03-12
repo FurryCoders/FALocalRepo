@@ -4,7 +4,7 @@
 
 ### Changes
 
-*falocalrepo-database dependency set to \~4.8.0
+* falocalrepo-database dependency set to \~4.8.0
   * Use new bar-separation for list fields
 
 ## 3.17.1
@@ -20,7 +20,7 @@
 ### Changes
 
 * Add `deactivated` option to the `download update` command to check previously deactivated users again
-* Use "deactivated" instead of "disabled" in output messages 
+* Use "deactivated" instead of "disabled" in output messages
 
 ## 3.16.13
 
@@ -42,7 +42,8 @@
 
 ### Fixes
 
-* Fix printing errors with `download submissions` and `download journals` that occurred if items where already in the database
+* Fix printing errors with `download submissions` and `download journals` that occurred if items where already in the
+  database
 
 ## 3.16.10
 
@@ -338,8 +339,8 @@
 
 ## 3.13.0
 
-With this new release comes the all-new [falocalrepo-database](https://pypi.org/project/falocalrepo-database/) version
-4. Some column names in the database have been changed and the insertion functions have been made safer with built-in
+With this new release comes the all-new [falocalrepo-database](https://pypi.org/project/falocalrepo-database) version 4.
+Some column names in the database have been changed and the insertion functions have been made safer with built-in
 checks. Search is now much more versatile and allows to query any columns in the users, submissions, and journals
 tables. Thanks to the new checks, the `database check-errors` command was removed, as the new checks remove the
 possibility of inserting erroneous data. The update function will notify of any faulty entry during the automatic update
