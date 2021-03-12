@@ -402,7 +402,8 @@ def download(db: FADatabase, comm: str = "", *args: str):
 
     DESCRIPTION
         The download command performs all download operations get and update users,
-        submissions, and journals.
+        submissions, and journals. Submissions are downloaded together with their
+        thumbnails, if there are any.
     """
 
     if not comm:
