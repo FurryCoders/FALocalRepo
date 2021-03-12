@@ -38,8 +38,8 @@ class Bar:
         print("\b" + (" " * (self.length + 2)), end="\b" * (self.length + 2), flush=True)
 
     @staticmethod
-    def close():
-        print()
+    def close(end: str = "\n"):
+        print(end=end, flush=True)
 
     def update(self, total: int, current: int):
         self.clear() if self.message_ else None
