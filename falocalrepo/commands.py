@@ -117,9 +117,10 @@ def make_journal(id_: Union[int, str], author: str,
 
 def make_submission(id_: Union[int, str], author: str, title: str,
                     date: str, category: str, species: str,
-                    gender: str, rating: str, tags: str = "",
-                    description: str = "", file_url: str = "",
-                    file_local_url: str = "", folder: str = ""
+                    gender: str, rating: str, type_: str,
+                    tags: str = "", description: str = "",
+                    file_url: str = "", file_local_url: str = "",
+                    folder: str = ""
                     ) -> Tuple[Submission, Optional[bytes]]:
     id_ = int(id_)
     assert id_ > 0, "id must be greater than 0"
@@ -130,6 +131,8 @@ def make_submission(id_: Union[int, str], author: str, title: str,
     assert isinstance(species, str) and species, "species must be of type str and not empty"
     assert isinstance(gender, str) and gender, "gender must be of type str and not empty"
     assert isinstance(rating, str) and rating, "rating must be of type str and not empty"
+    assert isinstance(type_, str) and type_, "type must be of type str and not empty"
+    assert type_ in ("image", "text", "music", "flash")
     assert isinstance(tags, str), "tags must be of type str"
     assert isinstance(description, str), "description must be of type str"
     assert isinstance(file_url, str), "file_url must be of type str"
@@ -148,6 +151,7 @@ def make_submission(id_: Union[int, str], author: str, title: str,
     sub.species = species
     sub.gender = gender
     sub.rating = rating
+    sub.type = type_
     sub.description = description
     sub.file_url = file_url
     sub.folder = folder
