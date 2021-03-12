@@ -1,5 +1,12 @@
 # Changelog
 
+## 3.17.2
+
+### Changes
+
+*falocalrepo-database dependency set to \~4.8.0
+  * Use new bar-separation for list fields
+
 ## 3.17.1
 
 ### Changes
