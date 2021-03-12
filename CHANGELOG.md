@@ -1,5 +1,13 @@
 # Changelog
 
+## 3.17.1
+
+### Changes
+
+* Use the same output format for all `config` commands
+* Print caught exceptions and traceback to standard error
+* `UnknownFolder` exception is caught and handled inside download functions instead of rising
+
 ## 3.17.0
 
 ### Changes
