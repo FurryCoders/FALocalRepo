@@ -50,7 +50,7 @@ python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
 
 [[package]]
 name = "faapi"
-version = "2.15.3"
+version = "2.16.0"
 description = "Python module to implement API-like functionality for the FurAffinity.net website."
 category = "main"
 optional = false
@@ -267,7 +267,7 @@ watchdog = ["watchdog"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "3b51c0572c1ae918b8500fcd96e7f98aac02affae0796cd41248db033a448364"
+content-hash = "a1fe5cfbdee97b899db9d8e4b6fe072b5ad7ef0fa90fcf09ed8b5937822089c2"
 
 [metadata.files]
 beautifulsoup4 = [
@@ -292,8 +292,8 @@ click = [
     {file = "click-7.1.2.tar.gz", hash = "sha256:d2b5255c7c6349bc1bd1e59e08cd12acbbd63ce649f2588755783aa94dfb6b1a"},
 ]
 faapi = [
-    {file = "faapi-2.15.3-py3-none-any.whl", hash = "sha256:7524563040f88b1a23fd3a5684155ea6e2a90c530423a9113de3f1ea20d81440"},
-    {file = "faapi-2.15.3.tar.gz", hash = "sha256:dae70a3f25c6ed149161a1c5350c320a7f04a243a1a435073d10ace7117f294a"},
+    {file = "faapi-2.16.0-py3-none-any.whl", hash = "sha256:b5cb58dd2c5f83dab48985816959b376f6cc0ca7741bb68ed3f97488edcc3523"},
+    {file = "faapi-2.16.0.tar.gz", hash = "sha256:91acd1b51cbe378d218e07a2b843e9add61c25ce708ec6f54e9f8099891ee825"},
 ]
 falocalrepo-database = [
     {file = "falocalrepo-database-4.8.5.tar.gz", hash = "sha256:b5991c67badf5662f75814dd9dfbe4179eea4b501bc3506c7e7fca8740b556f4"},
