@@ -1,5 +1,12 @@
 # Changelog
 
+## 3.18.1
+
+### Fixes
+
+* Fix a type signature causing a startup crash in some systems
+  * Solve issue #4
+
 ## 3.18.0
 
 ### Changes
