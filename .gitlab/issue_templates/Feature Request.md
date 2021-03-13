@@ -12,5 +12,5 @@
 
 (If any has been written, attach code - file or repository - that could implement the feature)
 
-/label ~featurerequest
+/label ~"feature request"
 /assign @MatteoCampinoti94
