@@ -1,5 +1,12 @@
 # Changelog
 
+## 3.18.2
+
+### Changes
+
+* falocalrepo-database dependency set to \~4.9.4
+  * Solve issue #5
+
 ## 3.18.1
 
 ### Fixes
