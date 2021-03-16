@@ -759,6 +759,19 @@ def database_clean(db: FADatabase, *_rest):
     db.vacuum()
 
 
+@docstring_parameter(__database_version__)
+def database_upgrade(db: FADatabase, *_rest):
+    """
+    USAGE
+        falocalrepo database upgrade
+
+    DESCRIPTION
+        Upgrade the database to the latest version ({0}).
+    """
+
+    db.upgrade()
+
+
 @docstring_parameter(f"https://pypi.org/project/falocalrepo-database/{__database_version__}")
 def database(db: FADatabase, comm: str = "", *args: str):
     """
@@ -822,6 +835,7 @@ def database(db: FADatabase, comm: str = "", *args: str):
         "server": database_server,
         "merge": database_merge,
         "clean": database_clean,
+        "upgrade": database_upgrade,
     }.get(comm, raiser(UnknownCommand(f"database {comm}")))(db, *args)
 
 
