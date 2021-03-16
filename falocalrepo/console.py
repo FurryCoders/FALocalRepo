@@ -748,7 +748,7 @@ def database_merge(db: FADatabase, *args: str):
         raise FileNotFoundError(f"No such file or directory: '{args[0]}'")
     with FADatabase(args[0]) as db2:
         print(f"Merging with database {db2.database_path}...")
-        db.update(db2)
+        db.merge(db2)
         db.commit()
         print("Done")
 
