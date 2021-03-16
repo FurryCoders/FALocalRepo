@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.19.2
+
+### Fixes
+
+* Fix incorrect call to database merge
+
 ## 3.19.1
 
 ### Fixes
