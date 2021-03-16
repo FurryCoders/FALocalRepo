@@ -2,14 +2,14 @@
 
 ## 3.19.0
 
-## Changes
+### Changes
 
 * falocalrepo-database dependency set to \~4.9.4
   * Solve issue #6
 * Add `database upgrade` command, do not upgrade automatically
 * Check database version and stop if major or minor do not match with falocalrepo-database
 
-## Fixes
+### Fixes
 
 * Fix `database add-user` folders error
 
