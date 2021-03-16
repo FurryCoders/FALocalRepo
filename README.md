@@ -7,6 +7,10 @@
 [![issues_gitlab](https://img.shields.io/badge/dynamic/json?logo=gitlab&color=orange&label=issues&suffix=%20open&query=%24.length&url=https%3A%2F%2Fgitlab.com%2Fapi%2Fv4%2Fprojects%2Fmatteocampinoti94%252Ffalocalrepo%2Fissues%3Fstate%3Dopened)](https://gitlab.com/MatteoCampinoti94/FALocalRepo/issues)
 [![issues_github](https://img.shields.io/github/issues/matteocampinoti94/falocalrepo?logo=github&color=blue)](https://github.com/MatteoCampinoti94/FALocalRepo/issues)
 
+[![version_pypi](https://img.shields.io/pypi/v/faapi?logo=pypi&label=faapi)](https://pypi.org/project/faapi/)
+[![version_pypi](https://img.shields.io/pypi/v/falocalrepo-database?logo=pypi&label=falocalrepo-database)](https://pypi.org/project/falocalrepo-database/)
+[![version_pypi](https://img.shields.io/pypi/v/falocalrepo-server?logo=pypi&label=falocalrepo-server)](https://pypi.org/project/falocalrepo-server/)
+
 Pure Python program to download any user's gallery/scraps/favorites from the FurAffinity forum in an easily handled
 database.
 
