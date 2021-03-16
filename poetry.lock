@@ -65,7 +65,7 @@ requests = ">=2.24.0,<3.0.0"
 
 [[package]]
 name = "falocalrepo-database"
-version = "4.9.4"
+version = "4.9.5"
 description = "Database functionality for falocalrepo."
 category = "main"
 optional = false
@@ -242,16 +242,16 @@ python-versions = ">=3.6"
 
 [[package]]
 name = "urllib3"
-version = "1.26.3"
+version = "1.26.4"
 description = "HTTP library with thread-safe connection pooling, file post, and more."
 category = "main"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*, <4"
 
 [package.extras]
-brotli = ["brotlipy (>=0.6.0)"]
 secure = ["pyOpenSSL (>=0.14)", "cryptography (>=1.3.4)", "idna (>=2.0.0)", "certifi", "ipaddress"]
 socks = ["PySocks (>=1.5.6,!=1.5.7,<2.0)"]
+brotli = ["brotlipy (>=0.6.0)"]
 
 [[package]]
 name = "werkzeug"
@@ -297,8 +297,8 @@ faapi = [
     {file = "faapi-2.17.1.tar.gz", hash = "sha256:35e22d773042509794e837fbeb39aa893ac43e4ef6655beef5016e704958f046"},
 ]
 falocalrepo-database = [
-    {file = "falocalrepo-database-4.9.4.tar.gz", hash = "sha256:1a02ebaf778435e1a1266b4eeb6ee134cd436ce1d7ed3359bc09460975a3a2da"},
-    {file = "falocalrepo_database-4.9.4-py3-none-any.whl", hash = "sha256:dbf7f46cee742951594882b33f1236f9005378fd3f55a3e8b95d770b27d94b3d"},
+    {file = "falocalrepo-database-4.9.5.tar.gz", hash = "sha256:a030980016dc422d574ed55f57b26d6eecf9abac11289dc3e9b6a1e007dd1c2e"},
+    {file = "falocalrepo_database-4.9.5-py3-none-any.whl", hash = "sha256:66c061ea48e6aad99803c03a0471d351e6039024cbdcfb754b317c18d273d268"},
 ]
 falocalrepo-server = [
     {file = "falocalrepo-server-1.8.19.tar.gz", hash = "sha256:0c0acfb12fbd66c81a0225c676bbbc8ef12590152180ffee180f6350a0219e18"},
@@ -502,8 +502,8 @@ soupsieve = [
     {file = "soupsieve-2.2.tar.gz", hash = "sha256:407fa1e8eb3458d1b5614df51d9651a1180ea5fedf07feb46e45d7e25e6d6cdd"},
 ]
 urllib3 = [
-    {file = "urllib3-1.26.3-py2.py3-none-any.whl", hash = "sha256:1b465e494e3e0d8939b50680403e3aedaa2bc434b7d5af64dfd3c958d7f5ae80"},
-    {file = "urllib3-1.26.3.tar.gz", hash = "sha256:de3eedaad74a2683334e282005cd8d7f22f4d55fa690a2a1020a416cb0a47e73"},
+    {file = "urllib3-1.26.4-py2.py3-none-any.whl", hash = "sha256:2f4da4594db7e1e110a944bb1b551fdf4e6c136ad42e4234131391e21eb5b0df"},
+    {file = "urllib3-1.26.4.tar.gz", hash = "sha256:e7b021f7241115872f92f43c6508082facffbd1c048e3c6e2bb9c2a157e28937"},
 ]
 werkzeug = [
     {file = "Werkzeug-1.0.1-py2.py3-none-any.whl", hash = "sha256:2de2a5db0baeae7b2d2664949077c2ac63fbd16d98da0ff71837f7d1dea3fd43"},
