@@ -221,19 +221,19 @@ def print_items(items: List[Dict[str, Union[int, str]]]):
 
 
 def print_users(users: List[Dict[str, str]]):
-    space_folders: int = 7
-    space_folder: int = 9
     space_term: int = 10000
     try:
         space_term = get_terminal_size()[0]
     except IOError:
         pass
 
-    space_name_max: int = max([len(u["USERNAME"]) for u in users]) if users else 10
-    space_name: int = space_term - (space_folders + 3) - ((space_folder + 3) * 4) - 1
-    space_name = space_name_max if space_name > space_name_max else space_name
+    space_name: int = max([len(u["USERNAME"]) for u in users]) if users else 10
+    space_folders: int = max([len(u["FOLDERS"]) * 2 for u in users]) if users else 7
+    space_name = 8 if space_name < 8 else space_name
+    space_folders = 7 if space_folders < 7 else space_folders
+    space_name = space_name if (sn := space_term - space_folders - 3) > space_name else sn
 
     print(f"{'Username':^{space_name}} | {'Folders':^{space_folders}}")
     for user in sorted(users, key=lambda usr: usr["USERNAME"].lower()):
-        folders_min: str = " ".join(sorted(f[0] for f in user["FOLDERS"]))
+        folders_min: str = " ".join(sorted((f[:2] if f.startswith("!") else f[0]) for f in user["FOLDERS"]))
         print(f"{user['USERNAME'][:space_name]:<{space_name}} | {folders_min:^{space_folders}}")
