@@ -4,6 +4,7 @@ from os.path import split
 from re import findall
 from re import sub as re_sub
 from shutil import move
+from sqlite3 import DatabaseError
 from typing import Dict
 from typing import List
 from typing import Optional
@@ -63,6 +64,20 @@ def check_process(process: str) -> int:
         lambda p: "python" in p.name().lower() and any(process in split(cmd) for cmd in p.cmdline()),
         map(Process, pids())
     )))
+
+
+def split_version(version: str, default=None, length=3) -> list:
+    return (v := version.split("-")[0].split(".") if version else []) + ([default] * (len(v) - length))
+
+
+def check_database(a: str, b: str):
+    if a != b:
+        print(f"Database version is not latest: {a} != {b}")
+        print("Use database upgrade command to upgrade database")
+        if (v_a := split_version(a))[0] != (v_b := split_version(b))[0]:
+            raise DatabaseError(f"Database major version is not latest: {v_a[0]} != {v_b[0]}")
+        elif v_a[1] != v_b[1]:
+            raise DatabaseError(f"Database minor version is not latest: {v_a[1]} != {v_b[1]}")
 
 
 def clean_username(username: str, exclude: str = "") -> str:
