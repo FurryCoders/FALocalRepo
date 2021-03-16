@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.19.1
+
+### Fixes
+
+* Fix printing of users search results
+
 ## 3.19.0
 
 ### Changes
