@@ -556,7 +556,7 @@ def database_add_user(db: FADatabase, *args):
     """
 
     make_params: Dict[str, str] = parameters(args)
-    db.users.new_user(username) if (username := make_params["username"]) not in db.users else None
+    username: str = db.users.new_user(make_params["username"])
     if make_params.get("folders", None) is not None:
         folders: Set[str] = set(db.users[username]["FOLDERS"])
         folders_new: Set[str] = set(filter(bool, map(str.lower, make_params["folders"].split(","))))
