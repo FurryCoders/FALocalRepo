@@ -20,6 +20,7 @@ from falocalrepo_server import __version__ as __server_version__
 from falocalrepo_server import server
 
 from .__version__ import __version__
+from .commands import check_database
 from .commands import check_process
 from .commands import latest_version
 from .commands import make_journal
@@ -156,7 +157,7 @@ def help_(comm: str = "", op: str = "", *_rest) -> str:
     return cleandoc(f.__doc__)
 
 
-def init():
+def init(db: FADatabase):
     """
     USAGE
         falocalrepo init
@@ -169,6 +170,7 @@ def init():
         update it to a new version without calling other commands.
     """
 
+    check_database(db.version, __database_version__)
     print("Database ready")
 
 
@@ -252,6 +254,8 @@ def config(db: FADatabase, comm: str = "", *args: str):
     DESCRIPTION
         The config command allows to change the settings used by the program.
     """
+
+    check_database(db.version, __database_version__)
 
     {
         "": config_list,
@@ -406,10 +410,10 @@ def download(db: FADatabase, comm: str = "", *args: str):
         thumbnails, if there are any.
     """
 
-    if not comm:
-        raise MalformedCommand("download needs a command")
+    check_database(db.version, __database_version__)
 
     {
+        "": raiser(MalformedCommand("download needs a command")),
         "users": download_users,
         "update": download_update,
         "submissions": download_submissions,
@@ -819,6 +823,9 @@ def database(db: FADatabase, comm: str = "", *args: str):
         specific search command.
     """
 
+    if comm not in ("", "info", "upgrade"):
+        check_database(db.version, __database_version__)
+
     {
         "": database_info,
         "info": database_info,
@@ -915,12 +922,11 @@ def console(comm: str = "", *args: str) -> None:
     db: FADatabase = FADatabase(abspath(database_path))
 
     try:
-        db.upgrade()
         db.settings.add_history(f"{comm} {' '.join(args)}".strip())
         db.commit()
 
         if comm == init.__name__:
-            init()
+            init(db)
         elif comm == config.__name__:
             config(db, *args)
         elif comm == download.__name__:
@@ -928,7 +934,6 @@ def console(comm: str = "", *args: str) -> None:
         elif comm == database.__name__:
             database(db, *args)
     finally:
-        # Close database and update totals
         if db is not None:
             db.commit()
             db.close()
