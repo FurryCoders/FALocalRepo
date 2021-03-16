@@ -149,6 +149,7 @@ def help_(comm: str = "", op: str = "", *_rest) -> str:
         "database server": database_server,
         "database merge": database_merge,
         "database clean": database_clean,
+        "database upgrade": database_upgrade,
     }.get(comm := f"{comm} {op}".strip(), None)
 
     if f is None:
