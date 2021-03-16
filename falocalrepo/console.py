@@ -430,8 +430,8 @@ def database_info(db: FADatabase, *_rest):
     print("Users       :", len(db.users))
     print("Submissions :", len(db.submissions))
     print("Journals    :", len(db.journals))
-    print("History     :", len(db.settings.read_history()) - 1)
-    print("Version     :", db.settings["VERSION"])
+    print("History     :", (len(h) - 1) if (h := db.settings.read_history()) else 0)
+    print("Version     :", db.version)
 
 
 def database_history(db: FADatabase):
