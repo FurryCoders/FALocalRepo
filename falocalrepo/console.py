@@ -10,6 +10,7 @@ from typing import Callable
 from typing import Dict
 from typing import Iterable
 from typing import List
+from typing import Set
 from typing import Tuple
 from typing import Union
 
@@ -557,11 +558,11 @@ def database_add_user(db: FADatabase, *args):
     make_params: Dict[str, str] = parameters(args)
     db.users.new_user(username) if (username := make_params["username"]) not in db.users else None
     if make_params.get("folders", None) is not None:
-        folders: List[str] = db.users[username]["FOLDERS"].split(",")
-        folders_new: List[str] = make_params["folders"].split(",")
-        for f in folders:
+        folders: Set[str] = set(db.users[username]["FOLDERS"])
+        folders_new: Set[str] = set(filter(bool, map(str.lower, make_params["folders"].split(","))))
+        for f in folders - folders_new:
             db.users.remove_user_folder(username, f) if f not in folders_new else None
-        for f in folders_new:
+        for f in folders_new - folders:
             db.users.add_user_folder(username, f) if f not in folders else None
     db.commit()
 
