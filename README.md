@@ -134,6 +134,9 @@ _Note:_ all the commands except `help` will create and initialise the database i
 
 _Note:_ only one instance of the program is allowed at any given time
 
+_Note_: the program will not operate if the version of the database does not match the major or minor version of
+the `falocalrepo-database` module. Patch version differences are allowed but will still trigger a warning.
+
 When the database is first initialised, it defaults the submissions files folder to `FA.files`. This value can be
 changed using the [`config` command](#configuration).
 
@@ -403,6 +406,7 @@ falocalrepo database merge ~/Documents/FA/FA.db
 
 * `clean` clean the database using the SQLite [VACUUM](https://www.sqlite.org/lang_vacuum.html) function. Requires no
   arguments.
+* `upgrade` upgrade the database to the latest version
 
 ## Database
 
