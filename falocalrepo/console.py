@@ -803,6 +803,7 @@ def database(db: FADatabase, comm: str = "", *args: str):
         server              Start local server to browse database
         merge               Merge with a second database
         clean               Clean the database with the VACUUM function
+        upgrade             Upgrade the database to the latest version.
 
     DESCRIPTION
         The database command allows to operate on the database. Used without an
