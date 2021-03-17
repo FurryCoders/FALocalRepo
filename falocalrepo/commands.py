@@ -14,6 +14,7 @@ from typing import Union
 from faapi import Journal
 from faapi import Submission
 from falocalrepo_database import FADatabaseTable
+from psutil import NoSuchProcess
 from psutil import Process
 from psutil import pids
 from requests import get as req_get
@@ -60,10 +61,13 @@ class Bar:
 
 
 def check_process(process: str) -> int:
-    return len(list(filter(
-        lambda p: "python" in p.name().lower() and any(process in split(cmd) for cmd in p.cmdline()),
-        map(Process, pids())
-    )))
+    ps: int = 0
+    for pid in pids():
+        try:
+            ps += "python" in (p := Process(pid)).name().lower() and any(process in split(cmd) for cmd in p.cmdline())
+        except NoSuchProcess:
+            pass
+    return ps
 
 
 def split_version(version: str, default=None, length=3) -> list:
