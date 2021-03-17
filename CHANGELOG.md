@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.19.3
+
+### Fixes
+
+* Catch `NoSuchProcess` exception when checking for other instances of falocalrepo
+
 ## 3.19.2
 
 ### Fixes
