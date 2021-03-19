@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.19.4
+
+### Fixes
+
+* Fix output error in `download submissions` command
+
 ## 3.19.3
 
 ### Fixes
