@@ -105,7 +105,7 @@ def download_submission(api: FAAPI, db: FADatabase, submission: Union[int, Submi
     try:
         sub_id: int = submission.id if isinstance(submission, SubmissionPartial) else submission
         if sub_id in db.submissions:
-            Bar(length=10, message="IS IN DB").close("")
+            Bar(length=10, message="IS IN DB").close("]")
             return True
         sub: Submission = api.get_submission(sub_id, False)[0]
         if not sub.thumbnail_url and isinstance(submission, SubmissionPartial):
