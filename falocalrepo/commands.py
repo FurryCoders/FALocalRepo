@@ -185,7 +185,8 @@ def make_submission(id_: Union[int, str], author: str, title: str,
     return sub, sub_file
 
 
-def search(table: FADatabaseTable, parameters: Dict[str, List[str]]) -> List[Dict[str, Union[int, str]]]:
+def search(table: FADatabaseTable, parameters: Dict[str, List[str]], columns: List[str] = None
+           ) -> List[Dict[str, Union[int, str]]]:
     parameters = {k.lower(): vs for k, vs in parameters.items()}
     query: Dict[str, List[str]] = {k: vs for k, vs in parameters.items() if k not in ("order", "limit", "offset")}
     if "author" in query:
@@ -195,6 +196,7 @@ def search(table: FADatabaseTable, parameters: Dict[str, List[str]]) -> List[Dic
         query["username"] = list(map(lambda u: clean_username(u, "%_"), query["username"]))
     return list(table.cursor_to_dict(table.select(
         query,
+        columns=columns,
         like=True,
         order=parameters.get("order", [table.column_id]),
         limit=int(parameters.get("limit", 0)),
