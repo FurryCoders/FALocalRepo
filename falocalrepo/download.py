@@ -92,7 +92,7 @@ def download_submission_file(api: FAAPI, sub_file_url: str, *, speed: int = 100,
         bar.message("STOP")
         raise
     except (Exception, BaseException):
-        bar.message("ERR")
+        bar.message("ERROR")
         file_binary = None
     finally:
         bar.close("]")
