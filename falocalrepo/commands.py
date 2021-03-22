@@ -194,6 +194,8 @@ def search(table: FADatabaseTable, parameters: Dict[str, List[str]], columns: Li
         del query["author"]
     if "username" in query:
         query["username"] = list(map(lambda u: clean_username(u, "%_"), query["username"]))
+    if "id" in query:
+        query["id"] = list(map(lambda i: i.lstrip("0") if isinstance(i, str) else i, query["id"]))
     return list(table.cursor_to_dict(table.select(
         query,
         columns=columns,
