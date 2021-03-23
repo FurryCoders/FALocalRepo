@@ -1,5 +1,16 @@
 # Changelog
 
+## 3.20.0
+
+### Changes
+
+* Add `json` and `columns` options to database search commands to output results in JSON format
+
+### Fixes
+
+* Fix zero-padded ID's not being matched by search commands
+* Fix possible output error during single submissions download
+
 ## 3.19.4
 
 ### Fixes
