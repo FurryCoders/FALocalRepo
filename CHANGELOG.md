@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.20.1
+
+### Fixes
+
+* Fix `KeyError`'s in search
+
 ## 3.20.0
 
 ### Changes
