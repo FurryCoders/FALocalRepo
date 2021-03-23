@@ -289,39 +289,44 @@ Available operations are:
 
 * `info` show database information, statistics and version.
 * `history` show commands history
-* `search-users [<param1>=<value1>] ... [<paramN>=<valueN>]` search the users entries using metadata fields. Search
-  parameters can be passed multiple times to act as OR values. All columns of the users table are
-  supported: [#Users](#users). Parameters can be lowercase. If no parameters are supplied, a list of all users will be
-  returned instead.
+* `search-users [json=<json>] [columns=<columns>] [<param1>=<value1>] ... [<paramN>=<valueN>]` search the users entries
+  using metadata fields. Search parameters can be passed multiple times to act as OR values. All columns of the users
+  table are supported: [#Users](#users). Parameters can be lowercase. If no parameters are supplied, a list of all users
+  will be returned instead. If <json> is set to 'true', the results are printed as a list of objects in JSON format.
+  If <columns> is passed, then the objects printed with the JSON option will only contain those fields.
 
 ```
-falocalrepo database search-users folders=%gallery%
+falocalrepo database search-users json=true folders=%gallery%
 ```
 
-* `search-submissions [<param1>=<value1>] ... [<paramN>=<valueN>]` search the submissions entries using metadata fields.
-  Search parameters can be passed multiple times to act as OR values. All columns of the submissions table are
-  supported: [#Submissions](#submissions). Parameters can be lowercase. If no parameters are supplied, a list of all
-  submissions will be returned instead.
+* `search-submissions [json=<json>] [columns=<columns>] [<param1>=<value1>] ... [<paramN>=<valueN>]` search the
+  submissions entries using metadata fields. Search parameters can be passed multiple times to act as OR values. All
+  columns of the submissions table are supported: [#Submissions](#submissions). Parameters can be lowercase. If no
+  parameters are supplied, a list of all submissions will be returned instead. If <json> is set to 'true', the results
+  are printed as a list of objects in JSON format. If <columns> is passed, then the objects printed with the JSON option
+  will only contain those fields.
 
 ```
 falocalrepo database search-submissions tags=%|cat|%|mouse|% date=2020-% category=%artwork% order="AUTHOR" order="ID"
 ```
 
 ```
-falocalrepo database search-submissions author='CatArtist' tags=%|cat|% tags=%|mouse|% date=2020-% category=%artwork%
+falocalrepo database search-submissions json=true columns=id,author,title author='CatArtist' tags=%|cat|% tags=%|mouse|% date=2020-% category=%artwork%
 ```
 
-* `search-journals [<param1>=<value1>] ... [<paramN>=<valueN>]` search the journals entries using metadata fields.
-  Search parameters can be passed multiple times to act as OR values. All columns of the journals table are
-  supported: [#Journals](#journals). Parameters can be lowercase. If no parameters are supplied, a list of all journals
-  will be returned instead.
+* `search-journals [json=<json>] [columns=<columns>] [<param1>=<value1>] ... [<paramN>=<valueN>]` search the journals
+  entries using metadata fields. Search parameters can be passed multiple times to act as OR values. All columns of the
+  journals table are supported: [#Journals](#journals). Parameters can be lowercase. If no parameters are supplied, a
+  list of all journals will be returned instead. If <json> is set to 'true', the results are printed as a list of
+  objects in JSON format. If <columns> is passed, then the objects printed with the JSON option will only contain those
+  fields.
 
 ```
 falocalrepo database search-journals date=2020-% author=CatArtist order="ID DESC"
 ```
 
 ```
-falocalrepo database search-journals date=2020-% date=2019-% content=%commission%
+falocalrepo database search-journals json=true columns=id,author,title date=2020-% date=2019-% content=%commission%
 ```
 
 * `add-user <param1>=<value1> ... <paramN>=<valueN>` add a user to the database manually. If the user is already
