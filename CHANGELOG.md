@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.20.2
+
+### Changes
+
+* Print environmental variables flags to stderr
+
 ## 3.20.1
 
 ### Fixes
@@ -46,7 +52,7 @@
 ### Changes
 
 * falocalrepo-database dependency set to \~4.9.4
-  * Solve issue #6
+    * Solve issue #6
 * Add `database upgrade` command, do not upgrade automatically
 * Check database version and stop if major or minor do not match with falocalrepo-database
 
@@ -59,30 +65,30 @@
 ### Changes
 
 * falocalrepo-database dependency set to \~4.9.4
-  * Solve issue #5
+    * Solve issue #5
 
 ## 3.18.1
 
 ### Fixes
 
 * Fix a type signature causing a startup crash in some systems
-  * Solve issue #4
+    * Solve issue #4
 
 ## 3.18.0
 
 ### Changes
 
 * falocalrepo-database dependency set to \~4.9.0
-  * Support new `TYPE` column in `SUBMISSIONS`
+    * Support new `TYPE` column in `SUBMISSIONS`
 * faapi dependency set to \~2.17.0
-  * Download submissions thumbnails
+    * Download submissions thumbnails
 
 ## 3.17.2
 
 ### Changes
 
 * falocalrepo-database dependency set to \~4.8.0
-  * Use new bar-separation for list fields
+    * Use new bar-separation for list fields
 
 ## 3.17.1
 
