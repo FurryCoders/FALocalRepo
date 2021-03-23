@@ -190,12 +190,12 @@ def search(table: FADatabaseTable, parameters: Dict[str, List[str]], columns: Li
     parameters = {k.upper(): vs for k, vs in parameters.items()}
     query: Dict[str, List[str]] = {k: vs for k, vs in parameters.items() if k in table.columns}
     if "AUTHOR" in query:
-        query["replace(author, '_', '')"] = list(map(lambda u: clean_username(u, "%_"), query["author"]))
-        del query["author"]
+        query["REPLACE(AUTHOR, '_', '')"] = list(map(lambda u: clean_username(u, "%_"), query["AUTHOR"]))
+        del query["AUTHOR"]
     if "USERNAME" in query:
-        query["username"] = list(map(lambda u: clean_username(u, "%_"), query["username"]))
+        query["USERNAME"] = list(map(lambda u: clean_username(u, "%_"), query["USERNAME"]))
     if "ID" in query:
-        query["id"] = list(map(lambda i: i.lstrip("0") if isinstance(i, str) else i, query["id"]))
+        query["ID"] = list(map(lambda i: i.lstrip("0") if isinstance(i, str) else i, query["ID"]))
     return list(table.cursor_to_dict(table.select(
         query,
         columns=columns,
