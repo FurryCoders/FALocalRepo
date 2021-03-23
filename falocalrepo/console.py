@@ -7,6 +7,7 @@ from os.path import getsize
 from os.path import isfile
 from os.path import join
 from re import match
+from sys import stderr
 from typing import Callable
 from typing import Dict
 from typing import Iterable
@@ -945,13 +946,13 @@ def console(comm: str = "", *args: str) -> None:
         raise MultipleInstances(f"Another instance of {p} was detected")
 
     if environ.get("FALOCALREPO_DEBUG", None) is not None:
-        print(f"Using FALOCALREPO_DEBUG")
+        print(f"Using FALOCALREPO_DEBUG", file=stderr)
 
     # Initialise and prepare database
     database_path = "FA.db"
 
     if db_path := environ.get("FALOCALREPO_DATABASE", None):
-        print(f"Using FALOCALREPO_DATABASE: {db_path}")
+        print(f"Using FALOCALREPO_DATABASE: {db_path}", file=stderr)
         database_path = db_path if db_path.endswith(".db") else join(db_path, database_path)
 
     db: FADatabase = FADatabase(abspath(database_path))
