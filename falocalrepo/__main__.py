@@ -12,6 +12,7 @@ from .console import MalformedCommand
 from .console import MultipleInstances
 from .console import UnknownCommand
 from .console import console
+from .download import UnknownFolder
 
 
 def main():
@@ -28,25 +29,29 @@ def main():
         print_exc(file=stderr) if environ.get("FALOCALREPO_DEBUG", None) is not None else None
         print(repr(err), file=stderr)
         exit(2)
-    except ConnectionError as err:
+    except UnknownFolder as err:
         print_exc(file=stderr) if environ.get("FALOCALREPO_DEBUG", None) is not None else None
         print(repr(err), file=stderr)
         exit(3)
-    except (DatabaseError, IntegrityError) as err:
+    except ConnectionError as err:
         print_exc(file=stderr) if environ.get("FALOCALREPO_DEBUG", None) is not None else None
         print(repr(err), file=stderr)
         exit(4)
-    except (TypeError, AssertionError) as err:
+    except (DatabaseError, IntegrityError) as err:
         print_exc(file=stderr) if environ.get("FALOCALREPO_DEBUG", None) is not None else None
         print(repr(err), file=stderr)
         exit(5)
+    except (TypeError, AssertionError) as err:
+        print_exc(file=stderr) if environ.get("FALOCALREPO_DEBUG", None) is not None else None
+        print(repr(err), file=stderr)
+        exit(6)
     except (Exception, BaseException) as err:
         print_exc(file=stderr) if environ.get("FALOCALREPO_DEBUG", None) is not None else None
         with open(join(getcwd(), "FA.log"), "w") as f:
             print_exc(file=f)
             print(repr(err), file=stderr)
             print(f"Trace written to {f.name}", file=stderr)
-        exit(6)
+        exit(7)
 
 
 if __name__ == "__main__":
