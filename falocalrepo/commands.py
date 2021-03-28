@@ -196,14 +196,16 @@ def search(table: FADatabaseTable, parameters: Dict[str, List[str]], columns: Li
         query["USERNAME"] = list(map(lambda u: clean_username(u, "%_"), query["USERNAME"]))
     if "ID" in query:
         query["ID"] = list(map(lambda i: i.lstrip("0") if isinstance(i, str) else i, query["ID"]))
-    return list(table.cursor_to_dict(table.select(
-        query,
-        columns=columns,
-        like=True,
-        order=parameters.get("order", [table.column_id]),
-        limit=int(parameters.get("limit", 0)),
-        offset=int(parameters.get("offset", 0))
-    )))
+    return list(table.cursor_to_dict(
+        table.select(
+            query,
+            columns=columns,
+            like=True,
+            order=parameters.get("order", [table.column_id]),
+            limit=int(parameters.get("limit", 0)),
+            offset=int(parameters.get("offset", 0))
+        ),
+        columns=columns))
 
 
 def print_items(items: List[Dict[str, Union[int, str]]]):
