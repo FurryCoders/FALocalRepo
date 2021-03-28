@@ -482,7 +482,7 @@ def database_search_users(db: FADatabase, *args: str):
     """
 
     opts = parameters_multi(args)
-    json, cols = opts.get("json", [None])[0] == "true", opts["columns"][0].split(",") if "cols" in opts else None
+    json, cols = opts.get("json", [None])[0] == "true", opts["columns"][0].split(",") if "columns" in opts else None
     results: List[Dict[str, Union[int, str]]] = search(db.users, opts, cols if cols and json else None)
     if json:
         print(dumps(results))
@@ -520,7 +520,7 @@ def database_search_submissions(db: FADatabase, *args: str):
     """
 
     opts = parameters_multi(args)
-    json, cols = opts.get("json", [None])[0] == "true", opts["columns"][0].split(",") if "cols" in opts else None
+    json, cols = opts.get("json", [None])[0] == "true", opts["columns"][0].split(",") if "columns" in opts else None
     results: List[Dict[str, Union[int, str]]] = search(db.submissions, opts, cols if cols and json else None)
     if json:
         print(dumps(results))
@@ -558,7 +558,7 @@ def database_search_journals(db: FADatabase, *args: str):
     """
 
     opts = parameters_multi(args)
-    json, cols = opts.get("json", [None])[0] == "true", opts["columns"][0].split(",") if "cols" in opts else None
+    json, cols = opts.get("json", [None])[0] == "true", opts["columns"][0].split(",") if "columns" in opts else None
     results: List[Dict[str, Union[int, str]]] = search(db.journals, opts, cols if cols and json else None)
     if json:
         print(dumps(results))
