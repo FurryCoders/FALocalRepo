@@ -42,6 +42,7 @@ functionalities of the program.
 1. [Cookies](#cookies)
 1. [Usage](#usage)
     1. [Environmental Variables](#environmental-variables)
+    1. [Error Codes](#error-codes)
     1. [Help](#help)
     1. [Init](#init)
     1. [Configuration](#configuration)
@@ -154,6 +155,23 @@ Cookies need to be set manually with the config command before the program will 
   with `.db` -- e.g. `~/Documents/FA/MyFA.db` -- , then a database file will be created/opened with that name.
   Otherwise, the path will be considered a folder, and a database named "FA.db" will be created therein.
 * `FALOCALREPO_DEBUG` always print traceback of caught exceptions, regardless of whether they are known or not.
+
+### Error Codes
+
+If the program encounters a fatal error, the error is printed to `STDERR` and the program exits with a specific error
+code:
+
+* 1 `MalformedCommand`, `UnknownCommand` command error.
+* 2 `MultipleInstances` another instance of the program was detected.
+* 3 `UnknownFolder` an unknown download folder was given to the [`download` command](#download).
+* 4 `ConnectionError` a connection error was encountered during download.
+* 5 `DatabaseError`, `IntegrityError` an error with the database file occurred.
+* 6 `TypeError`, `AssertionError` a type error was encountered.
+* 7 an unknown exception was encountered. The full traceback is saved to a `FA.log` file located in the current
+  working directory.
+
+The exception traceback is printed only for unknown exception (error 7). Using the `FALOCALREPO_DEBUG`
+[environmental variable](#environmental-variables) forces printing of traceback for all exceptions.
 
 ### Help
 
