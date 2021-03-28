@@ -1,5 +1,25 @@
 # Changelog
 
+## 3.20.3
+
+### Changes
+
+* Let `UnknownFolder` exceptions rise, exit with code 3 when caught
+  * Error codes that were 3 or greater have been moved up by 1
+    * 1 `MalformedCommand`, `UnknownCommand`
+    * 2 `MultipleInstances`
+    * 3 `UnknownFolder`
+    * 4 `ConnectionError`
+    * 5 `DatabaseError`, `IntegrityError`
+    * 6 `TypeError`, `AssertionError`
+    * 7 `Exception`, `BaseException`
+* Exception `repr` is not printed if `FALOCALREPO_DEBUG` option is on
+
+### Fixes
+
+* Fix `columns` option being ignore in database search commands
+* Fix `columns` not being selected properly when used in conjunction with `json` option in database search commands
+
 ## 3.20.2
 
 ### Changes
