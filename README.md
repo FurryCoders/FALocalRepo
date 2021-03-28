@@ -167,8 +167,8 @@ code:
 * 4 `ConnectionError` a connection error was encountered during download.
 * 5 `DatabaseError`, `IntegrityError` an error with the database file occurred.
 * 6 `TypeError`, `AssertionError` a type error was encountered.
-* 7 an unknown exception was encountered. The full traceback is saved to a `FA.log` file located in the current
-  working directory.
+* 7 an unknown exception was encountered. The full traceback is saved to a `FA.log` file located in the current working
+  directory.
 
 The exception traceback is printed only for unknown exception (error 7). Using the `FALOCALREPO_DEBUG`
 [environmental variable](#environmental-variables) forces printing of traceback for all exceptions.
@@ -310,8 +310,8 @@ Available operations are:
 * `search-users [json=<json>] [columns=<columns>] [<param1>=<value1>] ... [<paramN>=<valueN>]` search the users entries
   using metadata fields. Search parameters can be passed multiple times to act as OR values. All columns of the users
   table are supported: [#Users](#users). Parameters can be lowercase. If no parameters are supplied, a list of all users
-  will be returned instead. If <json> is set to 'true', the results are printed as a list of objects in JSON format.
-  If <columns> is passed, then the objects printed with the JSON option will only contain those fields.
+  will be returned instead. If `<json>` is set to 'true', the results are printed as a list of objects in JSON format.
+  If `<columns>` is passed, then the objects printed with the JSON option will only contain those fields.
 
 ```
 falocalrepo database search-users json=true folders=%gallery%
@@ -320,9 +320,9 @@ falocalrepo database search-users json=true folders=%gallery%
 * `search-submissions [json=<json>] [columns=<columns>] [<param1>=<value1>] ... [<paramN>=<valueN>]` search the
   submissions entries using metadata fields. Search parameters can be passed multiple times to act as OR values. All
   columns of the submissions table are supported: [#Submissions](#submissions). Parameters can be lowercase. If no
-  parameters are supplied, a list of all submissions will be returned instead. If <json> is set to 'true', the results
-  are printed as a list of objects in JSON format. If <columns> is passed, then the objects printed with the JSON option
-  will only contain those fields.
+  parameters are supplied, a list of all submissions will be returned instead. If `<json>` is set to 'true', the results
+  are printed as a list of objects in JSON format. If `<columns>` is passed, then the objects printed with the JSON
+  option will only contain those fields.
 
 ```
 falocalrepo database search-submissions tags=%|cat|%|mouse|% date=2020-% category=%artwork% order="AUTHOR" order="ID"
@@ -335,9 +335,9 @@ falocalrepo database search-submissions json=true columns=id,author,title author
 * `search-journals [json=<json>] [columns=<columns>] [<param1>=<value1>] ... [<paramN>=<valueN>]` search the journals
   entries using metadata fields. Search parameters can be passed multiple times to act as OR values. All columns of the
   journals table are supported: [#Journals](#journals). Parameters can be lowercase. If no parameters are supplied, a
-  list of all journals will be returned instead. If <json> is set to 'true', the results are printed as a list of
-  objects in JSON format. If <columns> is passed, then the objects printed with the JSON option will only contain those
-  fields.
+  list of all journals will be returned instead. If `<json>` is set to 'true', the results are printed as a list of
+  objects in JSON format. If `<columns>` is passed, then the objects printed with the JSON option will only contain
+  those fields.
 
 ```
 falocalrepo database search-journals date=2020-% author=CatArtist order="ID DESC"
