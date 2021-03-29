@@ -1,5 +1,14 @@
 # Changelog
 
+## 3.21.0
+
+### Changes
+
+* Migrate to Python 3.9
+* falocalrepo-database dependency set to \~4.11.0
+* falocalrepo-server dependency set to \~1.9.0
+  * Solve issue #9
+
 ## 3.20.3
 
 ### Changes
