@@ -855,8 +855,7 @@ def database(db: FADatabase, comm: str = "", *args: str):
         specific search command.
     """
 
-    if comm not in ("", "info", "upgrade"):
-        check_database(db.version, __database_version__)
+    check_database(db.version, __database_version__, comm not in ("", "info", "upgrade"))
 
     {
         "": database_info,
