@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.21.2
+
+### Fixes
+
+* Fix error with `database add submission` command
+
 ## 3.21.1
 
 ### Changes
