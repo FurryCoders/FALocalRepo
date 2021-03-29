@@ -4,7 +4,7 @@
 
 ### Changes
 
-* Database version is check for all `database` commands, but no exception is raised for `info` and `upgrade`
+* Database version is checked for all `database` commands, but no exception is raised for `info` and `upgrade`
 
 ## 3.21.0
 
