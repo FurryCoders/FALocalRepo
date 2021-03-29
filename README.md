@@ -486,7 +486,8 @@ The submissions table contains the metadata of the submissions downloaded by the
 * `FILEURL` the remote URL of the submission file
 * `FILEEXT` the extensions of the downloaded file. Can be empty if the file contained errors and could not be recognised
   upon download
-* `FILESAVED` 1 if the file was successfully downloaded and saved, 0 if there was an error during download
+* `FILESAVED` file and thumbnail download status: 00, 01, 10, 11. 1*x* if the file was downloaded 0*x* if not, *x*1 if
+  thumbnail was downloaded, *x*0 if not
 * `FAVORITE` a bar-separated list of users that have "faved" the submission
 * `MENTIONS` a bar-separated list of users that are mentioned in the submission description as links
 * `FOLDER` the folder of the submission (`gallery` or `scraps`)
