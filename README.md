@@ -21,7 +21,7 @@ that they care about from the forum.
 
 The data is stored into a SQLite database, and the submissions files are saved in a tiered tree structure based on their
 ID's. Using SQLite instead of a client-server database makes the program to be extremely portable, only needing a
-working Python 3.8+ installation to work, and allows the downloaded data to be moved and backed up by simply
+working Python 3.9+ installation to work, and allows the downloaded data to be moved and backed up by simply
 moving/copying the database file and submission files folder.
 
 All download operations are performed through the custom FurAffinity scraping
