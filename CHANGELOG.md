@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.21.1
+
+### Changes
+
+* Database version is check for all `database` commands, but no exception is raised for `info` and `upgrade`
+
 ## 3.21.0
 
 ### Changes
