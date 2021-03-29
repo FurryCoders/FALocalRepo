@@ -57,8 +57,9 @@ def download_items(db: FADatabase, item_ids: list[str], f: Callable[[FAAPI, FADa
         f(api, db, item_id)
 
 
-def save_submission(db: FADatabase, sub: Submission, sub_file: Optional[bytes], user_update: bool = False):
-    db.submissions.save_submission({**dict(sub), "USERUPDATE": int(user_update)}, sub_file)
+def save_submission(db: FADatabase, sub: Submission, sub_file: Optional[bytes], sub_thumb: Optional[bytes],
+                    user_update: bool = False):
+    db.submissions.save_submission({**dict(sub), "USERUPDATE": int(user_update)}, sub_file, sub_thumb)
     db.commit()
 
 
@@ -108,13 +109,12 @@ def download_submission(api: FAAPI, db: FADatabase, submission: Union[int, Submi
             Bar(length=10, message="IS IN DB").close("]")
             return True
         sub: Submission = api.get_submission(sub_id, False)[0]
-        if not sub.thumbnail_url and isinstance(submission, SubmissionPartial):
-            sub.thumbnail_url = submission.thumbnail_url
-        sub_file: Optional[bytes] = download_submission_file(api, sub.file_url, bar=7 if sub.thumbnail_url else 10)
-        if sub.thumbnail_url:
-            sub_thumbnail: Optional[bytes] = download_submission_file(api, sub.thumbnail_url, speed=0, bar=1)
-            db.submissions.save_submission_file(sub.id, sub_thumbnail, "thumbnail", "jpg", False)
-        save_submission(db, sub, sub_file, user_update)
+        if isinstance(submission, SubmissionPartial):
+            sub.thumbnail_url = sub.thumbnail_url or submission.thumbnail_url
+        save_submission(db, sub,
+                        download_submission_file(api, sub.file_url, bar=7 if sub.thumbnail_url else 10),
+                        download_submission_file(api, sub.thumbnail_url, speed=0, bar=1),
+                        user_update)
         return True
     except ParsingError:
         return False
