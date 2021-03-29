@@ -643,7 +643,8 @@ def database_add_submission(db: FADatabase, *args: str):
         del make_params["id"]
     if "type" in make_params:
         del make_params["type_"]
-    save_submission(db, *make_submission(**make_params), user_update=False)
+    sub, sub_file = make_submission(**make_params)
+    save_submission(db, sub, sub_file, None, user_update=False)
 
 
 def database_add_journal(db: FADatabase, *args: str):
