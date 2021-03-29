@@ -5,10 +5,7 @@ from re import findall
 from re import sub as re_sub
 from shutil import move
 from sqlite3 import DatabaseError
-from typing import Dict
-from typing import List
 from typing import Optional
-from typing import Tuple
 from typing import Union
 
 from faapi import Journal
@@ -140,7 +137,7 @@ def make_submission(id_: Union[int, str], author: str, title: str,
                     tags: str = "", description: str = "",
                     file_url: str = "", file_local_url: str = "",
                     folder: str = ""
-                    ) -> Tuple[Submission, Optional[bytes]]:
+                    ) -> tuple[Submission, Optional[bytes]]:
     id_ = int(id_)
     assert id_ > 0, "id must be greater than 0"
     assert isinstance(author, str) and author, "author must be of type str and not empty"
@@ -185,10 +182,10 @@ def make_submission(id_: Union[int, str], author: str, title: str,
     return sub, sub_file
 
 
-def search(table: FADatabaseTable, parameters: Dict[str, List[str]], columns: List[str] = None
-           ) -> List[Dict[str, Union[int, str]]]:
+def search(table: FADatabaseTable, parameters: dict[str, list[str]], columns: list[str] = None
+           ) -> list[dict[str, Union[int, str]]]:
     parameters = {k.upper(): vs for k, vs in parameters.items()}
-    query: Dict[str, List[str]] = {k: vs for k, vs in parameters.items() if k in table.columns}
+    query: dict[str, list[str]] = {k: vs for k, vs in parameters.items() if k in table.columns}
     if "AUTHOR" in query:
         query["REPLACE(AUTHOR, '_', '')"] = list(map(lambda u: clean_username(u, "%_"), query["AUTHOR"]))
         del query["AUTHOR"]
@@ -208,7 +205,7 @@ def search(table: FADatabaseTable, parameters: Dict[str, List[str]], columns: Li
         columns=columns))
 
 
-def print_items(items: List[Dict[str, Union[int, str]]]):
+def print_items(items: list[dict[str, Union[int, str]]]):
     space_term: int
 
     try:
@@ -230,7 +227,7 @@ def print_items(items: List[Dict[str, Union[int, str]]]):
         )
 
 
-def print_users(users: List[Dict[str, str]]):
+def print_users(users: list[dict[str, str]]):
     space_term: int = 10000
     try:
         space_term = get_terminal_size()[0]

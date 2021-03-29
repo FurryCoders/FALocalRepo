@@ -5,10 +5,7 @@ from os import get_terminal_size
 from time import sleep
 from typing import Any
 from typing import Callable
-from typing import Dict
-from typing import List
 from typing import Optional
-from typing import Tuple
 from typing import Union
 
 from faapi import DisabledAccount
@@ -30,7 +27,7 @@ class UnknownFolder(Exception):
     pass
 
 
-def read_cookies(db: FADatabase) -> List[Dict[str, str]]:
+def read_cookies(db: FADatabase) -> list[dict[str, str]]:
     return [{"name": n, "value": v} for n, v in json_loads(db.settings["COOKIES"]).items()]
 
 
@@ -50,7 +47,7 @@ def load_api(db: FADatabase) -> FAAPI:
     return api
 
 
-def download_items(db: FADatabase, item_ids: List[str], f: Callable[[FAAPI, FADatabase, int], Any]):
+def download_items(db: FADatabase, item_ids: list[str], f: Callable[[FAAPI, FADatabase, int], Any]):
     if item_ids_fail := list(filter(lambda i: not i.isdigit(), item_ids)):
         print("The following ID's are not correct:", *item_ids_fail)
     item_ids = list(filter(lambda i: i.isdigit(), item_ids))
@@ -122,7 +119,7 @@ def download_submission(api: FAAPI, db: FADatabase, submission: Union[int, Submi
         print()
 
 
-def download_submissions(db: FADatabase, sub_ids: List[str]):
+def download_submissions(db: FADatabase, sub_ids: list[str]):
     download_items(db, sub_ids, download_submission)
 
 
@@ -139,17 +136,18 @@ def download_journal(api: FAAPI, db: FADatabase, jrn_id: int):
     save_journal(db, journal)
 
 
-def download_journals(db: FADatabase, jrn_ids: List[str]):
+def download_journals(db: FADatabase, jrn_ids: list[str]):
     download_items(db, jrn_ids, download_journal)
 
 
-def download_users_update(db: FADatabase, users: List[str], folders: List[str], stop: int = 1, deactivated: bool = False):
+def download_users_update(db: FADatabase, users: list[str], folders: list[str], stop: int = 1,
+                          deactivated: bool = False):
     api: Optional[FAAPI] = None
     tot, fail = 0, 0
 
     users = list(map(clean_username, users))
     users = sorted(set(users), key=users.index)
-    users_db: List[dict] = sorted(
+    users_db: list[dict] = sorted(
         filter(lambda u: not users or u["USERNAME"] in users, db.users),
         key=lambda u: users.index(u["USERNAME"]) if users else u["USERNAME"])
 
@@ -183,7 +181,7 @@ def download_users_update(db: FADatabase, users: List[str], folders: List[str], 
     print("Items failed:", fail) if fail else None
 
 
-def download_users(db: FADatabase, users: List[str], folders: List[str]):
+def download_users(db: FADatabase, users: list[str], folders: list[str]):
     api: Optional[FAAPI] = None
     users = list(map(clean_username, users))
     for user in sorted(set(users), key=users.index):
@@ -211,7 +209,7 @@ def download_users(db: FADatabase, users: List[str], folders: List[str]):
             print(f"User {user} error: {repr(err)}")
 
 
-def download_user(api: FAAPI, db: FADatabase, user: str, folder: str, stop: int = 0) -> Tuple[int, int]:
+def download_user(api: FAAPI, db: FADatabase, user: str, folder: str, stop: int = 0) -> tuple[int, int]:
     items_total: int = 0
     items_failed: int = 0
     page: Union[int, str] = 1
@@ -223,7 +221,7 @@ def download_user(api: FAAPI, db: FADatabase, user: str, folder: str, stop: int 
     found_items: int = 0
     skip: bool = False
 
-    download: Callable[[str, Union[str, int]], Tuple[List[Union[SubmissionPartial, Journal]], Union[int, str]]]
+    download: Callable[[str, Union[str, int]], tuple[list[Union[SubmissionPartial, Journal]], Union[int, str]]]
     exists: Callable[[int], Optional[dict]]
 
     if folder.startswith("!"):

@@ -9,11 +9,7 @@ from os.path import join
 from re import match
 from sys import stderr
 from typing import Callable
-from typing import Dict
 from typing import Iterable
-from typing import List
-from typing import Set
-from typing import Tuple
 from typing import Union
 
 from faapi import __version__ as __faapi_version__
@@ -70,8 +66,8 @@ def docstring_parameter(*args, **kwargs):
     return inner
 
 
-def parameters_multi(args: Iterable[str]) -> Dict[str, List[str]]:
-    params: Dict[str, List[str]] = {}
+def parameters_multi(args: Iterable[str]) -> dict[str, list[str]]:
+    params: dict[str, list[str]] = {}
     for param, value in map(lambda p: p.split("=", 1), args):
         param = param.strip()
         params[param] = [*params.get(param, []), value]
@@ -79,13 +75,13 @@ def parameters_multi(args: Iterable[str]) -> Dict[str, List[str]]:
     return params
 
 
-def parameters(args: Iterable[str]) -> Dict[str, str]:
+def parameters(args: Iterable[str]) -> dict[str, str]:
     return {p: v for p, v in map(lambda p: p.split("=", 1), args)}
 
 
-def parse_args(args_raw: Iterable[str]) -> Tuple[Dict[str, str], List[str]]:
-    opts: List[str] = []
-    args: List[str] = []
+def parse_args(args_raw: Iterable[str]) -> tuple[dict[str, str], list[str]]:
+    opts: list[str] = []
+    args: list[str] = []
 
     for i, arg in enumerate(args_raw):
         if match(r"\w+=\w+", arg):
@@ -295,10 +291,10 @@ def download_users(db: FADatabase, *args: str):
     if len(args) != 2:
         raise MalformedCommand("users needs two arguments")
 
-    users_tmp: List[str] = list(filter(bool, map(clean_username, args[0].split(","))))
-    users: List[str] = sorted(set(users_tmp), key=users_tmp.index)
-    folders_tmp: List[str] = list(filter(bool, map(str.strip, args[1].split(","))))
-    folders: List[str] = sorted(set(folders_tmp), key=folders_tmp.index)
+    users_tmp: list[str] = list(filter(bool, map(clean_username, args[0].split(","))))
+    users: list[str] = sorted(set(users_tmp), key=users_tmp.index)
+    folders_tmp: list[str] = list(filter(bool, map(str.strip, args[1].split(","))))
+    folders: list[str] = sorted(set(folders_tmp), key=folders_tmp.index)
     download_users_(db, users, folders)
 
 
@@ -333,14 +329,14 @@ def download_update(db: FADatabase, *args: str):
         falocalrepo download update tom,jerry
     """
 
-    users: List[str] = []
-    folders: List[str] = []
+    users: list[str] = []
+    folders: list[str] = []
     opts, args = parse_args(args)
     if args and args[0] != "@":
-        users_tmp: List[str] = list(filter(bool, map(clean_username, args[0].split(","))))
+        users_tmp: list[str] = list(filter(bool, map(clean_username, args[0].split(","))))
         users = sorted(set(users_tmp), key=users_tmp.index)
     if args[1:] and args[1] != "@":
-        folders_tmp: List[str] = list(filter(bool, map(str.strip, args[1].split(","))))
+        folders_tmp: list[str] = list(filter(bool, map(str.strip, args[1].split(","))))
         folders = sorted(set(folders_tmp), key=folders_tmp.index)
     download_users_update(db, users, folders, int(opts.get("stop", 1)), opts.get("deactivated", "").lower() == "true")
 
@@ -363,8 +359,8 @@ def download_submissions(db: FADatabase, *args: str):
 
     if not args:
         raise MalformedCommand("submissions needs at least one argument")
-    sub_ids_tmp: List[str] = list(filter(str.isdigit, args))
-    sub_ids: List[str] = sorted(set(sub_ids_tmp), key=sub_ids_tmp.index)
+    sub_ids_tmp: list[str] = list(filter(str.isdigit, args))
+    sub_ids: list[str] = sorted(set(sub_ids_tmp), key=sub_ids_tmp.index)
     download_submissions_(db, sub_ids)
 
 
@@ -386,8 +382,8 @@ def download_journals(db: FADatabase, *args: str):
 
     if not args:
         raise MalformedCommand("journals needs at least one argument")
-    journal_ids_tmp: List[str] = list(filter(str.isdigit, args))
-    journal_ids: List[str] = sorted(set(journal_ids_tmp), key=journal_ids_tmp.index)
+    journal_ids_tmp: list[str] = list(filter(str.isdigit, args))
+    journal_ids: list[str] = sorted(set(journal_ids_tmp), key=journal_ids_tmp.index)
     download_journals_(db, journal_ids)
 
 
@@ -483,7 +479,7 @@ def database_search_users(db: FADatabase, *args: str):
 
     opts = parameters_multi(args)
     json, cols = opts.get("json", [None])[0] == "true", opts["columns"][0].split(",") if "columns" in opts else None
-    results: List[Dict[str, Union[int, str]]] = search(db.users, opts, cols if cols and json else None)
+    results: list[dict[str, Union[int, str]]] = search(db.users, opts, cols if cols and json else None)
     if json:
         print(dumps(results))
     else:
@@ -521,7 +517,7 @@ def database_search_submissions(db: FADatabase, *args: str):
 
     opts = parameters_multi(args)
     json, cols = opts.get("json", [None])[0] == "true", opts["columns"][0].split(",") if "columns" in opts else None
-    results: List[Dict[str, Union[int, str]]] = search(db.submissions, opts, cols if cols and json else None)
+    results: list[dict[str, Union[int, str]]] = search(db.submissions, opts, cols if cols and json else None)
     if json:
         print(dumps(results))
     else:
@@ -559,7 +555,7 @@ def database_search_journals(db: FADatabase, *args: str):
 
     opts = parameters_multi(args)
     json, cols = opts.get("json", [None])[0] == "true", opts["columns"][0].split(",") if "columns" in opts else None
-    results: List[Dict[str, Union[int, str]]] = search(db.journals, opts, cols if cols and json else None)
+    results: list[dict[str, Union[int, str]]] = search(db.journals, opts, cols if cols and json else None)
     if json:
         print(dumps(results))
     else:
@@ -588,11 +584,11 @@ def database_add_user(db: FADatabase, *args):
         falocalrepo database add-user username=tom folders=gallery,scraps
     """
 
-    make_params: Dict[str, str] = parameters(args)
+    make_params: dict[str, str] = parameters(args)
     username: str = db.users.new_user(make_params["username"])
     if make_params.get("folders", None) is not None:
-        folders: Set[str] = set(db.users[username]["FOLDERS"])
-        folders_new: Set[str] = set(filter(bool, map(str.lower, make_params["folders"].split(","))))
+        folders: set[str] = set(db.users[username]["FOLDERS"])
+        folders_new: set[str] = set(filter(bool, map(str.lower, make_params["folders"].split(","))))
         for f in folders - folders_new:
             db.users.remove_user_folder(username, f)
         for f in folders_new - folders:
