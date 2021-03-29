@@ -63,6 +63,9 @@ def save_submission(db: FADatabase, sub: Submission, sub_file: Optional[bytes], 
 
 
 def download_submission_file(api: FAAPI, sub_file_url: str, *, speed: int = 100, bar: int = 10) -> Optional[bytes]:
+    if not sub_file_url:
+        return None
+
     bar: Bar = Bar(bar)
     file_binary: Optional[bytes] = bytes()
 
