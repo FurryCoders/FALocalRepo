@@ -2,10 +2,10 @@ from datetime import datetime
 from inspect import cleandoc
 from json import dumps
 from os import environ
-from os.path import abspath
 from os.path import getsize
 from os.path import isfile
 from os.path import join
+from os.path import split
 from re import match
 from sys import stderr
 from typing import Callable
@@ -17,10 +17,11 @@ from falocalrepo_database import FADatabase
 from falocalrepo_database import __version__ as __database_version__
 from falocalrepo_server import __version__ as __server_version__
 from falocalrepo_server import server
+from psutil import AccessDenied
+from psutil import NoSuchProcess
+from psutil import process_iter
 
 from .__version__ import __version__
-from .commands import check_database
-from .commands import check_process
 from .commands import latest_version
 from .commands import make_journal
 from .commands import make_submission
@@ -49,6 +50,31 @@ class UnknownCommand(Exception):
 
 class MultipleInstances(Exception):
     pass
+
+
+def check_process(process: str):
+    ps: int = 0
+    for p in process_iter():
+        try:
+            ps += "python" in p.name().lower() and any(process in split(cmd) for cmd in p.cmdline())
+        except (NoSuchProcess, AccessDenied):
+            pass
+        if ps > 1:
+            raise MultipleInstances(f"Another instance of {process} was detected")
+
+
+def check_database_version(db: FADatabase, raise_for_error: bool = True):
+    if (err := db.check_version()) is not None:
+        print(f"Database version is not latest: {db.version} != {__database_version__}")
+        print("Use database upgrade command to upgrade database")
+        if raise_for_error:
+            raise err
+
+
+def check_database_connections(db: FADatabase):
+    if len(db.check_connection()) > 1:
+        db.close()
+        raise MultipleInstances(f"Another connection to {db.database_path} was detected")
 
 
 def raiser(e: Exception) -> Callable:
@@ -170,7 +196,7 @@ def init(db: FADatabase):
         update it to a new version without calling other commands.
     """
 
-    check_database(db.version, __database_version__)
+    check_database_version(db)
     print("Database ready")
 
 
@@ -255,7 +281,7 @@ def config(db: FADatabase, comm: str = "", *args: str):
         The config command allows to change the settings used by the program.
     """
 
-    check_database(db.version, __database_version__)
+    check_database_version(db)
 
     {
         "": config_list,
@@ -410,7 +436,8 @@ def download(db: FADatabase, comm: str = "", *args: str):
         thumbnails, if there are any.
     """
 
-    check_database(db.version, __database_version__)
+    check_database_version(db)
+    check_process("falocalrepo")
 
     {
         "": raiser(MalformedCommand("download needs a command")),
@@ -856,7 +883,7 @@ def database(db: FADatabase, comm: str = "", *args: str):
         specific search command.
     """
 
-    check_database(db.version, __database_version__, comm not in ("", "info", "upgrade"))
+    check_database_version(db, raise_for_error=comm not in ("", "info", "upgrade"))
 
     {
         "": database_info,
@@ -938,8 +965,6 @@ def console(comm: str = "", *args: str) -> None:
         return
     elif comm not in (init.__name__, config.__name__, download.__name__, database.__name__):
         raise UnknownCommand(comm)
-    elif check_process(p := "falocalrepo") > 1:
-        raise MultipleInstances(f"Another instance of {p} was detected")
 
     if environ.get("FALOCALREPO_DEBUG", None) is not None:
         print(f"Using FALOCALREPO_DEBUG", file=stderr)
@@ -951,7 +976,8 @@ def console(comm: str = "", *args: str) -> None:
         print(f"Using FALOCALREPO_DATABASE: {db_path}", file=stderr)
         database_path = db_path if db_path.endswith(".db") else join(db_path, database_path)
 
-    db: FADatabase = FADatabase(abspath(database_path))
+    db: FADatabase = FADatabase(database_path)
+    check_database_connections(db)
 
     try:
         db.settings.add_history(f"{comm} {' '.join(args)}".strip())

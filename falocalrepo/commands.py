@@ -1,19 +1,14 @@
 from os import get_terminal_size
 from os.path import isdir
-from os.path import split
 from re import findall
 from re import sub as re_sub
 from shutil import move
-from sqlite3 import DatabaseError
 from typing import Optional
 from typing import Union
 
 from faapi import Journal
 from faapi import Submission
 from falocalrepo_database import FADatabaseTable
-from psutil import NoSuchProcess
-from psutil import Process
-from psutil import pids
 from requests import get as req_get
 
 
@@ -55,32 +50,6 @@ class Bar:
         self.level = len(message := f"{(message[:self.length]):^{self.length}}")
         print(message, end="", flush=True)
         self.message_: str = message
-
-
-def check_process(process: str) -> int:
-    ps: int = 0
-    for pid in pids():
-        try:
-            ps += "python" in (p := Process(pid)).name().lower() and any(process in split(cmd) for cmd in p.cmdline())
-        except NoSuchProcess:
-            pass
-    return ps
-
-
-def split_version(version: str, default=None, length=3) -> list:
-    return (v := version.split("-")[0].split(".") if version else []) + ([default] * (len(v) - length))
-
-
-def check_database(a: str, b: str, raise_for_error: bool = True):
-    if a != b:
-        print(f"Database version is not latest: {a} != {b}")
-        print("Use database upgrade command to upgrade database")
-        if not raise_for_error:
-            return
-        elif (v_a := split_version(a))[0] != (v_b := split_version(b))[0]:
-            raise DatabaseError(f"Database major version is not latest: {v_a[0]} != {v_b[0]}")
-        elif v_a[1] != v_b[1]:
-            raise DatabaseError(f"Database minor version is not latest: {v_a[1]} != {v_b[1]}")
 
 
 def clean_username(username: str, exclude: str = "") -> str:
