@@ -64,7 +64,7 @@ def check_process(process: str):
 
 
 def check_database_version(db: FADatabase, raise_for_error: bool = True):
-    if (err := db.check_version()) is not None:
+    if (err := db.check_version(raise_for_error=False)) is not None:
         print(f"Database version is not latest: {db.version} != {__database_version__}")
         print("Use database upgrade command to upgrade database")
         if raise_for_error:
@@ -72,7 +72,7 @@ def check_database_version(db: FADatabase, raise_for_error: bool = True):
 
 
 def check_database_connections(db: FADatabase):
-    if len(db.check_connection()) > 1:
+    if len(db.check_connection(raise_for_error=False)) > 1:
         db.close()
         raise MultipleInstances(f"Another connection to {db.database_path} was detected")
 
