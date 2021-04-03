@@ -63,10 +63,7 @@ def clean_string(title: str) -> str:
 def latest_version(package: str) -> str:
     try:
         res = req_get(f"https://pypi.org/pypi/{package}/json")
-        if not res.ok:
-            return ""
-        else:
-            return res.json()["info"]["version"]
+        return "" if not res.ok else res.json()["info"]["version"]
     except (Exception, BaseException):
         return ""
 
