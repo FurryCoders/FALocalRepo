@@ -137,10 +137,14 @@ Available commands are:
 
 _Note:_ all the commands except `help` will create and initialise the database if it is not present in the folder
 
-_Note:_ only one instance of the program is allowed at any given time
+_Note:_ only one instance of the program is allowed at any given time when performing download operations
 
-_Note_: the program will not operate if the version of the database does not match the major or minor version of
-the `falocalrepo-database` module. Patch version differences are allowed but will still trigger a warning.
+_Note:_ only one connection to a database is allowed at any given time, if the database is opened in other processes,
+the program will close with an error
+
+_Note_: the program will not operate if the version of the database does not match the version of
+the `falocalrepo-database` module. Only `database info` and `database upgrade` commands can be run if the database is
+not up to date.
 
 When the database is first initialised, it defaults the submissions files folder to `FA.files`. This value can be
 changed using the [`config` command](#configuration).
