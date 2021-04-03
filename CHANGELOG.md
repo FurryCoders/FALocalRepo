@@ -1,5 +1,14 @@
 # Changelog
 
+## 3.22.3
+
+### Changes
+
+* falocalrepo-database dependency set to \~4.12.0
+* Check connections to selected database to ensure only one is active
+* Check multiple instances of the program only when running the `download` command
+* Any version difference will trigger an error
+
 ## 3.21.2
 
 ### Fixes
