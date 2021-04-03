@@ -274,14 +274,14 @@ falocalrepo download update deactivated=true @ gallery,scraps
 falocalrepo download update tom,jerry
 ```
 
-* `submissions <id1> ... [<idN>]` download specific submissions. Requires submission IDs provided as separate arguments.
-  If the submission is already in the database it is ignored.
+* `submissions <id1> ... [<idN>]` download specific submissions. Requires submission IDs provided as separate arguments,
+  if a submission is already in the database it is ignored.
 
 ```
 falocalrepo download submissions 12345678 13572468 87651234
 ```
 
-* `journals <id1> ... [<idN>]` download specific journals. Requires journal IDs provided as separate arguments. If the
+* `journals <id1> ... [<idN>]` download specific journals. Requires journal IDs provided as separate arguments, if a
   journal is already in the database it is ignored.
 
 ```
