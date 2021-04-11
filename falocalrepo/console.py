@@ -14,6 +14,7 @@ from typing import Union
 
 from faapi import __version__ as __faapi_version__
 from falocalrepo_database import FADatabase
+from falocalrepo_database import FADatabaseCursor
 from falocalrepo_database import __version__ as __database_version__
 from falocalrepo_server import __version__ as __server_version__
 from falocalrepo_server import server
@@ -173,6 +174,7 @@ def help_(comm: str = "", op: str = "", *_rest) -> str:
         "database remove-journals": database_remove_journals,
         "database server": database_server,
         "database merge": database_merge,
+        "database copy": database_copy,
         "database clean": database_clean,
         "database upgrade": database_upgrade,
     }.get(comm := f"{comm} {op}".strip(), None)
@@ -810,6 +812,51 @@ def database_merge(db: FADatabase, *args: str):
         print("Done")
 
 
+def database_copy(db: FADatabase, *args: str):
+    """
+    USAGE
+        falocalrepo database copy <path> [<table1>.<param1>=<value1> ...
+                    <tableN>.<paramN>=<valueN>]
+
+    ARGUMENTS
+        <path>  Path to second database file
+        <table> One of users, submissions, journals
+        <param> Search parameter
+        <value> Value of the parameter
+
+    DESCRIPTION
+        Copy selected entries to a new or existing database. To select entries, use
+        the same parameters as the search commands precede by a table name. Search
+        parameters can be passed multiple times to act as OR values. All columns of
+        the entries table are supported. Parameters can be lowercase. If no
+        parameters are passed then all the database entries are copied.
+
+    EXAMPLES
+        falocalrepo database copy ~/Documents/FA.backup/A/FA.db users.username=a% \\
+            submissions.author=a% journals.author=a%
+        falocalrepo database copy ~/Documents/FA2020/FA.db submissions.date=2020-% \\
+            journals.date=2020-%
+    """
+
+    if not args:
+        raise MalformedCommand("copy needs at least a database argument")
+
+    opts = parameters_multi(args[1:])
+    usrs_opts: dict[str, list[str]] = {m.group(1): v for k, v in opts.items() if (m := match(r"users\.(.+)", k))}
+    subs_opts: dict[str, list[str]] = {m.group(1): v for k, v in opts.items() if (m := match(r"submissions\.(.+)", k))}
+    jrns_opts: dict[str, list[str]] = {m.group(1): v for k, v in opts.items() if (m := match(r"journals\.(.+)", k))}
+
+    with FADatabase(args[0]) as db2:
+        print(f"Copying entries to {db2.database_path}...")
+        cursors: list[FADatabaseCursor] = []
+        cursors.append(db.users.select(usrs_opts, like=True)) if usrs_opts else None
+        cursors.append(db.submissions.select(subs_opts, like=True)) if subs_opts else None
+        cursors.append(db.journals.select(jrns_opts, like=True)) if jrns_opts else None
+        db.copy(db2, *cursors)
+        db2.commit()
+        print("Done")
+
+
 def database_clean(db: FADatabase, *_rest):
     """
     USAGE
@@ -860,6 +907,7 @@ def database(db: FADatabase, comm: str = "", *args: str):
         remove-journals     Remove submissions from database
         server              Start local server to browse database
         merge               Merge with a second database
+        copy                Copy entries to a second database
         clean               Clean the database with the VACUUM function
         upgrade             Upgrade the database to the latest version.
 
@@ -900,6 +948,7 @@ def database(db: FADatabase, comm: str = "", *args: str):
         "remove-journals": database_remove_journals,
         "server": database_server,
         "merge": database_merge,
+        "copy": database_copy,
         "clean": database_clean,
         "upgrade": database_upgrade,
     }.get(comm, raiser(UnknownCommand(f"database {comm}")))(db, *args)
