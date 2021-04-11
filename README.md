@@ -572,8 +572,8 @@ occurred.
 Release 3.0.0 was deleted from PyPi because of an error in the package information. However, it can still be found in
 the code repository under tag [v3.0.0](https://gitlab.com/MatteoCampinoti94/FALocalRepo/tags/v3.0.0).
 
-Release binaries for versions 2.11.x can be found on GitLab under tags
--> [FALocalRepo/tags 2.11](https://gitlab.com/MatteoCampinoti94/FALocalRepo/tags?search=v2.11)
+Release binaries for versions 2.11.x can be found on GitLab
+at [FALocalRepo/tags 2.11](https://gitlab.com/MatteoCampinoti94/FALocalRepo/tags?search=v2.11).
 
-Release binaries before and including 2.10.2 can be found on GitHub
--> [Releases](https://github.com/MatteoCampinoti94/FALocalRepo/releases).
+Release binaries before and including 2.10.2 can be found
+in [GitHub Releases](https://github.com/MatteoCampinoti94/FALocalRepo/releases).
