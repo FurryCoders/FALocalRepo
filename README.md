@@ -385,7 +385,7 @@ falocalrepo database add-user username=tom folders=gallery,scraps
 falocalrepo database add-submission id=12345678 'title=cat & mouse' author=CartoonArtist \
     date=2020-08-09 category=Artwork 'species=Unspecified / Any' gender=Any rating=General type=image \
     tags=cat,mouse,cartoon 'description=There once were a cat named Tom and a mouse named Jerry.' \
-    'file_url=http://remote.url/to/submission.file' file_local_url=path/to/submission.file
+    'file_url=https://remote.url/to/submission.file' file_local_url=path/to/submission.file
 ```
 
 * `add-journal <param1>=<value1> ... <paramN>=<valueN>` add a journal to the database manually. The following parameters
