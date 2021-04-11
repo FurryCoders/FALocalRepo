@@ -1,5 +1,16 @@
 # Changelog
 
+## 3.22.0
+
+### Changes
+
+* falocalrepo-database dependency set to \~4.13.0
+* Add `database copy` command
+
+### Fixes
+
+* Fix `config files-folder` command error
+
 ## 3.21.3
 
 ### Changes
