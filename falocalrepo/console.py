@@ -287,7 +287,7 @@ def config(db: FADatabase, comm: str = "", *args: str):
         "": config_list,
         "list": config_list,
         "cookies": config_cookies,
-        "files_folder": config_files_folder,
+        "files-folder": config_files_folder,
     }.get(comm, raiser(UnknownCommand(f"config {comm}")))(db, *args)
 
 
