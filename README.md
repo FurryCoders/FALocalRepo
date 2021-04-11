@@ -298,7 +298,7 @@ information, statistics (number of users and submissions and time of last update
 All search operations are conducted case-insensitively using the SQLite [`like`](https://sqlite.org/lang_expr.html#like)
 expression which allows for a limited pattern matching. For example this expression can be used to search two words
 together separated by an unknown amount of characters `%cat%mouse%`. Fields missing wildcards will only match an exact
-result, i.e. `cat` will only match a field equal to `cat` tag whereas `%cat%` wil match a field that has contains `cat`.
+result, i.e. `cat` will only match a field equal to `cat` whereas `%cat%` wil match a field that contains `cat`.
 Bars (`|`) can be used to isolate individual items in list fields.
 
 All search operations support the extra `order`, `limit`, and `offset` parameters with values in
