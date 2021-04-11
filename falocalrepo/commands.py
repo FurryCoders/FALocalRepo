@@ -9,6 +9,7 @@ from typing import Union
 from faapi import Journal
 from faapi import Submission
 from falocalrepo_database import FADatabaseTable
+from falocalrepo_database.database import Entry
 from requests import get as req_get
 
 
@@ -150,8 +151,7 @@ def make_submission(id_: Union[int, str], author: str, title: str,
     return sub, sub_file
 
 
-def search(table: FADatabaseTable, parameters: dict[str, list[str]], columns: list[str] = None
-           ) -> list[dict[str, Union[int, str]]]:
+def search(table: FADatabaseTable, parameters: dict[str, list[str]], columns: list[str] = None) -> list[Entry]:
     parameters = {k.upper(): vs for k, vs in parameters.items()}
     query: dict[str, list[str]] = {k: vs for k, vs in parameters.items() if k in table.columns}
     if "AUTHOR" in query:
@@ -171,13 +171,11 @@ def search(table: FADatabaseTable, parameters: dict[str, list[str]], columns: li
     ))
 
 
-def print_items(items: list[dict[str, Union[int, str]]]):
-    space_term: int
-
+def print_items(items: list[Entry]):
     try:
-        space_term = get_terminal_size()[0]
+        space_term: int = get_terminal_size()[0]
     except IOError:
-        space_term = 10000
+        space_term: int = 10000
 
     space_id: int = 10
     space_user: int = max([len(item["AUTHOR"]) for item in items] + [10])
@@ -193,12 +191,11 @@ def print_items(items: list[dict[str, Union[int, str]]]):
         )
 
 
-def print_users(users: list[dict[str, str]]):
-    space_term: int = 10000
+def print_users(users: list[Entry]):
     try:
-        space_term = get_terminal_size()[0]
+        space_term: int = get_terminal_size()[0]
     except IOError:
-        pass
+        space_term: int = 10000
 
     space_name: int = max([len(u["USERNAME"]) for u in users]) if users else 10
     space_folders: int = max([len(u["FOLDERS"]) * 2 for u in users]) if users else 7
