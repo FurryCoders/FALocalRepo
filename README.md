@@ -428,17 +428,28 @@ falocalrepo database remove-journals 123456 135724 876512
 falocalrepo database server host=127.0.0.1 port=5000
 ```
 
-* `merge <path>` merge (or create) the database in the current folder with a second database located at `path`. `path`
-  must point to the database file itself.
+* `merge <path> [<table1>.<param1>=<value1> ... <tableN>.<paramN>=<valueN>]` Merge selected entries from a second
+  database to the main database (the one opened with the program). To select entries, use the same parameters as the
+  search commands precede by a table name. Search parameters can be passed multiple times to act as OR values. All
+  columns of the entries table are supported. Parameters can be lowercase. If no parameters are passed then all the
+  database entries are copied. If submissions entries are selected, their files are copied to the files' folder of the
+  main database.
 
 ```
-falocalrepo database merge ~/Documents/FA/FA.db
+falocalrepo database copy ~/Documents/FA.backup/A/FA.db users.username=a% \
+    submissions.author=a% journals.author=a%
+```
+
+```
+falocalrepo database copy ~/Documents/FA2020/FA.db submissions.date=2020-% \
+    journals.date=2020-%
 ```
 
 * `copy <path> [<table1>.<param1>=<value1> ... <tableN>.<paramN>=<valueN>]` Copy selected entries to a new or existing
   database. To select entries, use the same parameters as the search commands precede by a table name. Search parameters
   can be passed multiple times to act as OR values. All columns of the entries table are supported. Parameters can be
-  lowercase. If no parameters are passed then all the database entries are copied.
+  lowercase. If no parameters are passed then all the database entries are copied. If submissions entries are selected,
+  their files are copied to the files' folder of the target database.
 
 ```
 falocalrepo database copy ~/Documents/FA.backup/A/FA.db users.username=a% \
