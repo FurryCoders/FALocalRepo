@@ -183,17 +183,15 @@ The exception traceback is printed only for unknown exception (error 7). Using t
 
 The `help` command gives information on the usage of the program and its commands and operations.
 
-```
-falocalrepo help
-```
-
-```
-falocalrepo help download
-```
-
-```
-falocalrepo help database search-users
-```
+>```
+>falocalrepo help
+>```
+>```
+>falocalrepo help download
+>```
+>```
+>falocalrepo help database search-users
+>```
 
 ### Init
 
@@ -217,16 +215,16 @@ Available settings are:
 * `list` list stored settings.
 * `cookies [<cookie1 name>=<cookie1 value>] ... [<cookieN name>=<cookieN value>]` the cookies stored in the database.
 
-```
-falocalrepo config cookies a=38565475-3421-3f21-7f63-3d341339737 b=356f5962-5a60-0922-1c11-65003b703038
-```
+>```
+>falocalrepo config cookies a=38565475-3421-3f21-7f63-3d341339737 b=356f5962-5a60-0922-1c11-65003b703038
+>```
 
 * `files-folder [<new folder>]` the folder used to store submission files. This can be any path relative to the folder
   of the database. If a new value is given, the program will move any files to the new location.
 
-```
-falocalrepo config files-folder SubmissionFiles
-```
+>```
+>falocalrepo config files-folder SubmissionFiles
+>```
 
 ### Download
 
@@ -246,13 +244,12 @@ Available operations are:
     * `favorites`
     * `journals`
 
-```
-falocalrepo download users tom,jerry gallery,scraps,journals
-```
-
-```
-falocalrepo download users tom,jerry list-favorites
-```
+>```
+>falocalrepo download users tom,jerry gallery,scraps,journals
+>```
+>```
+>falocalrepo download users tom,jerry list-favorites
+>```
 
 * `update [stop=<n>] [deactivated=<deactivated>] [<user1>,...,<userN>] [<folder1>,...,<folderN>]` update the repository
   by checking the previously downloaded folders (gallery, scraps, favorites or journals) of each user and stopping when
@@ -262,31 +259,29 @@ falocalrepo download users tom,jerry list-favorites
   database will be prepended with a '!'. Deactivated users will be skipped when update is called, unless
   the `<deactivated>` option is set to `true`.
 
-```
-falocalrepo download update stop=5
-```
-
-```
-falocalrepo download update deactivated=true @ gallery,scraps
-```
-
-```
-falocalrepo download update tom,jerry
-```
+>```
+>falocalrepo download update stop=5
+>```
+>```
+>falocalrepo download update deactivated=true @ gallery,scraps
+>```
+>```
+>falocalrepo download update tom,jerry
+>```
 
 * `submissions <id1> ... [<idN>]` download specific submissions. Requires submission IDs provided as separate arguments,
   if a submission is already in the database it is ignored.
 
-```
-falocalrepo download submissions 12345678 13572468 87651234
-```
+>```
+>falocalrepo download submissions 12345678 13572468 87651234
+>```
 
 * `journals <id1> ... [<idN>]` download specific journals. Requires journal IDs provided as separate arguments, if a
   journal is already in the database it is ignored.
 
-```
-falocalrepo download journals 123456 135724 876512
-```
+>```
+>falocalrepo download journals 123456 135724 876512
+>```
 
 ### Database
 
@@ -317,9 +312,9 @@ Available operations are:
   will be returned instead. If `<json>` is set to 'true', the results are printed as a list of objects in JSON format.
   If `<columns>` is passed, then the objects printed with the JSON option will only contain those fields.
 
-```
-falocalrepo database search-users json=true folders=%gallery%
-```
+>```
+>falocalrepo database search-users json=true folders=%gallery%
+>```
 
 * `search-submissions [json=<json>] [columns=<columns>] [<param1>=<value1>] ... [<paramN>=<valueN>]` search the
   submissions entries using metadata fields. Search parameters can be passed multiple times to act as OR values. All
@@ -328,13 +323,12 @@ falocalrepo database search-users json=true folders=%gallery%
   are printed as a list of objects in JSON format. If `<columns>` is passed, then the objects printed with the JSON
   option will only contain those fields.
 
-```
-falocalrepo database search-submissions tags=%|cat|%|mouse|% date=2020-% category=%artwork% order="AUTHOR" order="ID"
-```
-
-```
-falocalrepo database search-submissions json=true columns=id,author,title author='CatArtist' tags=%|cat|% tags=%|mouse|% date=2020-% category=%artwork%
-```
+>```
+>falocalrepo database search-submissions tags=%|cat|%|mouse|% date=2020-% category=%artwork% order="AUTHOR" order="ID"
+>```
+>```
+>falocalrepo database search-submissions json=true columns=id,author,title author='CatArtist' tags=%|cat|% tags=%|mouse|% date=2020-% category=%artwork%
+>```
 
 * `search-journals [json=<json>] [columns=<columns>] [<param1>=<value1>] ... [<paramN>=<valueN>]` search the journals
   entries using metadata fields. Search parameters can be passed multiple times to act as OR values. All columns of the
@@ -343,13 +337,12 @@ falocalrepo database search-submissions json=true columns=id,author,title author
   objects in JSON format. If `<columns>` is passed, then the objects printed with the JSON option will only contain
   those fields.
 
-```
-falocalrepo database search-journals date=2020-% author=CatArtist order="ID DESC"
-```
-
-```
-falocalrepo database search-journals json=true columns=id,author,title date=2020-% date=2019-% content=%commission%
-```
+>```
+>falocalrepo database search-journals date=2020-% author=CatArtist order="ID DESC"
+>```
+>```
+>falocalrepo database search-journals json=true columns=id,author,title date=2020-% date=2019-% content=%commission%
+>```
 
 * `add-user <param1>=<value1> ... <paramN>=<valueN>` add a user to the database manually. If the user is already
   present, the `folders` parameter will overwrite the existing value if given. The following parameters are necessary
@@ -358,9 +351,9 @@ falocalrepo database search-journals json=true columns=id,author,title date=2020
       The following parameters are optional:
     * `folders`
 
-```
-falocalrepo database add-user username=tom folders=gallery,scraps
-```
+>```
+>falocalrepo database add-user username=tom folders=gallery,scraps
+>```
 
 * `add-submission <param1>=<value1> ... <paramN>=<valueN>` add a submission to the database manually. The submission
   file is not downloaded and can instead be provided with the extra parameter `file_local_url`. The following parameters
@@ -381,12 +374,12 @@ falocalrepo database add-user username=tom folders=gallery,scraps
     * `file_url` the url of the submission file, not used to download the file
     * `file_local_url` if provided, take the submission file from this path and put it into the database
 
-```
-falocalrepo database add-submission id=12345678 'title=cat & mouse' author=CartoonArtist \
-    date=2020-08-09 category=Artwork 'species=Unspecified / Any' gender=Any rating=General type=image \
-    tags=cat,mouse,cartoon 'description=There once were a cat named Tom and a mouse named Jerry.' \
-    'file_url=https://remote.url/to/submission.file' file_local_url=path/to/submission.file
-```
+>```
+>falocalrepo database add-submission id=12345678 'title=cat & mouse' author=CartoonArtist \
+>    date=2020-08-09 category=Artwork 'species=Unspecified / Any' gender=Any rating=General type=image \
+>    tags=cat,mouse,cartoon 'description=There once were a cat named Tom and a mouse named Jerry.' \
+>    'file_url=https://remote.url/to/submission.file' file_local_url=path/to/submission.file
+>```
 
 * `add-journal <param1>=<value1> ... <paramN>=<valueN>` add a journal to the database manually. The following parameters
   are necessary for a journal entry to be accepted:
@@ -397,36 +390,36 @@ falocalrepo database add-submission id=12345678 'title=cat & mouse' author=Carto
       The following parameters are optional:
     * `content` the body of the journal
 
-```
-falocalrepo database add-journal id=12345678 title="An Update" author=CartoonArtist \
-    date=2020-08-09 content="$(cat journal.html)"
-```
+>```
+>falocalrepo database add-journal id=12345678 title="An Update" author=CartoonArtist \
+>    date=2020-08-09 content="$(cat journal.html)"
+>```
 
 * `remove-users <user1> ... [<userN>]` remove specific users from the database.
 
-```
-falocalrepo database remove-users jerry
-```
+>```
+>falocalrepo database remove-users jerry
+>```
 
 * `remove-submissions <id1> ... [<idN>]` remove specific submissions from the database.
 
-```
-falocalrepo database remove-submissions 12345678 13572468 87651234
-```
+>```
+>falocalrepo database remove-submissions 12345678 13572468 87651234
+>```
 
 * `remove-journals <id1> ... [<idN>]` remove specific journals from the database.
 
-```
-falocalrepo database remove-journals 123456 135724 876512
-```
+>```
+>falocalrepo database remove-journals 123456 135724 876512
+>```
 
 * `server [host=<host>] [port=<port>]` starts a server at `<host>:<port>` to navigate the database
   using `falocalrepo-server`. Defaults to `0.0.0.0:8080`.
   See [falocalrepo-server](https://pypi.org/project/falocalrepo-server) for more details on usage.
 
-```
-falocalrepo database server host=127.0.0.1 port=5000
-```
+>```
+>falocalrepo database server host=127.0.0.1 port=5000
+>```
 
 * `merge <path> [<table1>.<param1>=<value1> ... <tableN>.<paramN>=<valueN>]` Merge selected entries from a second
   database to the main database (the one opened with the program). To select entries, use the same parameters as the
@@ -435,19 +428,17 @@ falocalrepo database server host=127.0.0.1 port=5000
   database entries are copied. If submissions entries are selected, their files are copied to the files' folder of the
   main database.
 
-```
-falocalrepo database merge ~/Documents/FA.backup/A/FA.db users.username=a% \
-    submissions.author=a% journals.author=a%
-```
-
-```
-falocalrepo database merge ~/Documents/FA2020/FA.db submissions.date=2020-% \
-    journals.date=2020-%
-```
-
-```
-falocalrepo database merge ~/Documents/FA.backup/FA.db
-```
+>```
+>falocalrepo database merge ~/Documents/FA.backup/A/FA.db users.username=a% \
+>    submissions.author=a% journals.author=a%
+>```
+>```
+>falocalrepo database merge ~/Documents/FA2020/FA.db submissions.date=2020-% \
+>    journals.date=2020-%
+>```
+>```
+>falocalrepo database merge ~/Documents/FA.backup/FA.db
+>```
 
 * `copy <path> [<table1>.<param1>=<value1> ... <tableN>.<paramN>=<valueN>]` Copy selected entries to a new or existing
   database. To select entries, use the same parameters as the search commands precede by a table name. Search parameters
@@ -455,19 +446,17 @@ falocalrepo database merge ~/Documents/FA.backup/FA.db
   lowercase. If no parameters are passed then all the database entries are copied. If submissions entries are selected,
   their files are copied to the files' folder of the target database.
 
-```
-falocalrepo database copy ~/Documents/FA.backup/A/FA.db users.username=a% \
-    submissions.author=a% journals.author=a%
-```
-
-```
-falocalrepo database copy ~/Documents/FA2020/FA.db submissions.date=2020-% \
-    journals.date=2020-%
-```
-
-```
-falocalrepo database copy ~/Documents/FA.backup/FA.db
-```
+>```
+>falocalrepo database copy ~/Documents/FA.backup/A/FA.db users.username=a% \
+>    submissions.author=a% journals.author=a%
+>```
+>```
+>falocalrepo database copy ~/Documents/FA2020/FA.db submissions.date=2020-% \
+>    journals.date=2020-%
+>```
+>```
+>falocalrepo database copy ~/Documents/FA.backup/FA.db
+>```
 
 * `clean` clean the database using the SQLite [VACUUM](https://www.sqlite.org/lang_vacuum.html) function. Requires no
   arguments.
