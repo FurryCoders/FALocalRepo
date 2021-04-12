@@ -788,17 +788,29 @@ def database_server(db: FADatabase, *args: str):
 def database_merge(db: FADatabase, *args: str):
     """
     USAGE
-        falocalrepo database merge <path>
+        falocalrepo database merge <path> [<table1>.<param1>=<value1> ...
+                    <tableN>.<paramN>=<valueN>]
 
     ARGUMENTS
         <path>  Path to second database file
+        <table> One of users, submissions, journals
+        <param> Search parameter
+        <value> Value of the parameter
 
     DESCRIPTION
-        Merge (or create) the database in the current folder with a second database
-        located at 'path'.
+        Merge selected entries from a second database to the main database (the one
+        opened with the program). To select entries, use the same parameters as the
+        search commands precede by a table name. Search parameters can be passed
+        multiple times to act as OR values. All columns of the entries table are
+        supported. Parameters can be lowercase. If no parameters are passed then all
+        the database entries are copied. If submissions entries are selected, their
+        files are copied to the files' folder of the main database.
 
     EXAMPLES
-        falocalrepo database merge ~/Documents/FA/FA.db
+        falocalrepo database merge ~/Documents/FA.backup/A/FA.db users.username=a% \\
+            submissions.author=a% journals.author=a%
+        falocalrepo database merge ~/Documents/FA2020/FA.db \\
+            submissions.date=2020-% journals.date=2020-%
     """
 
     if len(args) != 1:
