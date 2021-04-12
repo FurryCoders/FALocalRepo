@@ -8,8 +8,10 @@ from os.path import join
 from os.path import split
 from re import match
 from sys import stderr
+from typing import Any
 from typing import Callable
 from typing import Iterable
+from typing import Optional
 from typing import Union
 
 from faapi import __version__ as __faapi_version__
@@ -785,6 +787,26 @@ def database_server(db: FADatabase, *args: str):
     print()
 
 
+def database_merge_copy(db: FADatabase, merge: bool = True, *args):
+    if not args:
+        raise MalformedCommand("copy needs at least a database argument")
+
+    opts = parameters_multi(args[1:])
+    usrs_opts: dict[str, list[str]] = {m.group(1): v for k, v in opts.items() if (m := match(r"users\.(.+)", k))}
+    subs_opts: dict[str, list[str]] = {m.group(1): v for k, v in opts.items() if (m := match(r"submissions\.(.+)", k))}
+    jrns_opts: dict[str, list[str]] = {m.group(1): v for k, v in opts.items() if (m := match(r"journals\.(.+)", k))}
+
+    with FADatabase(args[0]) as db2:
+        print(f"{'Merging with database' if merge else 'Copying entries to'} {db2.database_path}...")
+        cursors: list[FADatabaseCursor] = []
+        cursors.append((db2 if merge else db).users.select(usrs_opts, like=True)) if usrs_opts else None
+        cursors.append((db2 if merge else db).submissions.select(subs_opts, like=True)) if subs_opts else None
+        cursors.append((db2 if merge else db).journals.select(jrns_opts, like=True)) if jrns_opts else None
+        db.merge(db2, *cursors) if merge else db.copy(db2, *cursors)
+        db.commit()
+        print("Done")
+
+
 def database_merge(db: FADatabase, *args: str):
     """
     USAGE
@@ -814,15 +836,7 @@ def database_merge(db: FADatabase, *args: str):
         falocalrepo database merge ~/Documents/FA.backup/FA.db
     """
 
-    if len(args) != 1:
-        raise MalformedCommand("merge needs one argument")
-    elif not isfile(args[0]):
-        raise FileNotFoundError(f"No such file or directory: '{args[0]}'")
-    with FADatabase(args[0]) as db2:
-        print(f"Merging with database {db2.database_path}...")
-        db.merge(db2)
-        db.commit()
-        print("Done")
+    database_merge_copy(db, True, *args)
 
 
 def database_copy(db: FADatabase, *args: str):
@@ -854,23 +868,7 @@ def database_copy(db: FADatabase, *args: str):
         falocalrepo database copy ~/Documents/FA.backup/FA.db
     """
 
-    if not args:
-        raise MalformedCommand("copy needs at least a database argument")
-
-    opts = parameters_multi(args[1:])
-    usrs_opts: dict[str, list[str]] = {m.group(1): v for k, v in opts.items() if (m := match(r"users\.(.+)", k))}
-    subs_opts: dict[str, list[str]] = {m.group(1): v for k, v in opts.items() if (m := match(r"submissions\.(.+)", k))}
-    jrns_opts: dict[str, list[str]] = {m.group(1): v for k, v in opts.items() if (m := match(r"journals\.(.+)", k))}
-
-    with FADatabase(args[0]) as db2:
-        print(f"Copying entries to {db2.database_path}...")
-        cursors: list[FADatabaseCursor] = []
-        cursors.append(db.users.select(usrs_opts, like=True)) if usrs_opts else None
-        cursors.append(db.submissions.select(subs_opts, like=True)) if subs_opts else None
-        cursors.append(db.journals.select(jrns_opts, like=True)) if jrns_opts else None
-        db.copy(db2, *cursors)
-        db2.commit()
-        print("Done")
+    database_merge_copy(db, False, *args)
 
 
 def database_clean(db: FADatabase, *_rest):
