@@ -445,6 +445,10 @@ falocalrepo database copy ~/Documents/FA2020/FA.db submissions.date=2020-% \
     journals.date=2020-%
 ```
 
+```
+falocalrepo database merge ~/Documents/FA.backup/FA.db
+```
+
 * `copy <path> [<table1>.<param1>=<value1> ... <tableN>.<paramN>=<valueN>]` Copy selected entries to a new or existing
   database. To select entries, use the same parameters as the search commands precede by a table name. Search parameters
   can be passed multiple times to act as OR values. All columns of the entries table are supported. Parameters can be
@@ -459,6 +463,10 @@ falocalrepo database copy ~/Documents/FA.backup/A/FA.db users.username=a% \
 ```
 falocalrepo database copy ~/Documents/FA2020/FA.db submissions.date=2020-% \
     journals.date=2020-%
+```
+
+```
+falocalrepo database copy ~/Documents/FA.backup/FA.db
 ```
 
 * `clean` clean the database using the SQLite [VACUUM](https://www.sqlite.org/lang_vacuum.html) function. Requires no

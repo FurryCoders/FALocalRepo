@@ -811,6 +811,7 @@ def database_merge(db: FADatabase, *args: str):
             submissions.author=a% journals.author=a%
         falocalrepo database merge ~/Documents/FA2020/FA.db \\
             submissions.date=2020-% journals.date=2020-%
+        falocalrepo database merge ~/Documents/FA.backup/FA.db
     """
 
     if len(args) != 1:
@@ -850,6 +851,7 @@ def database_copy(db: FADatabase, *args: str):
             submissions.author=a% journals.author=a%
         falocalrepo database copy ~/Documents/FA2020/FA.db submissions.date=2020-% \\
             journals.date=2020-%
+        falocalrepo database copy ~/Documents/FA.backup/FA.db
     """
 
     if not args:
