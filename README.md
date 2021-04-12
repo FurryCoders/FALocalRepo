@@ -436,12 +436,12 @@ falocalrepo database server host=127.0.0.1 port=5000
   main database.
 
 ```
-falocalrepo database copy ~/Documents/FA.backup/A/FA.db users.username=a% \
+falocalrepo database merge ~/Documents/FA.backup/A/FA.db users.username=a% \
     submissions.author=a% journals.author=a%
 ```
 
 ```
-falocalrepo database copy ~/Documents/FA2020/FA.db submissions.date=2020-% \
+falocalrepo database merge ~/Documents/FA2020/FA.db submissions.date=2020-% \
     journals.date=2020-%
 ```
 
