@@ -1,5 +1,12 @@
 # Changelog
 
+## 3.22.1
+
+### Changes
+
+* falocalrepo-database dependency set to \~4.14.0
+* `database merge` command supports selectors like `database copy`
+
 ## 3.22.0
 
 ### Changes
