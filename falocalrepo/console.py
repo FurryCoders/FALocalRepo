@@ -841,7 +841,9 @@ def database_copy(db: FADatabase, *args: str):
         the same parameters as the search commands precede by a table name. Search
         parameters can be passed multiple times to act as OR values. All columns of
         the entries table are supported. Parameters can be lowercase. If no
-        parameters are passed then all the database entries are copied.
+        parameters are passed then all the database entries are copied. If
+        submissions entries are selected, their files are copied to the files'
+        folder of the target database.
 
     EXAMPLES
         falocalrepo database copy ~/Documents/FA.backup/A/FA.db users.username=a% \\
