@@ -103,7 +103,7 @@ To set the cookies use the `config cookies` command. See [#Configuration](#confi
 
 ## Usage
 
-> **How to Read Usage Instructions**
+>**How to Read Usage Instructions**
 > * `command` a static command keyword
 > * `<arg>` `<param>` `<value>` an argument, parameter, value, etc... that must be provided to a command
 > * `[<arg>]` an optional argument that can be omitted
@@ -344,55 +344,59 @@ Available operations are:
 >falocalrepo database search-journals json=true columns=id,author,title date=2020-% date=2019-% content=%commission%
 >```
 
-* `add-user <param1>=<value1> ... <paramN>=<valueN>` add a user to the database manually. If the user is already
-  present, the `folders` parameter will overwrite the existing value if given. The following parameters are necessary
-  for a user entry to be accepted:
+* `add-user <json>` Add or replace a user entry into the database using metadata from a JSON file. If the user already
+  exists in the database, fields may be omitted from the JSON, except for the ID. Omitted fields will not be replaced in
+  the database and will remain as they are. The following fields are supported:
     * `username`<br>
-      The following parameters are optional:
+      The following fields are optional:
     * `folders`
 
 >```
->falocalrepo database add-user username=tom folders=gallery,scraps
+>falocalrepo database add-user ./user.json
 >```
 
-* `add-submission <param1>=<value1> ... <paramN>=<valueN>` add a submission to the database manually. The submission
-  file is not downloaded and can instead be provided with the extra parameter `file_local_url`. The following parameters
-  are necessary for a submission entry to be accepted:
-    * `id` submission id
+* `add-submission <json> [file=<file>] [thumb=<thumb>]` Add or replace a submission entry into the database using
+  metadata from a JSON file. If the submission already exists in the database, fields may be omitted from the JSON,
+  except for the ID. Omitted fields will not be replaced in the database and will remain as they are. The
+  optional `<file>` and `<thumb>` parameters allow adding or replacing the submission file and thumbnail respectively.
+  The following fields are supported:
+    * `id`
     * `title`
     * `author`
     * `date` date in the format YYYY-MM-DD
+    * `description`
     * `category`
     * `species`
     * `gender`
     * `rating`
-    * `type` image, text, music, or flash
-    * `folder` gallery or scraps<br>
-      The following parameters are optional:
-    * `tags` comma-separated tags
-    * `description`
-    * `file_url` the url of the submission file, not used to download the file
-    * `file_local_url` if provided, take the submission file from this path and put it into the database
+    * `type` image, text, music, or flash * 'folder' gallery or scraps
+    * `fileurl` the remote URL of the submission file<br>
+      The following fields are optional:
+    * `tags` list of tags, if omitted it defaults to existing entry or empty
+    * `favorite` list of users that faved the submission, if omitted it defaults to existing entry or empty
+    * `mentions` list of mentioned users, if omitted it defaults to existing entry or mentions are extracted from the
+      description
+    * `userupdate` 1 if the submission is downloaded as part of a user gallery/scraps else 0, if omitted it defaults to
+      entry or 0
 
 >```
->falocalrepo database add-submission id=12345678 'title=cat & mouse' author=CartoonArtist \
->    date=2020-08-09 category=Artwork 'species=Unspecified / Any' gender=Any rating=General type=image \
->    tags=cat,mouse,cartoon 'description=There once were a cat named Tom and a mouse named Jerry.' \
->    'file_url=https://remote.url/to/submission.file' file_local_url=path/to/submission.file
+>falocalrepo database add-submission add-submission ./submission/metadata.json \
+>    file=./submission/submission.pdf thumb=./submission/thumbnail.jpg
 >```
 
-* `add-journal <param1>=<value1> ... <paramN>=<valueN>` add a journal to the database manually. The following parameters
-  are necessary for a journal entry to be accepted:
-    * `id` journal id
+* `add-journal <json>` Add or replace a journal entry into the database using metadata from a JSON file. If the journal
+  already exists in the database, fields may be omitted from the JSON, except for the ID. Omitted fields will not be
+  replaced in the database and will remain as they are. The following fields are supported:
+    * `id`
     * `title`
     * `author`
-    * `date` date in the format YYYY-MM-DD<br>
-      The following parameters are optional:
-    * `content` the body of the journal
+    * `date` date in the format YYYY-MM-DD * 'content' the body of the journal<br>
+      The following fields are optional:
+    * `mentions` list of mentioned users, if omitted it defaults to existing entry or mentions are extracted from the
+      content
 
 >```
->falocalrepo database add-journal id=12345678 title="An Update" author=CartoonArtist \
->    date=2020-08-09 content="$(cat journal.html)"
+>falocalrepo database add-journal ./journal.json"
 >```
 
 * `remove-users <user1> ... [<userN>]` remove specific users from the database.
@@ -470,10 +474,10 @@ from a submission page.
 
 To store all this information, the database uses four tables: `SETTINGS`, `USERS`, `SUBMISSIONS` and `JOURNALS`.
 
-> **How Lists Are Stored**<br>
-> Some fields in the database table contain lists of items. These are stored as strings, with each item surrounded by
-> bars (`|`). This allows to properly separate and search individual items regardless of their position in the list.<br>
-> `|item1||item2|`<br>
+>**How Lists Are Stored**<br>
+>Some fields in the database table contain lists of items. These are stored as strings, with each item surrounded by
+>bars (`|`). This allows to properly separate and search individual items regardless of their position in the list.<br>
+>`|item1||item2|`<br>
 
 ### Settings
 
