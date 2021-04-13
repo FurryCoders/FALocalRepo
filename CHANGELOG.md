@@ -1,11 +1,5 @@
 # Changelog
 
-## 3.22.2
-
-### Fixes
-
-* Fix errors and invalid examples in help messages
-
 ## 3.22.1
 
 ### Changes
