@@ -98,7 +98,7 @@ def make_submission(db: FADatabase, data: Entry, file: str = None, thumb: str = 
 
     data["id"] = int(data["id"])
     data["tags"] = list(filter(bool, map(str.strip, data.get("tags", []))))
-    data["tags"] = list(filter(bool, map(clean_username, data.get("favorite", []))))
+    data["favorite"] = list(filter(bool, map(clean_username, data.get("favorite", []))))
     data["mentions"] = sorted(set(filter(bool, map(
         clean_username,
         data.get("mentions", findall(
