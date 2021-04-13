@@ -4,12 +4,13 @@ from re import findall
 from re import sub as re_sub
 from shutil import move
 from typing import Optional
-from typing import Union
 
 from faapi import Journal
 from faapi import Submission
+from falocalrepo_database import FADatabase
 from falocalrepo_database import FADatabaseTable
 from falocalrepo_database.database import Entry
+from falocalrepo_database.database import guess_extension
 from requests import get as req_get
 
 
@@ -76,79 +77,58 @@ def move_files_folder(folder_old: str, folder_new: str):
         print("Done")
 
 
-def make_journal(id_: Union[int, str], author: str,
-                 title: str, date: str, content: str = ""
-                 ) -> Journal:
-    id_ = int(id_)
-    assert id_ > 0, "id must be greater than 0"
-    assert isinstance(author, str) and author, "author must be of type str and not empty"
-    assert isinstance(title, str) and title, "title must be of type str and not empty"
-    assert isinstance(date, str) and date, "date must be of type str and not empty"
-    assert isinstance(content, str), "content must be of type str"
+def make_journal(data: Entry, db: FADatabase) -> Journal:
+    data = {**{k.lower(): v for k, v in (db.journals[int(data["id"])] or {}).items()},
+            **{k.lower(): v for k, v in data.items()}}
+    assert isinstance(data.get("mentions", []), list), "mentions field needs to be of type list"
 
     journal = Journal()
-
-    journal.id = id_
-    journal.author = author
-    journal.title = title
-    journal.date = date
-    journal.content = content
-    journal.mentions = sorted(set(filter(bool, map(clean_username, findall(
-        r'<a[^>]*href="(?:(?:https?://)?(?:www.)?furaffinity.net)?/user/([^/">]+)"',
-        content)))))
+    journal.id = int(data["id"])
+    journal.author = data["author"]
+    journal.title = data["title"]
+    journal.date = data["date"]
+    journal.content = data["content"]
+    journal.mentions = sorted(set(filter(bool, map(
+        clean_username,
+        data.get("mentions", findall(
+            r'<a[^>]*href="(?:(?:https?://)?(?:www.)?furaffinity.net)?/user/([^/">]+)/?"',
+            journal.content))))))
 
     return journal
 
 
-def make_submission(id_: Union[int, str], author: str, title: str,
-                    date: str, category: str, species: str,
-                    gender: str, rating: str, type_: str,
-                    tags: str = "", description: str = "",
-                    file_url: str = "", file_local_url: str = "",
-                    folder: str = ""
-                    ) -> tuple[Submission, Optional[bytes]]:
-    id_ = int(id_)
-    assert id_ > 0, "id must be greater than 0"
-    assert isinstance(author, str) and author, "author must be of type str and not empty"
-    assert isinstance(title, str) and title, "title must be of type str and not empty"
-    assert isinstance(date, str) and date, "date must be of type str and not empty"
-    assert isinstance(category, str) and category, "category must be of type str and not empty"
-    assert isinstance(species, str) and species, "species must be of type str and not empty"
-    assert isinstance(gender, str) and gender, "gender must be of type str and not empty"
-    assert isinstance(rating, str) and rating, "rating must be of type str and not empty"
-    assert isinstance(type_, str) and type_, "type must be of type str and not empty"
-    assert type_ in ("image", "text", "music", "flash")
-    assert isinstance(tags, str), "tags must be of type str"
-    assert isinstance(description, str), "description must be of type str"
-    assert isinstance(file_url, str), "file_url must be of type str"
-    assert isinstance(file_local_url, str), "file_local_url must be of type str"
-    assert isinstance(folder, str), "folder must be of type str"
+def make_submission(data: Entry, db: FADatabase, file: str = None, thumb: str = None
+                    ) -> tuple[Submission, Optional[bytes], Optional[bytes]]:
+    data = {**{k.lower(): v for k, v in (db.submissions[int(data["id"])] or {}).items()},
+            **{k.lower(): v for k, v in data.items()}}
+    assert isinstance(data.get("tags", []), list), "tags field needs to be of type list"
+    assert isinstance(data.get("mentions", []), list), "mentions field needs to be of type list"
 
     sub: Submission = Submission()
-    sub_file: Optional[bytes] = None
+    sub_file: Optional[bytes] = open(file, "rb").read() if file else None
+    sub_thumb: Optional[bytes] = open(thumb, "rb").read() if thumb else None
+    assert sub_thumb is None or guess_extension(sub_thumb) == "jpg", "Thumbnail must be in JPEG format"
 
-    sub.id = id_
-    sub.title = title
-    sub.author = author
-    sub.date = date
-    sub.tags = sorted(filter(bool, map(str.strip, tags.split(","))))
-    sub.category = category
-    sub.species = species
-    sub.gender = gender
-    sub.rating = rating
-    sub.type = type_
-    sub.description = description
-    sub.file_url = file_url
-    sub.folder = folder
-    sub.mentions = sorted(set(filter(bool, map(clean_username, findall(
-        r'<a[^>]*href="(?:(?:https?://)?(?:www.)?furaffinity.net)?/user/([^/">]+)"',
-        description)))))
+    sub.id = int(data["id"])
+    sub.author = data["author"]
+    sub.title = data["title"]
+    sub.date = data["date"]
+    sub.tags = sorted(filter(bool, map(str.strip, data.get("tags", []))))
+    sub.category = data["category"]
+    sub.species = data["species"]
+    sub.gender = data["gender"]
+    sub.rating = data["rating"]
+    sub.type = data["type"]
+    sub.description = data["description"]
+    sub.file_url = data["file_url"]
+    sub.folder = data["folder"]
+    sub.mentions = sorted(set(filter(bool, map(
+        clean_username,
+        data.get("mentions", findall(
+            r'<a[^>]*href="(?:(?:https?://)?(?:www.)?furaffinity.net)?/user/([^/">]+)/?"',
+            sub.description))))))
 
-    if file_local_url:
-        with open(file_local_url, "rb") as f:
-            sub_file = f.read()
-
-    return sub, sub_file
+    return sub, sub_file, sub_thumb
 
 
 def search(table: FADatabaseTable, parameters: dict[str, list[str]], columns: list[str] = None) -> list[Entry]:

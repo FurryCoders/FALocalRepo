@@ -1,6 +1,7 @@
 from datetime import datetime
 from inspect import cleandoc
 from json import dumps
+from json import load
 from os import environ
 from os.path import getsize
 from os.path import join
@@ -552,22 +553,22 @@ def database_search_journals(db: FADatabase, *args: str):
 def database_add_user(db: FADatabase, *args):
     """
     USAGE
-        falocalrepo database add-user <param1>=<value1> ... <paramN>=<valueN>
+        falocalrepo database add-user <json>
 
     ARGUMENTS
-        <param>     Make parameter
-        <value>     Value of the parameter
+        <json>  Path to a JSON file containing the user metadata
 
     DESCRIPTION
-        Add a user to the database manually. If the user is already present, the
-        folders parameter, if given, will overwrite the existing value. The
-        following parameters are necessary for a user entry to be accepted:
+        Add or replace a user entry into the database using metadata from a JSON
+        file. If the user already exists in the database, fields may be omitted from
+        the JSON, except for the ID. Omitted fields will not be replaced in the
+        database and will remain as they are. The following fields are supported:
             * 'username'
-        The following parameters are optional:
+        The following fields are optional:
             * 'folders'
 
     EXAMPLES
-        falocalrepo database add-user username=tom folders=gallery,scraps
+        falocalrepo database add-user ./user.json
     """
 
     make_params: dict[str, str] = parameters(args)
@@ -585,83 +586,75 @@ def database_add_user(db: FADatabase, *args):
 def database_add_submission(db: FADatabase, *args: str):
     """
     USAGE
-        falocalrepo database add-submissions <param1>=<value1> ... <paramN>=<valueN>
+        falocalrepo database add-submissions <json> [file=<file>] [thumb=<thumb>]
 
     ARGUMENTS
-        <param>     Make parameter
-        <value>     Value of the parameter
+        <json>  Path to a JSON file containing the submission metadata
+        <file>  Path to new file
+        <thumb> Path to new thumbnail
 
     DESCRIPTION
-        Add a submission to the database manually. The submission file is not
-        downloaded and can instead be provided with the extra parameter
-        'file_local_url'. The following parameters are necessary for a submission
-        entry to be accepted:
+        Add or replace a submission entry into the database using metadata from a
+        JSON file. If the submission already exists in the database, fields may be
+        omitted from the JSON, except for the ID. Omitted fields will not be
+        replaced in the database and will remain as they are. The optional <file>
+        and <thumb> parameters allow to add or replace the submission file and
+        thumbnail respectively. The following fields are supported:
             * 'id'
             * 'title'
             * 'author'
             * 'date' date in the format YYYY-MM-DD
+            * 'description'
             * 'category'
             * 'species'
             * 'gender'
             * 'rating'
             * 'type' image, text, music, or flash
             * 'folder' gallery or scraps
-        The following parameters are optional:
-            * 'tags' comma-separated tags
-            * 'description'
-            * 'file_url' the url of the submission file
-            * 'file_local_url' if provided, take the submission file from this path
-                and put it into the database
+        The following fields are optional:
+            * 'tags' list of tags, if omitted it defaults to existing entry or empty
+            * 'mentions' list of mentioned users, if omitted it defaults to existing
+                entry or mentions are extracted from the description
 
     EXAMPLES
-        falocalrepo database add-submission id=12345678 title='cat & mouse' \\
-            author=CartoonArtist date=2020-08-09 category=Artwork \\
-            species='Unspecified / Any' gender=Any rating=General type=image \\
-            tags=cat,mouse,cartoon description="$(cat description.html)" \\
-            file_url='http://remote.url/to/submission.file' \\
-            file_local_url='path/to/submission.file' folder=gallery
+        falocalrepo database add-submission ./submission/metadata.json \\
+            file=./submission/submission.pdf thumb=./submission/thumbnail.jpg
+        falocalrepo database add-submission ./submission/metadata.json
     """
 
-    make_params = parameters(args)
-    make_params["id_"] = make_params.get("id", "")
-    make_params["type_"] = make_params.get("type", "")
-    if "id" in make_params:
-        del make_params["id"]
-    if "type" in make_params:
-        del make_params["type_"]
-    sub, sub_file = make_submission(**make_params)
-    save_submission(db, sub, sub_file, None, user_update=False)
+    data: dict = load(open(args[0]))
+    opts: dict = parameters(args[1:])
+    save_submission(db, *make_submission(data, db, opts.get("file", None), opts.get("thumbnail", None)))
 
 
 def database_add_journal(db: FADatabase, *args: str):
     """
     USAGE
-        falocalrepo database add-journal <param1>=<value1> ... <paramN>=<valueN>
+        falocalrepo database add-journal <json>
 
     ARGUMENTS
-        <param>     Make parameter
-        <value>     Value of the parameter
+        <json>  Path to a JSON file containing the journal metadata
 
     DESCRIPTION
-        Add a journal to the database manually. The following parameters are
-        necessary for a journal entry to be accepted:
+        Add or replace a journal entry into the database using metadata from a JSON
+        file. If the journal already exists in the database, fields may be omitted
+        from the JSON, except for the ID. Omitted fields will not be replaced in the
+        database and will remain as they are. The following fields are supported:
             * 'id'
             * 'title'
             * 'author'
             * 'date' date in the format YYYY-MM-DD
-        The following parameters are optional:
             * 'content' the body of the journal
+        The following fields are optional:
+             * 'mentions' list of mentioned users, if omitted it defaults to existing
+                entry or mentions are extracted from the content
 
     EXAMPLES
-        falocalrepo database add-journal id=12345678 title="An Update" \\
-            author=CartoonArtist date=2020-08-09 content="$(cat journal.html)"
+        falocalrepo database add-journal ./journal.json"
     """
 
-    make_params = parameters(args)
-    make_params["id_"] = make_params.get("id", "")
-    if "id" in make_params:
-        del make_params["id"]
-    save_journal(db, make_journal(**make_params), user_update=False)
+    data: dict = load(open(args[0]))
+    save_journal(db, make_journal(data, db))
 
 
 def database_remove_users(db: FADatabase, *args: str):
