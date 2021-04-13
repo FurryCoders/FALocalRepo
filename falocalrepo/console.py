@@ -622,7 +622,6 @@ def database_add_submission(db: FADatabase, *args: str):
     EXAMPLES
         falocalrepo database add-submission ./submission/metadata.json \\
             file=./submission/submission.pdf thumb=./submission/thumbnail.jpg
-        falocalrepo database add-submission ./submission/metadata.json
     """
 
     data: dict = load(open(args[0]))
