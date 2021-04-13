@@ -1,5 +1,16 @@
 # Changelog
 
+## 3.23.0
+
+### Changes
+
+* falocalrepo-database dependency set to \~4.15.0
+* `database add-user`, `add-submission`, and `add-journal` commands now take metadata via JSON files
+
+### Fixes
+
+* Fix errors and invalid examples in help messages
+
 ## 3.22.1
 
 ### Changes
