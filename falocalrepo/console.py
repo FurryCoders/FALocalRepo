@@ -611,10 +611,15 @@ def database_add_submission(db: FADatabase, *args: str):
             * 'rating'
             * 'type' image, text, music, or flash
             * 'folder' gallery or scraps
+            * 'fileurl' the remote URL of the submission file
         The following fields are optional:
             * 'tags' list of tags, if omitted it defaults to existing entry or empty
+            * 'favorite' list of users that faved the submission, if omitted it
+                defaults to existing entry or empty
             * 'mentions' list of mentioned users, if omitted it defaults to existing
                 entry or mentions are extracted from the description
+            * 'userupdate' 1 if the submission is downloaded as part of a user
+                gallery/scraps else 0, if omitted it defaults to entry or 0
 
     EXAMPLES
         falocalrepo database add-submission ./submission/metadata.json \\
