@@ -3,7 +3,6 @@ from os.path import isdir
 from re import findall
 from re import sub as re_sub
 from shutil import move
-from typing import Optional
 
 from falocalrepo_database import FADatabase
 from falocalrepo_database import FADatabaseTable
@@ -95,19 +94,21 @@ def make_submission(db: FADatabase, data: Entry, file: str = None, thumb: str = 
             **{k.lower(): v for k, v in data.items()}}
     assert isinstance(data.get("tags", []), list), "tags field needs to be of type list"
     assert isinstance(data.get("mentions", []), list), "mentions field needs to be of type list"
-
-    sub_file: Optional[bytes] = open(file, "rb").read() if file else None
-    sub_thumb: Optional[bytes] = open(thumb, "rb").read() if thumb else None
-    assert sub_thumb is None or guess_extension(sub_thumb) == "jpg", "Thumbnail must be in JPEG format"
+    assert isinstance(data.get("favorite", []), list), "mentions field needs to be of type list"
 
     data["id"] = int(data["id"])
-    data["tags"] = sorted(filter(bool, map(str.strip, data.get("tags", []))))
-    data["tags"] = sorted(filter(bool, map(clean_username, data.get("favorite", []))))
+    data["tags"] = list(filter(bool, map(str.strip, data.get("tags", []))))
+    data["tags"] = list(filter(bool, map(clean_username, data.get("favorite", []))))
     data["mentions"] = sorted(set(filter(bool, map(
         clean_username,
         data.get("mentions", findall(
             r'<a[^>]*href="(?:(?:https?://)?(?:www.)?furaffinity.net)?/user/([^/">]+)/?"',
             str(data["description"])))))))
+
+    sub_file, sub_thumb = db.submissions.get_submission_files(data["id"])
+    sub_file = open(file, "rb").read() if file else sub_file
+    sub_thumb = open(thumb, "rb").read() if thumb else sub_thumb
+    assert sub_thumb is None or guess_extension(sub_thumb) == "jpg", "Thumbnail must be in JPEG format"
 
     db.submissions.save_submission(data, sub_file, sub_thumb)
 
