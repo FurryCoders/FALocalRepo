@@ -14,6 +14,7 @@ from typing import Union
 from faapi import __version__ as __faapi_version__
 from falocalrepo_database import FADatabase
 from falocalrepo_database import FADatabaseCursor
+from falocalrepo_database import FADatabaseTable
 from falocalrepo_database import __version__ as __database_version__
 from falocalrepo_server import __version__ as __server_version__
 from falocalrepo_server import server
@@ -474,10 +475,10 @@ def database_history(db: FADatabase):
         print(str(datetime.fromtimestamp(time)), command)
 
 
-def database_search_users(db: FADatabase, *args: str):
+def database_search(table: FADatabaseTable, print_func: Callable, *args: str):
     """
     USAGE
-        falocalrepo database search-users [json=<json>] [columns=<columns>]
+        falocalrepo database search-{0} [json=<json>] [columns=<columns>]
                     [<param1>=<value1>] ... [<paramN>=<valueN>]
 
     ARGUMENTS
@@ -487,48 +488,41 @@ def database_search_users(db: FADatabase, *args: str):
         <value>     Value of the parameter
 
     DESCRIPTION
-        Search the users entries using metadata fields. Search parameters can be
-        passed multiple times to act as OR values. All columns of the users table
-        are supported. Parameters can be lowercase. If no parameters are supplied, a
-        list of all users will be returned instead. If <json> is set to 'true', the
-        results are printed as a list of objects in JSON format. If <columns> is
-        passed, then the objects printed with the JSON option will only contain
-        those fields.
+        Search the {0} entries using metadata fields. Search parameters can
+        be passed multiple times to act as OR values. All columns of the {0}
+        table are supported. Parameters can be lowercase. If no parameters are
+        supplied, a list of all {0} will be returned instead. If <json> is
+        set to 'true', the results are printed as a list of objects in JSON format.
+        If <columns> is passed, then the objects printed with the JSON option will
+        only contain those fields.
+    """
+
+    opts = parameters_multi(args)
+    json, cols = opts.get("json", [None])[0] == "true", opts["columns"][0].split(",") if "columns" in opts else None
+    results: list[dict[str, Union[int, str]]] = search(table, opts, cols if cols and json else None)
+    if json:
+        print(dumps(results))
+    else:
+        print_func(results)
+        print(f"Found {len(results)} users")
+
+
+@docstring_parameter(database_search.__doc__.format("users"))
+def database_search_users(db: FADatabase, *args: str):
+    """
+    {0}
 
     EXAMPLES
         falocalrepo database search-users json=true folders=%gallery%
     """
 
-    opts = parameters_multi(args)
-    json, cols = opts.get("json", [None])[0] == "true", opts["columns"][0].split(",") if "columns" in opts else None
-    results: list[dict[str, Union[int, str]]] = search(db.users, opts, cols if cols and json else None)
-    if json:
-        print(dumps(results))
-    else:
-        print_users(results)
-        print(f"Found {len(results)} users")
+    database_search(db.users, print_users, *args)
 
 
+@docstring_parameter(database_search.__doc__.format("submissions"))
 def database_search_submissions(db: FADatabase, *args: str):
     """
-    USAGE
-        falocalrepo database search-submissions [json=<json>] [columns=<columns>]
-                    [<param1>=<value1>] ... [<paramN>=<valueN>]
-
-    ARGUMENTS
-        <json>      Set to 'true' to output metadata in JSON format
-        <columns>   Comma-separated list of columns to select, only active for JSON
-        <param>     Search parameter
-        <value>     Value of the parameter
-
-    DESCRIPTION
-        Search the submissions entries using metadata fields. Search parameters can
-        be passed multiple times to act as OR values. All columns of the submissions
-        table are supported. Parameters can be lowercase. If no parameters are
-        supplied, a list of all submissions will be returned instead. If <json> is
-        set to 'true', the results are printed as a list of objects in JSON format.
-        If <columns> is passed, then the objects printed with the JSON option will
-        only contain those fields.
+    {0}
 
     EXAMPLES
         falocalrepo database search-submissions tags=%|cat|%|mouse|% date=2020-% \\
@@ -537,36 +531,13 @@ def database_search_submissions(db: FADatabase, *args: str):
             tags=%|cat|% tags=%|mouse|% date=2020-% category=%artwork%
     """
 
-    opts = parameters_multi(args)
-    json, cols = opts.get("json", [None])[0] == "true", opts["columns"][0].split(",") if "columns" in opts else None
-    results: list[dict[str, Union[int, str]]] = search(db.submissions, opts, cols if cols and json else None)
-    if json:
-        print(dumps(results))
-    else:
-        print_items(results)
-        print(f"Found {len(results)} results")
+    database_search(db.submissions, print_items, *args)
 
 
+@docstring_parameter(database_search.__doc__.format("journals"))
 def database_search_journals(db: FADatabase, *args: str):
     """
-    USAGE
-        falocalrepo database search-journals [json=<json>] [columns=<columns>]
-                    [<param1>=<value1>] ... [<paramN>=<valueN>]
-
-    ARGUMENTS
-        <json>      Set to 'true' to output metadata in JSON format
-        <columns>   Comma-separated list of columns to select, only active for JSON
-        <param>     Search parameter
-        <value>     Value of the parameter
-
-    DESCRIPTION
-        Search the journals entries using metadata fields. Search parameters can
-        be passed multiple times to act as OR values. All columns of the journals
-        table are supported. Parameters can be lowercase. If no parameters are
-        supplied, a list of all journals will be returned instead. If <json> is set
-        to 'true', the results are printed as a list of objects in JSON format. If
-        <columns> is passed, then the objects printed with the JSON option will only
-        contain those fields.
+    {0}
 
     EXAMPLES
         falocalrepo database search-journals date=2020-% author=CatArtist \\
@@ -575,14 +546,7 @@ def database_search_journals(db: FADatabase, *args: str):
             date=2020-% date=2019-% content=%commission%
     """
 
-    opts = parameters_multi(args)
-    json, cols = opts.get("json", [None])[0] == "true", opts["columns"][0].split(",") if "columns" in opts else None
-    results: list[dict[str, Union[int, str]]] = search(db.journals, opts, cols if cols and json else None)
-    if json:
-        print(dumps(results))
-    else:
-        print_items(results)
-        print(f"Found {len(results)} results")
+    database_search(db.journals, print_items, *args)
 
 
 def database_add_user(db: FADatabase, *args):
