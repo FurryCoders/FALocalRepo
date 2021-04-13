@@ -104,6 +104,7 @@ def make_submission(db: FADatabase, data: Entry, file: str = None, thumb: str = 
         data.get("mentions", findall(
             r'<a[^>]*href="(?:(?:https?://)?(?:www.)?furaffinity.net)?/user/([^/">]+)/?"',
             str(data["description"])))))))
+    data["userupdate"] = int(data.get("userupdate", 0))
 
     sub_file, sub_thumb = db.submissions.get_submission_files(data["id"])
     sub_file = open(file, "rb").read() if file else sub_file
