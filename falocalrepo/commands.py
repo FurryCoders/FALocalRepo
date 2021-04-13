@@ -5,8 +5,6 @@ from re import sub as re_sub
 from shutil import move
 from typing import Optional
 
-from faapi import Journal
-from faapi import Submission
 from falocalrepo_database import FADatabase
 from falocalrepo_database import FADatabaseTable
 from falocalrepo_database.database import Entry
@@ -77,58 +75,41 @@ def move_files_folder(folder_old: str, folder_new: str):
         print("Done")
 
 
-def make_journal(data: Entry, db: FADatabase) -> Journal:
+def make_journal(db: FADatabase, data: Entry):
     data = {**{k.lower(): v for k, v in (db.journals[int(data["id"])] or {}).items()},
             **{k.lower(): v for k, v in data.items()}}
     assert isinstance(data.get("mentions", []), list), "mentions field needs to be of type list"
 
-    journal = Journal()
-    journal.id = int(data["id"])
-    journal.author = data["author"]
-    journal.title = data["title"]
-    journal.date = data["date"]
-    journal.content = data["content"]
-    journal.mentions = sorted(set(filter(bool, map(
+    data["id"] = int(data["id"])
+    data["mentions"] = sorted(set(filter(bool, map(
         clean_username,
         data.get("mentions", findall(
             r'<a[^>]*href="(?:(?:https?://)?(?:www.)?furaffinity.net)?/user/([^/">]+)/?"',
-            journal.content))))))
+            str(data["content"])))))))
 
-    return journal
+    db.journals.save_journal(data)
 
 
-def make_submission(data: Entry, db: FADatabase, file: str = None, thumb: str = None
-                    ) -> tuple[Submission, Optional[bytes], Optional[bytes]]:
+def make_submission(db: FADatabase, data: Entry, file: str = None, thumb: str = None):
     data = {**{k.lower(): v for k, v in (db.submissions[int(data["id"])] or {}).items()},
             **{k.lower(): v for k, v in data.items()}}
     assert isinstance(data.get("tags", []), list), "tags field needs to be of type list"
     assert isinstance(data.get("mentions", []), list), "mentions field needs to be of type list"
 
-    sub: Submission = Submission()
     sub_file: Optional[bytes] = open(file, "rb").read() if file else None
     sub_thumb: Optional[bytes] = open(thumb, "rb").read() if thumb else None
     assert sub_thumb is None or guess_extension(sub_thumb) == "jpg", "Thumbnail must be in JPEG format"
 
-    sub.id = int(data["id"])
-    sub.author = data["author"]
-    sub.title = data["title"]
-    sub.date = data["date"]
-    sub.tags = sorted(filter(bool, map(str.strip, data.get("tags", []))))
-    sub.category = data["category"]
-    sub.species = data["species"]
-    sub.gender = data["gender"]
-    sub.rating = data["rating"]
-    sub.type = data["type"]
-    sub.description = data["description"]
-    sub.file_url = data["file_url"]
-    sub.folder = data["folder"]
-    sub.mentions = sorted(set(filter(bool, map(
+    data["id"] = int(data["id"])
+    data["tags"] = sorted(filter(bool, map(str.strip, data.get("tags", []))))
+    data["tags"] = sorted(filter(bool, map(clean_username, data.get("favorite", []))))
+    data["mentions"] = sorted(set(filter(bool, map(
         clean_username,
         data.get("mentions", findall(
             r'<a[^>]*href="(?:(?:https?://)?(?:www.)?furaffinity.net)?/user/([^/">]+)/?"',
-            sub.description))))))
+            str(data["description"])))))))
 
-    return sub, sub_file, sub_thumb
+    db.submissions.save_submission(data, sub_file, sub_thumb)
 
 
 def search(table: FADatabaseTable, parameters: dict[str, list[str]], columns: list[str] = None) -> list[Entry]:

@@ -624,7 +624,7 @@ def database_add_submission(db: FADatabase, *args: str):
 
     data: dict = load(open(args[0]))
     opts: dict = parameters(args[1:])
-    save_submission(db, *make_submission(data, db, opts.get("file", None), opts.get("thumbnail", None)))
+    make_submission(db, data, opts.get("file", None), opts.get("thumbnail", None))
 
 
 def database_add_journal(db: FADatabase, *args: str):
@@ -654,7 +654,7 @@ def database_add_journal(db: FADatabase, *args: str):
     """
 
     data: dict = load(open(args[0]))
-    save_journal(db, make_journal(data, db))
+    make_journal(db, data)
 
 
 def database_remove_users(db: FADatabase, *args: str):
