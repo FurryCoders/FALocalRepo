@@ -75,8 +75,8 @@ def move_files_folder(folder_old: str, folder_new: str):
 
 
 def make_journal(db: FADatabase, data: Entry):
-    data = {**{k.lower(): v for k, v in (db.journals[int(data["id"])] or {}).items()},
-            **{k.lower(): v for k, v in data.items()}}
+    data = {k.lower(): v for k, v in data.items()}
+    data = {**{k.lower(): v for k, v in (db.submissions[int(data["id"])] or {}).items()}, **data}
     assert isinstance(data.get("mentions", []), list), "mentions field needs to be of type list"
 
     data["id"] = int(data["id"])
@@ -90,8 +90,8 @@ def make_journal(db: FADatabase, data: Entry):
 
 
 def make_submission(db: FADatabase, data: Entry, file: str = None, thumb: str = None):
-    data = {**{k.lower(): v for k, v in (db.submissions[int(data["id"])] or {}).items()},
-            **{k.lower(): v for k, v in data.items()}}
+    data = {k.lower(): v for k, v in data.items()}
+    data = {**{k.lower(): v for k, v in (db.submissions[int(data["id"])] or {}).items()}, **data}
     assert isinstance(data.get("tags", []), list), "tags field needs to be of type list"
     assert isinstance(data.get("mentions", []), list), "mentions field needs to be of type list"
     assert isinstance(data.get("favorite", []), list), "mentions field needs to be of type list"
