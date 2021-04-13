@@ -3,15 +3,12 @@ from inspect import cleandoc
 from json import dumps
 from os import environ
 from os.path import getsize
-from os.path import isfile
 from os.path import join
 from os.path import split
 from re import match
 from sys import stderr
-from typing import Any
 from typing import Callable
 from typing import Iterable
-from typing import Optional
 from typing import Union
 
 from faapi import __version__ as __faapi_version__
@@ -141,12 +138,9 @@ def help_(comm: str = "", op: str = "", *_rest) -> str:
         <command>       Command to get the help of
         <operation>     Command operation to get the help of
 
-    AVAILABLE COMMANDS
-        help            Display the manual of help
-        init            Display the manual of init
-        config          Display the manual of config
-        download        Display the manual of download
-        database        Display the manual of database
+    DESCRIPTION
+        Get help for a specific command or operation. If no command is passed
+        then a general help message is given instead.
     """
 
     f = {
@@ -193,11 +187,9 @@ def init(db: FADatabase):
         falocalrepo init
 
     DESCRIPTION
-        The init command initialises the database or, if one is already present,
-        updates to a new version - if available - and then exits.
-
-        It can be used to create the database and then manually edit it, or to
-        update it to a new version without calling other commands.
+        The init command initialises the database and then exits. It can be used to
+        create the database without performing any other operation. If a database is
+        already present, no operation is performed.
     """
 
     check_database_version(db)
@@ -221,12 +213,11 @@ def config_list(db: FADatabase, *_rest):
 def config_cookies(db: FADatabase, *args: str):
     """
     USAGE
-        falocalrepo config cookies [<cookie1 name>=<cookie1 value>] ...
-                    [<cookieN name>=<cookieN value>]
+        falocalrepo config cookies [<name1>=<value1> ... <nameN>=<valueN>]
 
     ARGUMENTS
-        <cookie name>   The name of the cookie (e.g. a)
-        <cookie value>  The value of the cookie
+        <name>   The name of the cookie (e.g. a)
+        <value>  The value of the cookie
 
     DESCRIPTION
         Read or modify stored cookies.
@@ -315,7 +306,7 @@ def download_users(db: FADatabase, *args: str):
 
     EXAMPLES
         falocalrepo download users tom,jerry gallery,scraps,journals
-        falocalrepo download users tom,jerry list-favorites
+        falocalrepo download users tom list-favorites
     """
 
     if len(args) != 2:
@@ -332,7 +323,7 @@ def download_update(db: FADatabase, *args: str):
     """
     USAGE
         falocalrepo download update [stop=<stop n>] [deactivated=<deactivated>]
-                    [<user1>,...,<userN>] [<folder1>,...,<folderN>]
+                    [<user1>,...,<userN> | @] [<folder1>,...,<folderN> | @]
 
     ARGUMENTS
         <stop n>       Number of submissions to find in database before stopping,
@@ -345,13 +336,14 @@ def download_update(db: FADatabase, *args: str):
     DESCRIPTION
         Update the repository by checking the previously downloaded folders
         (gallery, scraps, favorites or journals) of each user and stopping when it
-        finds a submission that is already present in the repository. Can pass a
-        list of users and/or folders that will be updated if in the database. To
-        skip users, use '@' as argument. The 'stop=<n>' option allows to stop
-        updating after finding n submissions in a user's database entry, defaults
-        to 1. If a user is deactivated, the folders in the database will be
-        prepended with a '!'. Deactivated users will be skipped when update is
-        called, unless the '<deactivated>' option is set to 'true'.
+        finds a submission that is already present in the database. If a list of
+        users and/or folders is passed, the update will be limited to those. To
+        limit the update to certain folders without skipping any user, use '@' in
+        place of the users argument. The stop=<n> option allows to stop updating
+        after finding n submissions in a user's database entry, defaults to 1. If a
+        user is deactivated, the folders in the database will be prepended with a
+        '!'. Deactivated users will be skipped during the update unless the
+        <deactivated> option is set to 'true'.
 
     EXAMPLES
         falocalrepo download update stop=5
@@ -435,9 +427,9 @@ def download(db: FADatabase, comm: str = "", *args: str):
         journals        Download single journals
 
     DESCRIPTION
-        The download command performs all download operations get and update users,
-        submissions, and journals. Submissions are downloaded together with their
-        thumbnails, if there are any.
+        The download command performs all download operations to save and update
+        users, submissions, and journals. Submissions are downloaded together with
+        their thumbnails, if there are any.
     """
 
     check_database_version(db)
@@ -504,8 +496,7 @@ def database_search_users(db: FADatabase, *args: str):
         those fields.
 
     EXAMPLES
-        falocalrepo database search-users json=true \\
-            folders=%gallery% gallery=%0012345678%
+        falocalrepo database search-users json=true folders=%gallery%
     """
 
     opts = parameters_multi(args)
@@ -572,7 +563,7 @@ def database_search_journals(db: FADatabase, *args: str):
         Search the journals entries using metadata fields. Search parameters can
         be passed multiple times to act as OR values. All columns of the journals
         table are supported. Parameters can be lowercase. If no parameters are
-        supplied, a list of all submissions will be returned instead. If <json> is set
+        supplied, a list of all journals will be returned instead. If <json> is set
         to 'true', the results are printed as a list of objects in JSON format. If
         <columns> is passed, then the objects printed with the JSON option will only
         contain those fields.
@@ -605,8 +596,8 @@ def database_add_user(db: FADatabase, *args):
 
     DESCRIPTION
         Add a user to the database manually. If the user is already present, the
-        folders parameter will overwrite the existing value if given. The following
-        parameters are necessary for a user entry to be accepted:
+        folders parameter, if given, will overwrite the existing value. The
+        following parameters are necessary for a user entry to be accepted:
             * 'username'
         The following parameters are optional:
             * 'folders'
@@ -763,7 +754,7 @@ def database_remove_journals(db: FADatabase, *args: str):
     db.commit()
 
 
-@docstring_parameter(f"https://pypi.org/project/falocalrepo-server/{__server_version__}")
+@docstring_parameter(__server_version__)
 def database_server(db: FADatabase, *args: str):
     """
     USAGE
@@ -776,7 +767,7 @@ def database_server(db: FADatabase, *args: str):
     DESCRIPTION
         Starts a server at <host>:<port> to navigate the database, defaults to
         0.0.0.0:8080. For more details on usage see
-        {0}.
+        https://pypi.org/project/falocalrepo-server/{0}.
 
     EXAMPLES
         falocalrepo database server host=127.0.0.1 port=5000
@@ -896,7 +887,7 @@ def database_upgrade(db: FADatabase, *_rest):
     db.upgrade()
 
 
-@docstring_parameter(f"https://pypi.org/project/falocalrepo-database/{__database_version__}")
+@docstring_parameter(__database_version__)
 def database(db: FADatabase, comm: str = "", *args: str):
     """
     USAGE
@@ -926,10 +917,9 @@ def database(db: FADatabase, comm: str = "", *args: str):
         upgrade             Upgrade the database to the latest version.
 
     DESCRIPTION
-        The database command allows to operate on the database. Used without an
-        operation command shows the database information, statistics (number of
-        users and submissions and time of last update), and version. For more
-        details on tables see {0}.
+        The database command allows to operate on the database. Calling the database
+        command without an operation defaults to 'list'. For more details on tables
+        see https://pypi.org/project/falocalrepo-database/{0}.
 
         All search operations are conducted case-insensitively using the SQLite like
         expression which allows for limited pattern matching. For example this
@@ -940,9 +930,8 @@ def database(db: FADatabase, comm: str = "", *args: str):
         isolate individual items in list fields.
 
         All search operations support the extra 'order', 'limit', and 'offset'
-        parameters with values in SQLite 'ORDER BY' clause, 'LIMIT' clause format,
-        and 'OFFSET' clause. The 'order' parameter supports all fields of the
-        specific search command.
+        parameters with values in SQLite 'ORDER BY', 'LIMIT', and 'OFFSET' clause
+        formats. The 'order' parameter supports all fields of the searched table.
     """
 
     check_database_version(db, raise_for_error=comm not in ("", "info", "upgrade"))
