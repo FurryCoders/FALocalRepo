@@ -37,8 +37,6 @@ from .download import download_submissions as download_submissions_
 from .download import download_users as download_users_
 from .download import download_users_update
 from .download import read_cookies
-from .download import save_journal
-from .download import save_submission
 from .download import write_cookies
 
 
