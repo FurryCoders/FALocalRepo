@@ -57,12 +57,6 @@ def download_items(db: FADatabase, item_ids: list[str], f: Callable[[FAAPI, FADa
         f(api, db, item_id)
 
 
-def save_submission(db: FADatabase, sub: Submission, sub_file: Optional[bytes], sub_thumb: Optional[bytes],
-                    user_update: bool = False):
-    db.submissions.save_submission({**dict(sub), "USERUPDATE": int(user_update)}, sub_file, sub_thumb)
-    db.commit()
-
-
 def download_submission_file(api: FAAPI, sub_file_url: str, *, speed: int = 100, bar: int = 10) -> Optional[bytes]:
     if not sub_file_url:
         return None
@@ -111,10 +105,10 @@ def download_submission(api: FAAPI, db: FADatabase, submission: Union[int, Submi
         sub: Submission = api.get_submission(sub_id, False)[0]
         if isinstance(submission, SubmissionPartial):
             sub.thumbnail_url = sub.thumbnail_url or submission.thumbnail_url
-        save_submission(db, sub,
-                        download_submission_file(api, sub.file_url, bar=7 if sub.thumbnail_url else 10),
-                        download_submission_file(api, sub.thumbnail_url, speed=0, bar=1),
-                        user_update)
+        sub_file: Optional[bytes] = download_submission_file(api, sub.file_url, bar=7 if sub.thumbnail_url else 10)
+        sub_thumb: Optional[bytes] = download_submission_file(api, sub.thumbnail_url, speed=0, bar=1)
+        db.submissions.save_submission({**dict(sub), "USERUPDATE": int(user_update)}, sub_file, sub_thumb)
+        db.commit()
         return True
     except ParsingError:
         return False
@@ -126,17 +120,12 @@ def download_submissions(db: FADatabase, sub_ids: list[str]):
     download_items(db, sub_ids, download_submission)
 
 
-def save_journal(db: FADatabase, journal: Journal, user_update: bool = False):
-    db.journals.save_journal({**dict(journal), "USERUPDATE": int(user_update)})
-    db.commit()
-
-
-def download_journal(api: FAAPI, db: FADatabase, jrn_id: int):
+def download_journal(api: FAAPI, db: FADatabase, jrn_id: int, user_update: bool = False):
     if jrn_id in db.journals:
         Bar(length=10, message="IS IN DB").close()
         return True
-    journal: Journal = api.get_journal(jrn_id)
-    save_journal(db, journal)
+    db.journals.save_journal({**dict(api.get_journal(jrn_id)), "USERUPDATE": user_update})
+    db.commit()
 
 
 def download_journals(db: FADatabase, jrn_ids: list[str]):
@@ -300,7 +289,8 @@ def download_user(api: FAAPI, db: FADatabase, user: str, folder: str, stop: int 
                         db.commit()
                     items_total += 1
             elif isinstance(item, Journal):
-                save_journal(db, item, folder == "journals")
+                db.journals.save_journal({**dict(item), "USERUPDATE": folder == "journals"})
+                db.commit()
                 bar.update(1, 1)
                 bar.close()
                 items_total += 1
