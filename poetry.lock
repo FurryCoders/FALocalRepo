@@ -65,7 +65,7 @@ requests = ">=2.24.0,<3.0.0"
 
 [[package]]
 name = "falocalrepo-database"
-version = "4.14.1"
+version = "4.15.0"
 description = "Database functionality for falocalrepo."
 category = "main"
 optional = false
@@ -78,14 +78,14 @@ psutil = ">=5.8.0,<6.0.0"
 
 [[package]]
 name = "falocalrepo-server"
-version = "1.9.5"
+version = "1.9.6"
 description = "Web interface for falocalrepo."
 category = "main"
 optional = false
 python-versions = ">=3.9,<4.0"
 
 [package.dependencies]
-falocalrepo-database = ">=4.14.0,<4.15.0"
+falocalrepo-database = ">=4.15.0,<4.16.0"
 flask = ">=1.1.2,<2.0.0"
 htmlmin = ">=0.1.0,<0.2.0"
 Pillow = ">=8.1.0,<9.0.0"
@@ -269,7 +269,7 @@ watchdog = ["watchdog"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "4b76356c0fcf1156ed3930c0022a593fa4dcadd70ce3893cd6db5217e238f896"
+content-hash = "475ca39d524849dc11d5e98ed9d2cd159b823567a5271dbad32df0764ceeeac4"
 
 [metadata.files]
 beautifulsoup4 = [
@@ -298,12 +298,12 @@ faapi = [
     {file = "faapi-2.17.3.tar.gz", hash = "sha256:5acb8375d866f1cfd0b9358b61f7154f3260e4e8b72a4a771e1926dd560218fb"},
 ]
 falocalrepo-database = [
-    {file = "falocalrepo-database-4.14.1.tar.gz", hash = "sha256:5a5dcdaca63bb62cf365e9e3b728153ea22ba2cc3cdc3fa8a896c7a2bd07409c"},
-    {file = "falocalrepo_database-4.14.1-py3-none-any.whl", hash = "sha256:0023f93641929316018ddcd4bc93f4064bfb50c3b305115f3a2f94bff01cdb5d"},
+    {file = "falocalrepo-database-4.15.0.tar.gz", hash = "sha256:a38e2dfc3a550f615b5d18c3189c835a9a18d182c43563fe5b320dea5c6d75a7"},
+    {file = "falocalrepo_database-4.15.0-py3-none-any.whl", hash = "sha256:b43c31be16500663acbabb6b7eb23e7613b3075b6af397e5618888ece0c6252a"},
 ]
 falocalrepo-server = [
-    {file = "falocalrepo-server-1.9.5.tar.gz", hash = "sha256:0b7313f6a806ef8998597f5c4d8aa6a6ed68d6082f2b92d0fef1c9577086df14"},
-    {file = "falocalrepo_server-1.9.5-py3-none-any.whl", hash = "sha256:109a508698edd1cdb282adb9a8ad96fc66a6029c5a5f8fd4247419dcaa983df4"},
+    {file = "falocalrepo-server-1.9.6.tar.gz", hash = "sha256:6a97bc743f1085a990675340239941403a9e98820234da2ce69f62b83057851c"},
+    {file = "falocalrepo_server-1.9.6-py3-none-any.whl", hash = "sha256:40b1f83095826a2da5c5e4faf80f8034084d263417a38f9949dbcf667ba62abc"},
 ]
 filetype = [
     {file = "filetype-1.0.7-py2.py3-none-any.whl", hash = "sha256:353369948bb1c09b8b3ea3d78390b5586e9399bff9aab894a1dff954e31a66f6"},
