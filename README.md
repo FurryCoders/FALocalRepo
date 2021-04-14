@@ -67,7 +67,7 @@ To install the program it is sufficient to use Python pip and get the package `f
 python3 -m pip install falocalrepo
 ```
 
-Python 3.8 or above is needed to run this program, all other dependencies are handled by pip during installation. For
+Python 3.9 or above is needed to run this program, all other dependencies are handled by pip during installation. For
 information on how to install Python on your computer, refer to the official
 website [Python.org](https://www.python.org/).
 
