@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.23.2
+
+### Changes
+
+* falocalrepo-database dependency set to \~4.16.0
+
 ## 3.23.1
 
 ### Changes
