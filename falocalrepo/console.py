@@ -4,8 +4,7 @@ from json import dumps
 from json import load
 from os import environ
 from os.path import getsize
-from os.path import join
-from os.path import split
+from pathlib import Path
 from re import match
 from sys import stderr
 from typing import Callable
@@ -56,7 +55,7 @@ def check_process(process: str):
     ps: int = 0
     for p in process_iter():
         try:
-            ps += "python" in p.name().lower() and any(process in split(cmd) for cmd in p.cmdline())
+            ps += "python" in p.name().lower() and any(process in Path(cmd).parts for cmd in p.cmdline())
         except (NoSuchProcess, AccessDenied):
             pass
         if ps > 1:
@@ -981,11 +980,12 @@ def console(comm: str = "", *args: str) -> None:
         print(f"Using FALOCALREPO_DEBUG", file=stderr)
 
     # Initialise and prepare database
-    database_path = "FA.db"
+    database_path: Path = Path("FA.db")
 
     if db_path := environ.get("FALOCALREPO_DATABASE", None):
+        db_path = Path(db_path)
         print(f"Using FALOCALREPO_DATABASE: {db_path}", file=stderr)
-        database_path = db_path if db_path.endswith(".db") else join(db_path, database_path)
+        database_path = db_path if db_path.name.endswith(".db") else db_path / database_path
 
     db: FADatabase = FADatabase(database_path)
     check_database_connections(db)
