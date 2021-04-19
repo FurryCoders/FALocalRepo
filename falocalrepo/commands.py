@@ -67,13 +67,6 @@ def latest_version(package: str) -> str:
         return ""
 
 
-def move_files_folder(folder_old: str, folder_new: str):
-    if isdir(folder_old):
-        print("Moving files to new location... ", end="", flush=True)
-        move(folder_old, folder_new)
-        print("Done")
-
-
 def make_journal(db: FADatabase, data: Entry):
     data = {k.lower(): v for k, v in data.items()}
     data = {**{k.lower(): v for k, v in (db.submissions[int(data["id"])] or {}).items()}, **data}

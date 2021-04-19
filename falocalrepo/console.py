@@ -26,7 +26,6 @@ from .__version__ import __version__
 from .commands import latest_version
 from .commands import make_journal
 from .commands import make_submission
-from .commands import move_files_folder
 from .commands import print_items
 from .commands import print_users
 from .commands import search
@@ -251,8 +250,9 @@ def config_files_folder(db: FADatabase, *args: str):
     if not args:
         print("files folder:", db.settings["FILESFOLDER"])
     elif len(args) == 1:
-        move_files_folder(db.settings["FILESFOLDER"], args[0])
-        db.settings["FILESFOLDER"] = args[0]
+        print(f"Moving files folder to {args[0]}")
+        db.move_files_folder(args[0])
+        print("Done")
     else:
         raise MalformedCommand("files-folder needs one argument")
 
