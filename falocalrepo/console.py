@@ -558,14 +558,12 @@ def database_add_user(db: FADatabase, *args):
         falocalrepo database add-user ./user.json
     """
 
-    make_params: dict[str, str] = parameters(args)
-    username: str = db.users.new_user(make_params["username"])
-    if make_params.get("folders", None) is not None:
-        folders: set[str] = set(db.users[username]["FOLDERS"])
-        folders_new: set[str] = set(filter(bool, map(str.lower, make_params["folders"].split(","))))
-        for f in folders - folders_new:
+    data: dict = load(open(args[0]))
+    username: str = db.users.new_user(data["username"])
+    if data.get("folders", None):
+        for f in (old := set(db.users[username]["FOLDERS"])) - (new := set(map(str.lower, data["folders"]))):
             db.users.remove_user_folder(username, f)
-        for f in folders_new - folders:
+        for f in new - old:
             db.users.add_user_folder(username, f)
     db.commit()
 
