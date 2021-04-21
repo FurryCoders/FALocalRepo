@@ -81,21 +81,21 @@
 * Migrate to Python 3.9
 * falocalrepo-database dependency set to \~4.11.0
 * falocalrepo-server dependency set to \~1.9.0
-  * Solve issue #9
+    * Solve issue #9
 
 ## 3.20.3
 
 ### Changes
 
 * Let `UnknownFolder` exceptions rise, exit with code 3 when caught
-  * Error codes that were 3 or greater have been moved up by 1
-    * 1 `MalformedCommand`, `UnknownCommand`
-    * 2 `MultipleInstances`
-    * 3 `UnknownFolder`
-    * 4 `ConnectionError`
-    * 5 `DatabaseError`, `IntegrityError`
-    * 6 `TypeError`, `AssertionError`
-    * 7 `Exception`, `BaseException`
+    * Error codes that were 3 or greater have been moved up by 1
+        * 1 `MalformedCommand`, `UnknownCommand`
+        * 2 `MultipleInstances`
+        * 3 `UnknownFolder`
+        * 4 `ConnectionError`
+        * 5 `DatabaseError`, `IntegrityError`
+        * 6 `TypeError`, `AssertionError`
+        * 7 `Exception`, `BaseException`
 * Exception `repr` is not printed if `FALOCALREPO_DEBUG` option is on
 
 ### Fixes
