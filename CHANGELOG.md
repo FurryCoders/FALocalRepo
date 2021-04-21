@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.23.4
+
+### Fixes
+
+* Fix `database add-user` command
+
 ## 3.23.3
 
 ### Changes
