@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.23.6
+
+### Fixes
+
+* fix `database server` throwing a `TypeError` exception when passing port parameter
+
 ## 3.23.5
 
 ### Changes
