@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.23.3
+
+### Changes
+
+* faapi dependency set to \~2.18.0
+
 ## 3.23.2
 
 ### Changes
