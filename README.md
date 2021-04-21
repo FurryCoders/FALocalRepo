@@ -419,7 +419,9 @@ Available operations are:
 
 * `server [host=<host>] [port=<port>]` starts a server at `<host>:<port>` to navigate the database
   using `falocalrepo-server`. Defaults to `0.0.0.0:8080`.
-  See [falocalrepo-server](https://pypi.org/project/falocalrepo-server) for more details on usage.
+  See [falocalrepo-server](https://pypi.org/project/falocalrepo-server) for more details on usage. Running the server
+  does not occupy the database connection (it is only occupied when the server is actively searching the database),
+  which allows running other `database` commands; `download` commands remain unavailable.
 
 > ```
 > falocalrepo database server host=127.0.0.1 port=5000
