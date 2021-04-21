@@ -76,7 +76,7 @@ requests = ">=2.24.0,<3.0.0"
 
 [[package]]
 name = "falocalrepo-database"
-version = "4.16.1"
+version = "4.16.2"
 description = "Database functionality for falocalrepo."
 category = "main"
 optional = false
@@ -346,7 +346,7 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "2b3d870d9e72e67a7c4354bad774ed9351f4526a1e260918dbec4c6fc16ebcea"
+content-hash = "7b73361921b10fd722ebd971ba5977fb864ef42b9a50b42840eee5465269fe1a"
 
 [metadata.files]
 beautifulsoup4 = [
@@ -414,8 +414,8 @@ faapi = [
     {file = "faapi-2.18.0.tar.gz", hash = "sha256:4200d2cea285b285922d2cddd9d6a5ee548e9ebc715949d39c42b08234aa25a5"},
 ]
 falocalrepo-database = [
-    {file = "falocalrepo-database-4.16.1.tar.gz", hash = "sha256:c92685a5ea89d336c8ae5b14eec98e7f39d0680124e1a41f908b93abfabd874d"},
-    {file = "falocalrepo_database-4.16.1-py3-none-any.whl", hash = "sha256:315ae0911eb91603842c3d891f7c12b0d489de1fadcf3e7952087a93fac3697c"},
+    {file = "falocalrepo-database-4.16.2.tar.gz", hash = "sha256:5e4462e850f55033e262edf627608d51661a6fb4992965700c22fd14c87498a7"},
+    {file = "falocalrepo_database-4.16.2-py3-none-any.whl", hash = "sha256:1a801c00c80ed937690625dc4e4d4e0ce35529a27662dccca1052a48b91c9659"},
 ]
 falocalrepo-server = [
     {file = "falocalrepo-server-1.10.3.tar.gz", hash = "sha256:baf5f4f322b0f5ba1ab575f1d509687895e720513cd49b364d1f392bc0ae5828"},
