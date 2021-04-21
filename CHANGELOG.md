@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.26.7
+
+* Fix `database server` not closing properly (the database file could still be read as open on some systems)
+
 ## 3.23.6
 
 ### Fixes
