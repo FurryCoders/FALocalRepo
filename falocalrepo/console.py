@@ -714,6 +714,7 @@ def database_server(db: FADatabase, *args: str):
         falocalrepo database server host=127.0.0.1 port=5000
     """
 
+    db.close()
     opts, _ = parse_args(args)
     server(db.database_path, **opts)
     print()
