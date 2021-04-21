@@ -716,7 +716,7 @@ def database_server(db: FADatabase, *args: str):
 
     db.close()
     opts, _ = parse_args(args)
-    server(db.database_path, **opts)
+    server(db.database_path, host=opts.get("host", "0.0.0.0"), port=int(opts.get("port", 8080)))
 
 
 def database_merge_copy(db: FADatabase, merge: bool = True, *args):
