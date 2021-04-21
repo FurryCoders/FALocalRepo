@@ -105,6 +105,19 @@ def make_submission(db: FADatabase, data: Entry, file: str = None, thumb: str = 
     db.submissions.save_submission(data, sub_file, sub_thumb)
 
 
+def make_user(db: FADatabase, data: Entry):
+    data = {k.lower(): v for k, v in data.items()}
+    assert isinstance(data.get("folders", []), list), "folders field needs to be of type list"
+
+    username: str = db.users.new_user(data["username"])
+    if data.get("folders", None):
+        for f in (old := set(db.users[username]["FOLDERS"])) - (new := set(map(str.lower, data["folders"]))):
+            db.users.remove_user_folder(username, f)
+        for f in new - old:
+            db.users.add_user_folder(username, f)
+    db.commit()
+
+
 def search(table: FADatabaseTable, parameters: dict[str, list[str]], columns: list[str] = None) -> list[Entry]:
     parameters = {k.upper(): vs for k, vs in parameters.items()}
     query: dict[str, list[str]] = {k: vs for k, vs in parameters.items() if k in table.columns}

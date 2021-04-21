@@ -27,6 +27,7 @@ from .__version__ import __version__
 from .commands import latest_version
 from .commands import make_journal
 from .commands import make_submission
+from .commands import make_user
 from .commands import print_items
 from .commands import print_users
 from .commands import search
@@ -559,13 +560,7 @@ def database_add_user(db: FADatabase, *args):
     """
 
     data: dict = load(open(args[0]))
-    username: str = db.users.new_user(data["username"])
-    if data.get("folders", None):
-        for f in (old := set(db.users[username]["FOLDERS"])) - (new := set(map(str.lower, data["folders"]))):
-            db.users.remove_user_folder(username, f)
-        for f in new - old:
-            db.users.add_user_folder(username, f)
-    db.commit()
+    make_user(db, data)
 
 
 def database_add_submission(db: FADatabase, *args: str):
