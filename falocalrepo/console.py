@@ -16,6 +16,7 @@ from falocalrepo_database import FADatabase
 from falocalrepo_database import FADatabaseCursor
 from falocalrepo_database import FADatabaseTable
 from falocalrepo_database import __version__ as __database_version__
+from falocalrepo_database.database import clean_username
 from falocalrepo_server import __version__ as __server_version__
 from falocalrepo_server import server
 from psutil import AccessDenied
@@ -29,7 +30,6 @@ from .commands import make_submission
 from .commands import print_items
 from .commands import print_users
 from .commands import search
-from .download import clean_username
 from .download import download_journals as download_journals_
 from .download import download_submissions as download_submissions_
 from .download import download_users as download_users_
@@ -311,11 +311,7 @@ def download_users(db: FADatabase, *args: str):
     if len(args) != 2:
         raise MalformedCommand("users needs two arguments")
 
-    users_tmp: list[str] = list(filter(bool, map(clean_username, args[0].split(","))))
-    users: list[str] = sorted(set(users_tmp), key=users_tmp.index)
-    folders_tmp: list[str] = list(filter(bool, map(str.strip, args[1].split(","))))
-    folders: list[str] = sorted(set(folders_tmp), key=folders_tmp.index)
-    download_users_(db, users, folders)
+    download_users_(db, args[0].split(","), args[1].split(","))
 
 
 def download_update(db: FADatabase, *args: str):
@@ -350,15 +346,9 @@ def download_update(db: FADatabase, *args: str):
         falocalrepo download update tom,jerry
     """
 
-    users: list[str] = []
-    folders: list[str] = []
+    users: list[str] = args[0].split(",") if args and args[0] != "@" else []
+    folders: list[str] = args[1].split(",") if args[1:] and args[1] != "@" else []
     opts, args = parse_args(args)
-    if args and args[0] != "@":
-        users_tmp: list[str] = list(filter(bool, map(clean_username, args[0].split(","))))
-        users = sorted(set(users_tmp), key=users_tmp.index)
-    if args[1:] and args[1] != "@":
-        folders_tmp: list[str] = list(filter(bool, map(str.strip, args[1].split(","))))
-        folders = sorted(set(folders_tmp), key=folders_tmp.index)
     download_users_update(db, users, folders, int(opts.get("stop", 1)), opts.get("deactivated", "").lower() == "true")
 
 
