@@ -717,7 +717,6 @@ def database_server(db: FADatabase, *args: str):
     db.close()
     opts, _ = parse_args(args)
     server(db.database_path, **opts)
-    print()
 
 
 def database_merge_copy(db: FADatabase, merge: bool = True, *args):
