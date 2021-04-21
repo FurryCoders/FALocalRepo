@@ -1,5 +1,13 @@
 # Changelog
 
+## 3.23.5
+
+### Changes
+
+* falocalrepo-database dependency set to \~4.16.2
+* `database server` command does not occupy a database connection to allow running other commands on the same database
+  while the server is running
+
 ## 3.23.4
 
 ### Fixes
