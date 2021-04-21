@@ -1,8 +1,6 @@
 from os import get_terminal_size
-from os.path import isdir
 from re import findall
 from re import sub as re_sub
-from shutil import move
 
 from falocalrepo_database import FADatabase
 from falocalrepo_database import FADatabaseTable
