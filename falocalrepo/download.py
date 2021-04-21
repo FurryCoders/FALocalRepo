@@ -8,19 +8,19 @@ from typing import Callable
 from typing import Optional
 from typing import Union
 
-from faapi import DisabledAccount
 from faapi import FAAPI
 from faapi import Journal
-from faapi import NoticeMessage
-from faapi import ParsingError
 from faapi import Submission
 from faapi import SubmissionPartial
+from faapi.exceptions import DisabledAccount
+from faapi.exceptions import NoticeMessage
+from faapi.exceptions import ParsingError
+from faapi.parse import username_url
 from falocalrepo_database import FADatabase
 from urllib3.exceptions import IncompleteRead
 
 from .commands import Bar
 from .commands import clean_string
-from .commands import clean_username
 
 
 class UnknownFolder(Exception):
@@ -137,8 +137,10 @@ def download_users_update(db: FADatabase, users: list[str], folders: list[str], 
     api: Optional[FAAPI] = None
     tot, fail = 0, 0
 
-    users = list(map(clean_username, users))
+    users = list(map(username_url, users))
     users = sorted(set(users), key=users.index)
+    folders = list(filter(bool, map(str.strip, folders)))
+    folders = sorted(set(folders), key=folders.index)
     users_db: list[dict] = sorted(
         filter(lambda u: not users or u["USERNAME"] in users, db.users),
         key=lambda u: users.index(u["USERNAME"]) if users else u["USERNAME"])
@@ -175,8 +177,11 @@ def download_users_update(db: FADatabase, users: list[str], folders: list[str], 
 
 def download_users(db: FADatabase, users: list[str], folders: list[str]):
     api: Optional[FAAPI] = None
-    users = list(map(clean_username, users))
-    for user in sorted(set(users), key=users.index):
+    users = list(filter(bool, map(username_url, users)))
+    users = sorted(set(users), key=users.index)
+    folders = list(filter(bool, map(str.strip, folders)))
+    folders = sorted(set(folders), key=folders.index)
+    for user in users:
         user_is_new: bool = user not in db.users
         try:
             api = load_api(db) if api is None else api
@@ -206,7 +211,7 @@ def download_user(api: FAAPI, db: FADatabase, user: str, folder: str, stop: int 
     items_failed: int = 0
     page: Union[int, str] = 1
     page_n: int = 0
-    user = clean_username(user)
+    user = username_url(user)
     space_bar: int = 10
     space_term: int = get_terminal_size()[0]
     space_line: int = space_term - (space_bar + 2 + 2)
