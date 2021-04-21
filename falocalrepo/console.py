@@ -986,6 +986,6 @@ def console(comm: str = "", *args: str) -> None:
         elif comm == database.__name__:
             database(db, *args)
     finally:
-        if db is not None:
+        if db is not None and db.is_open():
             db.commit()
             db.close()
