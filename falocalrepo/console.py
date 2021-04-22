@@ -487,7 +487,8 @@ def database_search(table: FADatabaseTable, print_func: Callable, *args: str):
         print(f"Found {len(results)} users")
 
 
-@docstring_parameter(database_search.__doc__.format("users"))
+@docstring_parameter("users")
+@docstring_parameter(database_search.__doc__)
 def database_search_users(db: FADatabase, *args: str):
     """
     {0}
@@ -499,7 +500,8 @@ def database_search_users(db: FADatabase, *args: str):
     database_search(db.users, print_users, *args)
 
 
-@docstring_parameter(database_search.__doc__.format("submissions"))
+@docstring_parameter("submissions")
+@docstring_parameter(database_search.__doc__)
 def database_search_submissions(db: FADatabase, *args: str):
     """
     {0}
@@ -514,7 +516,8 @@ def database_search_submissions(db: FADatabase, *args: str):
     database_search(db.submissions, print_items, *args)
 
 
-@docstring_parameter(database_search.__doc__.format("journals"))
+@docstring_parameter("journals")
+@docstring_parameter(database_search.__doc__)
 def database_search_journals(db: FADatabase, *args: str):
     """
     {0}
