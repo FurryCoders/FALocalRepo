@@ -972,9 +972,9 @@ def console(comm: str = "", *args: str) -> None:
         database_path = db_path if db_path.name.endswith(".db") else db_path / database_path
 
     db: FADatabase = FADatabase(database_path)
-    check_database_connections(db)
 
     try:
+        check_database_connections(db)
         db.settings.add_history(f"{comm} {' '.join(args)}".strip())
         db.commit()
 
