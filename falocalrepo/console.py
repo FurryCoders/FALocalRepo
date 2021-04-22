@@ -712,6 +712,17 @@ def database_server(db: FADatabase, *args: str):
 
 
 def database_merge_copy(db: FADatabase, merge: bool = True, *args):
+    """
+    USAGE
+        falocalrepo database {0} <path> [<table1>.<param1>=<value1> ...
+                    <tableN>.<paramN>=<valueN>]
+
+    ARGUMENTS
+        <path>  Path to second database file
+        <table> One of users, submissions, journals
+        <param> Search parameter
+        <value> Value of the parameter
+    """
     if not args:
         raise MalformedCommand("copy needs at least a database argument")
 
@@ -731,17 +742,11 @@ def database_merge_copy(db: FADatabase, merge: bool = True, *args):
         print("Done")
 
 
+@docstring_parameter("merge")
+@docstring_parameter(database_merge_copy.__doc__)
 def database_merge(db: FADatabase, *args: str):
     """
-    USAGE
-        falocalrepo database merge <path> [<table1>.<param1>=<value1> ...
-                    <tableN>.<paramN>=<valueN>]
-
-    ARGUMENTS
-        <path>  Path to second database file
-        <table> One of users, submissions, journals
-        <param> Search parameter
-        <value> Value of the parameter
+    {0}
 
     DESCRIPTION
         Merge selected entries from a second database to the main database (the one
@@ -763,17 +768,11 @@ def database_merge(db: FADatabase, *args: str):
     database_merge_copy(db, True, *args)
 
 
+@docstring_parameter("copy")
+@docstring_parameter(database_merge_copy.__doc__)
 def database_copy(db: FADatabase, *args: str):
     """
-    USAGE
-        falocalrepo database copy <path> [<table1>.<param1>=<value1> ...
-                    <tableN>.<paramN>=<valueN>]
-
-    ARGUMENTS
-        <path>  Path to second database file
-        <table> One of users, submissions, journals
-        <param> Search parameter
-        <value> Value of the parameter
+    {0}
 
     DESCRIPTION
         Copy selected entries to a new or existing database. To select entries, use
