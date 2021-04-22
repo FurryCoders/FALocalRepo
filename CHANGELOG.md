@@ -1,5 +1,17 @@
 # Changelog
 
+## 3.26.8
+
+### Changes
+
+* The `config` command prints the absolute path of the files' folder together with its database value
+* The `database info` command shows the location of the database
+
+### Fixes
+
+* Fix incorrect output when using the `database search-submisisons` and `database search-journals` commands
+* Fix matching of some edge cases of `<param>=<value>` arguments
+
 ## 3.26.7
 
 ### Fixes
