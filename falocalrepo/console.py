@@ -197,7 +197,7 @@ def config_list(db: FADatabase, *_rest):
 
     for c in read_cookies(db):
         print(f"cookie {c['name']}:", c['value'])
-    print("files folder:", db.settings["FILESFOLDER"])
+    print(f"files folder: {(ff := db.settings['FILESFOLDER'])} ({db.database_path / ff})")
 
 
 def config_cookies(db: FADatabase, *args: str):
@@ -240,7 +240,7 @@ def config_files_folder(db: FADatabase, *args: str):
     """
 
     if not args:
-        print("files folder:", db.settings["FILESFOLDER"])
+        print(f"files folder: {(ff := db.settings['FILESFOLDER'])} ({db.database_path / ff})")
     elif len(args) == 1:
         print(f"Moving files folder to {args[0]}")
         db.move_files_folder(args[0])
