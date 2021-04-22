@@ -195,9 +195,8 @@ def config_list(db: FADatabase, *_rest):
         Prints a list of stored settings.
     """
 
-    for c in read_cookies(db):
-        print(f"cookie {c['name']}:", c['value'])
-    print(f"files folder: {(ff := db.settings['FILESFOLDER'])} ({db.database_path / ff})")
+    config_cookies(db)
+    config_files_folder(db)
 
 
 def config_cookies(db: FADatabase, *args: str):
