@@ -485,7 +485,7 @@ def database_search(table: FADatabaseTable, print_func: Callable, *args: str):
         print(dumps(results))
     else:
         print_func(results)
-        print(f"Found {len(results)} users")
+        print(f"Found {len(results)} {table.table.lower()}")
 
 
 @docstring_format("users")
