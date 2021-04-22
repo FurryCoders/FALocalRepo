@@ -37,18 +37,9 @@ from .download import download_users as download_users_
 from .download import download_users_update
 from .download import read_cookies
 from .download import write_cookies
-
-
-class MalformedCommand(Exception):
-    pass
-
-
-class UnknownCommand(Exception):
-    pass
-
-
-class MultipleInstances(Exception):
-    pass
+from .exceptions import MalformedCommand
+from .exceptions import MultipleInstances
+from .exceptions import UnknownCommand
 
 
 def check_process(process: str):

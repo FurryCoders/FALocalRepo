@@ -8,11 +8,11 @@ from sys import exit
 from sys import stderr
 from traceback import print_exc
 
-from .console import MalformedCommand
-from .console import MultipleInstances
-from .console import UnknownCommand
 from .console import console
-from .download import UnknownFolder
+from .exceptions import MalformedCommand
+from .exceptions import MultipleInstances
+from .exceptions import UnknownCommand
+from .exceptions import UnknownFolder
 
 
 def main():

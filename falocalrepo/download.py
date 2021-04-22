@@ -21,10 +21,7 @@ from urllib3.exceptions import IncompleteRead
 
 from .commands import Bar
 from .commands import clean_string
-
-
-class UnknownFolder(Exception):
-    pass
+from .exceptions import UnknownFolder
 
 
 def read_cookies(db: FADatabase) -> list[dict[str, str]]:
