@@ -17,6 +17,7 @@ from falocalrepo_database import FADatabaseCursor
 from falocalrepo_database import FADatabaseTable
 from falocalrepo_database import __version__ as __database_version__
 from falocalrepo_database.database import clean_username
+from falocalrepo_database.exceptions import MultipleConnections
 from falocalrepo_database.selector import Selector
 from falocalrepo_server import __version__ as __server_version__
 from falocalrepo_server import server
@@ -66,7 +67,7 @@ def check_database_version(db: FADatabase, raise_for_error: bool = True):
 def check_database_connections(db: FADatabase):
     if len(db.check_connection(raise_for_error=False)) > 1:
         db.close()
-        raise MultipleInstances(f"Another connection to {db.database_path} was detected")
+        raise MultipleConnections(f"Another connection to {db.database_path} was detected")
 
 
 def raiser(e: Exception) -> Callable:
