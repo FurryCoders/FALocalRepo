@@ -74,7 +74,7 @@ def raiser(e: Exception) -> Callable:
     return inner
 
 
-def docstring_parameter(*args, **kwargs):
+def docstring_format(*args, **kwargs):
     def inner(obj: {__doc__}) -> {__doc__}:
         obj.__doc__ = obj.__doc__.format(*args, **kwargs)
         return obj
@@ -487,8 +487,8 @@ def database_search(table: FADatabaseTable, print_func: Callable, *args: str):
         print(f"Found {len(results)} users")
 
 
-@docstring_parameter("users")
-@docstring_parameter(database_search.__doc__)
+@docstring_format("users")
+@docstring_format(database_search.__doc__)
 def database_search_users(db: FADatabase, *args: str):
     """
     {0}
@@ -500,8 +500,8 @@ def database_search_users(db: FADatabase, *args: str):
     database_search(db.users, print_users, *args)
 
 
-@docstring_parameter("submissions")
-@docstring_parameter(database_search.__doc__)
+@docstring_format("submissions")
+@docstring_format(database_search.__doc__)
 def database_search_submissions(db: FADatabase, *args: str):
     """
     {0}
@@ -516,8 +516,8 @@ def database_search_submissions(db: FADatabase, *args: str):
     database_search(db.submissions, print_items, *args)
 
 
-@docstring_parameter("journals")
-@docstring_parameter(database_search.__doc__)
+@docstring_format("journals")
+@docstring_format(database_search.__doc__)
 def database_search_journals(db: FADatabase, *args: str):
     """
     {0}
@@ -689,7 +689,7 @@ def database_remove_journals(db: FADatabase, *args: str):
     db.commit()
 
 
-@docstring_parameter(__server_version__)
+@docstring_format(__server_version__)
 def database_server(db: FADatabase, *args: str):
     """
     USAGE
@@ -745,8 +745,8 @@ def database_merge_copy(db: FADatabase, merge: bool = True, *args):
         print("Done")
 
 
-@docstring_parameter("merge")
-@docstring_parameter(database_merge_copy.__doc__)
+@docstring_format("merge")
+@docstring_format(database_merge_copy.__doc__)
 def database_merge(db: FADatabase, *args: str):
     """
     {0}
@@ -771,8 +771,8 @@ def database_merge(db: FADatabase, *args: str):
     database_merge_copy(db, True, *args)
 
 
-@docstring_parameter("copy")
-@docstring_parameter(database_merge_copy.__doc__)
+@docstring_format("copy")
+@docstring_format(database_merge_copy.__doc__)
 def database_copy(db: FADatabase, *args: str):
     """
     {0}
@@ -809,7 +809,7 @@ def database_clean(db: FADatabase, *_rest):
     db.vacuum()
 
 
-@docstring_parameter(__database_version__)
+@docstring_format(__database_version__)
 def database_upgrade(db: FADatabase, *_rest):
     """
     USAGE
@@ -822,7 +822,7 @@ def database_upgrade(db: FADatabase, *_rest):
     db.upgrade()
 
 
-@docstring_parameter(__database_version__)
+@docstring_format(__database_version__)
 def database(db: FADatabase, comm: str = "", *args: str):
     """
     USAGE
@@ -892,7 +892,7 @@ def database(db: FADatabase, comm: str = "", *args: str):
     }.get(comm, raiser(UnknownCommand(f"database {comm}")))(db, *args)
 
 
-@docstring_parameter(__version__, __database_version__, __server_version__, __faapi_version__)
+@docstring_format(__version__, __database_version__, __server_version__, __faapi_version__)
 def console(comm: str = "", *args: str) -> None:
     """
     falocalrepo: {0}
