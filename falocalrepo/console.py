@@ -434,6 +434,7 @@ def database_info(db: FADatabase, *_rest):
         Show database information, statistics and version.
     """
 
+    print("Location    :", db.database_path)
     print("Size        :", f"{getsize(db.database_path) / 1e6:.1f}MB")
     print("Users       :", len(db.users))
     print("Submissions :", len(db.submissions))
