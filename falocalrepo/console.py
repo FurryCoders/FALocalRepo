@@ -473,11 +473,12 @@ def database_search(table: FADatabaseTable, print_func: Callable, *args: str):
     DESCRIPTION
         Search the {0} entries using metadata fields. Search parameters can
         be passed multiple times to act as OR values. All columns of the {0}
-        table are supported. Parameters can be lowercase. If no parameters are
-        supplied, a list of all {0} will be returned instead. If <json> is
-        set to 'true', the results are printed as a list of objects in JSON format.
-        If <columns> is passed, then the objects printed with the JSON option will
-        only contain those fields.
+        table are supported, the 'any' parameter can be used to match against any
+        column. Parameters can be lowercase. If no parameters are supplied, a list
+        of all {0} will be returned instead. If <json> is set to 'true', the
+        results are printed as a list of objects in JSON format. If <columns> is
+        passed, then the objects printed with the JSON option will only contain
+        those fields.
     """
 
     opts = parameters_multi(args)
