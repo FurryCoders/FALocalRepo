@@ -138,6 +138,8 @@ def search(table: FADatabaseTable, parameters: dict[str, list[str]], columns: li
         query["USERNAME"] = list(map(lambda u: clean_username(u, "%_"), query["USERNAME"]))
     if "ID" in query:
         query["ID"] = list(map(lambda i: i.lstrip("0") if isinstance(i, str) else i, query["ID"]))
+    if "ANY" in parameters:
+        query[f"({'||'.join(table.columns)})"] = parameters["ANY"]
     return list(table.select(
         parameters_to_selector(query),
         columns=columns,
