@@ -4,8 +4,13 @@ from re import sub as re_sub
 
 from falocalrepo_database import FADatabase
 from falocalrepo_database import FADatabaseTable
-from falocalrepo_database.database import Entry
 from falocalrepo_database.database import guess_extension
+from falocalrepo_database.selector import AND
+from falocalrepo_database.selector import LIKE
+from falocalrepo_database.selector import OR
+from falocalrepo_database.selector import Selector
+from falocalrepo_database.types import Entry
+from falocalrepo_database.types import Value
 from requests import get as req_get
 
 
@@ -118,6 +123,11 @@ def make_user(db: FADatabase, data: Entry):
     db.commit()
 
 
+def parameters_to_selector(params: dict[str, list[Value]], keys_and: bool = True, vals_and: bool = False) -> Selector:
+    k_op, v_op = AND if keys_and else OR, AND if vals_and else OR
+    return {k_op: [{v_op: [{LIKE: {k: v} for v in vs}]} for k, vs in params.items()]}
+
+
 def search(table: FADatabaseTable, parameters: dict[str, list[str]], columns: list[str] = None) -> list[Entry]:
     parameters = {k.upper(): vs for k, vs in parameters.items()}
     query: dict[str, list[str]] = {k: vs for k, vs in parameters.items() if k in table.columns}
@@ -129,9 +139,8 @@ def search(table: FADatabaseTable, parameters: dict[str, list[str]], columns: li
     if "ID" in query:
         query["ID"] = list(map(lambda i: i.lstrip("0") if isinstance(i, str) else i, query["ID"]))
     return list(table.select(
-        query,
+        parameters_to_selector(query),
         columns=columns,
-        like=True,
         order=parameters.get("order", [table.column_id]),
         limit=int(parameters.get("limit", 0)),
         offset=int(parameters.get("offset", 0))

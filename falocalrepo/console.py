@@ -17,6 +17,7 @@ from falocalrepo_database import FADatabaseCursor
 from falocalrepo_database import FADatabaseTable
 from falocalrepo_database import __version__ as __database_version__
 from falocalrepo_database.database import clean_username
+from falocalrepo_database.selector import Selector
 from falocalrepo_server import __version__ as __server_version__
 from falocalrepo_server import server
 from psutil import AccessDenied
@@ -28,6 +29,7 @@ from .commands import latest_version
 from .commands import make_journal
 from .commands import make_submission
 from .commands import make_user
+from .commands import parameters_to_selector
 from .commands import print_items
 from .commands import print_users
 from .commands import search
@@ -734,12 +736,16 @@ def database_merge_copy(db: FADatabase, merge: bool = True, *args):
     subs_opts: dict[str, list[str]] = {m.group(1): v for k, v in opts.items() if (m := match(r"submissions\.(.+)", k))}
     jrns_opts: dict[str, list[str]] = {m.group(1): v for k, v in opts.items() if (m := match(r"journals\.(.+)", k))}
 
+    usrs_query: Selector = parameters_to_selector(usrs_opts)
+    subs_query: Selector = parameters_to_selector(subs_opts)
+    jrns_query: Selector = parameters_to_selector(jrns_opts)
+
     with FADatabase(args[0]) as db2:
         print(f"{'Merging with database' if merge else 'Copying entries to'} {db2.database_path}...")
         cursors: list[FADatabaseCursor] = []
-        cursors.append((db2 if merge else db).users.select(usrs_opts, like=True)) if usrs_opts else None
-        cursors.append((db2 if merge else db).submissions.select(subs_opts, like=True)) if subs_opts else None
-        cursors.append((db2 if merge else db).journals.select(jrns_opts, like=True)) if jrns_opts else None
+        cursors.append((db2 if merge else db).users.select(usrs_query)) if usrs_opts else None
+        cursors.append((db2 if merge else db).submissions.select(subs_query)) if subs_opts else None
+        cursors.append((db2 if merge else db).journals.select(jrns_query)) if jrns_opts else None
         db.merge(db2, *cursors) if merge else db.copy(db2, *cursors)
         db.commit()
         print("Done")
