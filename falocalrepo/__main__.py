@@ -3,6 +3,7 @@ from os import getcwd
 from os.path import join
 from sqlite3 import DatabaseError
 from sqlite3 import IntegrityError
+from sqlite3 import OperationalError
 from sys import argv
 from sys import exit
 from sys import stderr
@@ -33,7 +34,7 @@ def main():
     except ConnectionError as err:
         print_exc(file=stderr) if environ.get("FALOCALREPO_DEBUG", None) is not None else print(repr(err), file=stderr)
         exit(4)
-    except (DatabaseError, IntegrityError) as err:
+    except (DatabaseError, IntegrityError, OperationalError) as err:
         print_exc(file=stderr) if environ.get("FALOCALREPO_DEBUG", None) is not None else print(repr(err), file=stderr)
         exit(5)
     except (TypeError, AssertionError) as err:
