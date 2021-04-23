@@ -1,5 +1,12 @@
 # Changelog
 
+## 3.23.9
+
+### Changes
+
+* falocalrepo-database dependency set to \~4.17.0
+* Add support for `any` parameter in database search
+
 ## 3.23.8
 
 ### Changes
