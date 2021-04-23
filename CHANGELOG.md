@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.23.10
+
+### Fixes
+
+* Fix `download update` bug when passing parameters
+
 ## 3.23.9
 
 ### Changes
