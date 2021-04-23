@@ -509,7 +509,7 @@ The submissions table contains the metadata of the submissions downloaded by the
 * `ID` the id of the submission
 * `AUTHOR` the username of the author (uploader) in full format
 * `TITLE`
-* `DATE` upload date in the format YYYY-MM-DD
+* `DATE` upload date in ISO format YYYY-MM-DD**T**HH:MM
 * `DESCRIPTION` description in html format
 * `TAGS` keywords sorted alphanumerically and bar-separated
 * `CATEGORY`
@@ -534,7 +534,7 @@ The journals table contains the metadata of the journals downloaded by the progr
 * `ID` the id of the journal
 * `AUTHOR` the username of the author (uploader) in full format
 * `TITLE`
-* `DATE` upload date in the format YYYY-MM-DD
+* `DATE` upload date in ISO format YYYY-MM-DD**T**HH:MM
 * `CONTENT` content in html format
 * `MENTIONS` a bar-separated list of users that are mentioned in the journal content as links
 * `USERUPDATE` whether the journal was added as a user update or single entry
