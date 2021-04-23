@@ -156,7 +156,7 @@ def print_items(items: list[Entry]):
         space_term: int = 10000
 
     space_id: int = 10
-    space_user: int = max([len(item["AUTHOR"]) for item in items] + [10])
+    space_user: int = max([len(item["AUTHOR"]) for item in items] + [6])
     space_date: int = 16
 
     print(f"{'ID':^{space_id}} | {'User':^{space_user}} | {'Date':^{space_date}} | Title")
