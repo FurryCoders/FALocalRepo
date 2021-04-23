@@ -157,14 +157,14 @@ def print_items(items: list[Entry]):
 
     space_id: int = 10
     space_user: int = max([len(item["AUTHOR"]) for item in items] + [10])
-    space_date: int = 10
+    space_date: int = 16
 
     print(f"{'ID':^{space_id}} | {'User':^{space_user}} | {'Date':^{space_date}} | Title")
     for item in items:
         print(
             f"{str(item['ID']).zfill(space_id)} | " +
             f"{item['AUTHOR']:<{space_user}} | " +
-            f"{item['DATE']} | " +
+            f"{item['DATE'].replace('T', ' ')} | " +
             item['TITLE'][:(space_term - space_id - space_user - space_date - 10)]
         )
 
