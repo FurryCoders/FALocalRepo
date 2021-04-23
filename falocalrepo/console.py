@@ -340,9 +340,9 @@ def download_update(db: FADatabase, *args: str):
         falocalrepo download update tom,jerry
     """
 
+    opts, args = parse_args(args)
     users: list[str] = args[0].split(",") if args and args[0] != "@" else []
     folders: list[str] = args[1].split(",") if args[1:] and args[1] != "@" else []
-    opts, args = parse_args(args)
     download_users_update(db, users, folders, int(opts.get("stop", 1)), opts.get("deactivated", "").lower() == "true")
 
 
