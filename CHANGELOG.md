@@ -1,6 +1,6 @@
 # Changelog
 
-## 3.26.8
+## 3.23.8
 
 ### Changes
 
@@ -12,7 +12,7 @@
 * Fix incorrect output when using the `database search-submisisons` and `database search-journals` commands
 * Fix matching of some edge cases of `<param>=<value>` arguments
 
-## 3.26.7
+## 3.23.7
 
 ### Fixes
 
