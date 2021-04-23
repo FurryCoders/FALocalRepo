@@ -104,7 +104,10 @@ def download_submission(api: FAAPI, db: FADatabase, submission: Union[int, Submi
             sub.thumbnail_url = sub.thumbnail_url or submission.thumbnail_url
         sub_file: Optional[bytes] = download_submission_file(api, sub.file_url, bar=7 if sub.thumbnail_url else 10)
         sub_thumb: Optional[bytes] = download_submission_file(api, sub.thumbnail_url, speed=0, bar=1)
-        db.submissions.save_submission({**dict(sub), "author": sub.author.name, "USERUPDATE": int(user_update)},
+        db.submissions.save_submission({**dict(sub),
+                                        "author": sub.author.name,
+                                        "date": sub.date.strftime("%Y-%m-%dT%H:%M"),
+                                        "USERUPDATE": int(user_update)},
                                        sub_file, sub_thumb)
         db.commit()
         return True
@@ -124,7 +127,9 @@ def download_journal(api: FAAPI, db: FADatabase, jrn_id: int, user_update: bool 
         return True
     db.journals.save_journal({
         **dict(jrn := api.get_journal(jrn_id)),
-        "author": jrn.author.name, "USERUPDATE": user_update})
+        "date": jrn.date.strftime("%Y-%m-%dT%H:%M"),
+        "author": jrn.author.name,
+        "USERUPDATE": user_update})
     db.commit()
 
 
@@ -295,7 +300,9 @@ def download_user(api: FAAPI, db: FADatabase, user: str, folder: str, stop: int 
                     items_total += 1
             elif isinstance(item, Journal):
                 db.journals.save_journal({
-                    **dict(item), "author": item.author.name,
+                    **dict(item),
+                    "author": item.author.name,
+                    "date": item.date.strftime("%Y-%m-%dT%H:%M"),
                     "USERUPDATE": folder == "journals"})
                 db.commit()
                 bar.update(1, 1)
