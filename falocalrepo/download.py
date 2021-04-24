@@ -17,6 +17,7 @@ from faapi.exceptions import NoticeMessage
 from faapi.exceptions import ParsingError
 from faapi.parse import username_url
 from falocalrepo_database import FADatabase
+from falocalrepo_database.tables import date_format
 from urllib3.exceptions import IncompleteRead
 
 from .commands import Bar
@@ -106,7 +107,7 @@ def download_submission(api: FAAPI, db: FADatabase, submission: Union[int, Submi
         sub_thumb: Optional[bytes] = download_submission_file(api, sub.thumbnail_url, speed=0, bar=1)
         db.submissions.save_submission({**dict(sub),
                                         "author": sub.author.name,
-                                        "date": sub.date.strftime("%Y-%m-%dT%H:%M"),
+                                        "date": sub.date.strftime(date_format),
                                         "USERUPDATE": int(user_update)},
                                        sub_file, sub_thumb)
         db.commit()
@@ -127,7 +128,7 @@ def download_journal(api: FAAPI, db: FADatabase, jrn_id: int, user_update: bool 
         return True
     db.journals.save_journal({
         **dict(jrn := api.get_journal(jrn_id)),
-        "date": jrn.date.strftime("%Y-%m-%dT%H:%M"),
+        "date": jrn.date.strftime(date_format),
         "author": jrn.author.name,
         "USERUPDATE": user_update})
     db.commit()
@@ -302,7 +303,7 @@ def download_user(api: FAAPI, db: FADatabase, user: str, folder: str, stop: int 
                 db.journals.save_journal({
                     **dict(item),
                     "author": item.author.name,
-                    "date": item.date.strftime("%Y-%m-%dT%H:%M"),
+                    "date": item.date.strftime(date_format),
                     "USERUPDATE": folder == "journals"})
                 db.commit()
                 bar.update(1, 1)
