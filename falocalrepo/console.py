@@ -242,7 +242,7 @@ def config_files_folder(db: FADatabase, *args: str):
     """
 
     if not args:
-        print(f"files folder: {(ff := db.settings['FILESFOLDER'])} ({db.database_path / ff})")
+        print(f"files folder: {db.settings['FILESFOLDER']} ({db.files_folder.resolve()})")
     elif len(args) == 1:
         print(f"Moving files folder to {args[0]}")
         db.move_files_folder(args[0])
