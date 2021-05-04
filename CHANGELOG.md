@@ -1,5 +1,16 @@
 # Changelog
 
+## 3.23.12
+
+### Changes
+
+* falocalrepo-database dependency set to \~4.18.1
+
+### Fixes
+
+* Fix absolute files' folder path printed by `config` command
+* Fix a type error that caused `database add-submission` to crash
+
 ## 3.23.11
 
 ### Changes
