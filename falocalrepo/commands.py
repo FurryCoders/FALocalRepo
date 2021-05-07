@@ -103,9 +103,9 @@ def make_submission(db: FADatabase, data: Entry, file: str = None, thumb: str = 
             str(data["description"])))))))
     data["userupdate"] = int(data.get("userupdate", 0))
 
-    sub_file, sub_thumb = db.submissions.get_submission_files(data["id"])
-    sub_file = open(file, "rb").read() if file else sub_file.read_bytes()
-    sub_thumb = open(thumb, "rb").read() if thumb else sub_thumb.read_bytes()
+    sub_file_db, sub_thumb_db = db.submissions.get_submission_files(data["id"])
+    sub_file = open(file, "rb").read() if file else sub_file_db.read_bytes() if sub_file_db else None
+    sub_thumb = open(thumb, "rb").read() if thumb else sub_thumb_db.read_bytes() if sub_thumb_db else None
     assert sub_thumb is None or guess_extension(sub_thumb) == Jpeg.EXTENSION, "Thumbnail must be in JPEG format"
 
     db.submissions.save_submission(data, sub_file, sub_thumb)
