@@ -381,7 +381,7 @@ Available operations are:
       entry or 0
 
 > ```
-> falocalrepo database add-submission add-submission ./submission/metadata.json \
+> falocalrepo database add-submission ./submission/metadata.json \
 >     file=./submission/submission.pdf thumb=./submission/thumbnail.jpg
 > ```
 
