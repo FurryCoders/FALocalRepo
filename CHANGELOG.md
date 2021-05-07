@@ -1,5 +1,12 @@
 # Changelog
 
+## 3.23.13
+
+### Fixes
+
+* Fix error in `database add-submission` occurring when not passing a new file/thumbnail with none already present in
+  the database
+
 ## 3.23.12
 
 ### Changes
