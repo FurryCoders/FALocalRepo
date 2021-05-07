@@ -24,7 +24,7 @@
 
 * falocalrepo-database dependency set to \~4.18.0
     * Use ISO format YYYY-MM-DD**T**HH:MM for date columns
-    
+
 ### Fixes
 
 * Reduced minimum width of user column when printing search results to avoid over-padding
