@@ -1,5 +1,17 @@
 # Changelog
 
+## 3.23.14
+
+### Changes
+
+* falocalrepo-database dependency set to \~4.19.0
+* falocalrepo-server dependency set to \~1.11.0
+
+### Fixes
+
+* Fix error when using `database search` commands with no search parameters
+* Fix error when using `database merge` and `database copy` commands with no selection parameters
+
 ## 3.23.13
 
 ### Fixes
