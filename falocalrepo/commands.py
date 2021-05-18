@@ -5,10 +5,8 @@ from re import sub as re_sub
 from falocalrepo_database import FADatabase
 from falocalrepo_database import FADatabaseTable
 from falocalrepo_database.database import guess_extension
-from falocalrepo_database.selector import AND
-from falocalrepo_database.selector import LIKE
-from falocalrepo_database.selector import OR
 from falocalrepo_database.selector import Selector
+from falocalrepo_database.selector import SelectorBuilder as S
 from falocalrepo_database.types import Entry
 from falocalrepo_database.types import Value
 from filetype.types.image import Jpeg
@@ -124,9 +122,8 @@ def make_user(db: FADatabase, data: Entry):
     db.commit()
 
 
-def parameters_to_selector(params: dict[str, list[Value]], keys_and: bool = True, vals_and: bool = False) -> Selector:
-    k_op, v_op = AND if keys_and else OR, AND if vals_and else OR
-    return {k_op: [{v_op: [{LIKE: {k: v} for v in vs}]} for k, vs in params.items()]}
+def parameters_to_selector(params: dict[str, list[Value]]) -> Selector:
+    return S() & [S() | [S(k) % v for v in vs] for k, vs in params.items()]
 
 
 def search(table: FADatabaseTable, parameters: dict[str, list[str]], columns: list[str] = None) -> list[Entry]:
@@ -142,7 +139,7 @@ def search(table: FADatabaseTable, parameters: dict[str, list[str]], columns: li
     if "ANY" in parameters:
         query[f"({'||'.join(table.columns)})"] = parameters["ANY"]
     return list(table.select(
-        parameters_to_selector(query),
+        parameters_to_selector(query) if query else None,
         columns=columns,
         order=parameters.get("order", [table.column_id]),
         limit=int(parameters.get("limit", 0)),
