@@ -9,6 +9,7 @@ from re import match
 from sys import stderr
 from typing import Callable
 from typing import Iterable
+from typing import Optional
 from typing import Union
 
 from faapi import __version__ as __faapi_version__
@@ -738,9 +739,9 @@ def database_merge_copy(db: FADatabase, merge: bool = True, *args):
     subs_opts: dict[str, list[str]] = {m.group(1): v for k, v in opts.items() if (m := match(r"submissions\.(.+)", k))}
     jrns_opts: dict[str, list[str]] = {m.group(1): v for k, v in opts.items() if (m := match(r"journals\.(.+)", k))}
 
-    usrs_query: Selector = parameters_to_selector(usrs_opts)
-    subs_query: Selector = parameters_to_selector(subs_opts)
-    jrns_query: Selector = parameters_to_selector(jrns_opts)
+    usrs_query: Optional[Selector] = parameters_to_selector(usrs_opts) if usrs_opts else None
+    subs_query: Optional[Selector] = parameters_to_selector(subs_opts) if subs_opts else None
+    jrns_query: Optional[Selector] = parameters_to_selector(jrns_opts) if jrns_opts else None
 
     with FADatabase(args[0]) as db2:
         print(f"{'Merging with database' if merge else 'Copying entries to'} {db2.database_path}...")
