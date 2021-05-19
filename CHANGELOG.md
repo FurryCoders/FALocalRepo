@@ -1,5 +1,12 @@
 # Changelog
 
+## 3.23.15
+
+### Changes
+
+* falocalrepo-database dependency set to \~4.19.1
+    * Submissions tags are no longer sorted alphabetically
+
 ## 3.23.14
 
 ### Changes
