@@ -346,7 +346,7 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "1efb66c5dbc54c45883ad4a2b347d44e9542715e115f32201cbff06b8b7e7ec9"
+content-hash = "fa8caf0ada61591f09ec2618627555a68e8bd3d5c32b8b4ed4e659deb25a67cc"
 
 [metadata.files]
 beautifulsoup4 = [
