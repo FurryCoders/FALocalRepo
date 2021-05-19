@@ -76,7 +76,7 @@ requests = ">=2.24.0,<3.0.0"
 
 [[package]]
 name = "falocalrepo-database"
-version = "4.19.0"
+version = "4.19.1"
 description = "Database functionality for falocalrepo."
 category = "main"
 optional = false
@@ -414,8 +414,8 @@ faapi = [
     {file = "faapi-2.19.1.tar.gz", hash = "sha256:139c142c7a8c93e6933708a28465346487fa709951f38c59503bab55aa1ed1fc"},
 ]
 falocalrepo-database = [
-    {file = "falocalrepo-database-4.19.0.tar.gz", hash = "sha256:9a8d8f298a29a6ab49b19fb010f3024c0c29a251ca46d1eeb2a58fb60347f500"},
-    {file = "falocalrepo_database-4.19.0-py3-none-any.whl", hash = "sha256:d10e91bfc21207bb0799281ad64bd7acfd3391dc4a67e0d3a97b87acaed57fc8"},
+    {file = "falocalrepo-database-4.19.1.tar.gz", hash = "sha256:95bc4e86f4cf59f49b197716a7b7e1aa2510c95fdc50676e46d24b1132be392e"},
+    {file = "falocalrepo_database-4.19.1-py3-none-any.whl", hash = "sha256:651d9a29517116dac4550cddeecfd7e7b395e62b221f95a123c11dc5240fbea6"},
 ]
 falocalrepo-server = [
     {file = "falocalrepo-server-1.11.0.tar.gz", hash = "sha256:9e063230bab563ef7746a9151ece95fd193790c1badfa1da30c8308cfad67b0b"},
