@@ -511,7 +511,7 @@ The submissions table contains the metadata of the submissions downloaded by the
 * `TITLE`
 * `DATE` upload date in ISO format YYYY-MM-DD**T**HH:MM
 * `DESCRIPTION` description in html format
-* `TAGS` keywords sorted alphanumerically and bar-separated
+* `TAGS` bar-separated tags
 * `CATEGORY`
 * `SPECIES`
 * `GENDER`
