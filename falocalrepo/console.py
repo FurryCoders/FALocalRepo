@@ -65,7 +65,7 @@ def check_database_version(db: FADatabase, raise_for_error: bool = True):
 
 
 def raiser(e: Exception) -> Callable:
-    def inner(*_):
+    def inner(*_, **__):
         raise e
 
     return inner
