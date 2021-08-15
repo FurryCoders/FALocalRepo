@@ -18,7 +18,6 @@ from falocalrepo_database import FADatabaseCursor
 from falocalrepo_database import FADatabaseTable
 from falocalrepo_database import __version__ as __database_version__
 from falocalrepo_database.database import clean_username
-from falocalrepo_database.exceptions import MultipleConnections
 from falocalrepo_database.selector import Selector
 from falocalrepo_server import __version__ as __server_version__
 from falocalrepo_server import server
@@ -63,12 +62,6 @@ def check_database_version(db: FADatabase, raise_for_error: bool = True):
         print("Use database upgrade command to upgrade database")
         if raise_for_error:
             raise err
-
-
-def check_database_connections(db: FADatabase):
-    if len(db.check_connection(raise_for_error=False)) > 1:
-        db.close()
-        raise MultipleConnections(f"Another connection to {db.database_path} was detected")
 
 
 def raiser(e: Exception) -> Callable:
@@ -973,10 +966,10 @@ def console(comm: str = "", *args: str) -> None:
         print(f"Using FALOCALREPO_DATABASE: {db_path}", file=stderr)
         database_path = db_path if db_path.name.endswith(".db") else db_path / database_path
 
+    FADatabase.check_connection(database_path, raise_for_error=True)
     db: FADatabase = FADatabase(database_path)
 
     try:
-        check_database_connections(db)
         db.settings.add_history(f"{comm} {' '.join(args)}".strip())
         db.commit()
 
