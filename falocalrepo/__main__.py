@@ -1,4 +1,3 @@
-from os import environ
 from os import getcwd
 from os.path import join
 from sqlite3 import DatabaseError
@@ -9,6 +8,7 @@ from sys import exit
 from sys import stderr
 from traceback import print_exc
 
+from .console import Flags
 from .console import console
 from .exceptions import MalformedCommand
 from .exceptions import MultipleInstances
@@ -23,25 +23,25 @@ def main():
         print()
         exit(130)
     except (MalformedCommand, UnknownCommand) as err:
-        print_exc(file=stderr) if environ.get("FALOCALREPO_DEBUG", None) is not None else print(repr(err), file=stderr)
+        print_exc(file=stderr) if Flags.DEBUG else print(repr(err), file=stderr)
         exit(1)
     except MultipleInstances as err:
-        print_exc(file=stderr) if environ.get("FALOCALREPO_DEBUG", None) is not None else print(repr(err), file=stderr)
+        print_exc(file=stderr) if Flags.DEBUG else print(repr(err), file=stderr)
         exit(2)
     except UnknownFolder as err:
-        print_exc(file=stderr) if environ.get("FALOCALREPO_DEBUG", None) is not None else print(repr(err), file=stderr)
+        print_exc(file=stderr) if Flags.DEBUG else print(repr(err), file=stderr)
         exit(3)
     except ConnectionError as err:
-        print_exc(file=stderr) if environ.get("FALOCALREPO_DEBUG", None) is not None else print(repr(err), file=stderr)
+        print_exc(file=stderr) if Flags.DEBUG else print(repr(err), file=stderr)
         exit(4)
     except (DatabaseError, IntegrityError, OperationalError) as err:
-        print_exc(file=stderr) if environ.get("FALOCALREPO_DEBUG", None) is not None else print(repr(err), file=stderr)
+        print_exc(file=stderr) if Flags.DEBUG else print(repr(err), file=stderr)
         exit(5)
     except (TypeError, AssertionError) as err:
-        print_exc(file=stderr) if environ.get("FALOCALREPO_DEBUG", None) is not None else print(repr(err), file=stderr)
+        print_exc(file=stderr) if Flags.DEBUG else print(repr(err), file=stderr)
         exit(6)
     except (Exception, BaseException) as err:
-        print_exc(file=stderr) if environ.get("FALOCALREPO_DEBUG", None) is not None else print(repr(err), file=stderr)
+        print_exc(file=stderr) if Flags.DEBUG else print(repr(err), file=stderr)
         with open(join(getcwd(), "FA.log"), "w") as f:
             print_exc(file=f)
             print(f"Trace written to {f.name}", file=stderr)

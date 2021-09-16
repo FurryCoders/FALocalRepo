@@ -45,6 +45,11 @@ from .exceptions import MultipleInstances
 from .exceptions import UnknownCommand
 
 
+class Flags:
+    DEBUG: bool = environ.get("FALOCALREPO_DEBUG", None) is not None
+    DATABASE: Optional[Path] = Path(p) if (p := environ.get("FALOCALREPO_DATABASE", None)) is not None else None
+
+
 def check_process(process: str):
     ps: int = 0
     for p in process_iter():
@@ -955,13 +960,13 @@ def console(comm: str = "", *args: str) -> None:
     elif comm not in (init.__name__, config.__name__, download.__name__, database.__name__):
         raise UnknownCommand(comm)
 
-    if environ.get("FALOCALREPO_DEBUG", None) is not None:
+    if Flags.DEBUG is not None:
         print(f"Using FALOCALREPO_DEBUG", file=stderr)
 
     # Initialise and prepare database
     database_path: Path = Path("FA.db")
 
-    if db_path := environ.get("FALOCALREPO_DATABASE", None):
+    if db_path := Flags.DATABASE:
         db_path = Path(db_path)
         print(f"Using FALOCALREPO_DATABASE: {db_path}", file=stderr)
         database_path = db_path if db_path.name.endswith(".db") else db_path / database_path
