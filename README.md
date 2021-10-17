@@ -144,7 +144,7 @@ the program will close with an error
 
 _Note_: the program will not operate if the version of the database does not match the version of
 the `falocalrepo-database` module. Only `database info` and `database upgrade` commands can be run if the database is
-not up to date.
+not up-to-date.
 
 When the database is first initialised, it defaults the submissions files folder to `FA.files`. This value can be
 changed using the [`config` command](#configuration).
