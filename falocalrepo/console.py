@@ -229,10 +229,12 @@ def config_cookies(db: FADatabase, *args: str):
 def config_files_folder(db: FADatabase, *args: str):
     """
     USAGE
-        falocalrepo config files-folder [<new folder>]
+        falocalrepo config files-folder [move=<move-files>] [<new folder>]
 
     ARGUMENTS
         <new folder>    Path to new files folder
+        <move-files>    Set to 'true' or ignore to move old files folder, set to
+                        'false' to update files folder value without moving files
 
     DESCRIPTION
         Read or modify the folder used to store submission files. This can be any
@@ -240,11 +242,15 @@ def config_files_folder(db: FADatabase, *args: str):
         program will move any files to the new location.
     """
 
+    opts, args = parse_args(args)
+
     if not args:
         print(f"files folder: {db.settings['FILESFOLDER']} ({db.files_folder.resolve()})")
     elif len(args) == 1:
+        if mv := opts.get("move", "true") == "false":
+            print(f"Ignoring original files folder {db.settings['FILESFOLDER']} ({db.files_folder.resolve()})")
         print(f"Moving files folder to {args[0]}")
-        db.move_files_folder(args[0])
+        db.move_files_folder(args[0], move_files=not mv)
         print("Done")
     else:
         raise MalformedCommand("files-folder needs one argument")
