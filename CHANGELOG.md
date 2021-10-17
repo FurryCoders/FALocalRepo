@@ -12,6 +12,7 @@
 ### Fixes
 
 * Fix rare errors caused by unexpected keyword arguments passed to the exception-raiser function
+* Fix error causing keyword arguments with spaces to be ignored
 
 ## 3.23.15
 
