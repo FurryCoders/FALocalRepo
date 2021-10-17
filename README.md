@@ -219,8 +219,9 @@ Available settings are:
 > falocalrepo config cookies a=38565475-3421-3f21-7f63-3d341339737 b=356f5962-5a60-0922-1c11-65003b703038
 > ```
 
-* `files-folder [<new folder>]` the folder used to store submission files. This can be any path relative to the folder
-  of the database. If a new value is given, the program will move any files to the new location.
+* `files-folder [move=<move-files>] [<new folder>]` the folder used to store submission files. This can be any path
+  relative to the folder of the database. If a new value is given, the program will move any files to the new location.
+  Setting the `<move-files>` value to `false` skips the moving and simply updates the database entry.
 
 > ```
 > falocalrepo config files-folder SubmissionFiles
