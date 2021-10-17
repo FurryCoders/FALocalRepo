@@ -102,7 +102,7 @@ def parse_args(args_raw: Iterable[str]) -> tuple[dict[str, str], list[str]]:
     args: list[str] = []
 
     for i, arg in enumerate(args_raw):
-        if match(r"^[^ ]+=[^ ]*$", arg):
+        if match(r"^[\w-]+=.*$", arg):
             opts.append(arg)
         elif arg == "--":
             args.extend(args_raw[i + 1:])
