@@ -775,7 +775,7 @@ located in the current folder with a second database located in another folder.
 
 ### Fixes
 
-* Fix error error with users journals download
+* Fix error with users journals download
 
 ## 3.10.1
 
@@ -818,7 +818,7 @@ been improved slightly with better explanations. A small error in the database c
 
 Both the database and server modules have been update to versions 3.5.0 and 1.3.1 respectively. The database now holds a
 history of all commands (except for version printing and help) instead of just last start and last update, and A
-new `database history` command was added to print the commands history.
+new `database history` command was added to print the commands' history.
 
 When a non-help command is used, the program now checks for updates to its components and prints them to screen.
 
@@ -899,7 +899,7 @@ counter in database info has also been added. falocalrepo-server dependency upda
 
 Background changes and fixes. The `main_console` function was renamed to `console` and is now the only direct export of
 the package, falocalrepo-server dependency has been updated to ^1.1.2, help messages have been slightly reformatted, and
-command does not dwfault to `init` when absent.
+command does not default to `init` when absent.
 
 ### Changes
 
@@ -1000,7 +1000,7 @@ regarding search wildcards.
 
 ## 3.5.4
 
-A new stop option has been added to the download update command to modify the number of submisisons after which the
+A new stop option has been added to the download update command to modify the number of submissions after which the
 program stops looking through a user's folder. The database update from 2.7 to 3 has been upgraded and now files are
 found directly in the submission folder.
 
@@ -1035,12 +1035,12 @@ found directly in the submission folder.
 
 ## 3.5.0
 
-The new `database search-journals` command allows to search journals by author, title, date and content. The old
+The new `database search-journals` command allows searching journals by author, title, date and content. The old
 submissions search command is now called `search-submissions`.
 
 The help message and readme have been fixed and missing information has been added.
 
-The output of the `download users` command has been generalised so it does not use "submissions" even when downloading
+The output of the `download users` command has been generalised, so it does not use "submissions" even when downloading
 journals; uses "items" instead.
 
 ### Changes
@@ -1056,7 +1056,7 @@ journals; uses "items" instead.
 
 The program now uses [FAAPI](https://gitlab.com/MatteoCampinoti94/FAAPI) version 2.7.3, which supports downloading users
 journals. The database has been updated to version 3.2.0 to support this change with a new `JOURNALS` table and
-a `JOURNALS` field in the `USERS` table. Journals can be download with the `download users` command as any other
+a `JOURNALS` field in the `USERS` table. Journals can be downloaded with the `download users` command as any other
 folder (gallery, scraps, etc...) or with the `download journals` command by supplying journal ID's. Journals can also be
 added manually using the `database add-journal` command. A corresponding `database remove-journals` has also been added.
 
@@ -1130,11 +1130,11 @@ is maintained when downloading single submissions.
 
 ## 3.2.4
 
-Fixes a but that caused tiered paths to overlap if the submission ID ended with zeroes.
+Fixes a bug that causing tiered paths to overlap if the submission ID ended with zeroes.
 
 ### Fixes
 
-* Tiered path for submssions ID's ended with zeroes
+* Tiered path for submissions ID's ended with zeroes
 
 ## 3.2.3
 
@@ -1144,7 +1144,7 @@ user entry are not downloaded again.
 ### Fixes
 
 * Maintain order of users and folders passed to download
-* Do not redownload submissions if already present in submissions table
+* Do not download submissions again if already present in submissions table
 
 ## 3.2.2
 
@@ -1157,7 +1157,7 @@ break the spacing of the download output.
 
 ## 3.2.1
 
-Fix old database having the wrong version in the name when backing it after updating from verison 2.7.0.
+Fix old database having the wrong version in the name when backing it after updating from version 2.7.0.
 
 ### Fixes
 
@@ -1212,11 +1212,11 @@ database, using UPDATE instead of INSERT OR REPLACE
 
 ## 3.1.5
 
-Improve database update function by saving the ID's of the submissions files that weren't found during the transfer.
+Improve database update function by saving the ID's of the submissions files that were not found during the transfer.
 
 ### Changes
 
-* Save ID's of submisions not found during database update
+* Save ID's of submissions not found during database update
 
 ## 3.1.4
 
@@ -1232,7 +1232,7 @@ If the now unsupported "extras" folder is encountered during update, it now prin
 
 ### Changes
 
-* Explicitely warn about extras folders
+* Explicitly warn about extras folders
 
 ## 3.1.2
 
@@ -1270,7 +1270,7 @@ This releases fixes counters not being updated in the new database when updating
 Under the hood changes include exporting the main console function so that the package can be imported and called with
 arguments from other Python scripts.
 
-Readme has also been improved with more informations about issues and contributing.
+Readme has also been improved with more information about issues and contributing.
 
 ### Fixes
 
@@ -1297,7 +1297,7 @@ stable.
 
 ## 3.0.0 - All New and Improved
 
-Release 3.0.0 marks a complete change in how the program is run, its capabilities and future developement.
+Release 3.0.0 marks a complete change in how the program is run, its capabilities and future development.
 
 Following the change of interface in January 2020, version 2 stopped working, but with this new release the tool can
 once again get content from FurAffinity and is much simpler to update to support future changes to FA's web interface.
@@ -1316,14 +1316,14 @@ All database functions have been completely overhauled and are now _considerably
 500k submissions table and a modern SSD drive, searching for a specific tag takes 0,90s on average, and searching for a
 string in the descriptions takes only 1,30s. Time may vary depending on search parameters and drive speed.
 
-The last big change is in regards to the packaging and distribution of the program. falocalrepo is now a PyPi package,
-easily installed with a single pip command. All dependencies have also been packaged and distributed on PyPi and are
-handled without the need for git submodules. The new distribution method allows to run falocalrepo in any folder,
-without the need to have the program itself stored with the database.
+The last big change regards the packaging and distribution of the program. falocalrepo is now a PyPi package, easily
+installed with a single pip command. All dependencies have also been packaged and distributed on PyPi and are handled
+without the need for git submodules. The new distribution method allows running falocalrepo in any folder, without the
+need to have the program itself stored with the database.
 
 ### Changes
 
-* Use FAAPI package to separate scraper developement from interface
+* Use FAAPI package to separate scraper development from interface
 * Support for new FA's interface
 * Menu interface replaced with a command line tool
 * Database cleanup
@@ -1348,7 +1348,7 @@ PS: Linux release is once again bigger than it should. Will work on finding a mo
 ## 2.10.1
 
 Extras' `e` option has been changed to search for ':iconusername:' and ':usernameicon:' only in the descriptions as
-searching in keywords too caused too many false positives in case the username was a common word/phrase.
+searching in keywords caused too many false positives in case the username was a common word/phrase.
 
 Extras' `E` options has been changed to search 'username' in submissions' titles too.
 
@@ -1414,7 +1414,7 @@ Download and update have a new 'dbonly' option that allows to add the entries to
 Unforeseen errors are now caught and displayed without being too verbose. To display errors normally the program can be
 run with the option '--debug'.
 
-An important bug has been fixed in the repair section. A missing return was breaking the INFOS table rapair.
+An important bug has been fixed in the repair section. A missing return was breaking the INFOS table repair.
 
 PS: Linux release is once again bigger than it should. Will work on finding a more permanent fix.
 
@@ -1433,7 +1433,7 @@ PS: Linux release is once again bigger than it should. Will work on finding a mo
 ## 2.7.3
 
 The search URL has been modified to avoid false positives by specifically searching only the description and keywords.
-The default search employed by FA looks for search terms inside submissions filenames as well and it could cause false
+The default search employed by FA looks for search terms inside submissions filenames as well, and it could cause false
 positives.
 
 Unforeseen errors are now caught by the main script and their information displayed before exiting the program.
@@ -1477,7 +1477,7 @@ the right end of the terminal screen. A progress bar is also shown when the subm
 support this).
 
 A new INDEX entry has been added to the INFOS table, it is used to save the update status of the indexes used in the
-search function. Its values are either '0' if they are not up to date or '1' if they are.
+search function. Its values are either '0' if they are not up-to-date or '1' if they are.
 
 Together with the new INDEX entry a new 'noindex' option has been added to the download/update section. If passed then
 the program will not rebuild indexes after the download/update operation is completed and will set the INDEX entry to '
@@ -1491,10 +1491,10 @@ PS: Linux release is once again bigger than it should. Will work on finding a mo
 
 ## 2.6
 
-Submissions descriptions are now saved in the database together with the submissions data.
+Submissions descriptions are now saved in the database together with the submissions' data.
 
-Search has been updated to work with the new description field so it is now possible to search descriptions both offline
-in the database and online with the web search.<br>
+Search has been updated to work with the new description field, so it is now possible to search descriptions both
+offline in the database and online with the web search.<br>
 Case sensitivity can now be turned on/off with 'case' option in both normal and regex mode (but not online).<br>
 Indexes have been added to quicken the search.
 
@@ -1515,10 +1515,10 @@ Update 2018/05/02: Linux binary was compiled with an error, it is fixed now
 
 ## 2.5
 
-The program is now capable of running searches on the main website. If there no results can be found in the local
-database the user will be automatically asked if they want to perform the search online instead.
+The program is now capable of running searches on the main website. If no results can be found in the local database the
+user will be automatically asked if they want to perform the search online instead.
 
-A new 'options' field in the search menu allows to enable regex syntax and to search the website directly.
+A new 'options' field in the search menu allows enabling regex syntax and to search the website directly.
 
 Local search can now match multiple users. For example if there are users 'tiger' and 'liger' in the database using '
 iger' in the user field will match both of them.
@@ -1527,7 +1527,7 @@ Search output has also been improved.
 
 A few more bugs have been squashed and some functions redesigned.
 
-PS: I have no idea why but this release for Linux is over twice the size of previus ones. Will work on fixing it.
+PS: I have no idea why but this release for Linux is over twice the size of previous ones. Will work on fixing it.
 
 **Warning**: Binaries are for 64bit systems only
 
@@ -1540,7 +1540,7 @@ will add an option to use regex.
 
 A few small bugs have been fixed.
 
-PS: I have no idea why but this release for Linux is over twice the size of previus ones. Will work on fixing it.
+PS: I have no idea why but this release for Linux is over twice the size of previous ones. Will work on fixing it.
 
 **Warning**: Binaries are for 64bit systems only
 
@@ -1548,14 +1548,14 @@ PS: I have no idea why but this release for Linux is over twice the size of prev
 
 From this release the USERS table will also contain the "full" version of a user's nickname.<br>
 In earlier versions user 'Tiger_Artist' would be saved only as 'tigerartist', the username used as url on the website.
-However from now on the USERS table will also contain the original name choosen by the user in a new column called '
+However, from now on the USERS table will also contain the original name chosen by the user in a new column called '
 NAMEFULL'.
 
 The database version has been bumped up to 2.3 as well.
 
 A few bugs have been squashed and some functions have been improved.
 
-PS: I have no idea why but this release for Linux is over twice the size of previus ones. Will work on fixing it.
+PS: I have no idea why but this release for Linux is over twice the size of previous ones. Will work on fixing it.
 
 **Warning**: Binaries are for 64bit systems only
 
@@ -1572,14 +1572,14 @@ Uncaught exceptions have also been taken care of when loading the cookies file.
 
 Latest updates in the program used for reading keystrokes and text have also been included in these latest binaries.
 
-PS: I have no idea why but this release for Linux is over twice the size of the previus one. Will work on fixing it for
+PS: I have no idea why but this release for Linux is over twice the size of the previous one. Will work on fixing it for
 the next release.
 
 **Warning**: Binaries are for 64bit systems only
 
 ## 2.1
 
-With this release all bugs with the users database are fixed and the informations are properly stored and saved.
+With this release all bugs with the users' database are fixed and the information are properly stored and saved.
 
 The repair function has been expanded to include the users table. Repeating users, empty ones, names with capital
 letters and/or underscores and empty sections/folders fields will be automatically corrected by the program.
@@ -1602,7 +1602,7 @@ Big update and main version bump.
 The program now also saves category, species, gender and rating of downloaded submissions. These can also be used during
 search.
 
-Format ofthe on-screen output has ben completely changed for downloads and updates.
+Format of the on-screen output has been completely changed for downloads and updates.
 
 Databases can now be upgraded from earlier versions. Files from previous versions are backed up during the upgrade
 process. Submissions that are no longer present on the forum will be saved with default, generalized values.
@@ -1652,9 +1652,9 @@ Other changes are under-the-hood: moved some functions around and into modules t
 ## 1.2
 
 Filetype detection now works reliably across Windows and Unix platforms!
-Unfortunately safe exit still doesn't work reliably on Windows so it's still disabled on it.
+Unfortunately safe exit still doesn't work reliably on Windows, so it's still disabled on it.
 
-A new informations table has been added to the database which stores:
+A new information table has been added to the database which stores:
 
 * name of the database (for use in future versions)
 * number of users
@@ -1664,16 +1664,16 @@ A new informations table has been added to the database which stores:
 * time of last download start, in seconds since epoch
 * duration of last download in seconds
 
-The table is created with all values reset to 0 in case it is not present so it's perfectly compatible with older
+The table is created with all values reset to 0 in case it is not present, so it's perfectly compatible with older
 versions.
 
 **Warning**: Binaries are for 64bit systems only
 
 ## 1.1.2
 
-The program can now be run on windows as well!
+The program can now be run on Windows as well!
 
-Unfortunately due to missing libraries on windows automatic filetype management and safe exit do NOT work so be careful.
+Unfortunately due to missing libraries on Windows automatic filetype management and safe exit do NOT work so be careful.
 
 **Warning**: Binaries are for 64bit systems only
 
