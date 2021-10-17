@@ -697,15 +697,18 @@ def database_server(db: FADatabase, *args: str):
     """
     USAGE
         falocalrepo database server [host=<host>] [port=<port>]
+                    [ssl-cert=<ssl-cert>] [ssl-key=<ssl-key>]
 
     ARGUMENTS
-        <host>  Host address
-        <port>  Port
+        <host>      Host address
+        <port>      Port
+        <ssl-cert>  SSL certificate for HTTPS
+        <ssl-key>   SSL key for HTTPS
 
     DESCRIPTION
         Starts a server at <host>:<port> to navigate the database, defaults to
-        0.0.0.0:8080. For more details on usage see
-        https://pypi.org/project/falocalrepo-server/{0}.
+        0.0.0.0:80. The <ssl-cert> and <ssl-key> allow serving with HTTPS. For more
+        details on usage see https://pypi.org/project/falocalrepo-server/{0}.
 
     EXAMPLES
         falocalrepo database server host=127.0.0.1 port=5000
@@ -714,7 +717,12 @@ def database_server(db: FADatabase, *args: str):
     db.close()
     database_path, db = db.database_path, None
     opts, _ = parse_args(args)
-    server(database_path, host=opts.get("host", "0.0.0.0"), port=int(opts.get("port", 8080)))
+    server(database_path,
+           host=opts.get("host", "0.0.0.0"),
+           port=int(p) if (p := opts.get("port", None)) else p,
+           ssl_cert=opts.get("ssl-cert", None),
+           ssl_key=opts.get("ssl-key", None)
+           )
 
 
 def database_merge_copy(db: FADatabase, merge: bool = True, *args):

@@ -418,11 +418,11 @@ Available operations are:
 > falocalrepo database remove-journals 123456 135724 876512
 > ```
 
-* `server [host=<host>] [port=<port>]` starts a server at `<host>:<port>` to navigate the database
-  using `falocalrepo-server`. Defaults to `0.0.0.0:8080`.
-  See [falocalrepo-server](https://pypi.org/project/falocalrepo-server) for more details on usage. Running the server
-  does not occupy the database connection (it is only occupied when the server is actively searching the database),
-  which allows running other `database` commands; `download` commands remain unavailable.
+* `server [host=<host>] [port=<port>] [ssl-cert=<ssl-cert>] [ssl-key=<ssl-key>]` starts a server at `<host>:<port>` to
+  navigate the database using `falocalrepo-server`. The `<ssl-cert>` and `<ssl-key>` allow serving with HTTPS.Defaults
+  to `0.0.0.0:80`. See [falocalrepo-server](https://pypi.org/project/falocalrepo-server) for more details on usage.
+  Running the server does not occupy the database connection (it is only occupied when the server is actively searching
+  the database), which allows running other `database` commands; `download` commands remain unavailable.
 
 > ```
 > falocalrepo database server host=127.0.0.1 port=5000
