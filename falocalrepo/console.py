@@ -78,7 +78,7 @@ def raiser(e: Exception) -> Callable:
 
 def docstring_format(*args, **kwargs):
     def inner(obj: {__doc__}) -> {__doc__}:
-        obj.__doc__ = obj.__doc__.format(*args, **kwargs)
+        obj.__doc__ = (obj.__doc__ or "").format(*args, **kwargs)
         return obj
 
     return inner
