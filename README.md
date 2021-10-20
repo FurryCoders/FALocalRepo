@@ -106,6 +106,7 @@ To set the cookies use the `config cookies` command. See [#Configuration](#confi
 > **How to Read Usage Instructions**
 >  * `command` a static command keyword
 >  * `<arg>` `<param>` `<value>` an argument, parameter, value, etc... that must be provided to a command
+>  * `param=<value>` a keyword argument with a static key and a value
 >  * `[<arg>]` an optional argument that can be omitted
 >  * `<arg1> | <arg2>` mutually exclusive arguments, only use one
 
