@@ -249,7 +249,7 @@ def config_files_folder(db: FADatabase, *args: str):
     elif len(args) == 1:
         if mv := opts.get("move", "true") == "false":
             print(f"Ignoring original files folder {db.settings['FILESFOLDER']} ({db.files_folder.resolve()})")
-        print(f"Moving files folder to {args[0]}")
+        print(f"Changing files folder to {args[0]}")
         db.move_files_folder(args[0], move_files=not mv)
         print("Done")
     else:
