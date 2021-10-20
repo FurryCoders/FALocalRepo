@@ -727,7 +727,7 @@ def database_server(db: FADatabase, *args: str):
     opts, _ = parse_args(args)
     server(database_path,
            host=opts.get("host", "0.0.0.0"),
-           port=int(p) if (p := opts.get("port", None)) else None,
+           port=int(p) if (p := opts.get("port", None)) and p != "0" else None,
            ssl_cert=opts.get("ssl-cert", None),
            ssl_key=opts.get("ssl-key", None),
            redirect_http=opts.get("redirect-http", None) == "true"
