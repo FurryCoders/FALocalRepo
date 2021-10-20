@@ -715,7 +715,8 @@ def database_server(db: FADatabase, *args: str):
 
     DESCRIPTION
         Starts a server at <host>:<port> to navigate the database, defaults to
-        0.0.0.0:80. The <ssl-cert> and <ssl-key> allow serving with HTTPS. For more
+        0.0.0.0:80. The <ssl-cert> and <ssl-key> allow serving with HTTPS. Setting
+        <redirect-http> to 'true' enables HTTP to HTTPS redirection. For more
         details on usage see https://pypi.org/project/falocalrepo-server/{0}.
 
     EXAMPLES
