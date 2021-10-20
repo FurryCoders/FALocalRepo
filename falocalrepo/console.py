@@ -704,12 +704,14 @@ def database_server(db: FADatabase, *args: str):
     USAGE
         falocalrepo database server [host=<host>] [port=<port>]
                     [ssl-cert=<ssl-cert>] [ssl-key=<ssl-key>]
+                    [redirect-http=<redirect-http>]
 
     ARGUMENTS
-        <host>      Host address
-        <port>      Port
-        <ssl-cert>  SSL certificate for HTTPS
-        <ssl-key>   SSL key for HTTPS
+        <host>          Host address
+        <port>          Port
+        <ssl-cert>      SSL certificate for HTTPS
+        <ssl-key>       SSL key for HTTPS
+        <redirect-http> Set to 'true' to enable HTTP to HTTPS redirection
 
     DESCRIPTION
         Starts a server at <host>:<port> to navigate the database, defaults to
@@ -727,7 +729,8 @@ def database_server(db: FADatabase, *args: str):
            host=opts.get("host", "0.0.0.0"),
            port=int(p) if (p := opts.get("port", None)) else p,
            ssl_cert=opts.get("ssl-cert", None),
-           ssl_key=opts.get("ssl-key", None)
+           ssl_key=opts.get("ssl-key", None),
+           redirect_http=opts.get("redirect-http", None) == "true"
            )
 
 
