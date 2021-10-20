@@ -21,6 +21,7 @@
     * Check database connection before opening database
 * falocalrepo-server dependency set to \~1.12.0
     * Support new SSL arguments and change default port to 80/443
+        * Add `ssl-cert` and `ssl-key` arguments to `database server` command
 
 ### Fixes
 
