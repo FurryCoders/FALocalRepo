@@ -1,5 +1,18 @@
 # Changelog
 
+## 3.24.1
+
+### Changes
+
+* falocalrepo-server dependency set to \~1.13.0
+    * Support new HTTP redirection
+        * Add `redirect-http` argument to `database server` command
+* Add new `move` argument to `config files-folder` command to skip moving the files to the new location
+
+### Fixes
+
+* Fix possible errors when passing 0 as port to `database server`
+
 ## 3.24.0
 
 ### Changes
