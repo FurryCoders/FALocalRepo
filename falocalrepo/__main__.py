@@ -19,6 +19,8 @@ from .exceptions import UnknownFolder
 def main():
     try:
         console(*filter(bool, map(str.strip, argv[1:])))
+    except SystemExit:
+        raise
     except KeyboardInterrupt:
         print()
         exit(130)
