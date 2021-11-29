@@ -114,11 +114,8 @@ def parse_args(args_raw: Iterable[str]) -> tuple[dict[str, str], list[str]]:
     return parameters(opts), args
 
 
-def check_update(version: str, package: str) -> bool:
-    if (latest := latest_version(package)) and latest != version:
-        print(f"New {package} version available: {version} > {latest}")
-        return True
-    return False
+def check_update(version: str, package: str) -> Optional[str]:
+    return latest if (latest := latest_version(package)) and latest != version else None
 
 
 def help_(comm: str = "", op: str = "", *_rest) -> str:
@@ -138,6 +135,7 @@ def help_(comm: str = "", op: str = "", *_rest) -> str:
     f = {
         "": console,
         "help": help_,
+        "update": update,
         "init": init,
         "config": config,
         "config list": config_list,
@@ -917,6 +915,39 @@ def database(db: FADatabase, comm: str = "", *args: str):
     }.get(comm, raiser(UnknownCommand(f"database {comm}")))(db, *args)
 
 
+def update(shell_arg: str = "", *_args: str):
+    """
+    USAGE
+        falocalrepo update [shell]
+
+    AVAILABLE COMMANDS
+        shell       Print shell command to upgrade components
+
+    DESCRIPTION
+        Check for updates to falocalrepo and its main dependencies on PyPi. The
+        optional 'shell' command can be used to output the shell command to upgrade
+        any component that has available updates.
+    """
+    packages: list[tuple[str, str]] = [
+        (__version__, "falocalrepo"),
+        (__database_version__, "falocalrepo-database"),
+        (__server_version__, "falocalrepo-server"),
+        (__faapi_version__, "faapi")
+    ]
+    updates: list[tuple[str, str, str]] = [
+        (current, latest, package)
+        for [current, package] in packages
+        if (latest := check_update(current, package))
+    ]
+    if shell_arg == "shell":
+        print(f"python3 -m pip install --upgrade {' '.join(package for [*_, package] in updates)}") if updates else None
+        return
+    for [current, latest, package] in updates:
+        print(f"New {package} version available: {latest} (current {current})")
+    if not packages:
+        print("No updates available")
+
+
 @docstring_format(__version__, __database_version__, __server_version__, __faapi_version__)
 def console(comm: str = "", *args: str) -> None:
     """
@@ -939,10 +970,10 @@ def console(comm: str = "", *args: str) -> None:
         -v, --version   Display version
         -d, --database  Display database version
         -s, --server    Display server version
-        -u, --updates   Check for updates on PyPi
 
     AVAILABLE COMMANDS
         help            Display the manual of a command
+        update          Check for updates on PyPi
         init            Create/update the database and exit
         config          Manage settings
         download        Perform downloads
@@ -958,6 +989,9 @@ def console(comm: str = "", *args: str) -> None:
     elif comm == "help":
         print(help_(*args))
         return
+    elif comm == "update":
+        update(*args)
+        return
     elif comm in ("-v", "--version"):
         print(__version__)
         return
@@ -966,14 +1000,6 @@ def console(comm: str = "", *args: str) -> None:
         return
     elif comm in ("-s", "--server"):
         print(__server_version__)
-        return
-    elif comm in ("-u", "--updates"):
-        v = check_update(__version__, "falocalrepo")
-        v += check_update(__database_version__, "falocalrepo-database")
-        v += check_update(__server_version__, "falocalrepo-server")
-        v += check_update(__faapi_version__, "faapi")
-        if not v:
-            print("No updates available")
         return
     elif comm not in (init.__name__, config.__name__, download.__name__, database.__name__):
         raise UnknownCommand(comm)
