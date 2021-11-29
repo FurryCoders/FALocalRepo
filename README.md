@@ -20,9 +20,9 @@ This program was born with the desire to provide a relatively easy-to-use method
 that they care about from the forum.
 
 The data is stored into a SQLite database, and the submissions files are saved in a tiered tree structure based on their
-ID's. Using SQLite instead of a client-server database makes the program extremely portable, only needing a
-working Python 3.9+ installation to work, and allows the downloaded data to be moved and backed up by simply
-moving/copying the database file and submissions files folder.
+ID's. Using SQLite instead of a client-server database makes the program extremely portable, only needing a working
+Python 3.9+ installation to work, and allows the downloaded data to be moved and backed up by simply moving/copying the
+database file and submissions files folder.
 
 All download operations are performed through the custom FurAffinity scraping
 library [faapi](https://pypi.org/project/faapi/). To ensure proper crawling behavior the library strictly follows
@@ -44,6 +44,7 @@ functionalities of the program.
     1. [Environmental Variables](#environmental-variables)
     1. [Error Codes](#error-codes)
     1. [Help](#help)
+    1. [Update](#update)
     1. [Init](#init)
     1. [Configuration](#configuration)
     1. [Download](#download)
@@ -77,8 +78,8 @@ To upgrade the `falocalrepo` and its dependencies, use pip to upgrade all three 
 python3 -m pip install --upgrade falocalrepo faapi falocalrepo-database falocalrepo-server
 ```
 
-To check for updates use the `--updates` option when launching the program. A message will be if there is an update
-available for any component.
+To check for updates use the [`update` command](#update). A message will appear if there is an update available for any
+component.
 
 The program needs cookies from a logged-in FurAffinity session to download protected pages. Without the cookies the
 program can still download publicly available pages, but others will return empty. See [#Cookies](#cookies) for more
@@ -126,11 +127,11 @@ Available options are:
 * `-v, --version` show program version
 * `-d, --database` show database version
 * `-s, --server` show server version
-* `-u, --updates` check for updates on PyPi
 
 Available commands are:
 
 * `help` display the manual of a command
+* `update` check for updates on PyPi
 * `init` create the database and exit
 * `config` manage settings
 * `download` perform downloads
@@ -193,6 +194,15 @@ The `help` command gives information on the usage of the program and its command
 > ```
 > falocalrepo help database search-users
 > ```
+
+### Update
+
+`update [shell]`
+
+The `update` command checks for updates to falocalrepo and its main dependencies on PyPi. The optional `shell` command
+can be used to output the python pip command to upgrade the components with available updates.
+
+_Note_: The command needs an internet connection.
 
 ### Init
 
