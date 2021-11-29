@@ -11,7 +11,7 @@
 [![version_pypi](https://img.shields.io/pypi/v/falocalrepo-database?logo=pypi&label=falocalrepo-database)](https://pypi.org/project/falocalrepo-database/)
 [![version_pypi](https://img.shields.io/pypi/v/falocalrepo-server?logo=pypi&label=falocalrepo-server)](https://pypi.org/project/falocalrepo-server/)
 
-Pure Python program to download any user's gallery/scraps/favorites from the FurAffinity forum in an easily handled
+Pure Python program to download submissions, journals, and user folders from the FurAffinity forum in an easily handled
 database.
 
 ## Introduction
@@ -20,9 +20,9 @@ This program was born with the desire to provide a relatively easy-to-use method
 that they care about from the forum.
 
 The data is stored into a SQLite database, and the submissions files are saved in a tiered tree structure based on their
-ID's. Using SQLite instead of a client-server database makes the program to be extremely portable, only needing a
+ID's. Using SQLite instead of a client-server database makes the program extremely portable, only needing a
 working Python 3.9+ installation to work, and allows the downloaded data to be moved and backed up by simply
-moving/copying the database file and submission files folder.
+moving/copying the database file and submissions files folder.
 
 All download operations are performed through the custom FurAffinity scraping
 library [faapi](https://pypi.org/project/faapi/). To ensure proper crawling behavior the library strictly follows
