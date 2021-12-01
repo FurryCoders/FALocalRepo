@@ -1,5 +1,17 @@
 # Changelog
 
+## 3.25.0
+
+### Changes
+
+* Move `--update` option to its own `update` command
+* falocalrepo-server dependency set to \~1.14.0
+    * Change behaviour of HTTP to HTTPS redirection
+
+### Fixes
+
+* Fix `SystemExit` being caught as an error
+
 ## 3.24.1
 
 ### Changes
