@@ -702,19 +702,19 @@ def database_server(db: FADatabase, *args: str):
     USAGE
         falocalrepo database server [host=<host>] [port=<port>]
                     [ssl-cert=<ssl-cert>] [ssl-key=<ssl-key>]
-                    [redirect-http=<redirect-http>]
+                    [redirect-http=<redirect-port>]
 
     ARGUMENTS
         <host>          Host address
         <port>          Port
         <ssl-cert>      SSL certificate for HTTPS
         <ssl-key>       SSL key for HTTPS
-        <redirect-http> Set to 'true' to enable HTTP to HTTPS redirection
+        <redirect-port> Port for HTTP to HTTPS redirection
 
     DESCRIPTION
         Starts a server at <host>:<port> to navigate the database, defaults to
         0.0.0.0:80. The <ssl-cert> and <ssl-key> allow serving with HTTPS. Setting
-        <redirect-http> to 'true' enables HTTP to HTTPS redirection. For more
+        <redirect-http> to a value activates HTTP to HTTPS redirection. For more
         details on usage see https://pypi.org/project/falocalrepo-server/{0}.
 
     EXAMPLES
@@ -729,7 +729,7 @@ def database_server(db: FADatabase, *args: str):
            port=int(p) if (p := opts.get("port", None)) and p != "0" else None,
            ssl_cert=opts.get("ssl-cert", None),
            ssl_key=opts.get("ssl-key", None),
-           redirect_http=opts.get("redirect-http", None) == "true"
+           redirect_http=int(p) if (p := opts.get("redirect-http", None)) else None
            )
 
 

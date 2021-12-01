@@ -430,12 +430,14 @@ Available operations are:
 > falocalrepo database remove-journals 123456 135724 876512
 > ```
 
-* `server [host=<host>] [port=<port>] [ssl-cert=<ssl-cert>] [ssl-key=<ssl-key>] [redirect-http=<redirect-http>]` starts
+* `server [host=<host>] [port=<port>] [ssl-cert=<ssl-cert>] [ssl-key=<ssl-key>] [redirect-http=<redirect-port>]` starts
   a server at `<host>:<port>` to navigate the database using `falocalrepo-server`. The `<ssl-cert>` and `<ssl-key>`
-  allow serving with HTTPS.Defaults to `0.0.0.0:80`. Setting `<redirect-http>` to `true` enables HTTP to HTTPS
-  redirection. See [falocalrepo-server](https://pypi.org/project/falocalrepo-server) for more details on usage. Running
-  the server does not occupy the database connection (it is only occupied when the server is actively searching the
-  database), which allows running other `database` commands; `download` commands remain unavailable.
+  allow serving with HTTPS.Defaults to `0.0.0.0:80`. Setting `<redirect-port>` to a value activates HTTP to HTTPS
+  redirection. Running the server does not occupy the database connection (it is only occupied when the server is
+  actively searching the database), which allows running other `database` commands; `download` commands remain
+  unavailable. To run falocalrepo together with the server, the server should be run directly with
+  the `falocalrepo-server` command. See [falocalrepo-server](https://pypi.org/project/falocalrepo-server) for more
+  details on its usage.
 
 > ```
 > falocalrepo database server host=127.0.0.1 port=5000
