@@ -8,7 +8,7 @@ readme = "README.md"
 homepage = "https://gitlab.com/MatteoCampinoti94/FALocalRepo"
 repository = "https://gitlab.com/MatteoCampinoti94/FALocalRepo"
 classifiers = [
-    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
     "Operating System :: OS Independent",
     "License :: OSI Approved :: European Union Public Licence 1.2 (EUPL 1.2)",
     "Development Status :: 5 - Production/Stable",
@@ -20,7 +20,7 @@ classifiers = [
 falocalrepo = "falocalrepo.__main__:main"
 
 [tool.poetry.dependencies]
-python = "^3.9"
+python = "^3.10"
 faapi = "~2.19.0"
 falocalrepo-database = "~4.19.4"
 falocalrepo-server = "~1.14.0"
