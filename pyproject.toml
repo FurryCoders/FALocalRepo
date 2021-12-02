@@ -25,6 +25,7 @@ faapi = "~2.19.0"
 falocalrepo-database = "~4.19.4"
 falocalrepo-server = "~1.14.0"
 psutil = "^5.8.0"
+rich = "^10.15.1"
 
 [tool.poetry.dev-dependencies]
 
