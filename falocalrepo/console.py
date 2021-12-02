@@ -9,8 +9,6 @@ from re import match
 from sys import stderr
 from typing import Callable
 from typing import Iterable
-from typing import Optional
-from typing import Union
 
 from faapi import __version__ as __faapi_version__
 from falocalrepo_database import FADatabase
@@ -47,7 +45,7 @@ from .exceptions import UnknownCommand
 
 class Flags:
     DEBUG: bool = environ.get("FALOCALREPO_DEBUG", None) is not None
-    DATABASE: Optional[Path] = Path(p) if (p := environ.get("FALOCALREPO_DATABASE", None)) is not None else None
+    DATABASE: Path | None = Path(p) if (p := environ.get("FALOCALREPO_DATABASE", None)) is not None else None
 
 
 def check_process(process: str):
@@ -114,7 +112,7 @@ def parse_args(args_raw: Iterable[str]) -> tuple[dict[str, str], list[str]]:
     return parameters(opts), args
 
 
-def check_update(version: str, package: str) -> Optional[str]:
+def check_update(version: str, package: str) -> str | None:
     return latest if (latest := latest_version(package)) and latest != version else None
 
 
@@ -486,7 +484,7 @@ def database_search(table: FADatabaseTable, print_func: Callable, *args: str):
 
     opts = parameters_multi(args)
     json, cols = opts.get("json", [None])[0] == "true", opts["columns"][0].split(",") if "columns" in opts else None
-    results: list[dict[str, Union[int, str]]] = search(table, opts, cols if cols and json else None)
+    results: list[dict[str, int | str]] = search(table, opts, cols if cols and json else None)
     if json:
         print(dumps(results))
     else:
@@ -753,9 +751,9 @@ def database_merge_copy(db: FADatabase, merge: bool = True, *args):
     subs_opts: dict[str, list[str]] = {m.group(1): v for k, v in opts.items() if (m := match(r"submissions\.(.+)", k))}
     jrns_opts: dict[str, list[str]] = {m.group(1): v for k, v in opts.items() if (m := match(r"journals\.(.+)", k))}
 
-    usrs_query: Optional[Selector] = parameters_to_selector(usrs_opts) if usrs_opts else None
-    subs_query: Optional[Selector] = parameters_to_selector(subs_opts) if subs_opts else None
-    jrns_query: Optional[Selector] = parameters_to_selector(jrns_opts) if jrns_opts else None
+    usrs_query: Selector | None = parameters_to_selector(usrs_opts) if usrs_opts else None
+    subs_query: Selector | None = parameters_to_selector(subs_opts) if subs_opts else None
+    jrns_query: Selector | None = parameters_to_selector(jrns_opts) if jrns_opts else None
 
     with FADatabase(args[0]) as db2:
         print(f"{'Merging with database' if merge else 'Copying entries to'} {db2.database_path}...")

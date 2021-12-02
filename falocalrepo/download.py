@@ -5,8 +5,6 @@ from os import get_terminal_size
 from time import sleep
 from typing import Any
 from typing import Callable
-from typing import Optional
-from typing import Union
 
 from faapi import FAAPI
 from faapi import Journal
@@ -49,18 +47,18 @@ def download_items(db: FADatabase, item_ids: list[str], f: Callable[[FAAPI, FADa
     if item_ids_fail := list(filter(lambda i: not i.isdigit(), item_ids)):
         print("The following ID's are not correct:", *item_ids_fail)
     item_ids = list(filter(lambda i: i.isdigit(), item_ids))
-    api: Optional[FAAPI] = load_api(db) if item_ids else None
+    api: FAAPI | None = load_api(db) if item_ids else None
     for item_id in map(int, filter(lambda i: i.isdigit(), item_ids)):
         print(f"Downloading {item_id:010} ", end="", flush=True)
         f(api, db, item_id)
 
 
-def download_submission_file(api: FAAPI, sub_file_url: str, *, speed: int = 100, bar: int = 10) -> Optional[bytes]:
+def download_submission_file(api: FAAPI, sub_file_url: str, *, speed: int = 100, bar: int = 10) -> bytes | None:
     if not sub_file_url:
         return None
 
     bar: Bar = Bar(bar)
-    file_binary: Optional[bytes] = bytes()
+    file_binary: bytes | None = bytes()
 
     try:
         with api.session.get(sub_file_url, stream=True) as file_stream:
@@ -93,7 +91,7 @@ def download_submission_file(api: FAAPI, sub_file_url: str, *, speed: int = 100,
     return file_binary
 
 
-def download_submission(api: FAAPI, db: FADatabase, submission: Union[int, SubmissionPartial], user_update: bool = False
+def download_submission(api: FAAPI, db: FADatabase, submission: int | SubmissionPartial, user_update: bool = False
                         ) -> bool:
     try:
         sub_id: int = submission.id if isinstance(submission, SubmissionPartial) else submission
@@ -103,8 +101,8 @@ def download_submission(api: FAAPI, db: FADatabase, submission: Union[int, Submi
         sub: Submission = api.get_submission(sub_id, False)[0]
         if isinstance(submission, SubmissionPartial):
             sub.thumbnail_url = sub.thumbnail_url or submission.thumbnail_url
-        sub_file: Optional[bytes] = download_submission_file(api, sub.file_url, bar=7 if sub.thumbnail_url else 10)
-        sub_thumb: Optional[bytes] = download_submission_file(api, sub.thumbnail_url, speed=0, bar=1)
+        sub_file: bytes | None = download_submission_file(api, sub.file_url, bar=7 if sub.thumbnail_url else 10)
+        sub_thumb: bytes | None = download_submission_file(api, sub.thumbnail_url, speed=0, bar=1)
         db.submissions.save_submission({**dict(sub),
                                         "author": sub.author.name,
                                         "date": sub.date.strftime(date_format),
@@ -140,7 +138,7 @@ def download_journals(db: FADatabase, jrn_ids: list[str]):
 
 def download_users_update(db: FADatabase, users: list[str], folders: list[str], stop: int = 1,
                           deactivated: bool = False):
-    api: Optional[FAAPI] = None
+    api: FAAPI | None = None
     tot, fail = 0, 0
 
     users = list(map(username_url, users))
@@ -182,7 +180,7 @@ def download_users_update(db: FADatabase, users: list[str], folders: list[str], 
 
 
 def download_users(db: FADatabase, users: list[str], folders: list[str]):
-    api: Optional[FAAPI] = None
+    api: FAAPI | None = None
     users = list(filter(bool, map(username_url, users)))
     users = sorted(set(users), key=users.index)
     folders = list(filter(bool, map(str.strip, folders)))
@@ -215,7 +213,7 @@ def download_users(db: FADatabase, users: list[str], folders: list[str]):
 def download_user(api: FAAPI, db: FADatabase, user: str, folder: str, stop: int = 0) -> tuple[int, int]:
     items_total: int = 0
     items_failed: int = 0
-    page: Union[int, str] = 1
+    page: int | str = 1
     page_n: int = 0
     user = username_url(user)
     space_bar: int = 10
@@ -224,8 +222,8 @@ def download_user(api: FAAPI, db: FADatabase, user: str, folder: str, stop: int 
     found_items: int = 0
     skip: bool = False
 
-    download: Callable[[str, Union[str, int]], tuple[list[Union[SubmissionPartial, Journal]], Union[int, str]]]
-    exists: Callable[[int], Optional[dict]]
+    download: Callable[[str, int | str], tuple[list[SubmissionPartial | Journal], int | str]]
+    exists: Callable[[int], dict | None]
 
     if folder.startswith("!"):
         print(f"{user}/{folder} deactivated")
