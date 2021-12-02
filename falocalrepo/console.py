@@ -116,6 +116,7 @@ def check_update(version: str, package: str) -> str | None:
     return latest if (latest := latest_version(package)) and latest != version else None
 
 
+# noinspection GrazieInspection
 def help_(comm: str = "", op: str = "", *_rest) -> str:
     """
     USAGE
@@ -169,6 +170,7 @@ def help_(comm: str = "", op: str = "", *_rest) -> str:
     return cleandoc(f.__doc__)
 
 
+# noinspection GrazieInspection
 def init(db: FADatabase):
     """
     USAGE
@@ -184,6 +186,7 @@ def init(db: FADatabase):
     print("Database ready")
 
 
+# noinspection GrazieInspection
 def config_list(db: FADatabase, *_rest):
     """
     USAGE
@@ -197,6 +200,7 @@ def config_list(db: FADatabase, *_rest):
     config_files_folder(db)
 
 
+# noinspection GrazieInspection
 def config_cookies(db: FADatabase, *args: str):
     """
     USAGE
@@ -222,6 +226,7 @@ def config_cookies(db: FADatabase, *args: str):
         raise MalformedCommand("cookies needs two arguments")
 
 
+# noinspection GrazieInspection
 def config_files_folder(db: FADatabase, *args: str):
     """
     USAGE
@@ -252,6 +257,7 @@ def config_files_folder(db: FADatabase, *args: str):
         raise MalformedCommand("files-folder needs one argument")
 
 
+# noinspection GrazieInspection
 def config(db: FADatabase, comm: str = "", *args: str):
     """
     USAGE
@@ -280,6 +286,7 @@ def config(db: FADatabase, comm: str = "", *args: str):
     }.get(comm, raiser(UnknownCommand(f"config {comm}")))(db, *args)
 
 
+# noinspection GrazieInspection
 def download_users(db: FADatabase, *args: str):
     """
     USAGE
@@ -309,6 +316,7 @@ def download_users(db: FADatabase, *args: str):
     download_users_(db, args[0].split(","), args[1].split(","))
 
 
+# noinspection GrazieInspection
 def download_update(db: FADatabase, *args: str):
     """
     USAGE
@@ -347,6 +355,7 @@ def download_update(db: FADatabase, *args: str):
     download_users_update(db, users, folders, int(opts.get("stop", 1)), opts.get("deactivated", "").lower() == "true")
 
 
+# noinspection GrazieInspection
 def download_submissions(db: FADatabase, *args: str):
     """
     USAGE
@@ -370,6 +379,7 @@ def download_submissions(db: FADatabase, *args: str):
     download_submissions_(db, sub_ids)
 
 
+# noinspection GrazieInspection
 def download_journals(db: FADatabase, *args: str):
     """
     USAGE
@@ -393,6 +403,7 @@ def download_journals(db: FADatabase, *args: str):
     download_journals_(db, journal_ids)
 
 
+# noinspection GrazieInspection
 def download(db: FADatabase, comm: str = "", *args: str):
     """
     USAGE
@@ -428,6 +439,7 @@ def download(db: FADatabase, comm: str = "", *args: str):
     }.get(comm, raiser(UnknownCommand(f"download {comm}")))(db, *args)
 
 
+# noinspection GrazieInspection
 def database_info(db: FADatabase, *_rest):
     """
     USAGE
@@ -446,6 +458,7 @@ def database_info(db: FADatabase, *_rest):
     print("Version     :", db.version)
 
 
+# noinspection GrazieInspection
 def database_history(db: FADatabase):
     """
     USAGE
@@ -459,6 +472,7 @@ def database_history(db: FADatabase):
         print(str(datetime.fromtimestamp(time)), command)
 
 
+# noinspection GrazieInspection
 def database_search(table: FADatabaseTable, print_func: Callable, *args: str):
     """
     USAGE
@@ -492,6 +506,7 @@ def database_search(table: FADatabaseTable, print_func: Callable, *args: str):
         print(f"Found {len(results)} {table.table.lower()}")
 
 
+# noinspection GrazieInspection
 @docstring_format("users")
 @docstring_format(database_search.__doc__)
 def database_search_users(db: FADatabase, *args: str):
@@ -505,6 +520,7 @@ def database_search_users(db: FADatabase, *args: str):
     database_search(db.users, print_users, *args)
 
 
+# noinspection GrazieInspection
 @docstring_format("submissions")
 @docstring_format(database_search.__doc__)
 def database_search_submissions(db: FADatabase, *args: str):
@@ -521,6 +537,7 @@ def database_search_submissions(db: FADatabase, *args: str):
     database_search(db.submissions, print_items, *args)
 
 
+# noinspection GrazieInspection
 @docstring_format("journals")
 @docstring_format(database_search.__doc__)
 def database_search_journals(db: FADatabase, *args: str):
@@ -537,6 +554,7 @@ def database_search_journals(db: FADatabase, *args: str):
     database_search(db.journals, print_items, *args)
 
 
+# noinspection GrazieInspection
 def database_add_user(db: FADatabase, *args):
     """
     USAGE
@@ -562,6 +580,7 @@ def database_add_user(db: FADatabase, *args):
     make_user(db, data)
 
 
+# noinspection GrazieInspection
 def database_add_submission(db: FADatabase, *args: str):
     """
     USAGE
@@ -610,6 +629,7 @@ def database_add_submission(db: FADatabase, *args: str):
     make_submission(db, data, opts.get("file", None), opts.get("thumbnail", None))
 
 
+# noinspection GrazieInspection
 def database_add_journal(db: FADatabase, *args: str):
     """
     USAGE
@@ -640,6 +660,7 @@ def database_add_journal(db: FADatabase, *args: str):
     make_journal(db, data)
 
 
+# noinspection GrazieInspection
 def database_remove_users(db: FADatabase, *args: str):
     """
     USAGE
@@ -658,6 +679,7 @@ def database_remove_users(db: FADatabase, *args: str):
         db.commit()
 
 
+# noinspection GrazieInspection
 def database_remove_submissions(db: FADatabase, *args: str):
     """
     USAGE
@@ -676,6 +698,7 @@ def database_remove_submissions(db: FADatabase, *args: str):
         db.commit()
 
 
+# noinspection GrazieInspection
 def database_remove_journals(db: FADatabase, *args: str):
     """
     USAGE
@@ -694,6 +717,7 @@ def database_remove_journals(db: FADatabase, *args: str):
     db.commit()
 
 
+# noinspection GrazieInspection
 @docstring_format(__server_version__)
 def database_server(db: FADatabase, *args: str):
     """
@@ -731,6 +755,7 @@ def database_server(db: FADatabase, *args: str):
            )
 
 
+# noinspection GrazieInspection
 def database_merge_copy(db: FADatabase, merge: bool = True, *args):
     """
     USAGE
@@ -766,6 +791,7 @@ def database_merge_copy(db: FADatabase, merge: bool = True, *args):
         print("Done")
 
 
+# noinspection GrazieInspection
 @docstring_format("merge")
 @docstring_format(database_merge_copy.__doc__)
 def database_merge(db: FADatabase, *args: str):
@@ -792,6 +818,7 @@ def database_merge(db: FADatabase, *args: str):
     database_merge_copy(db, True, *args)
 
 
+# noinspection GrazieInspection
 @docstring_format("copy")
 @docstring_format(database_merge_copy.__doc__)
 def database_copy(db: FADatabase, *args: str):
@@ -818,6 +845,7 @@ def database_copy(db: FADatabase, *args: str):
     database_merge_copy(db, False, *args)
 
 
+# noinspection GrazieInspection
 def database_clean(db: FADatabase, *_rest):
     """
     USAGE
@@ -830,6 +858,7 @@ def database_clean(db: FADatabase, *_rest):
     db.vacuum()
 
 
+# noinspection GrazieInspection
 @docstring_format(__database_version__)
 def database_upgrade(db: FADatabase, *_rest):
     """
@@ -843,6 +872,7 @@ def database_upgrade(db: FADatabase, *_rest):
     db.upgrade()
 
 
+# noinspection GrazieInspection
 @docstring_format(__database_version__)
 def database(db: FADatabase, comm: str = "", *args: str):
     """
@@ -913,6 +943,7 @@ def database(db: FADatabase, comm: str = "", *args: str):
     }.get(comm, raiser(UnknownCommand(f"database {comm}")))(db, *args)
 
 
+# noinspection GrazieInspection
 def update(shell_arg: str = "", *_args: str):
     """
     USAGE
@@ -950,6 +981,7 @@ def update(shell_arg: str = "", *_args: str):
         print("No updates available")
 
 
+# noinspection GrazieInspection
 @docstring_format(__version__, __database_version__, __server_version__, __faapi_version__)
 def console(comm: str = "", *args: str) -> None:
     """
