@@ -926,11 +926,15 @@ def update(shell_arg: str = "", *_args: str):
         optional 'shell' command can be used to output the shell command to upgrade
         any component that has available updates.
     """
+    import faapi
+    import falocalrepo_database
+    import falocalrepo_server
+    from . import __name__
     packages: list[tuple[str, str]] = [
-        (__version__, "falocalrepo"),
-        (__database_version__, "falocalrepo-database"),
-        (__server_version__, "falocalrepo-server"),
-        (__faapi_version__, "faapi")
+        (__version__, __name__),
+        (__database_version__, falocalrepo_database.__name__),
+        (__server_version__, falocalrepo_server.__name__),
+        (__faapi_version__, faapi.__name__)
     ]
     updates: list[tuple[str, str, str]] = [
         (current, latest, package)
