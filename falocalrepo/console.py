@@ -131,43 +131,69 @@ def help_(comm: str = "", op: str = "", *_rest) -> str:
         then a general help message is given instead.
     """
 
-    f = {
-        "": console,
-        "help": help_,
-        "update": update,
-        "init": init,
-        "config": config,
-        "config list": config_list,
-        "config cookies": config_cookies,
-        "config files-folder": config_files_folder,
-        "download": download,
-        "download users": download_users,
-        "download update": download_update,
-        "download submissions": download_submissions,
-        "download journals": download_journals,
-        "database": database,
-        "database info": database_info,
-        "database history": database_history,
-        "database search-users": database_search_users,
-        "database search-submissions": database_search_submissions,
-        "database search-journals": database_search_journals,
-        "database add-submission": database_add_submission,
-        "database add-journal": database_add_journal,
-        "database add-user": database_add_user,
-        "database remove-users": database_remove_users,
-        "database remove-submissions": database_remove_submissions,
-        "database remove-journals": database_remove_journals,
-        "database server": database_server,
-        "database merge": database_merge,
-        "database copy": database_copy,
-        "database clean": database_clean,
-        "database upgrade": database_upgrade,
-    }.get(comm := f"{comm} {op}".strip(), None)
-
-    if f is None:
-        raise UnknownCommand(comm)
-
-    return cleandoc(f.__doc__)
+    match [comm, op]:
+        case ["", ""]:
+            return cleandoc(console.__doc__)
+        case ["help", _]:
+            return cleandoc(help_.__doc__)
+        case ["update", _]:
+            return cleandoc(update.__doc__)
+        case ["init", _]:
+            return cleandoc(init.__doc__)
+        case ["config", ""]:
+            return cleandoc(config.__doc__)
+        case ["config", "list"]:
+            return cleandoc(config_list.__doc__)
+        case ["config", "cookies"]:
+            return cleandoc(config_cookies.__doc__)
+        case ["config", "files-folder"]:
+            return cleandoc(config_files_folder.__doc__)
+        case ["download", ""]:
+            return cleandoc(download.__doc__)
+        case ["download", "users"]:
+            return cleandoc(download_users.__doc__)
+        case ["download", "update"]:
+            return cleandoc(download_update.__doc__)
+        case ["download", "submissions"]:
+            return cleandoc(download_submissions.__doc__)
+        case ["download", "journals"]:
+            return cleandoc(download_journals.__doc__)
+        case ["database", ""]:
+            return cleandoc(database.__doc__)
+        case ["database", "info"]:
+            return cleandoc(database_info.__doc__)
+        case ["database", "history"]:
+            return cleandoc(database_history.__doc__)
+        case ["database", "search-users"]:
+            return cleandoc(database_search_users.__doc__)
+        case ["database", "search-submissions"]:
+            return cleandoc(database_search_submissions.__doc__)
+        case ["database", "search-journals"]:
+            return cleandoc(database_search_journals.__doc__)
+        case ["database", "add-submission"]:
+            return cleandoc(database_add_submission.__doc__)
+        case ["database", "add-journal"]:
+            return cleandoc(database_add_journal.__doc__)
+        case ["database", "add-user"]:
+            return cleandoc(database_add_user.__doc__)
+        case ["database", "remove-users"]:
+            return cleandoc(database_remove_users.__doc__)
+        case ["database", "remove-submissions"]:
+            return cleandoc(database_remove_submissions.__doc__)
+        case ["database", "remove-journals"]:
+            return cleandoc(database_remove_journals.__doc__)
+        case ["database", "server"]:
+            return cleandoc(database_server.__doc__)
+        case ["database", "merge"]:
+            return cleandoc(database_merge.__doc__)
+        case ["database", "copy"]:
+            return cleandoc(database_copy.__doc__)
+        case ["database", "clean"]:
+            return cleandoc(database_clean.__doc__)
+        case ["database", "upgrade"]:
+            return cleandoc(database_upgrade.__doc__)
+        case _:
+            raise UnknownCommand(f"{comm} {op}".strip())
 
 
 # noinspection GrazieInspection
@@ -217,13 +243,14 @@ def config_cookies(db: FADatabase, *args: str):
         falocalrepo config cookies a=a1b2c3d4-1234 b=e5f6g7h8-5678
     """
 
-    if not args:
-        for c in read_cookies(db):
-            print(f"cookie {c['name']}:", c['value'])
-    elif len(args) == 2:
-        write_cookies(db, **parse_args(args)[0])
-    else:
-        raise MalformedCommand("cookies needs two arguments")
+    match args:
+        case []:
+            for c in read_cookies(db):
+                print(f"cookie {c['name']}:", c['value'])
+        case [a, b]:
+            write_cookies(db, **parse_args([a, b])[0])
+        case _:
+            raise MalformedCommand("cookies needs two arguments")
 
 
 # noinspection GrazieInspection
@@ -245,16 +272,17 @@ def config_files_folder(db: FADatabase, *args: str):
 
     opts, args = parse_args(args)
 
-    if not args:
-        print(f"files folder: {db.settings['FILESFOLDER']} ({db.files_folder.resolve()})")
-    elif len(args) == 1:
-        if mv := opts.get("move", "true") == "false":
-            print(f"Ignoring original files folder {db.settings['FILESFOLDER']} ({db.files_folder.resolve()})")
-        print(f"Changing files folder to {args[0]}")
-        db.move_files_folder(args[0], move_files=not mv)
-        print("Done")
-    else:
-        raise MalformedCommand("files-folder needs one argument")
+    match args:
+        case []:
+            print(f"files folder: {db.settings['FILESFOLDER']} ({db.files_folder.resolve()})")
+        case [dest]:
+            if mv := opts.get("move", "true") == "false":
+                print(f"Ignoring original files folder {db.settings['FILESFOLDER']} ({db.files_folder.resolve()})")
+            print(f"Changing files folder to {dest}")
+            db.move_files_folder(dest, move_files=not mv)
+            print("Done")
+        case _:
+            raise MalformedCommand("files-folder needs one argument")
 
 
 # noinspection GrazieInspection
@@ -278,12 +306,15 @@ def config(db: FADatabase, comm: str = "", *args: str):
 
     check_database_version(db)
 
-    {
-        "": config_list,
-        "list": config_list,
-        "cookies": config_cookies,
-        "files-folder": config_files_folder,
-    }.get(comm, raiser(UnknownCommand(f"config {comm}")))(db, *args)
+    match comm:
+        case "" | "list":
+            config_list(db)
+        case "cookies":
+            config_cookies(db, *args)
+        case "files-folder":
+            config_files_folder(db, *args)
+        case _:
+            UnknownCommand(f"config {comm}")
 
 
 # noinspection GrazieInspection
@@ -310,10 +341,11 @@ def download_users(db: FADatabase, *args: str):
         falocalrepo download users tom list-favorites
     """
 
-    if len(args) != 2:
-        raise MalformedCommand("users needs two arguments")
-
-    download_users_(db, args[0].split(","), args[1].split(","))
+    match args:
+        case [users, folders]:
+            download_users_(db, users.split(","), folders.split(","))
+        case _:
+            raise MalformedCommand("users needs two arguments")
 
 
 # noinspection GrazieInspection
@@ -350,8 +382,18 @@ def download_update(db: FADatabase, *args: str):
     """
 
     opts, args = parse_args(args)
-    users: list[str] = args[0].split(",") if args and args[0] != "@" else []
-    folders: list[str] = args[1].split(",") if args[1:] and args[1] != "@" else []
+    users, folders = [], []
+
+    match args:
+        case [] | ["@", "@"]:
+            pass
+        case [_users, "@"]:
+            users = _users.split(",")
+        case ["@", _folders]:
+            folders = _folders.split(",")
+        case [_users, _folders]:
+            users, folders = _users.split(","), _folders.split(",")
+
     download_users_update(db, users, folders, int(opts.get("stop", 1)), opts.get("deactivated", "").lower() == "true")
 
 
@@ -430,17 +472,21 @@ def download(db: FADatabase, comm: str = "", *args: str):
     check_database_version(db)
     check_process("falocalrepo")
 
-    {
-        "": raiser(MalformedCommand("download needs a command")),
-        "users": download_users,
-        "update": download_update,
-        "submissions": download_submissions,
-        "journals": download_journals,
-    }.get(comm, raiser(UnknownCommand(f"download {comm}")))(db, *args)
+    match comm:
+        case "users":
+            download_users(db, *args)
+        case "update":
+            download_update(db, *args)
+        case "submissions":
+            download_submissions(db, *args)
+        case "journals":
+            download_journals(db, *args)
+        case _:
+            raise UnknownCommand(f"download {comm}")
 
 
 # noinspection GrazieInspection
-def database_info(db: FADatabase, *_rest):
+def database_info(db: FADatabase):
     """
     USAGE
         falocalrepo database info
@@ -860,7 +906,7 @@ def database_clean(db: FADatabase, *_rest):
 
 # noinspection GrazieInspection
 @docstring_format(__database_version__)
-def database_upgrade(db: FADatabase, *_rest):
+def database_upgrade(db: FADatabase):
     """
     USAGE
         falocalrepo database upgrade
@@ -922,29 +968,45 @@ def database(db: FADatabase, comm: str = "", *args: str):
 
     check_database_version(db, raise_for_error=comm not in ("", "info", "upgrade"))
 
-    {
-        "": database_info,
-        "info": database_info,
-        "history": database_history,
-        "search-users": database_search_users,
-        "search-submissions": database_search_submissions,
-        "search-journals": database_search_journals,
-        "add-user": database_add_user,
-        "add-submission": database_add_submission,
-        "add-journal": database_add_journal,
-        "remove-users": database_remove_users,
-        "remove-submissions": database_remove_submissions,
-        "remove-journals": database_remove_journals,
-        "server": database_server,
-        "merge": database_merge,
-        "copy": database_copy,
-        "clean": database_clean,
-        "upgrade": database_upgrade,
-    }.get(comm, raiser(UnknownCommand(f"database {comm}")))(db, *args)
+    match comm:
+        case "" | "info":
+            database_info(db)
+        case "history":
+            database_history(db)
+        case "search-users":
+            database_search_users(db, *args)
+        case "search-submissions":
+            database_search_submissions(db, *args)
+        case "search-journals":
+            database_search_journals(db, *args)
+        case "add-user":
+            database_add_user(db, *args)
+        case "add-submission":
+            database_add_submission(db, *args)
+        case "add-journal":
+            database_add_journal(db, *args)
+        case "remove-users":
+            database_remove_users(db, *args)
+        case "remove-submissions":
+            database_remove_submissions(db, *args)
+        case "remove-journals":
+            database_remove_journals(db, *args)
+        case "server":
+            database_server(db, *args)
+        case "merge":
+            database_merge(db, *args)
+        case "copy":
+            database_copy(db, *args)
+        case "clean":
+            database_clean(db, *args)
+        case "upgrade":
+            database_upgrade(db)
+        case _:
+            raise UnknownCommand(f"database {comm}")
 
 
 # noinspection GrazieInspection
-def update(shell_arg: str = "", *_args: str):
+def update(shell_arg: str = ""):
     """
     USAGE
         falocalrepo update [shell]
@@ -1014,29 +1076,23 @@ def console(comm: str = "", *args: str) -> None:
         database        Operate on the database
     """
 
-    if not comm:
-        print(help_())
-        return
-    elif comm in ("-h", "--help"):
-        print(help_())
-        return
-    elif comm == "help":
-        print(help_(*args))
-        return
-    elif comm == "update":
-        update(*args)
-        return
-    elif comm in ("-v", "--version"):
-        print(__version__)
-        return
-    elif comm in ("-d", "--database"):
-        print(__database_version__)
-        return
-    elif comm in ("-s", "--server"):
-        print(__server_version__)
-        return
-    elif comm not in (init.__name__, config.__name__, download.__name__, database.__name__):
-        raise UnknownCommand(comm)
+    match comm:
+        case "" | "-h" | "--help":
+            return print(help_())
+        case "help":
+            return print(help_(*args))
+        case "-v" | "--version":
+            return print(__version__)
+        case "-d" | "--database":
+            return print(__database_version__)
+        case "-s" | "--server":
+            return print(__server_version__)
+        case "update":
+            return update()
+        case init.__name__ | config.__name__ | download.__name__ | database.__name__:
+            pass
+        case _:
+            raise UnknownCommand(comm)
 
     if Flags.DEBUG is not None:
         print(f"Using FALOCALREPO_DEBUG", file=stderr)
