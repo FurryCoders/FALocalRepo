@@ -67,13 +67,6 @@ def check_database_version(db: FADatabase, raise_for_error: bool = True):
             raise err
 
 
-def raiser(e: Exception) -> Callable:
-    def inner(*_, **__):
-        raise e
-
-    return inner
-
-
 def docstring_format(*args, **kwargs):
     def inner(obj: {__doc__}) -> {__doc__}:
         obj.__doc__ = (obj.__doc__ or "").format(*args, **kwargs)
