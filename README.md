@@ -1,4 +1,12 @@
+<div align="center">
+
+<img alt="logo" width="400" src="https://gitlab.com/uploads/-/system/project/avatar/6750403/falocalrepo.png">
+
 # FALocalRepo
+
+Pure Python program to download submissions, journals, and user folders from the FurAffinity forum in an easily handled
+database.
+
 
 [![version_pypi](https://img.shields.io/pypi/v/falocalrepo?logo=pypi)](https://pypi.org/project/falocalrepo/)
 [![version_gitlab](https://img.shields.io/badge/dynamic/json?logo=gitlab&color=orange&label=gitlab&query=%24%5B%3A1%5D.name&url=https%3A%2F%2Fgitlab.com%2Fapi%2Fv4%2Fprojects%2Fmatteocampinoti94%252Ffalocalrepo%2Frepository%2Ftags)](https://gitlab.com/MatteoCampinoti94/FALocalRepo)
@@ -11,8 +19,7 @@
 [![version_pypi](https://img.shields.io/pypi/v/falocalrepo-database?logo=pypi&label=falocalrepo-database)](https://pypi.org/project/falocalrepo-database/)
 [![version_pypi](https://img.shields.io/pypi/v/falocalrepo-server?logo=pypi&label=falocalrepo-server)](https://pypi.org/project/falocalrepo-server/)
 
-Pure Python program to download submissions, journals, and user folders from the FurAffinity forum in an easily handled
-database.
+</div>
 
 ## Introduction
 
