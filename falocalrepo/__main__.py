@@ -1,5 +1,6 @@
 from os import getcwd
 from os.path import join
+from signal import SIGINT
 from sqlite3 import DatabaseError
 from sqlite3 import IntegrityError
 from sqlite3 import OperationalError
@@ -23,7 +24,7 @@ def main():
         raise
     except KeyboardInterrupt:
         print()
-        exit(130)
+        exit(128 + SIGINT)
     except (MalformedCommand, UnknownCommand) as err:
         print_exc(file=stderr) if Flags.DEBUG else print(repr(err), file=stderr)
         exit(1)
