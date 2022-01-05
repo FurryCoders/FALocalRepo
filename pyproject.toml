@@ -27,6 +27,7 @@ falocalrepo-server = "~1.15.0"
 psutil = "^5.9.0"
 click = "^8.0.3"
 click-help-colors = "^0.9.1"
+pretty-errors = "^1.2.25"
 
 [tool.poetry.dev-dependencies]
 
