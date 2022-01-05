@@ -28,6 +28,7 @@ psutil = "^5.9.0"
 click = "^8.0.3"
 click-help-colors = "^0.9.1"
 pretty-errors = "^1.2.25"
+wcwidth = "^0.2.5"
 
 [tool.poetry.dev-dependencies]
 
