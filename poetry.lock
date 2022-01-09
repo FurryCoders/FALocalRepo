@@ -114,7 +114,7 @@ python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
 
 [[package]]
 name = "faapi"
-version = "3.3.2"
+version = "3.3.3"
 description = "Python module to implement API-like functionality for the FurAffinity.net website."
 category = "main"
 optional = false
@@ -356,7 +356,7 @@ python-versions = ">=3.6"
 
 [[package]]
 name = "urllib3"
-version = "1.26.7"
+version = "1.26.8"
 description = "HTTP library with thread-safe connection pooling, file post, and more."
 category = "main"
 optional = false
@@ -394,7 +394,7 @@ python-versions = "*"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "20b1af8937fb3118c34474f4a48c9ce96325155be16cb0eaf0e1d413249db224"
+content-hash = "d7514e0175419f9c3b9749e991834fc818c0038ef1cb478edca7b41480936546"
 
 [metadata.files]
 anyio = [
@@ -438,8 +438,8 @@ colorama = [
     {file = "colorama-0.4.4.tar.gz", hash = "sha256:5941b2b48a20143d2267e95b1c2a7603ce057ee39fd88e7329b0c292aa16869b"},
 ]
 faapi = [
-    {file = "faapi-3.3.2-py3-none-any.whl", hash = "sha256:58d978fcc68a535ee4b35bb90805636c9c9a568eeedf0bb01c5673ffbbcda2ec"},
-    {file = "faapi-3.3.2.tar.gz", hash = "sha256:8d2ab97621ac581d2d865e092e1cdb3479fc75fca608ee57230ccb0b7f1e368d"},
+    {file = "faapi-3.3.3-py3-none-any.whl", hash = "sha256:16b62190cb122e5769b7108ac0ebc5262db970fddcdfd1539a956c531f0ac42b"},
+    {file = "faapi-3.3.3.tar.gz", hash = "sha256:216a4fe4c0d60efaf5657f06ce13e3520c9fc8cb01468a715548f750e985605d"},
 ]
 falocalrepo-database = [
     {file = "falocalrepo-database-4.19.5.tar.gz", hash = "sha256:37b33f3c3b7eb3a09ef4bc15e53f5fdb37d0e5061062d0a1b1c290c4acd19ea7"},
@@ -744,8 +744,8 @@ typing-extensions = [
     {file = "typing_extensions-4.0.1.tar.gz", hash = "sha256:4ca091dea149f945ec56afb48dae714f21e8692ef22a395223bcd328961b6a0e"},
 ]
 urllib3 = [
-    {file = "urllib3-1.26.7-py2.py3-none-any.whl", hash = "sha256:c4fdf4019605b6e5423637e01bc9fe4daef873709a7973e195ceba0a62bbc844"},
-    {file = "urllib3-1.26.7.tar.gz", hash = "sha256:4987c65554f7a2dbf30c18fd48778ef124af6fab771a377103da0585e2336ece"},
+    {file = "urllib3-1.26.8-py2.py3-none-any.whl", hash = "sha256:000ca7f471a233c2251c6c7023ee85305721bfdf18621ebff4fd17a8653427ed"},
+    {file = "urllib3-1.26.8.tar.gz", hash = "sha256:0e7c33d9a63e7ddfcb86780aac87befc2fbddf46c58dbb487e0855f7ceec283c"},
 ]
 uvicorn = [
     {file = "uvicorn-0.16.0-py3-none-any.whl", hash = "sha256:d8c839231f270adaa6d338d525e2652a0b4a5f4c2430b5c4ef6ae4d11776b0d2"},
