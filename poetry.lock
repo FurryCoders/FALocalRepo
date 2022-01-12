@@ -129,7 +129,7 @@ requests = ">=2.24.0,<3.0.0"
 
 [[package]]
 name = "falocalrepo-database"
-version = "5.0.0"
+version = "5.0.1"
 description = "Database functionality for falocalrepo."
 category = "main"
 optional = false
@@ -394,7 +394,7 @@ python-versions = "*"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "b709a5975251bc1a1e33fff23732a02fffe65df83c0a5a20aab45666a472872e"
+content-hash = "eb4554e8243e9b7864f0f2b54f6935f660a9e870d0ec4393242e247d36464016"
 
 [metadata.files]
 anyio = [
@@ -442,8 +442,8 @@ faapi = [
     {file = "faapi-3.3.3.tar.gz", hash = "sha256:216a4fe4c0d60efaf5657f06ce13e3520c9fc8cb01468a715548f750e985605d"},
 ]
 falocalrepo-database = [
-    {file = "falocalrepo-database-5.0.0.tar.gz", hash = "sha256:826a4de0bb2b62657fce2cc71692085efa98317d72912fb75a6d1555c18062bb"},
-    {file = "falocalrepo_database-5.0.0-py3-none-any.whl", hash = "sha256:b3ba16edc83672a23ed42244fcf12f28eee8221e5d7654201233407e3a7af277"},
+    {file = "falocalrepo-database-5.0.1.tar.gz", hash = "sha256:fb7df4f074ee1801c17af3cef807135943b1dc96abc294649ea16f891ffe8690"},
+    {file = "falocalrepo_database-5.0.1-py3-none-any.whl", hash = "sha256:31e54b41893a4aed5336104144a2036a09c345e1f8d81258726d991ffe59b23c"},
 ]
 falocalrepo-server = [
     {file = "falocalrepo-server-2.0.0.tar.gz", hash = "sha256:badf5f4004f9b9bdf82b5859fda297e4fc7119ba4b928f9646762a5e00cac9da"},
@@ -661,6 +661,11 @@ psutil = [
     {file = "psutil-5.9.0-cp310-cp310-manylinux_2_12_x86_64.manylinux2010_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:742c34fff804f34f62659279ed5c5b723bb0195e9d7bd9907591de9f8f6558e2"},
     {file = "psutil-5.9.0-cp310-cp310-win32.whl", hash = "sha256:8293942e4ce0c5689821f65ce6522ce4786d02af57f13c0195b40e1edb1db61d"},
     {file = "psutil-5.9.0-cp310-cp310-win_amd64.whl", hash = "sha256:9b51917c1af3fa35a3f2dabd7ba96a2a4f19df3dec911da73875e1edaf22a40b"},
+    {file = "psutil-5.9.0-cp36-cp36m-macosx_10_9_x86_64.whl", hash = "sha256:e9805fed4f2a81de98ae5fe38b75a74c6e6ad2df8a5c479594c7629a1fe35f56"},
+    {file = "psutil-5.9.0-cp36-cp36m-manylinux_2_12_i686.manylinux2010_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:c51f1af02334e4b516ec221ee26b8fdf105032418ca5a5ab9737e8c87dafe203"},
+    {file = "psutil-5.9.0-cp36-cp36m-manylinux_2_12_x86_64.manylinux2010_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:32acf55cb9a8cbfb29167cd005951df81b567099295291bcfd1027365b36591d"},
+    {file = "psutil-5.9.0-cp36-cp36m-win32.whl", hash = "sha256:e5c783d0b1ad6ca8a5d3e7b680468c9c926b804be83a3a8e95141b05c39c9f64"},
+    {file = "psutil-5.9.0-cp36-cp36m-win_amd64.whl", hash = "sha256:d62a2796e08dd024b8179bd441cb714e0f81226c352c802fca0fd3f89eeacd94"},
     {file = "psutil-5.9.0-cp37-cp37m-macosx_10_9_x86_64.whl", hash = "sha256:3d00a664e31921009a84367266b35ba0aac04a2a6cad09c550a89041034d19a0"},
     {file = "psutil-5.9.0-cp37-cp37m-manylinux_2_12_i686.manylinux2010_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:7779be4025c540d1d65a2de3f30caeacc49ae7a2152108adeaf42c7534a115ce"},
     {file = "psutil-5.9.0-cp37-cp37m-manylinux_2_12_x86_64.manylinux2010_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:072664401ae6e7c1bfb878c65d7282d4b4391f1bc9a56d5e03b5a490403271b5"},
