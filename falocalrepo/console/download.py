@@ -89,6 +89,9 @@ def download_users(ctx: Context, database: Callable[..., Database], users: tuple
     """
     Download specific user folders, where {yellow}FOLDER{reset} is one of {0}. Multiple {yellow}--user{reset} and
     {yellow}--folder{reset} arguments can be passed.
+
+    The optional {yellow}--dry-run{reset} option disables downloading and saving and simply lists fetched entries.
+    Users are not added/deactivated.
     """
     db: Database = database()
     add_history(db, ctx, users=users, folders=folders)
@@ -116,6 +119,9 @@ def download_update(ctx: Context, database: Callable[..., Database], users: tupl
     {yellow}--folder{reset} options can be used to restrict the update to specific users and or folders, where
     {yellow}FOLDER{reset} is one of {0}. Multiple {yellow}--user{reset} and {yellow}--folder{reset} arguments can be
     passed.
+
+    The optional {yellow}--dry-run{reset} option disables downloading and saving and simply lists fetched entries.
+    Users are not added/deactivated.
     """
     db: Database = database()
     add_history(db, ctx, users=users, folders=folders, stop=stop)
@@ -137,6 +143,8 @@ def download_submissions(ctx: Context, database: Callable[..., Database], submis
                          dry_run: bool):
     """
     Download single submissions, where {yellow}SUBMISSION_ID{reset} is the ID of the submission.
+
+    The optional {yellow}--dry-run{reset} option disables downloading and saving and simply lists fetched entries
     """
     db: Database = database()
     add_history(db, ctx, submission_id=submission_id, replace=replace)
@@ -158,6 +166,8 @@ def download_journals(ctx: Context, database: Callable[..., Database], journal_i
                       dry_run: bool):
     """
     Download single journals, where {yellow}JOURNAL_ID{reset} is the ID of the journal.
+
+    The optional {yellow}--dry-run{reset} option disables downloading and saving and simply lists fetched entries.
     """
     db: Database = database()
     add_history(db, ctx, journal_id=journal_id, replace=replace)
