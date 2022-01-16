@@ -110,10 +110,11 @@ class Bar:
 
 
 class Downloader:
-    def __init__(self, db: Database, api: FAAPI, *, color: bool = True):
+    def __init__(self, db: Database, api: FAAPI, *, color: bool = True, dry_run: bool = False):
         self.db: Database = db
         self.output: OutputType = OutputType.rich if terminal_width() > 0 else OutputType.simple
         self.color: bool = color
+        self.dry_run: bool = dry_run
         self.api: FAAPI = api
         self.bar_width: int = 10
         self._bar: Bar | None = None
@@ -295,7 +296,7 @@ class Downloader:
                 self.bar_message("SEARCHING")
                 if journal.id in self.db.journals:
                     self.bar_message("IN DB", green)
-                    if self.db.journals.set_user_update(journal.id, 1):
+                    if not self.dry_run and self.db.journals.set_user_update(journal.id, 1):
                         self.db.commit()
                         self.bar_message("UPDATED", green)
                         self.modified += 1
@@ -306,6 +307,9 @@ class Downloader:
                             self.clear_line()
                         else:
                             self.bar_close()
+                elif self.dry_run:
+                    self.bar_message("SKIPPED", green)
+                    self.bar_close()
                 else:
                     self.db.journals.save_journal({
                         **format_entry(dict(journal) | {"author": journal.author.name}, self.db.journals.columns),
@@ -349,12 +353,14 @@ class Downloader:
                 self.bar_message("SEARCHING")
                 if sub_partial.id in self.db.submissions:
                     self.bar_message("IN DB", green)
-                    if folder != Folder.favorites and self.db.submissions.set_user_update(sub_partial.id, 1):
+                    if not self.dry_run and folder != Folder.favorites and \
+                            self.db.submissions.set_user_update(sub_partial.id, 1):
                         self.db.commit()
                         self.bar_message("UPDATED", green)
                         self.modified += 1
                         self.bar_close()
-                    elif folder == Folder.favorites and self.db.submissions.add_favorite(sub_partial.id, user):
+                    elif not self.dry_run and folder == Folder.favorites and \
+                            self.db.submissions.add_favorite(sub_partial.id, user):
                         self.db.commit()
                         self.bar_message("ADDED FAV", green)
                         self.modified += 1
@@ -366,6 +372,9 @@ class Downloader:
                             self.clear_line()
                         else:
                             self.bar_close()
+                elif self.dry_run:
+                    self.bar_message("SKIPPED", green)
+                    self.bar_close()
                 else:
                     self.download_submission(sub_partial.id, int(folder != Folder.favorites),
                                              user if folder == Folder.favorites else None, sub_partial.thumbnail_url)
@@ -373,10 +382,14 @@ class Downloader:
                     return 0
             self.clear_line()
 
-    def download_user_page(self, user: str):
+    def download_user_page(self, user: str) -> int:
         padding: int = w - self.bar_width - 2 - 1 if (w := terminal_width()) else 0
         echo(f"{yellow}{user[:padding or None]:<{padding}}{reset}", nl=self.output == OutputType.simple)
         self.bar()
+        if self.dry_run:
+            self.bar_message("SKIPPED", green)
+            self.bar_close()
+            return 0
         self.bar_message("DOWNLOAD")
         user, err = self.download_catch(self.api.user, user)
         self.err_to_bar(err)
@@ -386,20 +399,22 @@ class Downloader:
         added: bool = self.db.users[user][UsersColumns.USERPAGE.value.name].strip() == ""
         self.db.users[user] = self.db.users[user] | {UsersColumns.USERPAGE.value.name: user.profile}
         self.bar_message("ADDED" if added else "UPDATED", green)
+        return 0
 
     def _download_users(self, users_folders: Iterable[tuple[str, list[str]]], stop: int = -1):
         operation: str = "Downloading" if stop < 0 else "Updating"
         for user, folders in users_folders:
             for folder in folders:
                 echo(f"{operation}: {yellow}{user}{reset}/{yellow}{folder}{reset}", color=self.color)
-                user_added: bool
-                if user_added := user not in self.db.users:
-                    self.db.users.save_user({UsersColumns.USERNAME.value.name: user,
-                                             UsersColumns.FOLDERS.value.name: {},
-                                             UsersColumns.USERPAGE.value.name: ""})
-                    self.db.commit()
-                self.db.users.activate(user)
-                self.db.users.add_folder(user, folder)
+                user_added: bool = False
+                if not self.dry_run:
+                    if user_added := user not in self.db.users:
+                        self.db.users.save_user({UsersColumns.USERNAME.value.name: user,
+                                                 UsersColumns.FOLDERS.value.name: {},
+                                                 UsersColumns.USERPAGE.value.name: ""})
+                        self.db.commit()
+                    self.db.users.activate(user)
+                    self.db.users.add_folder(user, folder)
                 err: int
                 if folder == Folder.userpage:
                     err = self.download_user_page(user)
@@ -408,7 +423,9 @@ class Downloader:
                 else:
                     err = self.download_user_submissions_folder(user, Folder[folder.lower()], stop, stop > 0)
                 if err in (1, 2, 3):
-                    if user_added:
+                    if self.dry_run:
+                        pass
+                    elif user_added:
                         del self.db.users[user]
                     else:
                         self.db.users.deactivate(user)
@@ -445,6 +462,10 @@ class Downloader:
                 self.bar_message("IN DB", green)
                 self.bar_close()
                 continue
+            elif self.dry_run:
+                self.bar_message("SKIPPED", green)
+                self.bar_close()
+                continue
             self.download_submission(submission_id,
                                      entry.get(SubmissionsColumns.USERUPDATE.value.name, 0),
                                      entry.get(SubmissionsColumns.FAVORITE.value.name, {}),
@@ -460,6 +481,10 @@ class Downloader:
             self.bar_message("SEARCHING")
             if (entry := (self.db.journals[journal_id] or {})) and not replace:
                 self.bar_message("IN DB", green)
+                self.bar_close()
+                continue
+            elif self.dry_run:
+                self.bar_message("SKIPPED", green)
                 self.bar_close()
                 continue
             journal, err = self.download_catch(self.api.journal, journal_id)

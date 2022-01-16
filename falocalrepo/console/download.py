@@ -21,7 +21,8 @@ from .util import database_exists_option
 from .util import docstring_format
 from .util import help_option
 from .util import open_api
-from ..downloader import Downloader, Folder
+from ..downloader import Downloader
+from ..downloader import Folder
 
 
 class FolderChoice(CompleteChoice):
@@ -35,6 +36,7 @@ class FolderChoice(CompleteChoice):
 
 
 output_option = option("--simple-output", is_flag=True, default=False, help="Simplified output.")
+dry_run_option = option("--dry-run", is_flag=True, default=False, help="Fetch entries without modifying database.")
 
 
 @group("download", cls=CustomHelpColorsGroup, short_help="Download resources.", no_args_is_help=True,
@@ -76,19 +78,21 @@ def download_login(ctx: Context, database: Callable[..., Database]):
 @option("--user", "-u", "users", metavar="USER", required=True, multiple=True, type=str, help="Username.")
 @option("--folder", "-f", "folders", metavar="FOLDER", required=True, multiple=True, type=FolderChoice(),
         help="Folder to download.")
+@dry_run_option
 @database_exists_option
 @color_option
 @help_option
 @pass_context
 @docstring_format(', '.join(Folder))
-def download_users(ctx: Context, database: Callable[..., Database], users: tuple[str], folders: tuple[str]):
+def download_users(ctx: Context, database: Callable[..., Database], users: tuple[str], folders: tuple[str],
+                   dry_run: bool):
     """
     Download specific user folders, where {yellow}FOLDER{reset} is one of {0}. Multiple {yellow}--user{reset} and
     {yellow}--folder{reset} arguments can be passed.
     """
     db: Database = database()
     add_history(db, ctx, users=users, folders=folders)
-    downloader: Downloader = Downloader(db, open_api(db), color=ctx.color)
+    downloader: Downloader = Downloader(db, open_api(db), color=ctx.color, dry_run=dry_run)
     downloader.download_users(list(users), list(folders))
     downloader.report()
 
@@ -99,13 +103,14 @@ def download_users(ctx: Context, database: Callable[..., Database], users: tuple
 @option("--stop", metavar="STOP", type=IntRange(0, min_open=True), default=1, show_default=True,
         help="Number of submissions to find in the database before stopping.")
 @option("--deactivated", is_flag=True, default=False, help="Check deactivated users.")
+@dry_run_option
 @database_exists_option
 @color_option
 @help_option
 @pass_context
 @docstring_format(', '.join(Folder))
 def download_update(ctx: Context, database: Callable[..., Database], users: tuple[str], folders: tuple[str], stop: int,
-                    deactivated: bool):
+                    deactivated: bool, dry_run: bool):
     """
     Download new entries using the users and folders already in the database. {yellow}--user{reset} and
     {yellow}--folder{reset} options can be used to restrict the update to specific users and or folders, where
@@ -114,7 +119,7 @@ def download_update(ctx: Context, database: Callable[..., Database], users: tupl
     """
     db: Database = database()
     add_history(db, ctx, users=users, folders=folders, stop=stop)
-    downloader: Downloader = Downloader(db, open_api(db), color=ctx.color)
+    downloader: Downloader = Downloader(db, open_api(db), color=ctx.color, dry_run=dry_run)
     downloader.download_users_update(list(users), list(folders), stop, deactivated)
     downloader.report()
 
@@ -122,18 +127,20 @@ def download_update(ctx: Context, database: Callable[..., Database], users: tupl
 @download_app.command("submissions", short_help="Download single submissions.", no_args_is_help=True)
 @argument("submission_id", nargs=-1, required=True, type=IntRange(1))
 @option("--replace", is_flag=True, default=False, show_default=True, help="Replace submissions already in database.")
+@dry_run_option
 @database_exists_option
 @color_option
 @help_option
 @pass_context
 @docstring_format()
-def download_submissions(ctx: Context, database: Callable[..., Database], submission_id: tuple[int], replace: bool):
+def download_submissions(ctx: Context, database: Callable[..., Database], submission_id: tuple[int], replace: bool,
+                         dry_run: bool):
     """
     Download single submissions, where {yellow}SUBMISSION_ID{reset} is the ID of the submission.
     """
     db: Database = database()
     add_history(db, ctx, submission_id=submission_id, replace=replace)
-    downloader: Downloader = Downloader(db, open_api(db), color=ctx.color)
+    downloader: Downloader = Downloader(db, open_api(db), color=ctx.color, dry_run=dry_run)
     downloader.download_submissions(list(submission_id), replace)
     downloader.report()
 
@@ -141,17 +148,19 @@ def download_submissions(ctx: Context, database: Callable[..., Database], submis
 @download_app.command("journals", short_help="Download single journals.", no_args_is_help=True)
 @argument("journal_id", nargs=-1, required=True, type=IntRange(1))
 @option("--replace", is_flag=True, default=False, show_default=True, help="Replace submissions already in database.")
+@dry_run_option
 @database_exists_option
 @color_option
 @help_option
 @pass_context
 @docstring_format()
-def download_journals(ctx: Context, database: Callable[..., Database], journal_id: tuple[int], replace: bool):
+def download_journals(ctx: Context, database: Callable[..., Database], journal_id: tuple[int], replace: bool,
+                      dry_run: bool):
     """
     Download single journals, where {yellow}JOURNAL_ID{reset} is the ID of the journal.
     """
     db: Database = database()
     add_history(db, ctx, journal_id=journal_id, replace=replace)
-    downloader: Downloader = Downloader(db, open_api(db), color=ctx.color)
+    downloader: Downloader = Downloader(db, open_api(db), color=ctx.color, dry_run=dry_run)
     downloader.download_journals(list(journal_id), replace)
     downloader.report()
