@@ -8,6 +8,7 @@ from os.path import getsize
 from pathlib import Path
 from re import sub
 from shutil import get_terminal_size
+from sys import stderr
 from sys import stdout
 from typing import Any
 from typing import Callable
@@ -250,13 +251,20 @@ def database_info(ctx: Context, database: Callable[..., Database]):
     Show database information, statistics and version.
     """
 
-    db: Database = database()
-    last_history: dict | None = next(db.history.select(order=[db.history.key.name + " desc"], limit=1), None)
+    db: Database = database(check_version=False)
+    err: Exception | None
+    if err := db.check_version(raise_for_error=False):
+        secho(f"Database version error: {' '.join(err.args)}" +
+              f"\n\nUpgrade with {database_app.name} {database_upgrade.name}.",
+              file=stderr, fg="red", color=ctx.color)
     echo(f"{bold}Database{reset}", color=ctx.color)
     echo(f"{blue}Location{reset}   : {yellow}{db.path}{reset}", color=ctx.color)
     echo(f"{blue}Version{reset}    : {yellow}{db.version}{reset}", color=ctx.color)
     echo(f"{blue}Size{reset}       : ", nl=False, color=ctx.color)
     echo(f"{yellow}{getsize(db.path) / 1e6:.1f}MB{reset}", color=ctx.color)
+    if err:
+        return
+    last_history: dict | None = next(db.history.select(order=[db.history.key.name + ' desc'], limit=1), None)
     echo(f"{blue}Last update{reset}: ", nl=False, color=ctx.color)
     echo(f"{yellow}{(last_history or {}).get(HistoryColumns.TIME.value.name, None)}{reset}", color=ctx.color)
     echo(f"{blue}Users{reset}      : ", nl=False, color=ctx.color)
