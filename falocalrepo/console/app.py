@@ -127,6 +127,7 @@ def init(ctx: Context, database: Callable[..., Database]):
 @option("--shell", is_flag=True, help="Print shell command to upgrade components.")
 @color_option
 @help_option
+@option("--database", expose_value=False, required=False, hidden=True)
 @pass_context
 @docstring_format()
 def update(ctx: Context, shell: bool):
@@ -163,6 +164,7 @@ def update(ctx: Context, shell: bool):
 @argument("commands", nargs=-1, required=False, type=str)
 @color_option
 @help_option
+@option("--database", expose_value=False, required=False, hidden=True)
 @pass_context
 def app_help(ctx: Context, commands: tuple[str]):
     """
@@ -177,6 +179,7 @@ def app_help(ctx: Context, commands: tuple[str]):
 @option("--alias", type=str, metavar="NAME", default=None, help="Alternate program name for completion script.")
 @color_option
 @help_option
+@option("--database", expose_value=False, required=False, hidden=True)
 @pass_context
 @docstring_format("\n    ".join(f" * {s.value}\t{s.help}" for s in ShellChoice.completion_items))
 def app_completions(ctx: Context, shell: Type[ShellComplete], alias: str | None):
