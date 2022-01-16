@@ -1,4 +1,3 @@
-from functools import reduce
 from pathlib import Path
 from typing import Callable
 from typing import Type
@@ -34,6 +33,7 @@ from .database import database_app
 from .download import download_app
 from .util import CompleteChoice
 from .util import CustomHelpColorsGroup
+from .util import _help_option_names
 from .util import add_history
 from .util import check_update
 from .util import color_option
@@ -159,8 +159,8 @@ def update(ctx: Context, shell: bool):
         echo("No updates available")
 
 
-@app.command("help")
-@argument("commands", nargs=-1, required=False, type=str, callback=lambda _c, _p, v: list(v))
+@app.command("help", context_settings={"ignore_unknown_options": True})
+@argument("commands", nargs=-1, required=False, type=str)
 @color_option
 @help_option
 @pass_context
@@ -169,10 +169,7 @@ def app_help(ctx: Context, commands: tuple[str]):
     Show the help for a command.
     """
 
-    try:
-        echo(reduce(lambda a, c: a.commands[c], commands, app).get_help(ctx), color=ctx.color)
-    except (KeyError, AttributeError):
-        raise UsageError(f"No such command {' '.join(commands)!r}.", ctx)
+    app.main((*commands, _help_option_names[0]), standalone_mode=False, color=ctx.color)
 
 
 @app.command("completions", short_help="Generate tab-completion scripts.")
