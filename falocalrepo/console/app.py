@@ -128,6 +128,7 @@ def init(ctx: Context, database: Callable[..., Database]):
 @color_option
 @help_option
 @pass_context
+@docstring_format()
 def update(ctx: Context, shell: bool):
     """
     Check for updates to falocalrepo and its main dependencies on PyPi. The {yellow}shell{reset} option can be used to
