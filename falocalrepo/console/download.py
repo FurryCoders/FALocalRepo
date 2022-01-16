@@ -150,6 +150,9 @@ def download_submissions(ctx: Context, database: Callable[..., Database], submis
     """
     Download single submissions, where {yellow}SUBMISSION_ID{reset} is the ID of the submission.
 
+    If the {yellow}--replace{reset} option is used, database entries will be overwritten with new data (favorites will
+    be maintained).
+
     The optional {yellow}--dry-run{reset} option disables downloading and saving and simply lists fetched entries
     """
     db: Database = database()
@@ -172,6 +175,9 @@ def download_journals(ctx: Context, database: Callable[..., Database], journal_i
                       dry_run: bool):
     """
     Download single journals, where {yellow}JOURNAL_ID{reset} is the ID of the journal.
+
+    If the {yellow}--replace{reset} option is used, database entries will be overwritten with new data (favorites will
+    be maintained).
 
     The optional {yellow}--dry-run{reset} option disables downloading and saving and simply lists fetched entries.
     """
