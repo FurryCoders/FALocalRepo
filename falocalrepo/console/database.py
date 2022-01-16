@@ -491,6 +491,7 @@ def database_export(ctx: Context, database: Callable[..., Database], table: str,
 @color_option
 @help_option
 @pass_context
+@docstring_format()
 def database_remove(ctx: Context, database: Callable[..., Database], table: str, ids: tuple[str | int]):
     """
     Remove entries from the database using their IDs. The program will prompt for a confirmation before commencing
