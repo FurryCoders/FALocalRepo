@@ -33,6 +33,7 @@ _envar_database: str = f"{__prog_name__}_DATABASE"
 _envar_no_color: str = f"{__prog_name__}_NOCOLOR"
 _envar_multi_connection: str = f"{__prog_name__}_MULTI_CONNECTION"
 _cookies_setting: str = "COOKIES"
+_help_option_names: list[str] = ["--help", "-h"]
 
 
 def database_callback(ctx: Context, param: Option, value: Path) -> Callable[..., Database]:
@@ -57,7 +58,7 @@ database_no_exists_option = option("--database", default=Path("FA.db"), help="Da
                                    type=PathClick(dir_okay=False, writable=True, resolve_path=True, path_type=Path))
 color_option = option("--color/--no-color", is_flag=True, is_eager=True, default=None, expose_value=False,
                       callback=color_callback, envvar=_envar_no_color, help="Toggle ANSI colors.")
-help_option = help_option_click("--help", "-h", is_eager=True, help="Show help message and exit.")
+help_option = help_option_click(*_help_option_names, is_eager=True, help="Show help message and exit.")
 
 
 def open_database(path: Path, *, ctx: Context, param: Parameter, check_init: bool = True,
