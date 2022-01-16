@@ -56,7 +56,7 @@ def download_app():
 @pass_context
 def download_login(ctx: Context, database: Callable[..., Database]):
     """
-    Check whether the cookies stored in the database connect to a login Fur Affinity session.
+    Check whether the cookies stored in the database belong to a login Fur Affinity session.
     """
 
     db: Database = database()
