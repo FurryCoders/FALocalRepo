@@ -48,14 +48,15 @@ functionalities of the program.
 1. [Cookies](#cookies)
 1. [Usage](#usage)
     1. [Environmental Variables](#environmental-variables)
-    1. [Error Codes](#error-codes)
-    1. [Help](#help)
-    1. [Update](#update)
     1. [Init](#init)
-    1. [Configuration](#configuration)
+    1. [Help](#help)
+    1. [Config](#config)
     1. [Download](#download)
     1. [Database](#database)
         1. [Database Query Language](#database-query-language)
+    1. [Server](#server)
+    1. [Completions](#completions)
+    1. [Updates](#updates)
 1. [Database](#database-1)
     1. [Settings](#settings)
     1. [Users](#users)
@@ -108,6 +109,15 @@ can be opened with &#8679;F9, on Safari with &#8997;&#8984;I, etc.
 
 To set the cookies use the `config cookies` command. See [#Configuration](#configuration) for more details.
 
+### Environmental Variables
+
+`falocalrepo` supports the following environmental variables:
+
+* `FALOCALREPO_DATABASE` sets a path for the database rather than using the current folder.
+* `FALOCALREPO_MULTI_CONNECTION` allow operating on the database even if it is already opened in other processes.<br/>
+  **Warning**: using this option may cause the database to become corrupt and irreparable.
+* `FALOCALREPO_NO_COLOR` turn off colors for all commands.
+
 ## Usage
 
 > **How to Read Usage Instructions**
@@ -158,18 +168,9 @@ the `falocalrepo-database` module. Only `database info` and `database upgrade` c
 not up-to-date.
 
 When the database is first initialised, it sets the submissions files folder to `FA.files` (relative to the database
-location). This value can be changed using the [`config` command](#configuration).
+location). This value can be changed using the [`config` command](#config).
 
 Cookies need to be set manually with the config command before the program will be able to access protected pages.
-
-### Environmental Variables
-
-`falocalrepo` supports the following environmental variables:
-
-* `FALOCALREPO_DATABASE` sets a path for the database rather than using the current folder.
-* `FALOCALREPO_MULTI_CONNECTION` allow operating on the database even if it is already opened in other processes.<br/>
-  **Warning**: using this option may cause the database to become corrupt and irreparable.
-* `FALOCALREPO_NO_COLOR` turn off colors for all commands.
 
 ### Init
 
@@ -442,7 +443,7 @@ Supported shells are:
 * `fish` The friendly interactive shell
 * `zsh` The Z shell
 
-### Update Components
+### Updates
 
 `updates [--shell]`
 
