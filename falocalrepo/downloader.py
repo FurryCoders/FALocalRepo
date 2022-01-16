@@ -28,6 +28,19 @@ _FolderDownloader = Callable[[str, int | str], tuple[list[SubmissionPartial], st
 T = TypeVar("T")
 
 
+class OutputType(str, Enum):
+    rich = auto()
+    simple = auto()
+
+
+class Folder(str, Enum):
+    gallery = "gallery"
+    scraps = "scraps"
+    favorites = "favorites"
+    journals = "journals"
+    userpage = "userpage"
+
+
 def terminal_width() -> int:
     return get_terminal_size((0, 0)).columns
 
@@ -54,19 +67,6 @@ def get_downloader(api: FAAPI, folder: Folder) -> _FolderDownloader:
         return api.favorites
     else:
         raise KeyError(f"Unknown folder {folder}")
-
-
-class OutputType(str, Enum):
-    rich = auto()
-    simple = auto()
-
-
-class Folder(str, Enum):
-    gallery = "gallery"
-    scraps = "scraps"
-    favorites = "favorites"
-    journals = "journals"
-    userpage = "userpage"
 
 
 class Bar:
