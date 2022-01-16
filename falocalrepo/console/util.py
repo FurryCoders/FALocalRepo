@@ -29,7 +29,6 @@ from .colors import *
 from .. import __name__ as __prog_name__
 
 __prog_name__ = __prog_name__.split('/')[-1].split('\\')[-1].strip().upper()
-_envar_debug: str = f"{__prog_name__}_DEBUG"
 _envar_database: str = f"{__prog_name__}_DATABASE"
 _envar_no_color: str = f"{__prog_name__}_NOCOLOR"
 _envar_multi_connection: str = f"{__prog_name__}_MULTI_CONNECTION"
