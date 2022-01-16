@@ -93,7 +93,6 @@ def download_users(ctx: Context, database: Callable[..., Database], users: tuple
     downloader.report()
 
 
-# noinspection PyUnusedLocal
 @download_app.command("update", short_help="Download new entries for users in database.")
 @option("--user", "-u", "users", metavar="USER", multiple=True, type=str, help="User to update.")
 @option("--folder", "-f", "folders", metavar="FOLDER", multiple=True, type=FolderChoice(), help="Folder to update.")
@@ -120,7 +119,6 @@ def download_update(ctx: Context, database: Callable[..., Database], users: tupl
     downloader.report()
 
 
-# noinspection PyUnusedLocal
 @download_app.command("submissions", short_help="Download single submissions.", no_args_is_help=True)
 @argument("submission_id", nargs=-1, required=True, type=IntRange(1))
 @option("--replace", is_flag=True, default=False, show_default=True, help="Replace submissions already in database.")
@@ -140,7 +138,6 @@ def download_submissions(ctx: Context, database: Callable[..., Database], submis
     downloader.report()
 
 
-# noinspection PyUnusedLocal
 @download_app.command("journals", short_help="Download single journals.", no_args_is_help=True)
 @argument("journal_id", nargs=-1, required=True, type=IntRange(1))
 @option("--replace", is_flag=True, default=False, show_default=True, help="Replace submissions already in database.")

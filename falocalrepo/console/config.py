@@ -145,8 +145,6 @@ def config_files_folder(ctx: Context, database: Callable[..., Database], new_fol
             echo(f"Not moving files from original folder {yellow}{db.path}{reset}", color=ctx.color)
         else:
             echo(f"Moving files to new folder {yellow}{new_folder}{reset}", color=ctx.color)
-            raise NotImplementedError()
-            # noinspection PyUnreachableCode
             folder: Path = Path(db.settings[db.settings.files_folder_setting]).resolve()
             new_folder_abs: Path = new_folder.resolve()
             total: int = len(db.submissions)
