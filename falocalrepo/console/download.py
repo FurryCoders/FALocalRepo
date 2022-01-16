@@ -72,7 +72,7 @@ def download_login(ctx: Context, database: Callable[..., Database]):
         ctx.exit(1)
 
 
-@download_app.command("users", short_help="Download specific user folders.", no_args_is_help=True)
+@download_app.command("users", short_help="Download users.", no_args_is_help=True)
 @option("--user", "-u", "users", metavar="USER", required=True, multiple=True, type=str, help="Username.")
 @option("--folder", "-f", "folders", metavar="FOLDER", required=True, multiple=True, type=FolderChoice(),
         help="Folder to download.")

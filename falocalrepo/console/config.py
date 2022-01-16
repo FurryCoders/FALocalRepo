@@ -49,7 +49,7 @@ def config_app():
     pass
 
 
-@config_app.command("list")
+@config_app.command("list", short_help="List settings.")
 @database_exists_option
 @color_option
 @help_option

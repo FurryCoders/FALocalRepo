@@ -475,7 +475,7 @@ def database_export(ctx: Context, database: Callable[..., Database], table: str,
         echo(f"{blue}Total{reset}: {yellow}{results_total}{reset}", color=ctx.color)
 
 
-@database_app.command("remove", no_args_is_help=True, short_help="Remove entries from the database.")
+@database_app.command("remove", no_args_is_help=True, short_help="Remove entries.")
 @argument("table", nargs=1, required=True, is_eager=True, type=TableChoice())
 @argument("ids", metavar="ID...", nargs=-1, required=True, type=str, callback=id_callback)
 @confirmation_option("--yes", help="Confirm deletion without prompting.")
@@ -515,7 +515,7 @@ def database_remove(ctx: Context, database: Callable[..., Database], table: str,
                 db.commit()
 
 
-@database_app.command("add", short_help="Add entries and submission files manually.")
+@database_app.command("add", short_help="Add entries manually.")
 @argument("table", nargs=1, required=True, is_eager=True, type=TableChoice())
 @argument("file", nargs=1, required=True, type=File("r"))
 @option("--submission-file", required=False, default=None, type=File("rb"))
@@ -659,7 +659,7 @@ def database_clean(database: Callable[..., Database]):
 
 
 # noinspection DuplicatedCode
-@database_app.command("copy")
+@database_app.command("copy", short_help="Copy database entries.")
 @argument("database_dest", nargs=1, callback=database_callback,
           type=PathClick(exists=True, dir_okay=False, writable=True, resolve_path=True, path_type=Path))
 @option("--query", metavar="<TABLE QUERY>", multiple=True, type=(TableChoice(), str),
@@ -703,7 +703,7 @@ def database_copy(ctx: Context, database: Callable[..., Database], database_dest
 
 
 # noinspection DuplicatedCode
-@database_app.command("merge")
+@database_app.command("merge", short_help="Merge database entries.")
 @argument("database_origin", nargs=1, callback=database_callback,
           type=PathClick(exists=True, dir_okay=False, writable=True, resolve_path=True, path_type=Path))
 @option("--query", metavar="<TABLE QUERY>", multiple=True, type=(TableChoice(), str),
@@ -746,7 +746,7 @@ def database_copy(ctx: Context, database: Callable[..., Database], database_orig
     echo("Done")
 
 
-@database_app.command("upgrade", short_help="Upgrade the database to the latest version.")
+@database_app.command("upgrade", short_help="Upgrade database.")
 @database_exists_option
 @color_option
 @help_option
