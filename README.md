@@ -7,7 +7,6 @@
 Pure Python program to download submissions, journals, and user folders from the FurAffinity forum in an easily handled
 database.
 
-
 [![version_pypi](https://img.shields.io/pypi/v/falocalrepo?logo=pypi)](https://pypi.org/project/falocalrepo/)
 [![version_gitlab](https://img.shields.io/gitlab/v/tag/MatteoCampinoti94/falocalrepo?label=version&sort=date&logo=gitlab&color=FCA121)](https://gitlab.com/MatteoCampinoti94/falocalrepo)
 [![version_python](https://img.shields.io/pypi/pyversions/falocalrepo?logo=Python)](https://www.python.org)
@@ -28,7 +27,7 @@ that they care about from the forum.
 
 The data is stored into a SQLite database, and the submissions files are saved in a tiered tree structure based on their
 ID's. Using SQLite instead of a client-server database makes the program extremely portable, only needing a working
-Python 3.9+ installation to work, and allows the downloaded data to be moved and backed up by simply moving/copying the
+Python 3.10+ installation to work, and allows the downloaded data to be moved and backed up by simply moving/copying the
 database file and submissions files folder.
 
 All download operations are performed through the custom FurAffinity scraping
@@ -56,6 +55,7 @@ functionalities of the program.
     1. [Configuration](#configuration)
     1. [Download](#download)
     1. [Database](#database)
+        1. [Database Query Language](#database-query-language)
 1. [Database](#database-1)
     1. [Settings](#settings)
     1. [Users](#users)
@@ -75,7 +75,7 @@ To install the program it is sufficient to use Python pip and get the package `f
 python3 -m pip install falocalrepo
 ```
 
-Python 3.9 or above is needed to run this program, all other dependencies are handled by pip during installation. For
+Python 3.10 or above is needed to run this program, all other dependencies are handled by pip during installation. For
 information on how to install Python on your computer, refer to the official
 website [Python.org](https://www.python.org/).
 
@@ -85,7 +85,7 @@ To upgrade the `falocalrepo` and its dependencies, use pip to upgrade all three 
 python3 -m pip install --upgrade falocalrepo faapi falocalrepo-database falocalrepo-server
 ```
 
-To check for updates use the [`update` command](#update). A message will appear if there is an update available for any
+To check for updates use the [`updates` command](#update). A message will appear if there is an update available for any
 component.
 
 The program needs cookies from a logged-in FurAffinity session to download protected pages. Without the cookies the
@@ -98,14 +98,13 @@ at [furaffinity.net/controls/settings/](https://www.furaffinity.net/controls/set
 ## Cookies
 
 The scraping library used by this program needs two specific cookies from a logged-in FurAffinity session. These are
-cookie `a` and cookie `b`.
+cookie `a` and cookie `b`. The cookies' values usually take the form of hexadecimal strings
+like `356f5962-5a60-0922-1c11-65003b703038`.
 
-As of 2020-08-09 these take the form of hexadecimal strings like `356f5962-5a60-0922-1c11-65003b703038`.
-
-The easiest way to obtain these cookies is by using a browser extension to extract your cookies and then search for `a`
+The easiest way to obtain these cookies is by using a browser extension to extract them and then search for `a`
 and `b`.<br>
 Alternatively, the storage inspection tool of a desktop browser can also be used. For example on Mozilla's Firefox this
-can be opened with the &#8679;F9 shortcut.
+can be opened with &#8679;F9, on Safari with &#8997;&#8984;I, etc.
 
 To set the cookies use the `config cookies` command. See [#Configuration](#configuration) for more details.
 
@@ -113,10 +112,10 @@ To set the cookies use the `config cookies` command. See [#Configuration](#confi
 
 > **How to Read Usage Instructions**
 >  * `command` a static command keyword
->  * `<arg>` `<param>` `<value>` an argument, parameter, value, etc... that must be provided to a command
->  * `param=<value>` a keyword argument with a static key and a value
+>  * `{arg1|arg2}` mutually exclusive arguments, only use one
+>  * `<arg>` `<param>` `<value>` an argument, parameter, value, etc. that must be provided to a command
+>  * `--option <value>` an option argument with a static key and a value
 >  * `[<arg>]` an optional argument that can be omitted
->  * `<arg1> | <arg2>` mutually exclusive arguments, only use one
 
 To run the program, simply call `falocalrepo` in your shell after installation.
 
@@ -125,38 +124,41 @@ Running without arguments will prompt a help message with all the available opti
 The usage pattern for the program is as follows:
 
 ```
-falocalrepo [-h | -v | -d | -s | -u] [<command> [<operation>] [<arg1> ... <argN>]]
+falocalrepo [OPTIONS] COMMAND [ARGS]...
 ```
 
 Available options are:
 
-* `-h, --help` show help message
-* `-v, --version` show program version
-* `-d, --database` show database version
-* `-s, --server` show server version
+* `--version` Show version and exit.
+* `--versions` Show components' versions and exit.
+
+The following global options are available for all commands:
+
+* `--database` Specify a database different from the default (FA.db in local folder). Overrides `FALOCALREPO_DATABASE`
+  environment variable.
+* `--color / --no-color` Toggle ANSI colors.
+* `-h, --help` Show help message and exit.
 
 Available commands are:
 
-* `help` display the manual of a command
-* `update` check for updates on PyPi
-* `init` create the database and exit
-* `config` manage settings
-* `download` perform downloads
-* `database` operate on the database
-
-_Note:_ all the commands except `help` will create and initialise the database if it is not present in the folder
-
-_Note:_ only one instance of the program is allowed at any given time when performing download operations
+* `init` Initialise the database.
+* `help` Show the help for a command.
+* `config` Change settings.
+* `download` Download resources.
+* `database` Operate on the database.
+* `server` Start local server to browse database.
+* `completions` Generate tab-completion scripts.
+* `updates` Check for updates to components.
 
 _Note:_ only one connection to a database is allowed at any given time, if the database is opened in other processes,
-the program will close with an error
+the program will close with an error.
 
 _Note_: the program will not operate if the version of the database does not match the version of
 the `falocalrepo-database` module. Only `database info` and `database upgrade` commands can be run if the database is
 not up-to-date.
 
-When the database is first initialised, it defaults the submissions files folder to `FA.files`. This value can be
-changed using the [`config` command](#configuration).
+When the database is first initialised, it sets the submissions files folder to `FA.files` (relative to the database
+location). This value can be changed using the [`config` command](#configuration).
 
 Cookies need to be set manually with the config command before the program will be able to access protected pages.
 
@@ -164,139 +166,112 @@ Cookies need to be set manually with the config command before the program will 
 
 `falocalrepo` supports the following environmental variables:
 
-* `FALOCALREPO_DATABASE` sets a path for the database rather than using the current folder. If the path basename ends
-  with `.db` -- e.g. `~/Documents/FA/MyFA.db` -- , then a database file will be created/opened with that name.
-  Otherwise, the path will be considered a folder, and a database named "FA.db" will be created therein.
-* `FALOCALREPO_DEBUG` always print traceback of caught exceptions, regardless of whether they are known or not.
-
-### Error Codes
-
-If the program encounters a fatal error, the error is printed to `STDERR` and the program exits with a specific error
-code:
-
-* 1 `MalformedCommand`, `UnknownCommand` command error.
-* 2 `MultipleInstances` another instance of the program was detected.
-* 3 `UnknownFolder` an unknown download folder was given to the [`download` command](#download).
-* 4 `ConnectionError` a connection error was encountered during download.
-* 5 `DatabaseError`, `IntegrityError` an error with the database file occurred.
-* 6 `TypeError`, `AssertionError` a type error was encountered.
-* 7 an unknown exception was encountered. The full traceback is saved to a `FA.log` file located in the current working
-  directory.
-
-The exception traceback is printed only for unknown exception (error 7). Using the `FALOCALREPO_DEBUG`
-[environmental variable](#environmental-variables) forces printing of traceback for all exceptions.
-
-### Help
-
-`help [<command> [<operations>]]`
-
-The `help` command gives information on the usage of the program and its commands and operations.
-
-> ```
-> falocalrepo help
-> ```
-> ```
-> falocalrepo help download
-> ```
-> ```
-> falocalrepo help database search-users
-> ```
-
-### Update
-
-`update [shell]`
-
-The `update` command checks for updates to falocalrepo and its main dependencies on PyPi. The optional `shell` command
-can be used to output the python pip command to upgrade the components with available updates.
-
-_Note_: The command needs an internet connection.
+* `FALOCALREPO_DATABASE` sets a path for the database rather than using the current folder.
+* `FALOCALREPO_MULTI_CONNECTION` allow operating on the database even if it is already opened in other processes.<br/>
+  **Warning**: using this option may cause the database to become corrupt and irreparable.
+* `FALOCALREPO_NO_COLOR` turn off colors for all commands.
 
 ### Init
 
-The `init` command initialises the database or, if one is already present, updates to a new version - if available - and
-then exits.
+`init`
 
-It can be used to create the database and then manually edit it, or to update it to a new version without calling other
-commands.
+The `init` command initialises the database. If a database is already present, no operation is performed except for a
+version check.
 
-### Configuration
+### Help
 
-`config [<setting> [<value1>] ... [<valueN>]]`
+`help [<COMMAND>...]`
 
-The `config` command allows to change the settings used by the program.
+The `help` command gives information on the usage of the program and its commands.
 
-Running the command alone will list the current values of the settings stored in the database.
-Running `config <setting>` without value arguments will show the current value of that specific setting.
+> ```
+> falocalrepo help database search
+> ```
+
+### Config
+
+`config <OPERATION>`
+
+The config command allows reading and changing the settings used by the program.
+
+Available config commands are:
 
 Available settings are:
 
-* `list` list stored settings.
-* `cookies [<cookie1 name>=<cookie1 value>] ... [<cookieN name>=<cookieN value>]` the cookies stored in the database.
+* `list` List settings.
+* `cookies [--cookie <NAME> <VALUE>...]` Read or modify stored cookies. If no `--cookie` option is given, the current
+  values are read instead.
 
 > ```
-> falocalrepo config cookies a=38565475-3421-3f21-7f63-3d341339737 b=356f5962-5a60-0922-1c11-65003b703038
+> falocalrepo config cookies --cookie a 38565475-3421-3f21-7f63-3d341339737 --cookie b 356f5962-5a60-0922-1c11-65003b703038
 > ```
 
-* `files-folder [move=<move-files>] [<new folder>]` the folder used to store submission files. This can be any path
-  relative to the folder of the database. If a new value is given, the program will move any files to the new location.
-  Setting the `<move-files>` value to `false` skips the moving and simply updates the database entry.
+* `files-folder [--move | --no-move] [--relative | --absolute] [<NEW_FOLDER>]` Read or modify the folder used to store
+  submission files, where `NEW_FOLDER` is the path to the new folder. If `NEW_FOLDER` is omitted, the current value is
+  read instead.<br/>
+  By default, `NEW_FOLDER` is considered to be relative to the database folder. Absolute values are allowed as long as a
+  relative path to the database parent folder can exist. To force the use of an absolute value, activate the
+  `--absolute` option.
 
 > ```
-> falocalrepo config files-folder SubmissionFiles
+> falocalrepo config files-folder --no-move FA.files2
 > ```
 
 ### Download
 
-`download <operation> [<option>=<value>] [<arg1>] ... [<argN>]`
+`download <OPERATION>`
 
-The `download` command performs all download and repository update operations. Submission thumbnails are downloaded
-alongside the main data and are stored as `thumbnail.jpg` in the submission folder (
+The download command performs all download operations to save and update users, submissions, and journals. Submissions
+are downloaded together with their files and thumbnails, if there are any. For details on submission files,
 see [Submission Files](#submission-files)).
+
+All download operations (except login) support the `--dry-run` option. When this is active, the database is not
+modified, nor are submission files downloaded. Entries are simply listed and the program checks whether they are in the
+database or not.
 
 Available operations are:
 
-* `users <user1>[,...,<userN>] <folder1>[,...,<folderN>]` download specific user folders. Requires two arguments with
-  comma-separated users and folders. Prepending `list-` to a folder allows to list all remote items in a user folder
-  without downloading them. Supported folders are:
-    * `gallery`
-    * `scraps`
-    * `favorites`
-    * `journals`
+* `login` Check whether the cookies stored in the database belong to a login Fur Affinity session.
+
+* `users [--dry-run] -u <USER>... -f <FOLDER>...` Download specific user folders, where `FOLDER` is one of gallery,
+  scraps, favorites, journals, userpage. Multiple `--user` and `--folder` arguments can be passed.
 
 > ```
-> falocalrepo download users tom,jerry gallery,scraps,journals
+> falocalrepo download users -u tom -u jerry -f gallery -f scraps -f journals
 > ```
 > ```
 > falocalrepo download users tom,jerry list-favorites
 > ```
 
-* `update [stop=<n>] [deactivated=<deactivated>] [<user1>,...,<userN>] [<folder1>,...,<folderN>]` update the repository
-  by checking the previously downloaded folders (gallery, scraps, favorites or journals) of each user and stopping when
-  it finds a submission that is already present in the repository. Can pass a list of users and/or folders that will be
-  updated if in the database. To skip users, use `@` as argument. The `stop=<n>` option allows to stop the update after
-  finding `n` submissions in a user's database entry, defaults to 1. If a user is deactivated, the folders in the
-  database will be prepended with a '!'. Deactivated users will be skipped when update is called, unless
-  the `<deactivated>` option is set to `true`.
+* `update [--dry-run] [--deactivated] [--stop N] [-u <USER>...] [-f <FOLDER>...]` Download new entries using the users
+  and folders already in the database. `--user` and `--folder` options can be used to restrict the update to specific
+  users and or folders, where `FOLDER` is one of gallery, scraps, favorites, journals, userpage. Multiple `--user`
+  and `--folder` arguments can be passed.<br/>
+  If the `--deactivated` option is used, deactivated users are fetched instead of ignore. If the user is no longer
+  inactive, the database entry will be modified as well.<br/>
+  The `--stop` option allows to set after how many entries of each folder should be found in the database before
+  stopping the update.
 
 > ```
-> falocalrepo download update stop=5
+> falocalrepo download update --stop 5
 > ```
 > ```
-> falocalrepo download update deactivated=true @ gallery,scraps
+> falocalrepo download update --deactivated -f gallery -f scraps
 > ```
 > ```
-> falocalrepo download update tom,jerry
+> falocalrepo download update -u tom -u jerry -f favorites
 > ```
 
-* `submissions <id1> ... [<idN>]` download specific submissions. Requires submission IDs provided as separate arguments,
-  if a submission is already in the database it is ignored.
+* `submissions [--replace] <SUBMISSION_ID>...` Download single submissions, where `SUBMISSION_ID` is the ID of the
+  submission. If the `--replace` option is used, database entries will be overwritten with new data (favorites will be
+  maintained).
 
 > ```
 > falocalrepo download submissions 12345678 13572468 87651234
 > ```
 
-* `journals <id1> ... [<idN>]` download specific journals. Requires journal IDs provided as separate arguments, if a
-  journal is already in the database it is ignored.
+* `journals [--replace] <JOURNAL_ID>...` Download single journals, where `JOURNAL_ID` is the ID of the journal.<br/>
+  If the `--replace` option is used, database entries will be overwritten with new data (favorites will be maintained).
 
 > ```
 > falocalrepo download journals 123456 135724 876512
@@ -304,192 +279,177 @@ Available operations are:
 
 ### Database
 
-`database [<operation> [<param1>=<value1> ... <paramN>=<valueN>]]`
+`database <OPERATION>`
 
-The `database` command allows operating on the database. Used without an operation command shows the database
-information, statistics (number of users and submissions and time of last update), and version.
-
-All search operations are conducted case-insensitively using the SQLite [`like`](https://sqlite.org/lang_expr.html#like)
-expression which allows for a limited pattern matching. For example this expression can be used to search two words
-together separated by an unknown amount of characters `%cat%mouse%`. Fields missing wildcards will only match an exact
-result, i.e. `cat` will only match a field equal to `cat` whereas `%cat%` wil match a field that contains `cat`.
-Bars (`|`) can be used to isolate individual items in list fields.
-
-All search operations support the extra `order`, `limit`, and `offset` parameters with values in
-SQLite [`ORDER BY` clause](https://sqlite.org/lang_select.html#the_order_by_clause)
-, [`LIMIT` clause](https://sqlite.org/lang_select.html#the_limit_clause) format,
-and [`OFFSET` clause](https://sqlite.org/lang_select.html#the_limit_clause). The `order` parameter supports all fields
-of the specific search command.
+Operate on the database to add, remove, or search entries. For details on columns see [Database](#database-1).
 
 Available operations are:
 
 * `info` show database information, statistics and version.
-* `history` show commands history
-* `search-users [json=<json>] [columns=<columns>] [<param1>=<value1>] ... [<paramN>=<valueN>]` search the users entries
-  using metadata fields. Search parameters can be passed multiple times to act as OR values. All columns of the users
-  table are supported: [#Users](#users). The `any` parameter can be used to match against any column. Parameters can be
-  lowercase. If no parameters are supplied, a list of all users will be returned instead. If `<json>` is set to 'true',
-  the results are printed as a list of objects in JSON format. If `<columns>` is passed, then the objects printed with
-  the JSON option will only contain those fields.
+* `history [--filter FILTER] [--clear]` Show database history. History events can be filtered using the `--filter`
+  option to match events that contain `FILTER` (the match is performed case-insensitively).<br/>
+  Using the `--clear` option will delete all history entries, or the ones containing `FILTER` if the `--filter` option
+  is used.
 
 > ```
-> falocalrepo database search-users json=true folders=%gallery%
+> falocalrepo database history --filter upgrade 
 > ```
 
-* `search-submissions [json=<json>] [columns=<columns>] [<param1>=<value1>] ... [<paramN>=<valueN>]` search the
-  submissions entries using metadata fields. Search parameters can be passed multiple times to act as OR values. All
-  columns of the submissions table are supported: [#Submissions](#submissions). The `any` parameter can be used to match
-  against any column. Parameters can be lowercase. If no parameters are supplied, a list of all submissions will be
-  returned instead. If `<json>` is set to 'true', the results are printed as a list of objects in JSON format.
-  If `<columns>` is passed, then the objects printed with the JSON option will only contain those fields.
+* `search [--column <COLUMN[,WIDTH]>...] [--limit LIMIT] [--offset OFFSET] [--sort COLUMN] [--order {asc|desc}] [--output {table|csv|tsv|json|none}] [--ignore-width] [--sql] [--show-sql] [--total] {SUBMISSIONS|JOURNALS|USERS} <QUERY>...`
+  Search the database using queries, and output in different formats. For details on the query language,
+  see [Database Query Language](#database-query-language).<br/>
+  The default output format is a table with only the most relevant columns displayed for each entry. To override the
+  displayed column, or change their width, use the --column option to select which columns will be displayed (SQLite
+  statements are supported). The optional `WIDTH` value can be added to format that specific column when the output is
+  set to table.<br/>
+  To output all columns and entries of a table, `COLUMN` and `QUERY` values can be set to `@` and `%` respectively.
+  However, the
+  `database export` command is better suited for this task.<br/>
+  Search is performed case-insensitively.<br/>
+  The output can be set to five different types:
+    * `table` Table format
+    * `csv` CSV format (comma separated)
+    * `tsv` TSV format (tab separated)
+    * `json` JSON format
+    * `none` Do not print results to screen
 
 > ```
-> falocalrepo database search-submissions tags=%|cat|%|mouse|% date=2020-% category=%artwork% order="AUTHOR" order="ID"
-> ```
-> ```
-> falocalrepo database search-submissions json=true columns=id,author,title author='CatArtist' tags=%|cat|% tags=%|mouse|% date=2020-% category=%artwork%
+> falocalrepo search USERS --output json '@folders ^gallery'
 > ```
 
-* `search-journals [json=<json>] [columns=<columns>] [<param1>=<value1>] ... [<paramN>=<valueN>]` search the journals
-  entries using metadata fields. Search parameters can be passed multiple times to act as OR values. All columns of the
-  journals table are supported: [#Journals](#journals). The `any` parameter can be used to match against any column.
-  Parameters can be lowercase. If no parameters are supplied, a list of all journals will be returned instead.
-  If `<json>` is set to 'true', the results are printed as a list of objects in JSON format. If `<columns>` is passed,
-  then the objects printed with the JSON option will only contain those fields.
-
 > ```
-> falocalrepo database search-journals date=2020-% author=CatArtist order="ID DESC"
-> ```
-> ```
-> falocalrepo database search-journals json=true columns=id,author,title date=2020-% date=2019-% content=%commission%
+> falocalrepo search SUBMISSIONS '@tags |cat| |mouse| @date 2020- @category artwork' --sort AUTHOR
 > ```
 
-* `add-user <json>` Add or replace a user entry into the database using metadata from a JSON file. If the user already
-  exists in the database, fields may be omitted from the JSON, except for the ID. Omitted fields will not be replaced in
-  the database and will remain as they are. The following fields are supported:
-    * `username`<br>
-      The following fields are optional:
-    * `folders`
-
 > ```
-> falocalrepo database add-user ./user.json
+> falocalrepo search JOURNALS --putput csv '@date (2020- | 2019-) @content commission'
 > ```
 
-* `add-submission <json> [file=<file>] [thumb=<thumb>]` Add or replace a submission entry into the database using
-  metadata from a JSON file. If the submission already exists in the database, fields may be omitted from the JSON,
-  except for the ID. Omitted fields will not be replaced in the database and will remain as they are. The
-  optional `<file>` and `<thumb>` parameters allow adding or replacing the submission file and thumbnail respectively.
-  The following fields are supported:
-    * `id`
-    * `title`
-    * `author`
-    * `date` date in the format YYYY-MM-DD
-    * `description`
-    * `category`
-    * `species`
-    * `gender`
-    * `rating`
-    * `type` image, text, music, or flash * 'folder' gallery or scraps
-    * `fileurl` the remote URL of the submission file<br>
-      The following fields are optional:
-    * `tags` list of tags, if omitted it defaults to existing entry or empty
-    * `favorite` list of users that faved the submission, if omitted it defaults to existing entry or empty
-    * `mentions` list of mentioned users, if omitted it defaults to existing entry or mentions are extracted from the
-      description
-    * `userupdate` 1 if the submission is downloaded as part of a user gallery/scraps else 0, if omitted it defaults to
-      entry or 0
+* `export [--column <COLUMN>...] [--sort COLUMN] [--order {asc|desc}] [--total] {SUBMISSIONS|JOURNALS|USERS} {csv|tsv|json} [FILE]`
+  Export all entries in a table to a file. The `FILE` argument can be omitted to print the results directly in the
+  terminal. The results total is not printed to file if a file is used.<br/>
+  By default, all columns of the table are selected, but this can be overridden with the `--column` option (SQLite
+  statements are supported).<br/>
+  Only sort and order statements are supported for exporting, to filter results use the `database search` command.<br/>
+  The `OUTPUT` can be set to four different types:
+    * `csv` CSV format (comma separated)
+    * `tsv` TSV format (tab separated)
+    * `json` JSON format
 
 > ```
-> falocalrepo database add-submission ./submission/metadata.json \
->     file=./submission/submission.pdf thumb=./submission/thumbnail.jpg
+> falocalrepo export USERS --output json users.json'
 > ```
 
-* `add-journal <json>` Add or replace a journal entry into the database using metadata from a JSON file. If the journal
-  already exists in the database, fields may be omitted from the JSON, except for the ID. Omitted fields will not be
-  replaced in the database and will remain as they are. The following fields are supported:
-    * `id`
-    * `title`
-    * `author`
-    * `date` date in the format YYYY-MM-DD * 'content' the body of the journal<br>
-      The following fields are optional:
-    * `mentions` list of mentioned users, if omitted it defaults to existing entry or mentions are extracted from the
-      content
-
 > ```
-> falocalrepo database add-journal ./journal.json"
+> falocalrepo export SUBMISSIONS --sort AUTHOR
 > ```
 
-* `remove-users <user1> ... [<userN>]` remove specific users from the database.
-
 > ```
-> falocalrepo database remove-users jerry
+> falocalrepo export JOURNALS --putput csv '@date (2020- | 2019-) @content commission'
 > ```
 
-* `remove-submissions <id1> ... [<idN>]` remove specific submissions from the database.
+* `add [--replace] [--submission-file FILENAME] [--submission-thumbnail FILENAME] {SUBMISSIONS|JOURNALS|USERS} <FILE>`
+  Add entries and submission files manually using a JSON file. Submission files/thumbnails can be added using the
+  respective options.<br/>
+  The JSON file must contain fields for all columns of the table. For a list of columns for each table,
+  see [Database](#database-1). By default, the program will throw an error when trying to add an entry that already
+  exists. To override this behaviour and ignore existing entries, use the `--replace` option.
 
 > ```
-> falocalrepo database remove-submissions 12345678 13572468 87651234
+> falocalrepo database add USERS user.json
 > ```
 
-* `remove-journals <id1> ... [<idN>]` remove specific journals from the database.
+* `remove [--yes] {SUBMISSIONS|JOURNALS|USERS} ID...` Remove entries from the database using their IDs. The program will
+  prompt for a confirmation before commencing deletion. To confirm deletion ahead, use the `--yes` option.
 
 > ```
-> falocalrepo database remove-journals 123456 135724 876512
+> falocalrepo database remove SUBMISSIONS 1 5 14789324
 > ```
 
-* `server [host=<host>] [port=<port>] [ssl-cert=<ssl-cert>] [ssl-key=<ssl-key>] [redirect-http=<redirect-port>]` starts
-  a server at `<host>:<port>` to navigate the database using `falocalrepo-server`. The `<ssl-cert>` and `<ssl-key>`
-  allow serving with HTTPS.Defaults to `0.0.0.0:80`. Setting `<redirect-port>` to a value activates HTTP to HTTPS
-  redirection. Running the server does not occupy the database connection (it is only occupied when the server is
-  actively searching the database), which allows running other `database` commands; `download` commands remain
-  unavailable. To run falocalrepo together with the server, the server should be run directly with
-  the `falocalrepo-server` command. See [falocalrepo-server](https://pypi.org/project/falocalrepo-server) for more
-  details on its usage.
+* `merge [--query <TABLE QUERY>...] [--replace] DATABASE_ORIGIN` Merge database from `DATABASE_ORIGIN`.<br/>
+  Specific tables can be selected with the `--query` option. For details on the syntax for the `QUERY` value, see
+  [Database Query Language](#database-query-language). To select all entries in a table, use `%` as query. The `TABLE`
+  value can be one of SUBMISSIONS, JOURNALS, USERS.<br/>
+  If no `--query` option is given, all major tables from the origin database are copied (SUBMISSIONS, JOURNALS, USERS).
 
 > ```
-> falocalrepo database server host=127.0.0.1 port=5000
+> falocalrepo database merge ~/FA.db --query USERS tom --SUBMISSIONS '@author tom'
 > ```
 
-* `merge <path> [<table1>.<param1>=<value1> ... <tableN>.<paramN>=<valueN>]` Merge selected entries from a second
-  database to the main database (the one opened with the program). To select entries, use the same parameters as the
-  search commands precede by a table name. Search parameters can be passed multiple times to act as OR values. All
-  columns of the entries table are supported. Parameters can be lowercase. If no parameters are passed then all the
-  database entries are copied. If submissions entries are selected, their files are copied to the files' folder of the
-  main database.
+* `merge [--query <TABLE QUERY>...] [--replace] DATABASE_DEST` Copy database to `DATABASE_DEST`.<br/>
+  Specific tables can be selected with the `--query` option. For details on the syntax for the `QUERY` value, see
+  [Database Query Language](#database-query-language). To select all entries in a table, use `%` as query. The `TABLE`
+  value can be one of SUBMISSIONS, JOURNALS, USERS.<br/>
+  If no `--query` option is given, all major tables from the origin database are copied (SUBMISSIONS, JOURNALS, USERS).
 
 > ```
-> falocalrepo database merge ~/Documents/FA.backup/A/FA.db users.username=a% \
->     submissions.author=a% journals.author=a%
-> ```
-> ```
-> falocalrepo database merge ~/Documents/FA2020/FA.db submissions.date=2020-% \
->     journals.date=2020-%
-> ```
-> ```
-> falocalrepo database merge ~/Documents/FA.backup/FA.db
+> falocalrepo database copy ~/FA.db --query USERS tom --SUBMISSIONS '@author tom'
 > ```
 
-* `copy <path> [<table1>.<param1>=<value1> ... <tableN>.<paramN>=<valueN>]` Copy selected entries to a new or existing
-  database. To select entries, use the same parameters as the search commands precede by a table name. Search parameters
-  can be passed multiple times to act as OR values. All columns of the entries table are supported. Parameters can be
-  lowercase. If no parameters are passed then all the database entries are copied. If submissions entries are selected,
-  their files are copied to the files' folder of the target database.
+* `clean` Clean the database using the SQLite [VACUUM](https://www.sqlite.org/lang_vacuum.html) function.
+* `upgrade` Upgrade the database to the latest version.
 
-> ```
-> falocalrepo database copy ~/Documents/FA.backup/A/FA.db users.username=a% \
->     submissions.author=a% journals.author=a%
-> ```
-> ```
-> falocalrepo database copy ~/Documents/FA2020/FA.db submissions.date=2020-% \
->     journals.date=2020-%
-> ```
-> ```
-> falocalrepo database copy ~/Documents/FA.backup/FA.db
-> ```
+#### Database Query Language
 
-* `clean` clean the database using the SQLite [VACUUM](https://www.sqlite.org/lang_vacuum.html) function. Requires no
-  arguments.
-* `upgrade` upgrade the database to the latest version
+The query language used for search queries is based and improves upon the search syntax currently used by the Fur
+Affinity website. Its basic elements are:
+
+* `@<field>` field specifier (e.g. `@title`), all database columns are available as search fields.
+* `()` parentheses, they can be used for better logic operations
+* `&` _AND_ logic operator, used between search terms
+* `|` _OR_ logic operator, used between search terms
+* `!` _NOT_ logic operator, used as prefix of search terms
+* `""` quotes, allow searching for literal strings without needing to escape
+* `%` match 0 or more characters
+* `_` match exactly 1 character
+* `^` start of field, when used at the start of a search term it matches the beginning of the field
+* `$` end of field, when used at the end of a search term it matches the end of the field
+
+All other strings are considered search terms.
+
+The search uses the `@any` field by default, allowing to do general searches without specifying a field.
+
+Search terms that are not separated by a logic operator are considered AND terms (i.e. `a b c` &harr; `a & b & c`).
+
+Except for the `ID`, `AUTHOR`, and `USERNAME` fields, all search terms are matched by fields containing the term: i.e.
+`@description cat` will match any item whose description field contains "cat". To match items that contain only "cat" (
+or start with, end with, etc.), the `%`, `_`, `^`, and `$` operators need to be used (e.g. `@description ^cat`).
+
+Search terms for `ID`, `AUTHOR`, and `USERNAME` are matched exactly as they are: i.e. `@author tom` will match only
+items whose author field is exactly equal to "tom", to match items that contain "tom" the `%`, `_`, `^`, and `$`
+operators need to be used (e.g. `@author %tom%`).
+
+### Server
+
+`server [--host HOST] [--port PORT] [--ssl-cert FILE] [--ssl-key FILE] [--redirect-http PORT2] [--auth USERNAME:PASSWORD] [--precache]`
+
+Start a server at `HOST`:`PORT` to navigate the database. The `--ssl-cert` and `--ssl-cert` allow serving with HTTPS.
+Using `--redirect-http` starts the server in HTTP to HTTPS redirection mode. `--auth` enables HTTP Basic
+authentication. `--precache` caches database entries at startup. For more details on usage see
+[falocalrepo-server](https://pypi.org/project/falocalrepo_server/).
+
+### Completions
+
+`completions [--alias NAME] {bash|fish|zsh}`
+
+Generate tab-completion scripts for your shell. The generated completion must be saved in the correct location for it to
+be recognized and used by the shell. The optional `--alias` option allows generating completion script with a name other
+than `falocalrepo`.
+
+Supported shells are:
+
+* `bash` The Bourne Again SHell
+* `fish` The friendly interactive shell
+* `zsh` The Z shell
+
+### Update Components
+
+`updates [--shell]`
+
+Check for updates to falocalrepo and its main dependencies on PyPi. The optional `--shell` option can be used to output
+the shell command to upgrade any component that has available updates.
+
+_Note_: The command needs an internet connection.
 
 ## Database
 
@@ -504,16 +464,6 @@ To store all this information, the database uses four tables: `SETTINGS`, `USERS
 > bars (`|`). This allows to properly separate and search individual items regardless of their position in the list.<br>
 > `|item1||item2|`<br>
 
-### Settings
-
-The settings table contains settings for the program and statistics of the database.
-
-* `HISTORY` list of executed commands in the format `[[<time1>, "<command1>"], ..., [<timeN>, "<commandN>"]]` (UNIX time
-  in seconds)
-* `COOKIES` cookies for the scraper, stored in JSON format
-* `FILESFOLDER` location of downloaded submission files
-* `VERSION` database version, this can differ from the program version
-
 ### Users
 
 The users table contains a list of all the users that have been download with the program, the folders that have been
@@ -523,6 +473,7 @@ Each entry contains the following fields:
 
 * `USERNAME` The URL username of the user (no underscores or spaces)
 * `FOLDERS` the folders downloaded for that specific user, sorted and bar-separated
+* `USERPAGE` the user's profile text
 
 ### Submissions
 
@@ -531,7 +482,7 @@ The submissions table contains the metadata of the submissions downloaded by the
 * `ID` the id of the submission
 * `AUTHOR` the username of the author (uploader) in full format
 * `TITLE`
-* `DATE` upload date in ISO format YYYY-MM-DD**T**HH:MM
+* `DATE` upload date in ISO format _YYYY-MM-DDTHH:MM_
 * `DESCRIPTION` description in html format
 * `TAGS` bar-separated tags
 * `CATEGORY`
@@ -542,8 +493,8 @@ The submissions table contains the metadata of the submissions downloaded by the
 * `FILEURL` the remote URL of the submission file
 * `FILEEXT` the extensions of the downloaded file. Can be empty if the file contained errors and could not be recognised
   upon download
-* `FILESAVED` file and thumbnail download status: 00, 01, 10, 11. 1*x* if the file was downloaded 0*x* if not, *x*1 if
-  thumbnail was downloaded, *x*0 if not
+* `FILESAVED` file and thumbnail download status as a 2bit flag: `1x` if the file was downloaded `0x` if not, `x1` if
+  thumbnail was downloaded, `x0` if not. Possible values are `0`, `1`, `2`, `3`.
 * `FAVORITE` a bar-separated list of users that have "faved" the submission
 * `MENTIONS` a bar-separated list of users that are mentioned in the submission description as links
 * `FOLDER` the folder of the submission (`gallery` or `scraps`)
@@ -556,10 +507,25 @@ The journals table contains the metadata of the journals downloaded by the progr
 * `ID` the id of the journal
 * `AUTHOR` the username of the author (uploader) in full format
 * `TITLE`
-* `DATE` upload date in ISO format YYYY-MM-DD**T**HH:MM
+* `DATE` upload date in ISO format _YYYY-MM-DDTHH:MM_
 * `CONTENT` content in html format
 * `MENTIONS` a bar-separated list of users that are mentioned in the journal content as links
 * `USERUPDATE` whether the journal was added as a user update or single entry
+
+### Settings
+
+The settings table contains settings for the program and variable used by the database handler and main program.
+
+* `COOKIES` cookies for the scraper, stored in JSON format
+* `FILESFOLDER` location of downloaded submission files
+* `VERSION` database version, this can differ from the program version
+
+### History
+
+The history table holds events related to the database.
+
+* `TIME` event time in ISO format _YYYY-MM-DDTHH:MM:SS.ssssss_
+* `EVENT` the event description
 
 ## Submission Files
 
@@ -575,6 +541,9 @@ file itself - FurAffinity links do not always contain the right extension.
 When the program starts, it checks the version of the database against the one used by the program and if the latter is
 more advanced it upgrades the database.
 
+_Note:_ versions prior to 4.19.0 are not supported by falocalrepo-database version 5.0.0 and above. To update from
+those, use [falocalrepo version 3.25.0](https://pypi.org/project/falocalrepo/v3.25.0) to upgrade the database to version
+4.19.0 first.
 _Note:_ Versions before 2.7.0 are not supported by falocalrepo version 3.0.0 and above. To update from those to the new
 version use version 2.11.2 to update the database to version 2.7.0
 
