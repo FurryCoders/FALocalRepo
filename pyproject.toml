@@ -13,6 +13,7 @@ classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Intended Audience :: End Users/Desktop",
     "Topic :: Internet :: WWW/HTTP :: Indexing/Search",
+    "Topic :: Utilities",
 ]
 
 [tool.poetry.urls]
