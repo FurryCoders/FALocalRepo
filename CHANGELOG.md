@@ -16,7 +16,7 @@
     * Improved parsing
     * Fully documented and type-annotated
 * falocalrepo-database dependency set to [\~5.0.5](https://pypi.org/project/falocalrepo-database/5.0.5)
-    * Add `USERS.USERPAGE` column 
+    * Add `USERS.USERPAGE` column
     * Separate `HISTORY` table
     * Improved type safety
     * Improved efficiency
@@ -29,7 +29,7 @@
 ### Changes
 
 * Move `--update` option to its own `update` command
-* falocalrepo-server dependency set to \~1.14.0
+* falocalrepo-server dependency set to [\~1.14.0](https://pypi.org/project/falocalrepo-server/1.14.0)
     * Change behaviour of HTTP to HTTPS redirection
 
 ### Fixes
@@ -40,7 +40,7 @@
 
 ### Changes
 
-* falocalrepo-server dependency set to \~1.13.0
+* falocalrepo-server dependency set to [\~1.13.0](https://pypi.org/project/falocalrepo-server/1.13.0)
     * Support new HTTP redirection
         * Add `redirect-http` argument to `database server` command
 * Add new `move` argument to `config files-folder` command to skip moving the files to the new location
@@ -53,9 +53,9 @@
 
 ### Changes
 
-* falocalrepo-database dependency set to \~4.19.3
+* falocalrepo-database dependency set to [\~4.19.3](https://pypi.org/project/falocalrepo-database/4.19.3)
     * Check database connection before opening database
-* falocalrepo-server dependency set to \~1.12.0
+* falocalrepo-server dependency set to [\~1.12.0](https://pypi.org/project/falocalrepo-server/1.12.0)
     * Support new SSL arguments and change default port to 80/443
         * Add `ssl-cert` and `ssl-key` arguments to `database server` command
 
@@ -68,15 +68,15 @@
 
 ### Changes
 
-* falocalrepo-database dependency set to \~4.19.1
+* falocalrepo-database dependency set to [\~4.19.1](https://pypi.org/project/falocalrepo-database/4.19.1)
     * Submissions tags are no longer sorted alphabetically
 
 ## 3.23.14
 
 ### Changes
 
-* falocalrepo-database dependency set to \~4.19.0
-* falocalrepo-server dependency set to \~1.11.0
+* falocalrepo-database dependency set to [\~4.19.0](https://pypi.org/project/falocalrepo-database/4.19.0)
+* falocalrepo-server dependency set to [\~1.11.0](https://pypi.org/project/falocalrepo-server/1.11.0)
 
 ### Fixes
 
@@ -94,7 +94,7 @@
 
 ### Changes
 
-* falocalrepo-database dependency set to \~4.18.1
+* falocalrepo-database dependency set to [\~4.18.1](https://pypi.org/project/falocalrepo-database/4.18.1)
 
 ### Fixes
 
@@ -105,7 +105,7 @@
 
 ### Changes
 
-* falocalrepo-database dependency set to \~4.18.0
+* falocalrepo-database dependency set to [\~4.18.0](https://pypi.org/project/falocalrepo-database/4.18.0)
     * Use ISO format YYYY-MM-DD**T**HH:MM for date columns
 
 ### Fixes
@@ -122,7 +122,7 @@
 
 ### Changes
 
-* falocalrepo-database dependency set to \~4.17.0
+* falocalrepo-database dependency set to [\~4.17.0](https://pypi.org/project/falocalrepo-database/4.17.0)
 * Add support for `any` parameter in database search
 
 ## 3.23.8
@@ -153,7 +153,7 @@
 
 ### Changes
 
-* falocalrepo-database dependency set to \~4.16.2
+* falocalrepo-database dependency set to [\~4.16.2](https://pypi.org/project/falocalrepo-database/4.16.2)
 * `database server` command does not occupy a database connection to allow running other commands on the same database
   while the server is running
 
@@ -167,25 +167,25 @@
 
 ### Changes
 
-* faapi dependency set to \~2.18.0
+* faapi dependency set to [\~2.18.0](https://pypi.org/project/faapi/2.18.0)
 
 ## 3.23.2
 
 ### Changes
 
-* falocalrepo-database dependency set to \~4.16.0
+* falocalrepo-database dependency set to [\~4.16.0](https://pypi.org/project/falocalrepo-database/4.16.0)
 
 ## 3.23.1
 
 ### Changes
 
-* falocalrepo-server dependency set to \~1.10.0
+* falocalrepo-server dependency set to [\~1.10.0](https://pypi.org/project/falocalrepo-server/1.10.0)
 
 ## 3.23.0
 
 ### Changes
 
-* falocalrepo-database dependency set to \~4.15.0
+* falocalrepo-database dependency set to [\~4.15.0](https://pypi.org/project/falocalrepo-database/4.15.0)
 * `database add-user`, `add-submission`, and `add-journal` commands now take metadata via JSON files
 
 ### Fixes
@@ -196,14 +196,14 @@
 
 ### Changes
 
-* falocalrepo-database dependency set to \~4.14.0
+* falocalrepo-database dependency set to [\~4.14.0](https://pypi.org/project/falocalrepo-database/4.14.0)
 * `database merge` command supports selectors like `database copy`
 
 ## 3.22.0
 
 ### Changes
 
-* falocalrepo-database dependency set to \~4.13.0
+* falocalrepo-database dependency set to [\~4.13.0](https://pypi.org/project/falocalrepo-database/4.13.0)
 * Add `database copy` command
 
 ### Fixes
@@ -214,7 +214,7 @@
 
 ### Changes
 
-* falocalrepo-database dependency set to \~4.12.0
+* falocalrepo-database dependency set to [\~4.12.0](https://pypi.org/project/falocalrepo-database/4.12.0)
 * Check connections to selected database to ensure only one is active
 * Check multiple instances of the program only when running the `download` command
 * Any version difference will trigger an error
@@ -236,8 +236,8 @@
 ### Changes
 
 * Migrate to Python 3.9
-* falocalrepo-database dependency set to \~4.11.0
-* falocalrepo-server dependency set to \~1.9.0
+* falocalrepo-database dependency set to [\~4.11.0](https://pypi.org/project/falocalrepo-database/4.11.0)
+* falocalrepo-server dependency set to [\~1.9.0](https://pypi.org/project/falocalrepo-server/1.9.0)
     * Solve issue #9
 
 ## 3.20.3
@@ -311,7 +311,7 @@
 
 ### Changes
 
-* falocalrepo-database dependency set to \~4.9.4
+* falocalrepo-database dependency set to [\~4.9.4](https://pypi.org/project/falocalrepo-database/4.9.4)
     * Solve issue #6
 * Add `database upgrade` command, do not upgrade automatically
 * Check database version and stop if major or minor do not match with falocalrepo-database
@@ -324,7 +324,7 @@
 
 ### Changes
 
-* falocalrepo-database dependency set to \~4.9.4
+* falocalrepo-database dependency set to [\~4.9.4](https://pypi.org/project/falocalrepo-database/4.9.4)
     * Solve issue #5
 
 ## 3.18.1
@@ -338,16 +338,16 @@
 
 ### Changes
 
-* falocalrepo-database dependency set to \~4.9.0
+* falocalrepo-database dependency set to [\~4.9.0](https://pypi.org/project/falocalrepo-database/4.9.0)
     * Support new `TYPE` column in `SUBMISSIONS`
-* faapi dependency set to \~2.17.0
+* faapi dependency set to [\~2.17.0](https://pypi.org/project/faapi/2.17.0)
     * Download submissions thumbnails
 
 ## 3.17.2
 
 ### Changes
 
-* falocalrepo-database dependency set to \~4.8.0
+* falocalrepo-database dependency set to [\~4.8.0](https://pypi.org/project/falocalrepo-database/4.8.0)
     * Use new bar-separation for list fields
 
 ## 3.17.1
@@ -464,9 +464,9 @@
 ### Changes
 
 * `config cookies` command now takes parameters to allow for any number and name of cookies
-* falocalrepo-database dependency set to \~4.7.0
+* falocalrepo-database dependency set to [\~4.7.0](https://pypi.org/project/falocalrepo-database/4.7.0)
     * Support new `MENTIONS` and `USERUPDATE` columns for journals and submission entries
-* faapi dependency set to \~2.15.0
+* faapi dependency set to [\~2.15.0](https://pypi.org/project/faapi/2.15.0)
     * Remove calls to check user existence/status and instead rely on faapi exceptions
 
 ### Fixes
@@ -487,14 +487,14 @@
 
 ### Changes
 
-* falocalrepo-database dependency set to \~4.4.0
+* falocalrepo-database dependency set to [\~4.4.0](https://pypi.org/project/falocalrepo-database/4.4.0)
     * Support new `FAVORITE` column for submission entries
 
 ## 3.15.5
 
 ### Changes
 
-* falocalrepo-server dependency set to \~1.8.0
+* falocalrepo-server dependency set to [\~1.8.0](https://pypi.org/project/falocalrepo-server/1.8.0)
 
 ## 3.15.4
 
@@ -515,13 +515,13 @@
 
 ### Changes
 
-* faapi dependency set to \~2.12.0
+* faapi dependency set to [\~2.12.0](https://pypi.org/project/faapi/2.12.0)
 
 ## 3.15.1
 
 ### Changes
 
-* falocalrepo-server dependency set to \~1.7.0
+* falocalrepo-server dependency set to [\~1.7.0](https://pypi.org/project/falocalrepo-server/1.7.0)
 
 ## 3.15.0
 
@@ -578,7 +578,7 @@
 ### Changes
 
 * Improved usage patterns, instructions, and general language in both help messages and readme
-* falocalrepo-database dependency set to \~4.3.0
+* falocalrepo-database dependency set to [\~4.3.0](https://pypi.org/project/falocalrepo-database/4.3.0)
     * Removed counters from `SETTINGS` table
 
 ## 3.13.12
@@ -605,7 +605,7 @@
 
 ### Changes
 
-* faapi dependency set to \~2.11.0
+* faapi dependency set to [\~2.11.0](https://pypi.org/project/faapi/2.11.0)
 * Changed order of `database info` output
 
 ## 3.13.9
@@ -632,7 +632,7 @@
 
 ### Changes
 
-* falocalrepo-server dependency set to \~1.6.0
+* falocalrepo-server dependency set to [\~1.6.0](https://pypi.org/project/falocalrepo-server/1.6.0)
 * Improve readme
 
 ### Fixes
@@ -691,8 +691,8 @@ of the database.
 
 ### Changes
 
-* falocalrepo-database dependency set to \~4.2.0
-* falocalrepo-server dependency set to \~1.5.0
+* falocalrepo-database dependency set to [\~4.2.0](https://pypi.org/project/falocalrepo-database/4.2.0)
+* falocalrepo-server dependency set to [\~1.5.0](https://pypi.org/project/falocalrepo-server/1.5.0)
 * Improve data-entry safety
 * Remove `database check-errors` command
 * Allow to use all table columns for submissions and journals search
@@ -717,7 +717,7 @@ with `FALOCALREPO_DATABASE` which allows to set a different path for the databas
 
 * Add `list-<folder>` folders to download users command
 * Add `FALOCALREPO_DATABASE` environmental variable
-* falocalrepo-server dependency set to \~1.4.0
+* falocalrepo-server dependency set to [\~1.4.0](https://pypi.org/project/falocalrepo-server/1.4.0)
 * Remove subcommands arguments details from general help messages
 
 ### Fixes
@@ -733,14 +733,14 @@ located in the current folder with a second database located in another folder.
 
 ### Changes
 
-* falocalrepo-database dependency set to \~3.8.0
+* falocalrepo-database dependency set to [\~3.8.0](https://pypi.org/project/falocalrepo-database/3.8.0)
 * Add `database merge` command
 
 ## 3.10.11
 
 ### Changes
 
-* faapi dependency set to 2.10.2
+* faapi dependency set to [2.10.2](https://pypi.org/project/faapi/2.10.2)
 
 ### Fixes
 
@@ -757,8 +757,8 @@ located in the current folder with a second database located in another folder.
 
 ### Changes
 
-* falocalrepo-database dependency set to \~3.7.1
-* falocalrepo-server dependency set to \~1.3.4
+* falocalrepo-database dependency set to [\~3.7.1](https://pypi.org/project/falocalrepo-database/3.7.1)
+* falocalrepo-server dependency set to [\~1.3.4](https://pypi.org/project/falocalrepo-server/1.3.4)
 * Improved `search-users` command
 
 ### Fixes
@@ -801,7 +801,7 @@ located in the current folder with a second database located in another folder.
 
 ### Changes
 
-* faapi dependency set to 2.10.1
+* faapi dependency set to [2.10.1](https://pypi.org/project/faapi/2.10.1)
 * Default database search order to ID/USERNAME
 * Add some information on `order` parameter for database searches in readme
 
@@ -813,14 +813,14 @@ located in the current folder with a second database located in another folder.
 
 ### Changes
 
-* faapi dependency set to 2.10.0
+* faapi dependency set to [2.10.0](https://pypi.org/project/faapi/2.10.0)
 * Better detection of deactivated users with updated faapi methods
 
 ## 3.10.3
 
 ### Changes
 
-* faapi dependency set to 2.9.1
+* faapi dependency set to [2.9.1](https://pypi.org/project/faapi/2.9.1)
 
 ## 3.10.2
 
@@ -832,7 +832,7 @@ located in the current folder with a second database located in another folder.
 
 ### Changes
 
-* faapi dependency set to 2.9.0
+* faapi dependency set to [2.9.0](https://pypi.org/project/faapi/2.9.0)
 
 ## 3.10.0
 
@@ -878,8 +878,8 @@ saved to FA.log.
 
 ### Changes
 
-* falocalrepo-database dependency set to \~3.5.0
-* falocalrepo-server dependency set to \~1.3.1
+* falocalrepo-database dependency set to [\~3.5.0](https://pypi.org/project/falocalrepo-database/3.5.0)
+* falocalrepo-server dependency set to [\~1.3.1](https://pypi.org/project/falocalrepo-server/1.3.1)
 * Added `database history` command
 * Catch ConnectionError and sqlite3.DatabaseError
 * Catch general Exception and BaseException and print trace to FA.log
@@ -914,8 +914,8 @@ more easily.
 ### Changes
 
 * removed database functions in favor of [falocalrepo-database](https://pypi.org/project/falocalrepo-database/)
-* falocalrepo-database dependency set to ~3.2.4
-* falocalrepo-server dependency set to ~1.2.2
+* falocalrepo-database dependency set to [\~3.2.4](https://pypi.org/project/falocalrepo-database/3.2.4)
+* falocalrepo-server dependency set to [\~1.2.2](https://pypi.org/project/falocalrepo-server/1.2.2)
 
 ### Fixes
 
@@ -926,14 +926,15 @@ more easily.
 The `download journals` command is now fixed and calling the correct function. Two sub-commands aliases have been
 added: `config list` and `database info` which act as `config` and `database` respectively when called without
 arguments. Database size in MB (base 10) and last start have been added to `database info` output, missing journals
-counter in database info has also been added. falocalrepo-server dependency updated to ^1.1.3.
+counter in database info has also been added. falocalrepo-server dependency updated
+to [^1.1.3](https://pypi.org/project/falocalrepo-server/1.1.3).
 
 ### Changes
 
 * `database info` command to display database information
 * `config list` command to list settings stored in database
 * Database size and last start added to database info output
-* falocalrepo-server dependency updated to ^1.1.3
+* falocalrepo-server dependency updated to [^1.1.3](https://pypi.org/project/falocalrepo-server/1.1.3)
 
 ### Fixes
 
@@ -944,7 +945,7 @@ counter in database info has also been added. falocalrepo-server dependency upda
 
 ### Changes
 
-* Update faapi dependency to 2.8.3
+* Update faapi dependency to [2.8.3](https://pypi.org/project/faapi/2.8.3)
 
 ## 3.7.3
 
@@ -954,7 +955,7 @@ command does not default to `init` when absent.
 
 ### Changes
 
-* Update falocalrepo-server dependency to ^1.1.2
+* Update falocalrepo-server dependency to [^1.1.2](https://pypi.org/project/falocalrepo-server/1.1.2)
 * Update help messages with falocalrepo, database and falocalrepo-server versions
 * `main_console` renamed to `console`
 * Parameters (e.g. `database search-submissions` search fields) are taken as are and not lowered
@@ -972,14 +973,14 @@ passed.
 
 ### Changes
 
-* Update falocalrepo-server dependency to ^1.1.1
+* Update falocalrepo-server dependency to [^1.1.1](https://pypi.org/project/falocalrepo-server/1.1.1)
 * Default to init command if no command is passed
 
 ## 3.7.1
 
 ### Changes
 
-* Update falocalrepo-server dependency to 1.1.1
+* Update falocalrepo-server dependency to [1.1.1](https://pypi.org/project/falocalrepo-server/1.1.1)
 
 ## 3.7.0
 
