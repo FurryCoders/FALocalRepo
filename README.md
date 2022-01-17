@@ -377,7 +377,7 @@ Available operations are:
 > falocalrepo database merge ~/FA.db --query USERS tom --SUBMISSIONS '@author tom'
 > ```
 
-* `merge [--query <TABLE QUERY>...] [--replace] DATABASE_DEST` Copy database to `DATABASE_DEST`.<br/>
+* `copy [--query <TABLE QUERY>...] [--replace] DATABASE_DEST` Copy database to `DATABASE_DEST`.<br/>
   Specific tables can be selected with the `--query` option. For details on the syntax for the `QUERY` value, see
   [Database Query Language](#database-query-language). To select all entries in a table, use `%` as query. The `TABLE`
   value can be one of SUBMISSIONS, JOURNALS, USERS.<br/>
