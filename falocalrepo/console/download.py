@@ -97,8 +97,10 @@ def download_users(ctx: Context, database: Callable[..., Database], users: tuple
     db: Database = database()
     add_history(db, ctx, users=users, folders=folders)
     downloader: Downloader = Downloader(db, open_api(db), color=ctx.color, dry_run=dry_run)
-    downloader.download_users(list(users), list(folders))
-    downloader.report()
+    try:
+        downloader.download_users(list(users), list(folders))
+    finally:
+        downloader.report()
 
 
 @download_app.command("update", short_help="Download new entries for users in database.")
@@ -135,8 +137,10 @@ def download_update(ctx: Context, database: Callable[..., Database], users: tupl
     db: Database = database()
     add_history(db, ctx, users=users, folders=folders, stop=stop)
     downloader: Downloader = Downloader(db, open_api(db), color=ctx.color, dry_run=dry_run)
-    downloader.download_users_update(list(users), list(folders), stop, deactivated)
-    downloader.report()
+    try:
+        downloader.download_users_update(list(users), list(folders), stop, deactivated)
+    finally:
+        downloader.report()
 
 
 @download_app.command("submissions", short_help="Download single submissions.", no_args_is_help=True)
@@ -162,8 +166,10 @@ def download_submissions(ctx: Context, database: Callable[..., Database], submis
     db: Database = database()
     add_history(db, ctx, submission_id=submission_id, replace=replace)
     downloader: Downloader = Downloader(db, open_api(db), color=ctx.color, dry_run=dry_run)
-    downloader.download_submissions(list(submission_id), replace)
-    downloader.report()
+    try:
+        downloader.download_submissions(list(submission_id), replace)
+    finally:
+        downloader.report()
 
 
 @download_app.command("journals", short_help="Download single journals.", no_args_is_help=True)
@@ -189,8 +195,10 @@ def download_journals(ctx: Context, database: Callable[..., Database], journal_i
     db: Database = database()
     add_history(db, ctx, journal_id=journal_id, replace=replace)
     downloader: Downloader = Downloader(db, open_api(db), color=ctx.color, dry_run=dry_run)
-    downloader.download_journals(list(journal_id), replace)
-    downloader.report()
+    try:
+        downloader.download_journals(list(journal_id), replace)
+    finally:
+        downloader.report()
 
 
 download_app.list_commands = lambda *_: [
