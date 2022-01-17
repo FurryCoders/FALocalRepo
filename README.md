@@ -18,6 +18,9 @@ database.
 [![version_pypi](https://img.shields.io/pypi/v/falocalrepo-database?logo=pypi&label=falocalrepo-database)](https://pypi.org/project/falocalrepo-database/)
 [![version_pypi](https://img.shields.io/pypi/v/falocalrepo-server?logo=pypi&label=falocalrepo-server)](https://pypi.org/project/falocalrepo-server/)
 
+[![furaffinity](https://furaffinity-badge.herokuapp.com/badge/user/FlameOfFurious)](https://furaffinity.net/user/FlameOfFurious)
+[![twitter_url](https://img.shields.io/badge/Twitter-FlamingFox94-white?labelColor=white&color=1d9bf0&logo=twitter)](https://twitter.com/FlamingFox94)
+
 </div>
 
 ## Introduction
