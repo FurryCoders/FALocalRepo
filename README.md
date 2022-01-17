@@ -85,8 +85,8 @@ To upgrade the `falocalrepo` and its dependencies, use pip to upgrade all three 
 python3 -m pip install --upgrade falocalrepo faapi falocalrepo-database falocalrepo-server
 ```
 
-To check for updates use the [`updates` command](#updates). A message will appear if there is an update available for any
-component.
+To check for updates use the [`updates` command](#updates). A message will appear if there is an update available for
+any component.
 
 The program needs cookies from a logged-in FurAffinity session to download protected pages. Without the cookies the
 program can still download publicly available pages, but others will return empty. See [#Cookies](#cookies) for more
@@ -213,7 +213,7 @@ Available settings are:
 
 The download command performs all download operations to save and update users, submissions, and journals. Submissions
 are downloaded together with their files and thumbnails, if there are any. For details on submission files,
-see [Submission Files](#submission-files)).
+see [Submission Files](#submission-files).
 
 All download operations (except login) support the `--dry-run` option. When this is active, the database is not
 modified, nor are submission files downloaded. Entries are simply listed and the program checks whether they are in the
@@ -239,8 +239,8 @@ Available operations are:
   and `--folder` arguments can be passed.<br/>
   If the `--deactivated` option is used, deactivated users are fetched instead of ignore. If the user is no longer
   inactive, the database entry will be modified as well.<br/>
-  The `--stop` option allows to set after how many entries of each folder should be found in the database before
-  stopping the update.
+  The `--stop` option allows setting how many entries of each folder should be found in the database before stopping the
+  update.
 
 > ```
 > falocalrepo download update --stop 5
