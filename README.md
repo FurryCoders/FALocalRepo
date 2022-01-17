@@ -86,7 +86,7 @@ To upgrade the `falocalrepo` and its dependencies, use pip to upgrade all three 
 python3 -m pip install --upgrade falocalrepo faapi falocalrepo-database falocalrepo-server
 ```
 
-To check for updates use the [`updates` command](#update). A message will appear if there is an update available for any
+To check for updates use the [`updates` command](#updates). A message will appear if there is an update available for any
 component.
 
 The program needs cookies from a logged-in FurAffinity session to download protected pages. Without the cookies the
@@ -107,7 +107,7 @@ and `b`.<br>
 Alternatively, the storage inspection tool of a desktop browser can also be used. For example on Mozilla's Firefox this
 can be opened with &#8679;F9, on Safari with &#8997;&#8984;I, etc.
 
-To set the cookies use the `config cookies` command. See [#Configuration](#configuration) for more details.
+To set the cookies use the `config cookies` command. See [#Configuration](#config) for more details.
 
 ### Environmental Variables
 
