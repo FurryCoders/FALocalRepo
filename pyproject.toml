@@ -6,7 +6,6 @@ authors = ["Matteo Campinoti <matteo.campinoti94@gmail.com>"]
 license = "EUPL-1.2"
 readme = "README.md"
 homepage = "https://gitlab.com/MatteoCampinoti94/FALocalRepo"
-repository = "https://gitlab.com/MatteoCampinoti94/FALocalRepo"
 classifiers = [
     "Programming Language :: Python :: 3.10",
     "Operating System :: OS Independent",
