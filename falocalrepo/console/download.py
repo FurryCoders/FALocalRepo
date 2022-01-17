@@ -186,3 +186,12 @@ def download_journals(ctx: Context, database: Callable[..., Database], journal_i
     downloader: Downloader = Downloader(db, open_api(db), color=ctx.color, dry_run=dry_run)
     downloader.download_journals(list(journal_id), replace)
     downloader.report()
+
+
+download_app.list_commands = lambda *_:  [
+    download_login.name,
+    download_users.name,
+    download_update.name,
+    download_submissions.name,
+    download_journals.name,
+]

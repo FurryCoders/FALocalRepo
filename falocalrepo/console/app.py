@@ -1,3 +1,4 @@
+from collections import OrderedDict
 from pathlib import Path
 from typing import Callable
 from typing import Type
@@ -105,7 +106,7 @@ def app():
 @color_option
 @help_option
 @pass_context
-def init(ctx: Context, database: Callable[..., Database]):
+def app_init(ctx: Context, database: Callable[..., Database]):
     """
     The init command initialises the database. If a database is already present, no operation is performed except for a
     version check.
@@ -131,7 +132,7 @@ def init(ctx: Context, database: Callable[..., Database]):
 @option("--database", expose_value=False, required=False, hidden=True)
 @pass_context
 @docstring_format()
-def update(ctx: Context, shell: bool):
+def app_updates(ctx: Context, shell: bool):
     """
     Check for updates to falocalrepo and its main dependencies on PyPi. The {yellow}shell{reset} option can be used to
     output the shell command to upgrade any component that has available updates.
@@ -256,3 +257,13 @@ def app_server(ctx: Context, database: Callable[..., Database], host: str | None
 app.add_command(config_app, config_app.name)
 app.add_command(download_app, download_app.name)
 app.add_command(database_app, database_app.name)
+app.list_commands = lambda *_: [
+    app_init.name,
+    app_help.name,
+    config_app.name,
+    database_app.name,
+    download_app.name,
+    app_server.name,
+    app_completions.name,
+    app_updates.name,
+]

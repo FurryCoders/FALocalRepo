@@ -723,7 +723,7 @@ def database_copy(ctx: Context, database: Callable[..., Database], database_dest
 @help_option
 @pass_context
 @docstring_format(tables=', '.join(t.value for t in TableChoice.completion_items))
-def database_copy(ctx: Context, database: Callable[..., Database], database_origin: Callable[..., Database],
+def database_merge(ctx: Context, database: Callable[..., Database], database_origin: Callable[..., Database],
                   query: tuple[tuple[str, str]], replace: bool):
     """
     Merge database from {yellow}DATABASE_ORIGIN{reset}.
@@ -770,3 +770,17 @@ def database_upgrade(ctx: Context, database: Callable[..., Database]):
     if (version := db.version) != __database_version__:
         db.upgrade(check_connections=EnvVars.MULTI_CONNECTION)
         add_history(db, ctx, version_from=version, version_to=__database_version__)
+
+
+database_app.list_commands = lambda *_: [
+    database_info.name,
+    database_history.name,
+    database_search.name,
+    database_export.name,
+    database_add.name,
+    database_remove.name,
+    database_merge.name,
+    database_copy.name,
+    database_clean.name,
+    database_upgrade.name,
+]

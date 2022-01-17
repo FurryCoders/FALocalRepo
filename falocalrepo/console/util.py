@@ -74,8 +74,9 @@ def open_database(path: Path, *, ctx: Context, param: Parameter, check_init: boo
     db: Database = Database(path, check_version=False, check_connections=False)
 
     if check_init and not db.is_formatted:
-        from .app import app, init
-        raise BadParameter(f"Database is not initialised.\n\nInitialise using '{app.name} {init.name}'.", ctx, param)
+        from .app import app, app_init
+        raise BadParameter(f"Database is not initialised.\n\nInitialise using '{app.name} {app_init.name}'.",
+                           ctx, param)
     elif check_version and (version_error := db.check_version(raise_for_error=False)):
         from .app import app
         from .database import database_app, database_upgrade

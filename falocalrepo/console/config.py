@@ -163,3 +163,10 @@ def config_files_folder(ctx: Context, database: Callable[..., Database], new_fol
         add_history(db, ctx, new_folder=new_folder, relative=relative)
     finally:
         db.commit()
+
+
+config_app.list_commands = lambda *_: [
+    config_list.name,
+    config_cookies.name,
+    config_files_folder.name,
+]
