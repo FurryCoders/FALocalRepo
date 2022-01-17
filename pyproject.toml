@@ -18,6 +18,8 @@ classifiers = [
 
 [tool.poetry.urls]
 "Changelog" = "https://gitlab.com/MatteoCampinoti94/FALocalRepo/-/blob/master/CHANGELOG.md"
+"Source" = "https://gitlab.com/MatteoCampinoti94/FALocalRepo"
+"Download" = "https://pypi.org/project/falocalrepo/#files"
 
 [tool.poetry.scripts]
 falocalrepo = "falocalrepo.__main__:main"
