@@ -563,7 +563,7 @@ details.
 
 ## Issues
 
-If any problem is encountered during usage of the program, an issue can be opened on the project's pages
+If you encounter any problem while using the program, an issue can be opened on the project's pages
 on [GitLab](https://gitlab.com/MatteoCampinoti94/FALocalRepo/issues) (preferred)
 or [GitHub](https://github.com/MatteoCampinoti94/FALocalRepo/issues) (mirror repository).
 
