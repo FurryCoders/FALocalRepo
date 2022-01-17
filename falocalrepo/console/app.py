@@ -179,10 +179,8 @@ def app_help(ctx: Context, commands: list[str]):
         for i, command_name in enumerate(commands, 1):
             command = command.get_command(context, command_name)
             context = command.make_context(command.name,
-                                           commands[i:i + 1] if (is_group := isinstance(command, Group)) else [],
+                                           commands[i:i + 1] if isinstance(command, Group) else [],
                                            context)
-            if not is_group:
-                break
         echo(command.get_help(context), color=ctx.color)
     except (KeyError, AttributeError, UsageError):
         raise UsageError(f"No such command {' '.join(commands)!r}.", ctx)
