@@ -6,7 +6,9 @@ import faapi
 import falocalrepo_database
 import falocalrepo_server
 from click import BadParameter
+from click import Command
 from click import Context
+from click import Group
 from click import Option
 from click import Path as PathClick
 from click import UsageError
@@ -33,7 +35,6 @@ from .database import database_app
 from .download import download_app
 from .util import CompleteChoice
 from .util import CustomHelpColorsGroup
-from .util import _help_option_names
 from .util import add_history
 from .util import check_update
 from .util import color_option
@@ -161,17 +162,30 @@ def update(ctx: Context, shell: bool):
 
 
 @app.command("help", context_settings={"ignore_unknown_options": True})
-@argument("commands", nargs=-1, required=False, type=str)
+@argument("commands", nargs=-1, required=False, type=str, callback=lambda _c, _p, v: list(v))
 @color_option
 @help_option
 @option("--database", expose_value=False, required=False, hidden=True)
 @pass_context
-def app_help(ctx: Context, commands: tuple[str]):
+def app_help(ctx: Context, commands: list[str]):
     """
     Show the help for a command.
     """
 
-    app.main((*commands, _help_option_names[0]), standalone_mode=False, color=ctx.color)
+    try:
+        commands = [c for c in commands if not c.startswith("-")]
+        context: Context = ctx.parent
+        command: Group | Command = app
+        for i, command_name in enumerate(commands, 1):
+            command = command.get_command(context, command_name)
+            context = command.make_context(command.name,
+                                           commands[i:i + 1] if (is_group := isinstance(command, Group)) else [],
+                                           context)
+            if not is_group:
+                break
+        echo(command.get_help(context), color=ctx.color)
+    except (KeyError, AttributeError, UsageError):
+        raise UsageError(f"No such command {' '.join(commands)!r}.", ctx)
 
 
 @app.command("completions", short_help="Generate tab-completion scripts.")
