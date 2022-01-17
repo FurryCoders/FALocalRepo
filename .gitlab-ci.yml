@@ -10,7 +10,6 @@ publish:
   stage: Publish
   only:
     - tags
-    - master
   before_script:
     - python -m pip install poetry==1.1.12
     - python -m poetry --version
