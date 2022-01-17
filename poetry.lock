@@ -142,7 +142,7 @@ psutil = ">=5.9.0,<6.0.0"
 
 [[package]]
 name = "falocalrepo-server"
-version = "2.0.0"
+version = "2.0.1"
 description = "Web interface for falocalrepo."
 category = "main"
 optional = false
@@ -150,15 +150,15 @@ python-versions = ">=3.10,<4.0"
 
 [package.dependencies]
 chardet = ">=4.0.0,<5.0.0"
-falocalrepo-database = ">=5.0.0,<5.1.0"
-fastapi = ">=0.71.0,<0.72.0"
+falocalrepo-database = ">=5.0.5,<5.1.0"
+fastapi = ">=0.72.0,<0.73.0"
 Jinja2 = ">=3.0.3,<4.0.0"
 Pillow = ">=8.1.0,<9.0.0"
-uvicorn = ">=0.16.0,<0.17.0"
+uvicorn = ">=0.17.0,<0.18.0"
 
 [[package]]
 name = "fastapi"
-version = "0.71.0"
+version = "0.72.0"
 description = "FastAPI framework, high performance, easy to learn, fast to code, ready for production"
 category = "main"
 optional = false
@@ -369,7 +369,7 @@ socks = ["PySocks (>=1.5.6,!=1.5.7,<2.0)"]
 
 [[package]]
 name = "uvicorn"
-version = "0.16.0"
+version = "0.17.0"
 description = "The lightning-fast ASGI server."
 category = "main"
 optional = false
@@ -381,7 +381,7 @@ click = ">=7.0"
 h11 = ">=0.8"
 
 [package.extras]
-standard = ["httptools (>=0.2.0,<0.4.0)", "watchgod (>=0.6)", "python-dotenv (>=0.13)", "PyYAML (>=5.1)", "websockets (>=9.1)", "websockets (>=10.0)", "uvloop (>=0.14.0,!=0.15.0,!=0.15.1)", "colorama (>=0.4)"]
+standard = ["websockets (>=10.0)", "httptools (>=0.2.0,<0.4.0)", "watchgod (>=0.6)", "python-dotenv (>=0.13)", "PyYAML (>=5.1)", "uvloop (>=0.14.0,!=0.15.0,!=0.15.1)", "colorama (>=0.4)"]
 
 [[package]]
 name = "wcwidth"
@@ -394,7 +394,7 @@ python-versions = "*"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "7cd82a8a23b1ecd4d17272a3b054ce208560f2dc9be7c88642233bc511d549cd"
+content-hash = "deb341f3026d936c4305087ca0c62df8b06f392a763630163c59b07a6abf0f29"
 
 [metadata.files]
 anyio = [
@@ -446,12 +446,12 @@ falocalrepo-database = [
     {file = "falocalrepo_database-5.0.5-py3-none-any.whl", hash = "sha256:d79d9becfc3672be6bdc81e44fe19b29f202a32edff7bc6049c55931ee85e541"},
 ]
 falocalrepo-server = [
-    {file = "falocalrepo-server-2.0.0.tar.gz", hash = "sha256:badf5f4004f9b9bdf82b5859fda297e4fc7119ba4b928f9646762a5e00cac9da"},
-    {file = "falocalrepo_server-2.0.0-py3-none-any.whl", hash = "sha256:fabe1dc6f0f13bd2a8e76537525d45a114cff787237810a565357ca034f94fdc"},
+    {file = "falocalrepo-server-2.0.1.tar.gz", hash = "sha256:6acfcfe4c2a8fc97a7548627fda7cad55996315c9307b62d0f7640c423183e5a"},
+    {file = "falocalrepo_server-2.0.1-py3-none-any.whl", hash = "sha256:d82dd309958af4d330ce43a4e37fc96e6aed06073f16658e851be1bd7ad7fb58"},
 ]
 fastapi = [
-    {file = "fastapi-0.71.0-py3-none-any.whl", hash = "sha256:a78eca6b084de9667f2d5f37e2ae297270e5a119cd01c2f04815795da92fc87f"},
-    {file = "fastapi-0.71.0.tar.gz", hash = "sha256:2b5ac0ae89c80b40d1dd4b2ea0bb1f78d7c4affd3644d080bf050f084759fff2"},
+    {file = "fastapi-0.72.0-py3-none-any.whl", hash = "sha256:7421a2f30e9ed1866874cff089733d4f9a0cd4f49b6ea3995c0de75e32bbb52f"},
+    {file = "fastapi-0.72.0.tar.gz", hash = "sha256:019ec52c00581bc055e6dfb621aaa9c2a56007c283839305412e1073a777eaf1"},
 ]
 filetype = [
     {file = "filetype-1.0.9-py2.py3-none-any.whl", hash = "sha256:c7401fe0d0b624e29b53c65e2a46264133ab30324da88d41e0621837c25bd472"},
@@ -753,8 +753,8 @@ urllib3 = [
     {file = "urllib3-1.26.8.tar.gz", hash = "sha256:0e7c33d9a63e7ddfcb86780aac87befc2fbddf46c58dbb487e0855f7ceec283c"},
 ]
 uvicorn = [
-    {file = "uvicorn-0.16.0-py3-none-any.whl", hash = "sha256:d8c839231f270adaa6d338d525e2652a0b4a5f4c2430b5c4ef6ae4d11776b0d2"},
-    {file = "uvicorn-0.16.0.tar.gz", hash = "sha256:eacb66afa65e0648fcbce5e746b135d09722231ffffc61883d4fac2b62fbea8d"},
+    {file = "uvicorn-0.17.0-py3-none-any.whl", hash = "sha256:0b89c91bb8fe84c4bded9996af13c4b8c0de799d29bffeaa0c8ad298f2be0934"},
+    {file = "uvicorn-0.17.0.tar.gz", hash = "sha256:192c2422b056a3beb512c6c260bf77a7a884204a4ae41856719c1913ead63bbb"},
 ]
 wcwidth = [
     {file = "wcwidth-0.2.5-py2.py3-none-any.whl", hash = "sha256:beb4802a9cebb9144e99086eff703a642a13d6a0052920003a230f3294bbe784"},
