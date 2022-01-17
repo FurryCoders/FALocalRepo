@@ -1,5 +1,20 @@
 # Changelog
 
+## 4.0.0
+
+### Changes
+
+* Complete rewrite using Python 3.10 and [Click](https://click.palletsprojects.com)
+* Colorized output using ANSI codes
+* Shell completions
+* Database search using advanced query language
+* falocalrepo-database dependency set to \~5.0.5
+  * Improved type safety
+  * Improved efficiency
+* falocalrepo-server dependency set to \~2.0.1
+  * Improved styling with fonts and responsive design
+  * Improved efficiency
+
 ## 3.25.0
 
 ### Changes
