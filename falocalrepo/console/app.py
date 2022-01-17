@@ -259,11 +259,11 @@ app.add_command(download_app, download_app.name)
 app.add_command(database_app, database_app.name)
 app.list_commands = lambda *_: [
     app_init.name,
-    app_help.name,
     config_app.name,
     database_app.name,
     download_app.name,
     app_server.name,
     app_completions.name,
     app_updates.name,
+    app_help.name,
 ]

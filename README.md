@@ -179,16 +179,6 @@ Cookies need to be set manually with the config command before the program will 
 The `init` command initialises the database. If a database is already present, no operation is performed except for a
 version check.
 
-### Help
-
-`help [<COMMAND>...]`
-
-The `help` command gives information on the usage of the program and its commands.
-
-> ```
-> falocalrepo help database search
-> ```
-
 ### Config
 
 `config <OPERATION>`
@@ -451,6 +441,16 @@ Check for updates to falocalrepo and its main dependencies on PyPi. The optional
 the shell command to upgrade any component that has available updates.
 
 _Note_: The command needs an internet connection.
+
+### Help
+
+`help [<COMMAND>...]`
+
+The `help` command gives information on the usage of the program and its commands.
+
+> ```
+> falocalrepo help database search
+> ```
 
 ## Database
 
