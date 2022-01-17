@@ -16,6 +16,9 @@ classifiers = [
     "Topic :: Internet :: WWW/HTTP :: Indexing/Search",
 ]
 
+[tool.poetry.urls]
+"Changelog" = "https://gitlab.com/MatteoCampinoti94/FALocalRepo/-/blob/master/CHANGELOG.md"
+
 [tool.poetry.scripts]
 falocalrepo = "falocalrepo.__main__:main"
 
