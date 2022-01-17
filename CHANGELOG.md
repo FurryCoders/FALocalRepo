@@ -8,12 +8,21 @@
 * Colorized output using ANSI codes
 * Shell completions
 * Database search using advanced query language
-* falocalrepo-database dependency set to \~5.0.5
-  * Improved type safety
-  * Improved efficiency
-* falocalrepo-server dependency set to \~2.0.1
-  * Improved styling with fonts and responsive design
-  * Improved efficiency
+* Add support to download user profiles
+* Add filtering and clearing to history command
+* History events added only when database is modified
+* faapi dependency set to [\~3.3.5](https://pypi.org/project/faapi/3.3.5)
+    * Upgrade to Python 3.9+
+    * Improved parsing
+    * Fully documented and type-annotated
+* falocalrepo-database dependency set to [\~5.0.5](https://pypi.org/project/falocalrepo-database/5.0.5)
+    * Add `USERS.USERPAGE` column 
+    * Separate `HISTORY` table
+    * Improved type safety
+    * Improved efficiency
+* falocalrepo-server dependency set to [\~2.0.1](https://pypi.org/project/falocalrepo-server/2.0.1)
+    * Improved styling with fonts and responsive design
+    * Improved efficiency
 
 ## 3.25.0
 
