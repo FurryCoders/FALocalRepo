@@ -70,7 +70,7 @@ def download_login(ctx: Context, database: Callable[..., Database]):
         me: User = open_api(db).me()
         echo(f"{green}{me.name}{reset}", color=ctx.color)
     except Unauthorized as err:
-        echo(f"{red}{' '.join(err.args)}{reset}")
+        echo(f"{red}{' '.join(err.args)}{reset}", color=ctx.color)
         ctx.exit(1)
 
 
