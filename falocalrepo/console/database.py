@@ -497,6 +497,7 @@ def database_remove(ctx: Context, database: Callable[..., Database], table: str,
     Remove entries from the database using their IDs. The program will prompt for a confirmation before commencing
     deletion. To confirm deletion ahead, use the {yellow}--yes{reset} option.
     """
+    ids = tuple(sorted(set(ids), key=ids.index))
     db: Database = database()
     db_table: Table = get_table(db, table)
 
@@ -724,7 +725,7 @@ def database_copy(ctx: Context, database: Callable[..., Database], database_dest
 @pass_context
 @docstring_format(tables=', '.join(t.value for t in TableChoice.completion_items))
 def database_merge(ctx: Context, database: Callable[..., Database], database_origin: Callable[..., Database],
-                  query: tuple[tuple[str, str]], replace: bool):
+                   query: tuple[tuple[str, str]], replace: bool):
     """
     Merge database from {yellow}DATABASE_ORIGIN{reset}.
 

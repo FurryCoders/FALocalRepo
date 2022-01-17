@@ -75,9 +75,10 @@ def download_login(ctx: Context, database: Callable[..., Database]):
 
 
 @download_app.command("users", short_help="Download users.", no_args_is_help=True)
-@option("--user", "-u", "users", metavar="USER", required=True, multiple=True, type=str, help="Username.")
+@option("--user", "-u", "users", metavar="USER", required=True, multiple=True, type=str,
+        callback=lambda _c, _p, v: sorted(set(v), key=v.index), help="Username.")
 @option("--folder", "-f", "folders", metavar="FOLDER", required=True, multiple=True, type=FolderChoice(),
-        help="Folder to download.")
+        callback=lambda _c, _p, v: sorted(set(v), key=v.index), help="Folder to download.")
 @dry_run_option
 @database_exists_option
 @color_option
@@ -101,8 +102,10 @@ def download_users(ctx: Context, database: Callable[..., Database], users: tuple
 
 
 @download_app.command("update", short_help="Download new entries for users in database.")
-@option("--user", "-u", "users", metavar="USER", multiple=True, type=str, help="User to update.")
-@option("--folder", "-f", "folders", metavar="FOLDER", multiple=True, type=FolderChoice(), help="Folder to update.")
+@option("--user", "-u", "users", metavar="USER", multiple=True, type=str,
+        callback=lambda _c, _p, v: sorted(set(v), key=v.index), help="User to update.")
+@option("--folder", "-f", "folders", metavar="FOLDER", multiple=True, type=FolderChoice(),
+        callback=lambda _c, _p, v: sorted(set(v), key=v.index), help="Folder to update.")
 @option("--stop", metavar="STOP", type=IntRange(0, min_open=True), default=1, show_default=True,
         help="Number of submissions to find in the database before stopping.")
 @option("--deactivated", is_flag=True, default=False, help="Check deactivated users.")
@@ -137,7 +140,8 @@ def download_update(ctx: Context, database: Callable[..., Database], users: tupl
 
 
 @download_app.command("submissions", short_help="Download single submissions.", no_args_is_help=True)
-@argument("submission_id", nargs=-1, required=True, type=IntRange(1))
+@argument("submission_id", nargs=-1, required=True, type=IntRange(1),
+          callback=lambda _c, _p, v: sorted(set(v), key=v.index))
 @option("--replace", is_flag=True, default=False, show_default=True, help="Replace submissions already in database.")
 @dry_run_option
 @database_exists_option
@@ -163,7 +167,8 @@ def download_submissions(ctx: Context, database: Callable[..., Database], submis
 
 
 @download_app.command("journals", short_help="Download single journals.", no_args_is_help=True)
-@argument("journal_id", nargs=-1, required=True, type=IntRange(1))
+@argument("journal_id", nargs=-1, required=True, type=IntRange(1),
+          callback=lambda _c, _p, v: sorted(set(v), key=v.index))
 @option("--replace", is_flag=True, default=False, show_default=True, help="Replace submissions already in database.")
 @dry_run_option
 @database_exists_option
@@ -188,7 +193,7 @@ def download_journals(ctx: Context, database: Callable[..., Database], journal_i
     downloader.report()
 
 
-download_app.list_commands = lambda *_:  [
+download_app.list_commands = lambda *_: [
     download_login.name,
     download_users.name,
     download_update.name,
