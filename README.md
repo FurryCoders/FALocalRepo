@@ -13,7 +13,7 @@ database.
 [![version_gitlab](https://img.shields.io/gitlab/v/tag/MatteoCampinoti94/falocalrepo?label=gitlab&sort=date&logo=gitlab&color=FCA121)](https://gitlab.com/MatteoCampinoti94/falocalrepo)
 [![issues_gitlab](https://img.shields.io/badge/dynamic/json?logo=gitlab&color=orange&label=issues&suffix=%20open&query=%24.length&url=https%3A%2F%2Fgitlab.com%2Fapi%2Fv4%2Fprojects%2Fmatteocampinoti94%252Ffalocalrepo%2Fissues%3Fstate%3Dopened)](https://gitlab.com/MatteoCampinoti94/FALocalRepo/issues)
 
-[![furaffinity](https://furaffinity-badge.herokuapp.com/badge/user/FurAffinity/FlameOfFurious)](https://furaffinity.net/user/FlameOfFurious)
+[![furaffinity](https://furry-badges.herokuapp.com/badge/user/FurAffinity/FlameOfFurious)](https://furaffinity.net/user/FlameOfFurious)
 
 </div>
 
