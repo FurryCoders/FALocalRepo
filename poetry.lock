@@ -129,7 +129,7 @@ requests = ">=2.27.1,<3.0.0"
 
 [[package]]
 name = "falocalrepo-database"
-version = "5.0.6"
+version = "5.0.7"
 description = "Database functionality for falocalrepo."
 category = "main"
 optional = false
@@ -394,7 +394,7 @@ python-versions = "*"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "37244412db35d0f57807714e60b3b7be77b4c773370aba78579db1a6f7c461b3"
+content-hash = "199057fdfafeb0ccd15cc88a0d67f9377eaa06accf2ab7235614c9336d02afe0"
 
 [metadata.files]
 anyio = [
@@ -442,8 +442,8 @@ faapi = [
     {file = "faapi-3.3.5.tar.gz", hash = "sha256:e7cfec349cdac2e05852fd8c6fb5d70dc941c501201009cae695320c2ff8f37b"},
 ]
 falocalrepo-database = [
-    {file = "falocalrepo-database-5.0.6.tar.gz", hash = "sha256:71ae843c241a5816c90fa1df01b06f165b7d519061ec993d76a85e17d8a52ce4"},
-    {file = "falocalrepo_database-5.0.6-py3-none-any.whl", hash = "sha256:3e06d9779e1d02fb1512c485bf1cacd95838120c00a79b93ada660b1f97fcaca"},
+    {file = "falocalrepo-database-5.0.7.tar.gz", hash = "sha256:80b8a3b778457c7112bf86026af488e6f623d1ed13bb9c8e791f921fcef25112"},
+    {file = "falocalrepo_database-5.0.7-py3-none-any.whl", hash = "sha256:70ccd0bce1774e40cc8bf5b83f2ba4cbbb8df904d97d8ca9689b95403261613c"},
 ]
 falocalrepo-server = [
     {file = "falocalrepo-server-2.0.2.tar.gz", hash = "sha256:f62d4d6c2f58ac68c4fae4b786f46c7bd44e44ebdf6e78ebae7a74b82139104d"},
