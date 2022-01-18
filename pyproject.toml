@@ -21,7 +21,6 @@ classifiers = [
 "Changelog" = "https://gitlab.com/MatteoCampinoti94/FALocalRepo/-/blob/master/CHANGELOG.md"
 "Source" = "https://gitlab.com/MatteoCampinoti94/FALocalRepo"
 "Download" = "https://pypi.org/project/falocalrepo/#files"
-"Twitter" = "https://twitter.com/FlamingFox94"
 
 [tool.poetry.scripts]
 falocalrepo = "falocalrepo.__main__:main"
