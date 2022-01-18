@@ -382,13 +382,14 @@ class Downloader:
                     return 0
             self.clear_line()
 
-    def download_user_page(self, username: str) -> int:
+    def download_user_page(self, username: str, clear_found: bool = False) -> int:
         padding: int = w - self.bar_width - 2 - 1 if (w := terminal_width()) else 0
         echo(f"{yellow}{username[:padding or None]:<{padding}}{reset}", nl=self.output == OutputType.simple)
         self.bar()
         if self.dry_run:
             self.bar_message("SKIPPED", green)
-            self.bar_close()
+            self.bar_close("" if clear_found else "\n")
+            self.clear_line()
             return 0
         self.bar_message("DOWNLOAD")
         user, err = self.download_catch(self.api.user, username)
@@ -396,7 +397,13 @@ class Downloader:
         if err:
             self.user_errors += 1
             return err
-        added: bool = self.db.users[username][UsersColumns.USERPAGE.value.name].strip() == ""
+        added: bool = (current := self.db.users[username][UsersColumns.USERPAGE.value.name].strip()) == ""
+        updated: bool = user.profile != current
+        if not added and not updated:
+            self.bar_message("IN DB")
+            self.bar_close("" if clear_found else "\n")
+            self.clear_line()
+            return 0
         self.db.users[username] = self.db.users[username] | {UsersColumns.USERPAGE.value.name: user.profile}
         self.bar_message("ADDED" if added else "UPDATED", green)
         return 0
@@ -417,7 +424,7 @@ class Downloader:
                     self.db.users.add_folder(user, folder)
                 err: int
                 if folder == Folder.userpage:
-                    err = self.download_user_page(user)
+                    err = self.download_user_page(user, stop > 0)
                 elif folder == Folder.journals:
                     err = self.download_user_journals(user, stop, stop > 0)
                 else:
