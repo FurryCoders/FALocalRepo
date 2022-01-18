@@ -62,7 +62,7 @@ def main():
     except ClickException as err:
         secho("Error: " + err.format_message(), fg="red", bold=True, file=stderr)
         exit(err.exit_code)
-    except (Exception, BaseException):
+    except BaseException:
         echo()
         with Path.cwd().joinpath("FA.log").open("w") as f:
             print_exc(file=f)
