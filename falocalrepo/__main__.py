@@ -63,6 +63,7 @@ def main():
         secho("Error: " + err.format_message(), fg="red", bold=True, file=stderr)
         exit(err.exit_code)
     except (Exception, BaseException):
+        echo()
         with Path.cwd().joinpath("FA.log").open("w") as f:
             print_exc(file=f)
             secho(f"Trace written to {f.name}", fg="red", bold=True, file=stderr)
