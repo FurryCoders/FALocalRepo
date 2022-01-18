@@ -1,5 +1,12 @@
 # Changelog
 
+## 4.0.2
+
+### Changes
+
+* faapi dependency set to [\~3.3.6](https://pypi.org/project/faapi/3.3.6)
+    * Fix parsing error when downloading user profile with limited info or contacts
+
 ## 4.0.1
 
 ### Changes
