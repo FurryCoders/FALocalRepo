@@ -1,5 +1,18 @@
 # Changelog
 
+## 4.0.1
+
+### Changes
+
+* Always print download report (also when manually interrupting)
+* falocalrepo-database dependency set to [\~5.0.7](https://pypi.org/project/falocalrepo-database/5.0.7)
+    * Fix possible duplicate values in list columns
+
+### Fixes
+
+* Fix userpage download
+* Fix `--no-color` option not working in `download login` command when login failed
+
 ## 4.0.0 - 200th Release!
 
 ### Changes
