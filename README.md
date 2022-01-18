@@ -217,6 +217,9 @@ All download operations (except login) support the `--dry-run` option. When this
 modified, nor are submission files downloaded. Entries are simply listed and the program checks whether they are in the
 database or not.
 
+When downloading, submission and journal titles will be displayed in the terminal. Characters in the titles outside of
+the ASCII range will be replaced with □ to avoid formatting errors.
+
 Available operations are:
 
 * `login` Check whether the cookies stored in the database belong to a login Fur Affinity session.
@@ -298,7 +301,8 @@ Available operations are:
     * `csv` CSV format (comma separated)
     * `tsv` TSV format (tab separated)
     * `json` JSON format
-    * `none` Do not print results to screen
+    * `none` Do not print results to screen<br/>
+      _Note_: characters not in the ASCII range will be replaced with □ when using table output
 
 > ```
 > falocalrepo search USERS --output json '@folders ^gallery'
