@@ -15,7 +15,6 @@ database.
 [![issues_github](https://img.shields.io/github/issues/matteocampinoti94/falocalrepo?logo=github&color=blue)](https://github.com/MatteoCampinoti94/FALocalRepo/issues)
 
 [![furaffinity](https://furaffinity-badge.herokuapp.com/badge/user/FlameOfFurious)](https://furaffinity.net/user/FlameOfFurious)
-[![twitter_url](https://img.shields.io/badge/Twitter-FlamingFox94-white?labelColor=white&color=1d9bf0&logo=twitter)](https://twitter.com/FlamingFox94)
 
 </div>
 
