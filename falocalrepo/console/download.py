@@ -100,6 +100,7 @@ def download_users(ctx: Context, database: Callable[..., Database], users: tuple
     try:
         downloader.download_users(list(users), list(folders))
     finally:
+        echo()
         downloader.report()
 
 
@@ -140,6 +141,7 @@ def download_update(ctx: Context, database: Callable[..., Database], users: tupl
     try:
         downloader.download_users_update(list(users), list(folders), stop, deactivated)
     finally:
+        echo()
         downloader.report()
 
 
@@ -169,6 +171,7 @@ def download_submissions(ctx: Context, database: Callable[..., Database], submis
     try:
         downloader.download_submissions(list(submission_id), replace)
     finally:
+        echo()
         downloader.report()
 
 
@@ -198,6 +201,7 @@ def download_journals(ctx: Context, database: Callable[..., Database], journal_i
     try:
         downloader.download_journals(list(journal_id), replace)
     finally:
+        echo()
         downloader.report()
 
 
