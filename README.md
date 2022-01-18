@@ -561,8 +561,7 @@ details.
 ## Issues
 
 If you encounter any problem while using the program, an issue can be opened on the project's pages
-on [GitLab](https://gitlab.com/MatteoCampinoti94/FALocalRepo/issues) (preferred)
-or [GitHub](https://github.com/MatteoCampinoti94/FALocalRepo/issues) (mirror repository).
+on [GitLab](https://gitlab.com/MatteoCampinoti94/FALocalRepo/issues).
 
 Issues can also be used to suggest improvements and features.
 
@@ -578,6 +577,3 @@ the code repository under tag [v3.0.0](https://gitlab.com/MatteoCampinoti94/FALo
 
 Release binaries for versions 2.11.x can be found on GitLab
 at [FALocalRepo/tags 2.11](https://gitlab.com/MatteoCampinoti94/FALocalRepo/tags?search=v2.11).
-
-Release binaries before and including 2.10.2 can be found
-in [GitHub Releases](https://github.com/MatteoCampinoti94/FALocalRepo/releases).
