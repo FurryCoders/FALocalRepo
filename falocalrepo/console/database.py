@@ -120,6 +120,10 @@ def id_callback(ctx: Context, param: Argument, value: tuple[str, ...]) -> tuple[
     return tuple(map(int, value))
 
 
+def clean_string(string: str, *, replacer: str = "□") -> str:
+    return "".join(c if 32 <= ord(c) <= 255 else replacer for c in string)
+
+
 def format_value(value: Any) -> str:
     return " ".join(value) if isinstance(value, (list, set)) else str(value)
 
@@ -152,7 +156,8 @@ def print_table(ctx: Context, results: Cursor, headers: list[tuple[str, int]], i
         separator: str = style(" | ", fg="bright_black", bold=True)
         for entry in results:
             results_total += 1
-            values: list[str] = [f"{format_value(v)[:w or None]:<{w}}" for v, w in zip(entry.values(), widths)]
+            values: list[str] = [f"{clean_string(format_value(v))[:w or None]:<{w}}"
+                                 for v, w in zip(entry.values(), widths)]
             if terminal_width:
                 values_length_wc: int = sum(map(wcswidth, values))
                 if values_length_wc > terminal_width_total:
@@ -170,7 +175,8 @@ def print_table(ctx: Context, results: Cursor, headers: list[tuple[str, int]], i
         echo(("-+-".join("-" * len(h) for h in headers) + "-")[:terminal_width], color=False)
         for entry in results:
             results_total += 1
-            line: str = " | ".join(f"{fit_string(format_value(v), w):<{w}}" for v, w in zip(entry.values(), widths))
+            line: str = " | ".join(f"{fit_string(clean_string(format_value(v)), w):<{w}}"
+                                   for v, w in zip(entry.values(), widths))
             echo(fit_string(line, terminal_width), color=False)
 
     return results_total
