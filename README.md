@@ -291,8 +291,7 @@ Available operations are:
   statements are supported). The optional `WIDTH` value can be added to format that specific column when the output is
   set to table.<br/>
   To output all columns and entries of a table, `COLUMN` and `QUERY` values can be set to `@` and `%` respectively.
-  However, the
-  `database export` command is better suited for this task.<br/>
+  However, the `database export` command is better suited for this task.<br/>
   Search is performed case-insensitively.<br/>
   The output can be set to five different types:
     * `table` Table format
