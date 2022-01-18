@@ -1,7 +1,9 @@
 from typing import Callable
 
+from click import BadParameter
 from click import Context
 from click import IntRange
+from click import Option
 from click import argument
 from click import echo
 from click import group
@@ -11,6 +13,7 @@ from click.shell_completion import CompletionItem
 from faapi import User
 from faapi.exceptions import Unauthorized
 from falocalrepo_database import Database
+from falocalrepo_database.database import clean_username
 
 from .colors import *
 from .util import CompleteChoice
@@ -51,6 +54,13 @@ def download_app():
     pass
 
 
+def users_callback(ctx: Context, param: Option, value: tuple[str]) -> tuple[str]:
+    value_clean: list[str] = list(filter(bool, map(clean_username, value)))
+    if not value_clean:
+        raise BadParameter("Invalid users", ctx, param)
+    return tuple(sorted(set(value_clean), key=value_clean.index))
+
+
 @download_app.command("login", short_help="Check cookies' validity.")
 @database_exists_option
 @color_option
@@ -75,8 +85,8 @@ def download_login(ctx: Context, database: Callable[..., Database]):
 
 
 @download_app.command("users", short_help="Download users.", no_args_is_help=True)
-@option("--user", "-u", "users", metavar="USER", required=True, multiple=True, type=str,
-        callback=lambda _c, _p, v: sorted(set(v), key=v.index), help="Username.")
+@option("--user", "-u", "users", metavar="USER", required=True, multiple=True, type=str, callback=users_callback,
+        help="Username.")
 @option("--folder", "-f", "folders", metavar="FOLDER", required=True, multiple=True, type=FolderChoice(),
         callback=lambda _c, _p, v: sorted(set(v), key=v.index), help="Folder to download.")
 @dry_run_option
@@ -105,8 +115,8 @@ def download_users(ctx: Context, database: Callable[..., Database], users: tuple
 
 
 @download_app.command("update", short_help="Download new entries for users in database.")
-@option("--user", "-u", "users", metavar="USER", multiple=True, type=str,
-        callback=lambda _c, _p, v: sorted(set(v), key=v.index), help="User to update.")
+@option("--user", "-u", "users", metavar="USER", multiple=True, type=str, callback=users_callback,
+        help="User to update.")
 @option("--folder", "-f", "folders", metavar="FOLDER", multiple=True, type=FolderChoice(),
         callback=lambda _c, _p, v: sorted(set(v), key=v.index), help="Folder to update.")
 @option("--stop", metavar="STOP", type=IntRange(0, min_open=True), default=1, show_default=True,
