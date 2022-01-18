@@ -382,22 +382,22 @@ class Downloader:
                     return 0
             self.clear_line()
 
-    def download_user_page(self, user: str) -> int:
+    def download_user_page(self, username: str) -> int:
         padding: int = w - self.bar_width - 2 - 1 if (w := terminal_width()) else 0
-        echo(f"{yellow}{user[:padding or None]:<{padding}}{reset}", nl=self.output == OutputType.simple)
+        echo(f"{yellow}{username[:padding or None]:<{padding}}{reset}", nl=self.output == OutputType.simple)
         self.bar()
         if self.dry_run:
             self.bar_message("SKIPPED", green)
             self.bar_close()
             return 0
         self.bar_message("DOWNLOAD")
-        user, err = self.download_catch(self.api.user, user)
+        user, err = self.download_catch(self.api.user, username)
         self.err_to_bar(err)
         if err:
             self.user_errors += 1
             return err
-        added: bool = self.db.users[user][UsersColumns.USERPAGE.value.name].strip() == ""
-        self.db.users[user] = self.db.users[user] | {UsersColumns.USERPAGE.value.name: user.profile}
+        added: bool = self.db.users[username][UsersColumns.USERPAGE.value.name].strip() == ""
+        self.db.users[username] = self.db.users[username] | {UsersColumns.USERPAGE.value.name: user.profile}
         self.bar_message("ADDED" if added else "UPDATED", green)
         return 0
 
