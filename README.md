@@ -1,6 +1,3 @@
-**DEPRECATED** This repository mirrors the main one on [GitLab](https://gitlab.com/MatteoCampinoti94/falocalrepo) up to version 4.0.1.
-Issues are turned off and pull requests will be ignored. This repository will be deleted on the 18th of April 2022
-
 <div align="center">
 
 <img alt="logo" width="400" src="https://gitlab.com/uploads/-/system/project/avatar/6750403/falocalrepo.png">
@@ -10,13 +7,13 @@ Issues are turned off and pull requests will be ignored. This repository will be
 Pure Python program to download submissions, journals, and user folders from the FurAffinity forum in an easily handled
 database.
 
-[![version_pypi](https://img.shields.io/pypi/v/falocalrepo?logo=pypi)](https://pypi.org/project/falocalrepo/)
-[![version_python](https://img.shields.io/pypi/pyversions/falocalrepo?logo=Python)](https://www.python.org)
+[![](https://img.shields.io/pypi/v/falocalrepo?logo=pypi)](https://pypi.org/project/falocalrepo/)
+[![](https://img.shields.io/pypi/pyversions/falocalrepo?logo=Python)](https://www.python.org)
 
-[![version_gitlab](https://img.shields.io/gitlab/v/tag/6750403?label=gitlab&sort=date&logo=gitlab&color=FCA121)](https://gitlab.com/projects/6750403)
-[![issues_gitlab](https://img.shields.io/badge/dynamic/json?logo=gitlab&color=orange&label=issues&suffix=%20open&query=%24.length&url=https%3A%2F%2Fgitlab.com%2Fapi%2Fv4%2Fprojects%2F6750403%2Fissues%3Fstate%3Dopened)](https://gitlab.com/MatteoCampinoti94/FALocalRepo/issues)
+[![](https://img.shields.io/github/v/tag/FurryCoders/falocalrepo?label=github&sort=date&logo=github&color=blue)](https://github.com/FurryCoders/falocalrepo)
+[![](https://img.shields.io/github/issues/FurryCoders/falocalrepo?logo=github&color=blue)](https://github.com/FurryCoders/falocalrepo/issues)
 
-[![furaffinity](https://furry-badges.herokuapp.com/badge/user/FurAffinity/FlameOfFurious)](https://furaffinity.net/user/FlameOfFurious)
+[![](https://furry-badges.herokuapp.com/badge/user/FurAffinity/FlameOfFurious)](https://furaffinity.net/user/FlameOfFurious)
 
 </div>
 
@@ -569,16 +566,13 @@ see [falocalrepo-database](https://pypi.org/project/falocalrepo-database/).
 
 All contributions and suggestions are welcome!
 
-The only requirement is that any merge request must be sent to the GitLab project as the one on GitHub is only a
-mirror: [GitLab/FALocalRepo](https://gitlab.com/MatteoCampinoti94/FALocalRepo)
-
 If you have suggestions for fixes or improvements, you can open an issue with your idea, see [#Issues](#issues) for
 details.
 
 ## Issues
 
-If you encounter any problem while using the program, an issue can be opened on the project's pages
-on [GitLab](https://gitlab.com/MatteoCampinoti94/FALocalRepo/issues).
+If you encounter any problem while using the program, an issue can be opened on the project's page
+on [GitHub](https://github.com/FurryCoders/FALocalRepo/issues).
 
 Issues can also be used to suggest improvements and features.
 
@@ -589,8 +583,8 @@ occurred.
 
 ### Earlier Releases
 
-Release 3.0.0 was deleted from PyPi because of an error in the package information. However, it can still be found in
-the code repository under tag [v3.0.0](https://gitlab.com/MatteoCampinoti94/FALocalRepo/tags/v3.0.0).
+Release 3.0.0 was deleted from PyPi because of an error in the package information. However, it can still be found on
+GitHub [v3.0.0](https://github.com/FurryCoders/FALocalRepo/releases/tag/v3.0.0).
 
-Release binaries for versions 2.11.x can be found on GitLab
-at [FALocalRepo/tags 2.11](https://gitlab.com/MatteoCampinoti94/FALocalRepo/tags?search=v2.11).
+Release binaries for versions 2.11.2 can be found on GitHub
+at [v2.11.2](https://github.com/FurryCoders/FALocalRepo/releases/tag/v2.11.2)
