@@ -411,6 +411,8 @@ class Downloader:
             self.clear_line()
             return 0
         self.db.users[username] = self.db.users[username] | {UsersColumns.USERPAGE.value.name: user.profile}
+        self.downloaded += added
+        self.modified += updated
         self.bar_message("ADDED" if added else "UPDATED", green)
         return 0
 
