@@ -5,8 +5,8 @@ description = "Pure Python program to download any user's gallery, scraps, favor
 authors = ["Matteo Campinoti <matteo.campinoti94@gmail.com>"]
 license = "EUPL-1.2"
 readme = "README.md"
-homepage = "https://gitlab.com/MatteoCampinoti94/FALocalRepo"
-repository = "https://gitlab.com/MatteoCampinoti94/FALocalRepo"
+homepage = "https://github.com/FurryCoders/FALocalRepo"
+repository = "https://github.com/FurryCoders/FALocalRepo"
 classifiers = [
     "Programming Language :: Python :: 3.10",
     "Operating System :: OS Independent",
@@ -18,8 +18,8 @@ classifiers = [
 ]
 
 [tool.poetry.urls]
-"Changelog" = "https://gitlab.com/MatteoCampinoti94/FALocalRepo/-/blob/master/CHANGELOG.md"
-"Source" = "https://gitlab.com/MatteoCampinoti94/FALocalRepo"
+"Changelog" = "https://github.com/FurryCoders/FALocalRepo/-/blob/master/CHANGELOG.md"
+"Source" = "https://github.com/FurryCoders/FALocalRepo"
 "Download" = "https://pypi.org/project/falocalrepo/#files"
 
 [tool.poetry.scripts]
