@@ -56,7 +56,7 @@ def download_app():
 
 def users_callback(ctx: Context, param: Option, value: tuple[str]) -> tuple[str]:
     value_clean: list[str] = list(filter(bool, map(clean_username, value)))
-    if not value_clean:
+    if not value_clean and param.required:
         raise BadParameter("Invalid users", ctx, param)
     return tuple(sorted(set(value_clean), key=value_clean.index))
 
