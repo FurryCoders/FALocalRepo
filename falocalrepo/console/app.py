@@ -1,4 +1,3 @@
-from collections import OrderedDict
 from pathlib import Path
 from typing import Callable
 from typing import Type
@@ -235,7 +234,7 @@ def app_server(ctx: Context, database: Callable[..., Database], host: str | None
     Start a server at {yellow}HOST{reset}:{yellow}PORT{reset} to navigate the database. The {yellow}--ssl-cert{reset}
     and {yellow}--ssl-cert{reset} allow serving with HTTPS. Setting {yellow}--redirect-http{reset} starts the server in
     HTTP to HTTPS redirection mode. For more details on usage see
-    https://pypi.org/project/{server_name}/{server_version}.
+    {blue}https://pypi.org/project/{server_name}/{server_version}{reset}.
     """
 
     if ssl_cert and not ssl_key:
