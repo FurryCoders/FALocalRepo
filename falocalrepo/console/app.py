@@ -210,7 +210,7 @@ def app_completions(ctx: Context, shell: Type[ShellComplete], alias: str | None)
 
 
 # noinspection HttpUrlsUsage
-@app.command("server", short_help="Start local server to browse database.")
+@app.command("server", short_help="Start a server to browse the database.")
 @option("--host", metavar="HOST", type=str, default="0.0.0.0", show_default=True, help="Server host.")
 @option("--port", metavar="PORT", type=str, default="80, 443", show_default=True, callback=port_callback,
         help="Server port.")
