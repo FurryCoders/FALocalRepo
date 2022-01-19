@@ -98,6 +98,12 @@ any component.
 
 _Note_: make sure the pip points to a Python 3.10 installation; you can check if it is correct using `pip --version`.
 
+### Installation From Source
+
+To install from source, clone the repository, then using [poetry](https://python-poetry.org)
+run `poetry install` and `poetry build`. After the wheel has been built, you can install it using
+pip `pip install dist/*.whl`.
+
 ## Cookies
 
 The scraping library used by this program needs two specific cookies from a logged-in FurAffinity session. These are
