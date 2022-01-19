@@ -1,3 +1,6 @@
+**DEPRECATED** This repository mirrors the main one on [GitLab](https://gitlab.com/MatteoCampinoti94/falocalrepo) up to version 4.0.1.
+Issues are turned off and pull requests will be ignored. This repository will be deleted on the 18th of April 2022
+
 <div align="center">
 
 <img alt="logo" width="400" src="https://gitlab.com/uploads/-/system/project/avatar/6750403/falocalrepo.png">
