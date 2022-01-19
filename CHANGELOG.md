@@ -1,5 +1,27 @@
 # Changelog
 
+## 4.0.3
+
+### Changes
+
+* Move to new repository at [GitHub/FurryCoders/FALocalRepo](https://github.com/FurryCoders/FALocalRepo)
+* Improved output for download operations
+* Clear userpage update lines if no change is saved
+* User pages update download and modify counters
+* faapi dependency set to [\~3.3.7](https://pypi.org/project/faapi/3.3.7)
+    * No changes, move to new repository
+* falocalrepo-database dependency set to [\~5.0.8](https://pypi.org/project/falocalrepo-database/5.0.8)
+    * No changes, move to new repository
+* falocalrepo-server dependency set to [\~2.1.0](https://pypi.org/project/falocalrepo-server/2.1.0)
+    * Use [Click](https://click.palletsprojects.com) to handle arguments
+    * Move to new repository
+
+### Fixes
+
+* Fix formatting error when printing database search results with non ASCII characters
+* Fix report formatting error when interrupting a download operation
+* Fix repeated user arguments for download operations triggering multiple downloads
+
 ## 4.0.2
 
 ### Changes
