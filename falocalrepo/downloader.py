@@ -280,11 +280,14 @@ class Downloader:
             padding: int = (w - folder_page_width - self.bar_width - 2 - 1) if (w := terminal_width()) else 0
             echo(f"{yellow}{user}{reset}/{yellow}{Folder.journals.name}{reset} {page}" + (" " * padding),
                  nl=self.output == OutputType.simple, color=self.color)
+            self.bar()
+            self.bar_message("DOWNLOAD")
             result, err = self.download_catch(self.api.journals, user, page)
             if err:
                 self.user_errors += 1
                 self.err_to_bar(err)
                 return err
+            self.bar_close("")
             self.clear_line()
             journals, next_page = result
             for i, journal in enumerate(journals, 1):
@@ -337,11 +340,14 @@ class Downloader:
             padding: int = (w - folder_page_width - self.bar_width - 2 - 1) if (w := terminal_width()) else 0
             echo(f"{yellow}{user}{reset}/{yellow}{folder.name}{reset} {page}" + (" " * padding),
                  nl=self.output == OutputType.simple, color=self.color)
+            self.bar()
+            self.bar_message("DOWNLOAD")
             result, err = self.download_catch(downloader, user, next_page)
             if err:
                 self.user_errors += 1
                 self.err_to_bar(err)
                 return err
+            self.bar_close("")
             self.clear_line()
             submissions, next_page = result
             for i, sub_partial in enumerate(submissions, 1):
