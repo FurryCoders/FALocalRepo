@@ -41,6 +41,7 @@ functionalities of the program.
 
 ## Contents
 
+1. [Requirements](#requirements)
 1. [Installation and Update](#installation-and-update)
 1. [Cookies](#cookies)
 1. [Usage](#usage)
@@ -65,26 +66,11 @@ functionalities of the program.
 1. [Issues](#issues)
 1. [Appendix](#appendix)
 
-## Installation and Update
-
-To install the program it is sufficient to use Python pip and get the package `falocalrepo`.
-
-```shell
-python3 -m pip install falocalrepo
-```
+## Requirements
 
 Python 3.10 or above is needed to run this program, all other dependencies are handled by pip during installation. For
 information on how to install Python on your computer, refer to the official
 website [Python.org](https://www.python.org/).
-
-To upgrade the `falocalrepo` and its dependencies, use pip to upgrade all three components.
-
-```shell
-python3 -m pip install --upgrade falocalrepo faapi falocalrepo-database falocalrepo-server
-```
-
-To check for updates use the [`updates` command](#updates). A message will appear if there is an update available for
-any component.
 
 The program needs cookies from a logged-in FurAffinity session to download protected pages. Without the cookies the
 program can still download publicly available pages, but others will return empty. See [#Cookies](#cookies) for more
@@ -92,6 +78,25 @@ details on which cookies to use.
 
 **Warning**: FurAffinity theme template must be set to "modern". Can be changed
 at [furaffinity.net/controls/settings/](https://www.furaffinity.net/controls/settings/).
+
+## Installation and Update
+
+To install the program it is sufficient to use Python pip and get the package `falocalrepo`.
+
+```shell
+pip install falocalrepo
+```
+
+To upgrade the program and its dependencies, use pip to upgrade all three components.
+
+```shell
+pip install --upgrade falocalrepo faapi falocalrepo-database falocalrepo-server
+```
+
+To check for updates use the [`updates` command](#updates). A message will appear if there is an update available for
+any component.
+
+_Note_: make sure the pip points to a Python 3.10 installation; you can check if it is correct using `pip --version`.
 
 ## Cookies
 
