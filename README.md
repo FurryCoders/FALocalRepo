@@ -96,7 +96,7 @@ pip install --upgrade falocalrepo faapi falocalrepo-database falocalrepo-server
 To check for updates use the [`updates` command](#updates). A message will appear if there is an update available for
 any component.
 
-_Note_: make sure the pip points to a Python 3.10 installation; you can check if it is correct using `pip --version`.
+_Note_: make sure that pip points to a Python 3.10 installation; you can check if it is correct using `pip --version`.
 
 ### Installation From Source
 
