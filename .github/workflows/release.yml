@@ -32,5 +32,3 @@ jobs:
           tag_name: ${{ github.ref }}
           release_name: ${{ github.ref }}
           body_path: RELEASE.md
-      - name: Cleanup
-        run: rm RELEASE*.md
