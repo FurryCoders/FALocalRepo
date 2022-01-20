@@ -151,7 +151,7 @@ def app_updates(ctx: Context, shell: bool):
 
     if shell:
         if updates:
-            echo(f"python3 -m pip install --upgrade {' '.join(package for [*_, package] in updates)}")
+            echo(f"pip install --upgrade {' '.join(package for [*_, package] in updates)}")
         return
 
     for [current, latest, package] in updates:
