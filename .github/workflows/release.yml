@@ -11,9 +11,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - name: Get Tag Name
+        id: tagName
+        uses: olegtarasov/get-tag@v2.1.1
       - name: Get Release
         env:
-          TAG_NAME: ${{ github.ref }}
+          TAG_NAME: ${{ steps.tagName.outputs.tag }}
         run: |
           grep "^## ${TAG_NAME#v}" CHANGELOG.md &>/dev/null || exit 1
           touch RELEASE.md
