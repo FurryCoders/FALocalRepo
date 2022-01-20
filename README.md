@@ -160,13 +160,13 @@ The following global options are available for all commands:
 Available commands are:
 
 * `init` Initialise the database.
-* `help` Show the help for a command.
 * `config` Change settings.
 * `download` Download resources.
 * `database` Operate on the database.
 * `server` Start local server to browse database.
 * `completions` Generate tab-completion scripts.
 * `updates` Check for updates to components.
+* `help` Show the help for a command.
 
 _Note:_ only one connection to a database is allowed at any given time, if the database is opened in other processes,
 the program will close with an error.
@@ -228,8 +228,8 @@ All download operations (except login) support the `--dry-run` option. When this
 modified, nor are submission files downloaded. Entries are simply listed and the program checks whether they are in the
 database or not.
 
-When downloading, submission and journal titles will be displayed in the terminal. Characters in the titles outside of
-the ASCII range will be replaced with □ to avoid formatting errors.
+When downloading, submission and journal titles will be displayed in the terminal. Characters in the titles outside the
+ASCII range will be replaced with □ to avoid formatting errors.
 
 Available operations are:
 
@@ -478,7 +478,7 @@ To store all this information, the database uses four tables: `SETTINGS`, `USERS
 
 ### Users
 
-The users table contains a list of all the users that have been download with the program, the folders that have been
+The users' table contains a list of all the users that have been download with the program, the folders that have been
 downloaded, and the submissions found in each of those.
 
 Each entry contains the following fields:
@@ -489,7 +489,7 @@ Each entry contains the following fields:
 
 ### Submissions
 
-The submissions table contains the metadata of the submissions downloaded by the program and information on their files
+The submissions' table contains the metadata of the submissions downloaded by the program and information on their files
 
 * `ID` the id of the submission
 * `AUTHOR` the username of the author (uploader) in full format
@@ -514,7 +514,7 @@ The submissions table contains the metadata of the submissions downloaded by the
 
 ### Journals
 
-The journals table contains the metadata of the journals downloaded by the program.
+The journals' table contains the metadata of the journals downloaded by the program.
 
 * `ID` the id of the journal
 * `AUTHOR` the username of the author (uploader) in full format
