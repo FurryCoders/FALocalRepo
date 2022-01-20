@@ -299,7 +299,14 @@ class Downloader:
                 self.bar_message("SEARCHING")
                 if journal.id in self.db.journals:
                     self.bar_message("IN DB", green)
-                    if not self.dry_run and self.db.journals.set_user_update(journal.id, 1):
+                    if self.dry_run:
+                        stop -= 1
+                        if clear_last_found:
+                            self.bar_close("")
+                            self.clear_line()
+                        else:
+                            self.bar_close()
+                    elif self.db.journals.set_user_update(journal.id, 1):
                         self.db.commit()
                         self.bar_message("UPDATED", green)
                         self.modified += 1
@@ -359,14 +366,19 @@ class Downloader:
                 self.bar_message("SEARCHING")
                 if sub_partial.id in self.db.submissions:
                     self.bar_message("IN DB", green)
-                    if not self.dry_run and folder != Folder.favorites and \
-                            self.db.submissions.set_user_update(sub_partial.id, 1):
+                    if self.dry_run:
+                        stop -= 1
+                        if clear_last_found:
+                            self.bar_close("")
+                            self.clear_line()
+                        else:
+                            self.bar_close()
+                    elif folder != Folder.favorites and self.db.submissions.set_user_update(sub_partial.id, 1):
                         self.db.commit()
                         self.bar_message("UPDATED", green)
                         self.modified += 1
                         self.bar_close()
-                    elif not self.dry_run and folder == Folder.favorites and \
-                            self.db.submissions.add_favorite(sub_partial.id, user):
+                    elif folder == Folder.favorites and self.db.submissions.add_favorite(sub_partial.id, user):
                         self.db.commit()
                         self.bar_message("ADDED FAV", green)
                         self.modified += 1
@@ -403,7 +415,7 @@ class Downloader:
         if err:
             self.user_errors += 1
             return err
-        added: bool = (current := self.db.users[username][UsersColumns.USERPAGE.value.name].strip()) == ""
+        added: bool = (current := self.db.users[username][UsersColumns.USERPAGE.value.name]) == ""
         updated: bool = user.profile != current
         if not added and not updated:
             self.bar_message("IN DB")
