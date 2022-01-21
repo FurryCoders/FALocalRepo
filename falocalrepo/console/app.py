@@ -1,4 +1,5 @@
 from pathlib import Path
+from random import choice
 from typing import Callable
 from typing import Type
 
@@ -44,6 +45,17 @@ from .util import docstring_format
 from .util import help_option
 from .. import __name__ as __prog_name__
 from ..__version__ import __version__
+
+_pride_flags: list[str] = [
+    "pride", "trans", "bisexual", "pansexual", "nonbinary",
+    "lesbian", "agender", "asexual", "genderqueer",
+    "genderfluid", "aromantic", "polyamory", "bold", "none"
+]
+_pride_colors: list[str] = [
+    red, green, yellow, blue, magenta, cyan, white, bright_red,
+    bright_green, bright_yellow, bright_blue, bright_magenta,
+    bright_cyan, bright_white
+]
 
 
 class ShellChoice(CompleteChoice):
@@ -251,6 +263,147 @@ def app_server(ctx: Context, database: Callable[..., Database], host: str | None
 
     server(db_path, host=host, port=port, ssl_cert=ssl_cert, ssl_key=ssl_key, redirect_port=redirect_http,
            precache=precache, authentication=auth)
+
+
+@app.command("paw")
+@argument("flag", type=str, default="pride", required=False)
+@color_option
+@help_option
+@pass_context
+@docstring_format("\n    ".join(f"* {choice(_pride_colors)}{f}{reset}" for f in _pride_flags))
+def paw(ctx: Context, flag: str):
+    """
+    Print a pride {yellow}FLAG{reset} paw!
+
+    \b
+    {0}
+    """
+    colors: list[str]
+
+    if flag == "pride":
+        colors = [
+            *([bright_red] * 3),
+            *([red] * 3),
+            *([bright_yellow] * 3),
+            *([green] * 3),
+            *([bright_blue] * 3),
+            *([magenta] * 4),
+        ]
+    elif flag == "trans":
+        colors = [
+            *([cyan] * 4),
+            *([magenta] * 4),
+            *([bright_white] * 4),
+            *([magenta] * 4),
+            *([cyan] * 4),
+        ]
+    elif flag == "bisexual":
+        colors = [
+            *([red] * 7),
+            *([bright_magenta] * 5),
+            *([blue] * 7)
+        ]
+    elif flag == "pansexual":
+        colors = [
+            *([magenta] * 7),
+            *([bright_yellow] * 6),
+            *([blue] * 7)
+        ]
+    elif flag == "nonbinary":
+        colors = [
+            *([bright_yellow] * 5),
+            *([bright_white] * 5),
+            *([bright_magenta] * 5),
+            *([dim] * 4),
+        ]
+    elif flag == "lesbian":
+        colors = [
+            *([red] * 4),
+            *([green] * 4),
+            *([white] * 4),
+            *([magenta] * 4),
+            *([bright_magenta] * 4),
+        ]
+    elif flag == "agender":
+        colors = [
+            *([dim] * 2),
+            *([reset + white] * 3),
+            *([bright_white] * 3),
+            *([green] * 3),
+            *([bright_white] * 3),
+            *([reset + white] * 3),
+            *([dim] * 2),
+        ]
+    elif flag == "asexual":
+        colors = [
+            *([dim] * 5),
+            *([reset + white] * 5),
+            *([bright_white] * 5),
+            *([blue] * 4),
+        ]
+    elif flag == "genderqueer":
+        colors = [
+            *([magenta] * 7),
+            *([bright_white] * 6),
+            *([green] * 7)
+        ]
+    elif flag == "genderfluid":
+        colors = [
+            *([magenta] * 4),
+            *([bright_white] * 4),
+            *([bright_magenta] * 4),
+            *([dim] * 4),
+            *([blue] * 4),
+        ]
+    elif flag == "aromantic":
+        colors = [
+            *([bright_green] * 4),
+            *([green] * 4),
+            *([bright_white] * 4),
+            *([reset + white] * 4),
+            *([dim + dim] * 4),
+        ]
+    elif flag == "polyamory":
+        colors = [
+            *([bright_blue] * 5),
+            *([bright_red] * 9),
+            *([dim] * 5)
+        ]
+    elif flag == "bold":
+        colors = [""] * 19
+    elif flag == "none":
+        colors = [reset] * 19
+    else:
+        flag = choice(_pride_flags)
+        echo("Your flag isn't in the program yet :(\n"
+             f"In the meantime, hope you enjoy the {flag} flag :)\n")
+        return paw.callback(flag)
+
+    paw_ascii = """
+                        -*#%%#=               
+            :=++=.    :%@@@@@@@*              
+          -%@@@@@@+  :@@@@@@@@@@.             
+         =@@@@@@@@@- #@@@@@@@@@%              
+        .@@@@@@@@@@- =@@@@@@@@%.              
+        .@@@@@@@@@#   =%@@@@#=  -*%@@@%#=     
+         =@@@@@@@=   ...:..   :%@@@@@@@@@*    
+           -++=-.:+%@@@@%*:  :@@@@@@@@@@@#    
+      :-+++==++#@@@@@@@@@@@* -@@@@@@@@@@%.    
+    :%@@@@@@@@@@@@@@@@@@@@@@- =%@@@@@@#=      
+    @@@@@@@@@@@@@@@@@@@@@@@@:   .:-:.         
+    +@@@@@@@@@@@@@@@@@@@@@@=  :=+**+-.        
+     -#@@@@@@@@@@@@@@@@@@@- +%@@@@@@@@+       
+       .=%@@@@@@@@@@@@@@@+ #@@@@@@@@@@@.      
+          -#@@@@@@@@@@@@@..@@@@@@@@@@@#       
+            :#@@@@@@@@@@@: +@@@@@@@@%=        
+              =@@@@@@@@@@.  .-++++-.          
+               .#@@@@@@@*                     
+                 -*%@@#=                      
+""".removeprefix("\n").removesuffix("\n")
+
+    paw_ascii = "\n".join(line.ljust(46) for line in paw_ascii.splitlines())
+    paw_ascii = "\n".join(bold + color + line + reset for color, line in zip(colors, paw_ascii.splitlines()))
+    echo(paw_ascii.format(*colors), color=ctx.color)
 
 
 app.add_command(config_app, config_app.name)
