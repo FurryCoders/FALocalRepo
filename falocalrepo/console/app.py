@@ -277,6 +277,8 @@ def paw(ctx: Context, flag: str):
 
     \b
     {0}
+
+    {italic}Note{reset}: the paw works best with a dark background.
     """
     colors: list[str]
 
