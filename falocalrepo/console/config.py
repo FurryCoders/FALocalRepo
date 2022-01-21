@@ -142,10 +142,10 @@ def config_files_folder(ctx: Context, database: Callable[..., Database], new_fol
 
     try:
         if not move:
-            echo(f"Not moving files from original folder {yellow}{db.path}{reset}", color=ctx.color)
+            echo(f"Not moving files from original folder {yellow}{db.settings.files_folder}{reset}", color=ctx.color)
         else:
             echo(f"Moving files to new folder {yellow}{new_folder}{reset}", color=ctx.color)
-            folder: Path = Path(db.settings[db.settings.files_folder_setting]).resolve()
+            folder: Path = db.settings.files_folder
             new_folder_abs: Path = new_folder.resolve()
             total: int = len(db.submissions)
             total_log: int = ceil(log10(total))
