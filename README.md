@@ -167,6 +167,7 @@ Available commands are:
 * `completions` Generate tab-completion scripts.
 * `updates` Check for updates to components.
 * `help` Show the help for a command.
+* `paw` Print the paw.
 
 _Note:_ only one connection to a database is allowed at any given time, if the database is opened in other processes,
 the program will close with an error.
