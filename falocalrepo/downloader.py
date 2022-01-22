@@ -1,4 +1,4 @@
-from enum import Enum
+from enum import Enum, EnumMeta
 from enum import auto
 from operator import itemgetter
 from shutil import get_terminal_size
@@ -39,6 +39,10 @@ class Folder(str, Enum):
     favorites = "favorites"
     journals = "journals"
     userpage = "userpage"
+
+    @classmethod
+    def as_list(cls: EnumMeta) -> list[str]:
+        return [c.value for c in cls]
 
 
 def terminal_width() -> int:
@@ -468,13 +472,22 @@ class Downloader:
         users_cursor = self.db.users[users] if users else self.db.users.select(order=[UsersColumns.USERNAME.value.name])
         users_folders: Iterable[tuple[str, list[str]]]
         users_folders = ((u[UsersColumns.USERNAME.value.name],
-                          [f for f in sorted(u[UsersColumns.FOLDERS.value.name])])
+                          [f for f in u[UsersColumns.FOLDERS.value.name]])
                          for u in users_cursor)
+
+        users_folders = sorted(users_folders, key=lambda uf: users.index(uf[0]) if users else uf[0])
+
         if deactivated:
             users_folders = ((u, [*map(lambda f: f.strip("!"), fs)]) for u, fs in users_folders)
         else:
             users_folders = ((u, fs) for u, fs in users_folders if not any("!" in f for f in fs))
-        users_folders = ((u, [f for f in fs if f in folders or not folders]) for u, fs in users_folders)
+
+        if folders:
+            users_folders = ((u, sorted(filter(folders.__contains__, fs), key=folders.index))
+                             for u, fs in users_folders)
+        else:
+            users_folders = ((u, sorted(fs, key=Folder.as_list().index)) for u, fs in users_folders)
+
         self._download_users(users_folders, stop)
 
     # noinspection DuplicatedCode
