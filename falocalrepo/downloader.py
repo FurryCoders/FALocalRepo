@@ -469,7 +469,7 @@ class Downloader:
         self._download_users([(u, folders) for u in users])
 
     def download_users_update(self, users: list[str], folders: list[str], stop: int, deactivated: bool):
-        users_cursor = self.db.users[users] if users else self.db.users.select(order=[UsersColumns.USERNAME.value.name])
+        users_cursor: Iterable[dict] = self.db.users[users] if users else self.db.users.select(order=[UsersColumns.USERNAME.value.name])
         users_folders: Iterable[tuple[str, list[str]]]
         users_folders = ((u[UsersColumns.USERNAME.value.name],
                           [f for f in u[UsersColumns.FOLDERS.value.name]])
