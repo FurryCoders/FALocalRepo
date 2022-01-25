@@ -107,6 +107,13 @@ class ExportOutputChoice(CompleteChoice):
     ]
 
 
+def serializer(obj: object) -> object:
+    if isinstance(obj, Iterable):
+        return list(obj)
+    else:
+        return str(obj)
+
+
 def column_callback(_ctx: Context, _param: Option, value: tuple[str]) -> list[tuple[str, int]]:
     return [((vs := v.split(",", 1))[0], int(vs[1])) if "," in v else (v, 0) for v in map(str.strip, value) if v]
 
@@ -197,10 +204,10 @@ def print_json(results: Cursor, file: TextIO) -> int:
     file.write("[")
     if first := next(results.entries, None):
         results_total += 1
-        file.write(dumps(first, separators=(",", ":")))
+        file.write(dumps(first, default=serializer, separators=(",", ":")))
     for entry in results.entries:
         results_total += 1
-        file.write("," + dumps(entry, separators=(",", ":")))
+        file.write("," + dumps(entry, default=serializer, separators=(",", ":")))
     file.write("]")
     return results_total
 
