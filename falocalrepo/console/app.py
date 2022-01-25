@@ -455,7 +455,7 @@ def app_server(ctx: Context, database: Callable[..., Database], host: str | None
            precache=precache, authentication=auth)
 
 
-@app.command("paw")
+@app.command("paw", short_help="Print the PRIDE paw!")
 @argument("flag", type=str, default="pride", required=False)
 @option("--true-color", is_flag=True, default=False, help="Use 24bit (truecolor) colors")
 @color_option
@@ -464,7 +464,7 @@ def app_server(ctx: Context, database: Callable[..., Database], host: str | None
 @docstring_format("\n    ".join(f"* {choice(_pride_colors)}{f}{reset}" for f in _pride_flags))
 def paw(ctx: Context, flag: str, true_color: bool):
     """
-    Print a pride {yellow}FLAG{reset} paw!
+    Print a PRIDE {yellow}FLAG{reset} paw!
 
     If used inside a truecolor-supporting terminal, {yellow}--true-color{reset} enables the full 24bit color range for
     the most colorful flags!
@@ -520,4 +520,5 @@ app.list_commands = lambda *_: [
     app_completions.name,
     app_updates.name,
     app_help.name,
+    paw.name,
 ]
