@@ -185,7 +185,7 @@ def print_table(ctx: Context, results: Cursor, headers: list[tuple[str, int]], i
 def print_csv(results: Cursor, file: TextIO, delimiter: str) -> int:
     results_total: int = 0
     writer = csv_writer(file, delimiter=delimiter)
-    writer.writerow(results.columns)
+    writer.writerow([c.name for c in results.columns])
     for row in results.entries:
         results_total += 1
         writer.writerow(map(format_value, row.values()))
