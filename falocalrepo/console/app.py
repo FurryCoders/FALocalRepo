@@ -49,13 +49,203 @@ from ..__version__ import __version__
 _pride_flags: list[str] = [
     "pride", "trans", "bisexual", "pansexual", "nonbinary",
     "lesbian", "agender", "asexual", "genderqueer",
-    "genderfluid", "aromantic", "polyamory", "bold", "none"
+    "genderfluid", "aromantic", "polyamory"
 ]
 _pride_colors: list[str] = [
     red, green, yellow, blue, magenta, cyan, white, bright_red,
     bright_green, bright_yellow, bright_blue, bright_magenta,
     bright_cyan, bright_white
 ]
+
+
+# noinspection SpellCheckingInspection
+def _pride_colors_8bit(flag: str) -> list[str] | None:
+    if flag == "pride":
+        return [
+            *([bright_red] * 3),
+            *([red] * 3),
+            *([bright_yellow] * 3),
+            *([green] * 3),
+            *([bright_blue] * 3),
+            *([magenta] * 4),
+        ]
+    elif flag == "trans":
+        return [
+            *([cyan] * 4),
+            *([magenta] * 4),
+            *([bright_white] * 4),
+            *([magenta] * 4),
+            *([cyan] * 4),
+        ]
+    elif flag == "bisexual":
+        return [
+            *([red] * 7),
+            *([bright_magenta] * 5),
+            *([blue] * 7)
+        ]
+    elif flag == "pansexual":
+        return [
+            *([magenta] * 7),
+            *([bright_yellow] * 6),
+            *([blue] * 7)
+        ]
+    elif flag == "nonbinary":
+        return [
+            *([bright_yellow] * 5),
+            *([bright_white] * 5),
+            *([bright_magenta] * 5),
+            *([dim] * 4),
+        ]
+    elif flag == "lesbian":
+        return [
+            *([red] * 4),
+            *([green] * 4),
+            *([white] * 4),
+            *([magenta] * 4),
+            *([bright_magenta] * 4),
+        ]
+    elif flag == "agender":
+        return [
+            *([dim] * 2),
+            *([reset + white] * 3),
+            *([bright_white] * 3),
+            *([green] * 3),
+            *([bright_white] * 3),
+            *([reset + white] * 3),
+            *([dim] * 2),
+        ]
+    elif flag == "asexual":
+        return [
+            *([dim] * 5),
+            *([reset + white] * 5),
+            *([bright_white] * 5),
+            *([blue] * 4),
+        ]
+    elif flag == "genderqueer":
+        return [
+            *([magenta] * 7),
+            *([bright_white] * 6),
+            *([green] * 7)
+        ]
+    elif flag == "genderfluid":
+        return [
+            *([magenta] * 4),
+            *([bright_white] * 4),
+            *([bright_magenta] * 4),
+            *([dim] * 4),
+            *([blue] * 4),
+        ]
+    elif flag == "aromantic":
+        return [
+            *([bright_green] * 4),
+            *([green] * 4),
+            *([bright_white] * 4),
+            *([reset + white] * 4),
+            *([dim + dim] * 4),
+        ]
+    elif flag == "polyamory":
+        return [
+            *([bright_blue] * 5),
+            *([bright_red] * 9),
+            *([dim] * 5)
+        ]
+    else:
+        return None
+
+
+# noinspection SpellCheckingInspection
+def _pride_colors_24bit(flag: str) -> list[str] | None:
+    if flag == "pride":
+        return [
+            *(["E50000"] * 3),
+            *(["FF8D00"] * 3),
+            *(["FFEE00"] * 3),
+            *(["028121"] * 3),
+            *(["004CFF"] * 3),
+            *(["770088"] * 4),
+        ]
+    elif flag == "trans":
+        return [
+            *(["5BCFFB"] * 4),
+            *(["F5ABB9"] * 4),
+            *(["FFFFFF"] * 4),
+            *(["F5ABB9"] * 4),
+            *(["5BCFFB"] * 4),
+        ]
+    elif flag == "bisexual":
+        return [
+            *(["D60270"] * 7),
+            *(["9B4F96"] * 5),
+            *(["0038A8"] * 7)
+        ]
+    elif flag == "pansexual":
+        return [
+            *(["FF1C8D"] * 7),
+            *(["FFD700"] * 6),
+            *(["1AB3FF"] * 7)
+        ]
+    elif flag == "nonbinary":
+        return [
+            *(["FCF431"] * 5),
+            *(["FCFCFC"] * 5),
+            *(["9D59D2"] * 5),
+            *(["282828"] * 4),
+        ]
+    elif flag == "lesbian":
+        return [
+            *(["D62800"] * 4),
+            *(["FF9B56"] * 4),
+            *(["FFFFFF"] * 4),
+            *(["D462A6"] * 4),
+            *(["A40062"] * 4),
+        ]
+    elif flag == "agender":
+        return [
+            *(["101010"] * 2),
+            *(["BABABA"] * 3),
+            *(["FFFFFF"] * 3),
+            *(["BAF484"] * 3),
+            *(["FFFFFF"] * 3),
+            *(["BABABA"] * 3),
+            *(["101010"] * 2),
+        ]
+    elif flag == "asexual":
+        return [
+            *(["101010"] * 5),
+            *(["A4A4A4"] * 5),
+            *(["FFFFFF"] * 5),
+            *(["810081"] * 4),
+        ]
+    elif flag == "genderqueer":
+        return [
+            *(["B57FDD"] * 7),
+            *(["FFFFFF"] * 6),
+            *(["49821E"] * 7)
+        ]
+    elif flag == "genderfluid":
+        return [
+            *(["FE76E2"] * 4),
+            *(["FFFFFF"] * 4),
+            *(["BF12D7"] * 4),
+            *(["101010"] * 4),
+            *(["303CBE"] * 4),
+        ]
+    elif flag == "aromantic":
+        return [
+            *(["3BA740"] * 4),
+            *(["A8D47A"] * 4),
+            *(["FFFFDD"] * 4),
+            *(["ABABAB"] * 4),
+            *(["101010"] * 4),
+        ]
+    elif flag == "polyamory":
+        return [
+            *(["0000FF"] * 5),
+            *(["FF0000"] * 9),
+            *(["101010"] * 5)
+        ]
+    else:
+        return None
 
 
 class ShellChoice(CompleteChoice):
@@ -267,157 +457,66 @@ def app_server(ctx: Context, database: Callable[..., Database], host: str | None
 
 @app.command("paw")
 @argument("flag", type=str, default="pride", required=False)
+@option("--true-color", is_flag=True, default=False, help="Use 24bit (truecolor) colors")
 @color_option
 @help_option
 @pass_context
 @docstring_format("\n    ".join(f"* {choice(_pride_colors)}{f}{reset}" for f in _pride_flags))
-def paw(ctx: Context, flag: str):
+def paw(ctx: Context, flag: str, true_color: bool):
     """
     Print a pride {yellow}FLAG{reset} paw!
+
+    If used inside a truecolor-supporting terminal, {yellow}--true-color{reset} enables the full 24bit color range for
+    the most colorful flags!
 
     \b
     {0}
 
     {italic}Note{reset}: the paw works best with a dark background.
     """
-    colors: list[str]
-
-    if flag == "pride":
-        colors = [
-            *([bright_red] * 3),
-            *([red] * 3),
-            *([bright_yellow] * 3),
-            *([green] * 3),
-            *([bright_blue] * 3),
-            *([magenta] * 4),
-        ]
-    elif flag == "trans":
-        colors = [
-            *([cyan] * 4),
-            *([magenta] * 4),
-            *([bright_white] * 4),
-            *([magenta] * 4),
-            *([cyan] * 4),
-        ]
-    elif flag == "bisexual":
-        colors = [
-            *([red] * 7),
-            *([bright_magenta] * 5),
-            *([blue] * 7)
-        ]
-    elif flag == "pansexual":
-        colors = [
-            *([magenta] * 7),
-            *([bright_yellow] * 6),
-            *([blue] * 7)
-        ]
-    elif flag == "nonbinary":
-        colors = [
-            *([bright_yellow] * 5),
-            *([bright_white] * 5),
-            *([bright_magenta] * 5),
-            *([dim] * 4),
-        ]
-    elif flag == "lesbian":
-        colors = [
-            *([red] * 4),
-            *([green] * 4),
-            *([white] * 4),
-            *([magenta] * 4),
-            *([bright_magenta] * 4),
-        ]
-    elif flag == "agender":
-        colors = [
-            *([dim] * 2),
-            *([reset + white] * 3),
-            *([bright_white] * 3),
-            *([green] * 3),
-            *([bright_white] * 3),
-            *([reset + white] * 3),
-            *([dim] * 2),
-        ]
-    elif flag == "asexual":
-        colors = [
-            *([dim] * 5),
-            *([reset + white] * 5),
-            *([bright_white] * 5),
-            *([blue] * 4),
-        ]
-    elif flag == "genderqueer":
-        colors = [
-            *([magenta] * 7),
-            *([bright_white] * 6),
-            *([green] * 7)
-        ]
-    elif flag == "genderfluid":
-        colors = [
-            *([magenta] * 4),
-            *([bright_white] * 4),
-            *([bright_magenta] * 4),
-            *([dim] * 4),
-            *([blue] * 4),
-        ]
-    elif flag == "aromantic":
-        colors = [
-            *([bright_green] * 4),
-            *([green] * 4),
-            *([bright_white] * 4),
-            *([reset + white] * 4),
-            *([dim + dim] * 4),
-        ]
-    elif flag == "polyamory":
-        colors = [
-            *([bright_blue] * 5),
-            *([bright_red] * 9),
-            *([dim] * 5)
-        ]
-    elif flag == "bold":
-        colors = [""] * 19
-    elif flag == "none":
-        colors = [reset] * 19
-    else:
+    if flag not in _pride_flags:
         flag = choice(_pride_flags)
         echo("Your flag isn't in the program yet :(\n"
              f"In the meantime, hope you enjoy the {flag} flag :)\n")
-        return paw.callback(flag)
+
+    colors: list[str] = list(map(hex_to_ansi, _pride_colors_24bit(flag))) if true_color else _pride_colors_8bit(flag)
 
     paw_ascii = """
-                        -*#%%#=               
-            :=++=.    :%@@@@@@@*              
-          -%@@@@@@+  :@@@@@@@@@@.             
-         =@@@@@@@@@- #@@@@@@@@@%              
-        .@@@@@@@@@@- =@@@@@@@@%.              
-        .@@@@@@@@@#   =%@@@@#=  -*%@@@%#=     
-         =@@@@@@@=   ...:..   :%@@@@@@@@@*    
-           -++=-.:+%@@@@%*:  :@@@@@@@@@@@#    
-      :-+++==++#@@@@@@@@@@@* -@@@@@@@@@@%.    
-    :%@@@@@@@@@@@@@@@@@@@@@@- =%@@@@@@#=      
-    @@@@@@@@@@@@@@@@@@@@@@@@:   .:-:.         
-    +@@@@@@@@@@@@@@@@@@@@@@=  :=+**+-.        
-     -#@@@@@@@@@@@@@@@@@@@- +%@@@@@@@@+       
-       .=%@@@@@@@@@@@@@@@+ #@@@@@@@@@@@.      
-          -#@@@@@@@@@@@@@..@@@@@@@@@@@#       
-            :#@@@@@@@@@@@: +@@@@@@@@%=        
-              =@@@@@@@@@@.  .-++++-.          
-               .#@@@@@@@*                     
-                 -*%@@#=                      
-""".removeprefix("\n").removesuffix("\n")
+                            -*#%%#=               
+                :=++=.    :%@@@@@@@*              
+              -%@@@@@@+  :@@@@@@@@@@.             
+             =@@@@@@@@@- #@@@@@@@@@%              
+            .@@@@@@@@@@- =@@@@@@@@%.              
+            .@@@@@@@@@#   =%@@@@#=  -*%@@@%#=     
+             =@@@@@@@=   ...:..   :%@@@@@@@@@*    
+               -++=-.:+%@@@@%*:  :@@@@@@@@@@@#    
+          :-+++==++#@@@@@@@@@@@* -@@@@@@@@@@%.    
+        :%@@@@@@@@@@@@@@@@@@@@@@- =%@@@@@@#=      
+        @@@@@@@@@@@@@@@@@@@@@@@@:   .:-:.         
+        +@@@@@@@@@@@@@@@@@@@@@@=  :=+**+-.        
+         -#@@@@@@@@@@@@@@@@@@@- +%@@@@@@@@+       
+           .=%@@@@@@@@@@@@@@@+ #@@@@@@@@@@@.      
+              -#@@@@@@@@@@@@@..@@@@@@@@@@@#       
+                :#@@@@@@@@@@@: +@@@@@@@@%=        
+                  =@@@@@@@@@@.  .-++++-.          
+                   .#@@@@@@@*                     
+                     -*%@@#=                      
+    """.removeprefix("\n").removesuffix("\n")
 
     paw_ascii = "\n".join(line.ljust(46) for line in paw_ascii.splitlines())
     paw_ascii = "\n".join(bold + color + line + reset for color, line in zip(colors, paw_ascii.splitlines()))
-    echo(paw_ascii.format(*colors), color=ctx.color)
+    echo(paw_ascii, color=ctx.color)
 
-
-app.add_command(config_app, config_app.name)
-app.add_command(download_app, download_app.name)
-app.add_command(database_app, database_app.name)
-app.list_commands = lambda *_: [
-    app_init.name,
-    config_app.name,
-    database_app.name,
-    download_app.name,
-    app_server.name,
-    app_completions.name,
-    app_updates.name,
-    app_help.name,
-]
+    app.add_command(config_app, config_app.name)
+    app.add_command(download_app, download_app.name)
+    app.add_command(database_app, database_app.name)
+    app.list_commands = lambda *_: [
+        app_init.name,
+        config_app.name,
+        database_app.name,
+        download_app.name,
+        app_server.name,
+        app_completions.name,
+        app_updates.name,
+        app_help.name,
+    ]
