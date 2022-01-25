@@ -13,8 +13,6 @@ database.
 [![](https://img.shields.io/github/v/tag/FurryCoders/falocalrepo?label=github&sort=date&logo=github&color=blue)](https://github.com/FurryCoders/falocalrepo)
 [![](https://img.shields.io/github/issues/FurryCoders/falocalrepo?logo=github&color=blue)](https://github.com/FurryCoders/falocalrepo/issues)
 
-[![](https://furry-badges.herokuapp.com/badge/user/FurAffinity/FlameOfFurious)](https://furaffinity.net/user/FlameOfFurious)
-
 </div>
 
 ## Introduction
