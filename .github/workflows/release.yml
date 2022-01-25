@@ -11,6 +11,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
       - name: Get Tag Name
         id: tagName
         uses: olegtarasov/get-tag@v2.1.1
@@ -25,7 +27,7 @@ jobs:
           while [ "$(head -1 RELEASE.md)" = "" ]; do tail -n +2 RELEASE.md > RELEASE.tmp.md; cat RELEASE.tmp.md > RELEASE.md; done
           while [ "$(tail -1 RELEASE.md)" = "" ]; do head -n -1 RELEASE.md > RELEASE.tmp.md; cat RELEASE.tmp.md > RELEASE.md; done
           PREVIOUS_TAG="$(git tag -l --sort=-version:refname | head -2 | tail -1)"
-          printf "\n%s <br/>" "**PyPi Release**: https://pypi.org/project/${GITHUB_REPOSITORY#*/}/${TAG_NAME#v}" >> RELEASE.md
+          printf "\n%s\n" "**PyPi Release**: https://pypi.org/project/${GITHUB_REPOSITORY#*/}/${TAG_NAME#v}" >> RELEASE.md
           printf "\n%s" "**Full Changelog**: https://github.com/$GITHUB_REPOSITORY/compare/$PREVIOUS_TAG...$TAG_NAME" >> RELEASE.md
       - name: Create Release
         uses: actions/create-release@v1
