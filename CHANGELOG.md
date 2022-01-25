@@ -1,5 +1,31 @@
 # Changelog
 
+## 4.0.4
+
+### Changes
+
+* Add `paw` command, show some PRIDE colors!
+* Improve dry run behaviour for `download` commands
+* falocalrepo-database dependency set to [\~5.0.10](https://pypi.org/project/falocalrepo-database/5.0.10)
+    * Fix favorites errors, see _Notes_ below for details on upgrade.
+* falocalrepo-server dependency set to [\~2.1.1](https://pypi.org/project/falocalrepo-server/2.1.1)
+    * Improve descriptions and profiles
+    * Fix loading user stats for users not in the database
+
+### Fixes
+
+* Fix favorites being incorrectly saved in the database if the submission was downloaded as a favorite first.
+* Fix incorrect history entry for `config files-folder`
+* Fix users and folders not respecting arguments order when using `download update`
+
+### Notes
+
+The database upgrade to version 5.0.10 contains a fix for incorrect favorites. Favorites added manually using
+the `database edit` command will not be conserved, unless the users are saved in the USERS table and the `favorites`
+folders is enabled for them. Some favorites will also be removed even if the user has the `favorites` folder enabled.
+
+To restore the favorites, use the `download users` command to download them again.
+
 ## 4.0.3
 
 ### Changes
