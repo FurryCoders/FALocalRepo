@@ -160,7 +160,7 @@ def config_files_folder(ctx: Context, database: Callable[..., Database], new_fol
                 if i == 10:
                     break
         db.settings.files_folder = new_folder
-        add_history(db, ctx, new_folder=new_folder, relative=relative)
+        add_history(db, ctx, new_folder=new_folder, relative=relative, move=move)
     finally:
         db.commit()
 
