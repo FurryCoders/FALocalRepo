@@ -399,7 +399,7 @@ class Downloader:
                     self.bar_close()
                 else:
                     self.download_submission(sub_partial.id, int(folder != Folder.favorites),
-                                             user if folder == Folder.favorites else None, sub_partial.thumbnail_url)
+                                             [user] if folder == Folder.favorites else None, sub_partial.thumbnail_url)
                 if stop == 0:
                     return 0
             self.clear_line()
