@@ -507,16 +507,17 @@ def paw(ctx: Context, flag: str, true_color: bool):
     paw_ascii = "\n".join(bold + color + line + reset for color, line in zip(colors, paw_ascii.splitlines()))
     echo(paw_ascii, color=ctx.color)
 
-    app.add_command(config_app, config_app.name)
-    app.add_command(download_app, download_app.name)
-    app.add_command(database_app, database_app.name)
-    app.list_commands = lambda *_: [
-        app_init.name,
-        config_app.name,
-        database_app.name,
-        download_app.name,
-        app_server.name,
-        app_completions.name,
-        app_updates.name,
-        app_help.name,
-    ]
+
+app.add_command(config_app, config_app.name)
+app.add_command(download_app, download_app.name)
+app.add_command(database_app, database_app.name)
+app.list_commands = lambda *_: [
+    app_init.name,
+    config_app.name,
+    database_app.name,
+    download_app.name,
+    app_server.name,
+    app_completions.name,
+    app_updates.name,
+    app_help.name,
+]
