@@ -53,3 +53,8 @@ colors_dict: dict[str, str] = {
     "reverse": reverse,
     "strikethrough": strikethrough,
 }
+
+
+def hex_to_ansi(color_hex: str) -> str:
+    return f"\x1b[38;2;{int(color_hex[0:2], base=16)};{int(color_hex[2:4], base=16)};{int(color_hex[4:6], base=16)}m"
+
