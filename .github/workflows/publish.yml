@@ -53,6 +53,7 @@ jobs:
         id: tagName
         uses: olegtarasov/get-tag@v2.1.1
       - name: Get Release
+        id: release
         env:
           TAG_NAME: ${{ steps.tagName.outputs.tag }}
         run: |
@@ -75,6 +76,8 @@ jobs:
           printf "\n## 🔗 Links\n" >> RELEASE.md
           printf "\n* %s" "PyPi release: https://pypi.org/project/${GITHUB_REPOSITORY#*/}/${TAG_NAME#v}" >> RELEASE.md
           printf "\n* %s" "Full changelog: https://github.com/$GITHUB_REPOSITORY/compare/$PREVIOUS_TAG...$TAG_NAME" >> RELEASE.md
+          echo "::set-output name=tag::$TAG_NAME"
+          echo "::set-output name=release_body::RELEASE.md"
       - name: Release Result
         run: |
           cat RELEASE.md
@@ -84,8 +87,8 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          tag_name: ${{ steps.tagName.outputs.tag }}
-          name: ${{ steps.tagName.outputs.tag }}
-          body_path: RELEASE.md
+          tag_name: ${{ steps.release.outputs.tag }}
+          name: ${{ steps.release.outputs.tag }}
+          body_path: ${{ steps.release.outputs.release_body }}
           files: |
             dist/*
