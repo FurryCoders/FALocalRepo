@@ -57,6 +57,7 @@ jobs:
         env:
           TAG_NAME: ${{ steps.tagName.outputs.tag }}
         run: |
+          [[ $TAG_NAME = '' ]] && TAG_NAME="$(git tag -l --sort=-version:refname | head -1)"
           echo "::set-output name=tag::${TAG_NAME#v}"
       - name: Build Release
         id: release
