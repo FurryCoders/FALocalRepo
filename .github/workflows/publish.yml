@@ -68,8 +68,8 @@ jobs:
           sed -i -e 's/^\(#\+\) \(distribution\)/\1 📤 \2/ig' RELEASE.md
           PREVIOUS_TAG="$(git tag -l --sort=-version:refname | head -2 | tail -1)"
           printf "\n## 🔗 Links\n" >> RELEASE.md
-          printf "\n* %s" "PyPi Release: https://pypi.org/project/${GITHUB_REPOSITORY#*/}/${TAG_NAME#v}" >> RELEASE.md
-          printf "\n* %s" "Full Changelog: https://github.com/$GITHUB_REPOSITORY/compare/$PREVIOUS_TAG...$TAG_NAME" >> RELEASE.md
+          printf "\n* %s" "PyPi release: https://pypi.org/project/${GITHUB_REPOSITORY#*/}/${TAG_NAME#v}" >> RELEASE.md
+          printf "\n* %s" "Full changelog: https://github.com/$GITHUB_REPOSITORY/compare/$PREVIOUS_TAG...$TAG_NAME" >> RELEASE.md
       - name: Create Release
         uses: softprops/action-gh-release@v1
         env:
