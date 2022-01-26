@@ -1,5 +1,17 @@
 # Changelog
 
+## 4.0.5
+
+### Changes
+
+* Better replacement of non-ASCII characters. Only characters with a Unicode width greater than 1 are replaced.
+
+### Fixes
+
+* Fix `database search` JSON output for submissions and journals
+* Fix `database search` CSV output columns
+* Fix `database search` colorized table output not being enabled unless turned on explicitly with `--color`
+
 ## 4.0.4
 
 ### Changes
@@ -1159,7 +1171,6 @@ A few small bugs have also been fixed.
 ### Dependencies
 
 * Set falocalrepo-server dependency to [1.0.0](https://pypi.org/project/falocalrepo-server/1.0.0)
-
 
 ## 3.6.2
 
