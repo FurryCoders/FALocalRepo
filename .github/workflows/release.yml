@@ -33,6 +33,7 @@ jobs:
           sed -i -e 's/^\(#\+\) \(dependencies\)/\1 📦 \2/ig' RELEASE.md
           sed -i -e 's/^\(#\+\) \(notes\)/\1 📝 \2/ig' RELEASE.md
           sed -i -e 's/^\(#\+\) \(other\)/\1 💬 \2/ig' RELEASE.md
+          sed -i -e 's/^\(#\+\) \(distribution\)/\1 📤 \2/ig' RELEASE.md
           PREVIOUS_TAG="$(git tag -l --sort=-version:refname | head -2 | tail -1)"
           printf "\n%s <br/>" "**PyPi Release**: https://pypi.org/project/${GITHUB_REPOSITORY#*/}/${TAG_NAME#v}" >> RELEASE.md
           printf "\n%s" "**Full Changelog**: https://github.com/$GITHUB_REPOSITORY/compare/$PREVIOUS_TAG...$TAG_NAME" >> RELEASE.md
