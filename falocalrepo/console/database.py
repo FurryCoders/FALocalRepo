@@ -149,7 +149,7 @@ def get_table(db: Database, table: str) -> Table:
 
 def print_table(ctx: Context, results: Cursor, headers: list[tuple[str, int]], ignore_width: bool) -> int:
     results_total: int = 0
-    if ctx.color:
+    if ctx.color is not False:
         terminal_width: int | None = None if ignore_width else get_terminal_size((0, 0)).columns or None
         terminal_width_total: int = terminal_width - (3 * (len(headers) - 1)) if terminal_width else None
         widths: list[int] = [w for _, w in headers]
