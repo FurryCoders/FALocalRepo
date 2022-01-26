@@ -52,32 +52,30 @@ jobs:
       - name: Get Tag Name
         id: tagName
         uses: olegtarasov/get-tag@v2.1.1
-      - name: Get Release
-        id: release
+      - name: FormatTag
+        id: formatTag
         env:
           TAG_NAME: ${{ steps.tagName.outputs.tag }}
         run: |
+          echo "::set-output name=tag::${TAG_NAME#v}"
+      - name: Build Release
+        id: release
+        uses: MatteoCampinoti94/changelog-to-release@v1.0.0
+        with:
+          version-name: ${{ steps.formatTag.outputs.tag }}
+      - name: Add Links
+        id: release2
+        env:
+          TAG_NAME: ${{ steps.tagName.outputs.tag }}
+          RELEASE: ${{ steps.release.outputs.body }}
+        run: |
           [[ $TAG_NAME = '' ]] && TAG_NAME="$(git tag -l --sort=-version:refname | head -1)"
-          grep "^## ${TAG_NAME#v}" CHANGELOG.md &>/dev/null || exit 1
-          touch RELEASE.md
-          touch RELEASE.tmp.md
-          grep --color=never -Poz '## '${TAG_NAME#v}'[\n ](.*\n(?!## ))+' CHANGELOG.md | sed 's/\x0$//' | tail -n +2 > RELEASE.md
-          while [ "$(head -1 RELEASE.md)" = "" ]; do tail -n +2 RELEASE.md > RELEASE.tmp.md; cat RELEASE.tmp.md > RELEASE.md; done
-          while [ "$(tail -1 RELEASE.md)" = "" ]; do head -n -1 RELEASE.md > RELEASE.tmp.md; cat RELEASE.tmp.md > RELEASE.md; done
-          sed -i -e 's/^#//g' RELEASE.md
-          sed -i -e 's/^\(#\+\) \(changes\|features\)/\1 🚀 \2/ig' RELEASE.md
-          sed -i -e 's/^\(#\+\) \(fixes\)/\1 🔧 \2/ig' RELEASE.md
-          sed -i -e 's/^\(#\+\) \(security\)/\1 🛡 \2/ig' RELEASE.md
-          sed -i -e 's/^\(#\+\) \(dependencies\)/\1 📦 \2/ig' RELEASE.md
-          sed -i -e 's/^\(#\+\) \(notes\)/\1 📝 \2/ig' RELEASE.md
-          sed -i -e 's/^\(#\+\) \(other\)/\1 💬 \2/ig' RELEASE.md
-          sed -i -e 's/^\(#\+\) \(distribution\)/\1 📤 \2/ig' RELEASE.md
           PREVIOUS_TAG="$(git tag -l --sort=-version:refname | head -2 | tail -1)"
+          printf "%s\n" "$RELEASE" > RELEASE.md
           printf "\n## 🔗 Links\n" >> RELEASE.md
           printf "\n* %s" "PyPi release: https://pypi.org/project/${GITHUB_REPOSITORY#*/}/${TAG_NAME#v}" >> RELEASE.md
           printf "\n* %s" "Full changelog: https://github.com/$GITHUB_REPOSITORY/compare/$PREVIOUS_TAG...$TAG_NAME" >> RELEASE.md
-          echo "::set-output name=tag::$TAG_NAME"
-          echo "::set-output name=release_body::RELEASE.md"
+          echo "::set-output name=body_path::RELEASE.md"
       - name: Release Result
         run: |
           cat RELEASE.md
@@ -87,8 +85,8 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          tag_name: ${{ steps.release.outputs.tag }}
-          name: ${{ steps.release.outputs.tag }}
-          body_path: ${{ steps.release.outputs.release_body }}
+          tag_name: ${{ steps.tagName.outputs.tag }}
+          name: ${{ steps.release.outputs.title }}
+          body_path: ${{ steps.release2.outputs.body_path }}
           files: |
             dist/*
