@@ -61,7 +61,7 @@ jobs:
           echo "::set-output name=tag::${TAG_NAME#v}"
       - name: Build Release
         id: release
-        uses: MatteoCampinoti94/changelog-to-release@v1.0.0
+        uses: MatteoCampinoti94/changelog-to-release@v1.0.1
         with:
           version-name: ${{ steps.formatTag.outputs.tag }}
       - name: Add Links
