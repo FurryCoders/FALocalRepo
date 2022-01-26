@@ -26,8 +26,15 @@ jobs:
           grep --color=never -Poz '## '${TAG_NAME#v}'[\n ](.*\n(?!## ))+' CHANGELOG.md | sed 's/\x0$//' | tail -n +2 > RELEASE.md
           while [ "$(head -1 RELEASE.md)" = "" ]; do tail -n +2 RELEASE.md > RELEASE.tmp.md; cat RELEASE.tmp.md > RELEASE.md; done
           while [ "$(tail -1 RELEASE.md)" = "" ]; do head -n -1 RELEASE.md > RELEASE.tmp.md; cat RELEASE.tmp.md > RELEASE.md; done
+          sed -i -e 's/^#//g' RELEASE.md
+          sed -i -e 's/^\(#\+\) \(changes\|features\)/\1 🚀 \2/ig' RELEASE.md
+          sed -i -e 's/^\(#\+\) \(fixes\)/\1 🔧 \2/ig' RELEASE.md
+          sed -i -e 's/^\(#\+\) \(security\)/\1 🛡 \2/ig' RELEASE.md
+          sed -i -e 's/^\(#\+\) \(dependencies\)/\1 📦 \2/ig' RELEASE.md
+          sed -i -e 's/^\(#\+\) \(notes\)/\1 📝 \2/ig' RELEASE.md
+          sed -i -e 's/^\(#\+\) \(other\)/\1 💬 \2/ig' RELEASE.md
           PREVIOUS_TAG="$(git tag -l --sort=-version:refname | head -2 | tail -1)"
-          printf "\n%s\n" "**PyPi Release**: https://pypi.org/project/${GITHUB_REPOSITORY#*/}/${TAG_NAME#v}" >> RELEASE.md
+          printf "\n%s <br/>" "**PyPi Release**: https://pypi.org/project/${GITHUB_REPOSITORY#*/}/${TAG_NAME#v}" >> RELEASE.md
           printf "\n%s" "**Full Changelog**: https://github.com/$GITHUB_REPOSITORY/compare/$PREVIOUS_TAG...$TAG_NAME" >> RELEASE.md
       - name: Create Release
         uses: actions/create-release@v1
