@@ -24,6 +24,7 @@ from faapi.exceptions import Unauthorized
 from falocalrepo_database import Database
 from requests import Response
 from requests import get
+from wcwidth import wcwidth
 
 from .colors import *
 from .. import __name__ as __prog_name__
@@ -155,6 +156,10 @@ def check_update(version: str, package: str) -> str | None:
     res: Response = get(f"https://pypi.org/pypi/{package}/json")
     res.raise_for_status()
     return latest if (latest := res.json()["info"]["version"]) and latest != version else None
+
+
+def clean_string(string: str, *, replacer: str = "□") -> str:
+    return "".join(c if ord(c) >= 32 and wcwidth(c) == 1 else replacer for c in string)
 
 
 def add_history(db: Database, ctx: Context, **kwargs):

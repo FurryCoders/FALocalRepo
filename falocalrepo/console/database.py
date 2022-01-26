@@ -51,6 +51,7 @@ from .util import CompleteChoice
 from .util import CustomHelpColorsGroup
 from .util import EnvVars
 from .util import add_history
+from .util import clean_string
 from .util import color_option
 from .util import database_callback
 from .util import database_exists_option
@@ -125,10 +126,6 @@ def id_callback(ctx: Context, param: Argument, value: tuple[str, ...]) -> tuple[
         raise BadParameter(f"{param.metavar.upper().removesuffix('...')} must be of type INTEGER for {t} table.",
                            ctx, param, param.get_error_hint(ctx))
     return tuple(map(int, value))
-
-
-def clean_string(string: str, *, replacer: str = "□") -> str:
-    return "".join(c if 32 <= ord(c) <= 255 else replacer for c in string)
 
 
 def format_value(value: Any) -> str:

@@ -1,4 +1,5 @@
-from enum import Enum, EnumMeta
+from enum import Enum
+from enum import EnumMeta
 from enum import auto
 from operator import itemgetter
 from shutil import get_terminal_size
@@ -22,6 +23,7 @@ from requests import RequestException
 from requests import Response
 
 from .console.colors import *
+from .console.util import clean_string
 
 _FolderDownloader = Callable[[str, int | str], tuple[list[SubmissionPartial], str | int]]
 
@@ -56,10 +58,6 @@ def fit_string(value: str, width: int | None) -> str:
 def format_entry(entry: dict[str, Any], columns: list[Column]) -> dict:
     columns_: list[str] = [c.name.upper() for c in columns]
     return {k.upper().replace("_", ""): v for k, v in entry.items() if k.upper().replace("_", "") in columns_}
-
-
-def clean_string(string: str, *, replacer: str = "□") -> str:
-    return "".join(c if 32 <= ord(c) <= 255 else replacer for c in string)
 
 
 def get_downloader(api: FAAPI, folder: Folder) -> _FolderDownloader:
@@ -469,7 +467,8 @@ class Downloader:
         self._download_users([(u, folders) for u in users])
 
     def download_users_update(self, users: list[str], folders: list[str], stop: int, deactivated: bool):
-        users_cursor: Iterable[dict] = self.db.users[users] if users else self.db.users.select(order=[UsersColumns.USERNAME.value.name])
+        users_cursor: Iterable[dict] = self.db.users[users] if users else self.db.users.select(
+            order=[UsersColumns.USERNAME.value.name])
         users_folders: Iterable[tuple[str, list[str]]]
         users_folders = ((u[UsersColumns.USERNAME.value.name],
                           [f for f in u[UsersColumns.FOLDERS.value.name]])
