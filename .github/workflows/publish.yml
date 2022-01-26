@@ -19,9 +19,11 @@ jobs:
           poetry-version: "1.1.12"
       - name: Build
         run: |
+          mkdir dist
           poetry config http-basic.pypi "$PYPI_USERNAME" "$PYPI_PASSWORD"	
           poetry config virtualenvs.in-project true
           poetry install --no-root
+          poetry build
       - name: Publish
         if: ${{ startsWith(github.ref, 'refs/tags/v') }}
         env:
