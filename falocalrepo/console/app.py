@@ -29,6 +29,7 @@ from falocalrepo_database import Database
 from falocalrepo_server import __name__ as __server_name__
 from falocalrepo_server import __version__ as __server_version__
 from falocalrepo_server import server
+from supports_color import supportsColor
 
 from .colors import *
 from .config import config_app
@@ -457,7 +458,8 @@ def app_server(ctx: Context, database: Callable[..., Database], host: str | None
 
 @app.command("paw", short_help="Print the PRIDE paw!")
 @argument("flag", type=str, default="pride", required=False)
-@option("--true-color", is_flag=True, default=False, help="Use 24bit (truecolor) colors")
+@option("--true-color", is_flag=True, flag_value=True, default=supportsColor.stdout.has16m, show_default=True,
+        help="Force enable 24bit (truecolor) colors")
 @color_option
 @help_option
 @pass_context
@@ -466,8 +468,9 @@ def paw(ctx: Context, flag: str, true_color: bool):
     """
     Print a PRIDE {yellow}FLAG{reset} paw!
 
-    If used inside a truecolor-supporting terminal, {yellow}--true-color{reset} enables the full 24bit color range for
-    the most colorful flags!
+    If used inside a truecolor-supporting terminal, the full 24bit color range will be used for the most colorful flags!
+
+    24bit color mode can be forcefully enabled using the {yellow}--true-color{reset} option.
 
     \b
     {0}
