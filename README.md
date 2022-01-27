@@ -71,7 +71,7 @@ information on how to install Python on your computer, refer to the official
 website [Python.org](https://www.python.org/).
 
 The program needs cookies from a logged-in FurAffinity session to download protected pages. Without the cookies the
-program can still download publicly available pages, but others will return empty. See [#Cookies](#cookies) for more
+program can still download publicly available pages, but others will return empty. See [Cookies](#cookies) for more
 details on which cookies to use.
 
 **Warning**: FurAffinity theme template must be set to "modern". Can be changed
@@ -113,7 +113,7 @@ and `b`.<br>
 Alternatively, the storage inspection tool of a desktop browser can also be used. For example on Mozilla's Firefox this
 can be opened with &#8679;F9, on Safari with &#8997;&#8984;I, etc.
 
-To set the cookies use the `config cookies` command. See [#Configuration](#config) for more details.
+To set the cookies use the `config cookies` command. See [Config](#config) for more details.
 
 ### Environmental Variables
 
@@ -565,7 +565,7 @@ see [falocalrepo-database](https://pypi.org/project/falocalrepo-database/).
 
 All contributions and suggestions are welcome!
 
-If you have suggestions for fixes or improvements, you can open an issue with your idea, see [#Issues](#issues) for
+If you have suggestions for fixes or improvements, you can open an issue with your idea, see [Issues](#issues) for
 details.
 
 ## Issues
