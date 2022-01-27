@@ -124,6 +124,7 @@ class Downloader:
         self.downloaded: int = 0
         self.modified: int = 0
         self.user_errors: int = 0
+        self.user_deactivated: int = 0
         self.submission_errors: int = 0
         self.file_errors: int = 0
         self.thumbnail_errors: int = 0
@@ -135,6 +136,8 @@ class Downloader:
             items.append(("Downloaded", self.downloaded))
         if self.modified:
             items.append(("Modified", self.modified))
+        if self.user_deactivated:
+            items.append(("Users deactivated", self.user_errors))
         if self.user_errors:
             items.append(("User errors", self.user_errors))
         if self.submission_errors:
@@ -458,6 +461,7 @@ class Downloader:
                         del self.db.users[user]
                     else:
                         self.db.users.deactivate(user)
+                        self.user_deactivated += 1
                     self.db.commit()
                     break
                 self.bar_close()
