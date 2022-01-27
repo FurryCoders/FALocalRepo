@@ -113,6 +113,17 @@ optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
 
 [[package]]
+name = "dict"
+version = "2020.12.3"
+description = "dict replacement"
+category = "main"
+optional = false
+python-versions = "*"
+
+[package.dependencies]
+values = "*"
+
+[[package]]
 name = "faapi"
 version = "3.3.7"
 description = "Python module to implement API-like functionality for the FurAffinity.net website."
@@ -191,6 +202,14 @@ description = "A pure-Python, bring-your-own-I/O implementation of HTTP/1.1"
 category = "main"
 optional = false
 python-versions = ">=3.6"
+
+[[package]]
+name = "has-flag"
+version = "0.1.1"
+description = "Check if argv has a specific flag"
+category = "main"
+optional = false
+python-versions = ">=3.6,<4.0"
 
 [[package]]
 name = "idna"
@@ -349,6 +368,18 @@ anyio = ">=3.0.0,<4"
 full = ["itsdangerous", "jinja2", "python-multipart", "pyyaml", "requests"]
 
 [[package]]
+name = "supports-color"
+version = "0.1.2"
+description = "Detect whether a terminal supports color"
+category = "main"
+optional = false
+python-versions = ">=3.6,<4.0"
+
+[package.dependencies]
+dict = ">=2020.12.3,<2021.0.0"
+has-flag = ">=0.1.1,<0.2.0"
+
+[[package]]
 name = "typing-extensions"
 version = "4.0.1"
 description = "Backported and Experimental Type Hints for Python 3.6+"
@@ -386,6 +417,14 @@ h11 = ">=0.8"
 standard = ["websockets (>=10.0)", "httptools (>=0.2.0,<0.4.0)", "watchgod (>=0.6)", "python-dotenv (>=0.13)", "PyYAML (>=5.1)", "uvloop (>=0.14.0,!=0.15.0,!=0.15.1)", "colorama (>=0.4)"]
 
 [[package]]
+name = "values"
+version = "2020.12.3"
+description = "values.get(input) - create list from input"
+category = "main"
+optional = false
+python-versions = "*"
+
+[[package]]
 name = "wcwidth"
 version = "0.2.5"
 description = "Measures the displayed width of unicode strings in a terminal"
@@ -396,7 +435,7 @@ python-versions = "*"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "6ecca50dffd5df146f3258b20e9fa2502bb7dabd891ecdfbb5503090c648cff6"
+content-hash = "f57abdb4260d65a6a499344df968bec81f690451093624beab11b0dc0cf49d41"
 
 [metadata.files]
 anyio = [
@@ -439,6 +478,9 @@ colorama = [
     {file = "colorama-0.4.4-py2.py3-none-any.whl", hash = "sha256:9f47eda37229f68eee03b24b9748937c7dc3868f906e8ba69fbcbdd3bc5dc3e2"},
     {file = "colorama-0.4.4.tar.gz", hash = "sha256:5941b2b48a20143d2267e95b1c2a7603ce057ee39fd88e7329b0c292aa16869b"},
 ]
+dict = [
+    {file = "dict-2020.12.3.tar.gz", hash = "sha256:8a14ff62e2a9dff5ef751a2e5eee07715c79ddab6b9ca06c59e73622f80761b5"},
+]
 faapi = [
     {file = "faapi-3.3.7-py3-none-any.whl", hash = "sha256:ed9a422bbcdffcee752d04f2d892b4b83cf7b64e73f72c98c597ae96056feeca"},
     {file = "faapi-3.3.7.tar.gz", hash = "sha256:eb3428c3af2e25a6f40d34c5bec45571f21da17c7195e45862343708749d80ca"},
@@ -462,6 +504,10 @@ filetype = [
 h11 = [
     {file = "h11-0.13.0-py3-none-any.whl", hash = "sha256:8ddd78563b633ca55346c8cd41ec0af27d3c79931828beffb46ce70a379e7442"},
     {file = "h11-0.13.0.tar.gz", hash = "sha256:70813c1135087a248a4d38cc0e1a0181ffab2188141a93eaf567940c3957ff06"},
+]
+has-flag = [
+    {file = "has-flag-0.1.1.tar.gz", hash = "sha256:2ade83150630ce9058d4ab07c57f65c10e6d894e8c90a2275b14a9185a3bc533"},
+    {file = "has_flag-0.1.1-py3-none-any.whl", hash = "sha256:7db35c8fff4d58c9e483868dc1271387e1e838d545ab9734eddeeb8b5378f2ac"},
 ]
 idna = [
     {file = "idna-3.3-py3-none-any.whl", hash = "sha256:84d9dd047ffa80596e0f246e2eab0b391788b0503584e8945f2368256d2735ff"},
@@ -737,6 +783,10 @@ starlette = [
     {file = "starlette-0.17.1-py3-none-any.whl", hash = "sha256:26a18cbda5e6b651c964c12c88b36d9898481cd428ed6e063f5f29c418f73050"},
     {file = "starlette-0.17.1.tar.gz", hash = "sha256:57eab3cc975a28af62f6faec94d355a410634940f10b30d68d31cb5ec1b44ae8"},
 ]
+supports-color = [
+    {file = "supports-color-0.1.2.tar.gz", hash = "sha256:37f03ce1a46b2f12b50e1a75c3597ba7f27915b5b91e21099c554242468eaddf"},
+    {file = "supports_color-0.1.2-py3-none-any.whl", hash = "sha256:43403dd59a40583d3da13330cbcfcd41711748881671598c27f260441d2cb3d1"},
+]
 typing-extensions = [
     {file = "typing_extensions-4.0.1-py3-none-any.whl", hash = "sha256:7f001e5ac290a0c0401508864c7ec868be4e701886d5b573a9528ed3973d9d3b"},
     {file = "typing_extensions-4.0.1.tar.gz", hash = "sha256:4ca091dea149f945ec56afb48dae714f21e8692ef22a395223bcd328961b6a0e"},
@@ -748,6 +798,9 @@ urllib3 = [
 uvicorn = [
     {file = "uvicorn-0.17.0.post1-py3-none-any.whl", hash = "sha256:fa166e6c3d58e23ff5a1a3543b079c7b28aa057ab1388201e4b34a49ec05da72"},
     {file = "uvicorn-0.17.0.post1.tar.gz", hash = "sha256:60a149248181920a73b2e97aec1dacec5501618867f041a228b2519d91a62a91"},
+]
+values = [
+    {file = "values-2020.12.3.tar.gz", hash = "sha256:30b1b74674b546188b77d8398de17ea49f3692191114da43c703bda5b54402f5"},
 ]
 wcwidth = [
     {file = "wcwidth-0.2.5-py2.py3-none-any.whl", hash = "sha256:beb4802a9cebb9144e99086eff703a642a13d6a0052920003a230f3294bbe784"},
