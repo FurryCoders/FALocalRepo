@@ -29,7 +29,11 @@ from falocalrepo_database import Database
 from falocalrepo_server import __name__ as __server_name__
 from falocalrepo_server import __version__ as __server_version__
 from falocalrepo_server import server
-from supports_color import supportsColor
+try:
+    from supports_color import supportsColor
+    _supports_truecolor: bool = getattr(supportsColor.stdout, "has16m", False)
+except TypeError:
+    _supports_truecolor: bool = False
 
 from .colors import *
 from .config import config_app
@@ -458,7 +462,7 @@ def app_server(ctx: Context, database: Callable[..., Database], host: str | None
 
 @app.command("paw", short_help="Print the PRIDE paw!")
 @argument("flag", type=str, default="pride", required=False)
-@option("--true-color / --8bit-color", is_flag=True, default=getattr(supportsColor.stdout, "has16m", False),
+@option("--true-color / --8bit-color", is_flag=True, default=_supports_truecolor,
         show_default=True, help="Force enable color mode.")
 @color_option
 @help_option
