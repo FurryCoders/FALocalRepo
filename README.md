@@ -474,12 +474,12 @@ Built-in colors are available for the following flags: pride (default), trans, b
 agender, asexual, genderqueer, genderfluid, aromantic, polyamory.
 
 The program will try to determine if the terminal supports truecolor mode (24bit, 16 million colors), if not it will
-fall back to the standard, 8bit ANSI colors. Both truecolor and 8bit colors can be turned on manually using
+fall back to the standard 8bit ANSI colors. Both truecolor and 8bit colors can be turned on manually using
 the `--true-color` and `--8bit-color` options respectively.
 
 _Note_: the paw works best with a dark background.
 
-If you have suggestions on new flags to add (or color changes in the 8bit mode), don't hesitate to open
+If you have suggestions on new flags to add (or color improvements for the existing ones), don't hesitate to open
 a [feature request](https://github.com/FurryCoders/FALocalRepo/issues/new?labels=enhancement&template=FEATURE-REQUEST.yml&title=%5BFeature+Request%5D%3A+)!
 
 ## Database
