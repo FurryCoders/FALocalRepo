@@ -44,14 +44,15 @@ functionalities of the program.
 4. [Usage](#usage)
     1. [Environmental Variables](#environmental-variables)
     2. [Init](#init)
-    3. [Help](#help)
-    4. [Config](#config)
-    5. [Download](#download)
-    6. [Database](#database)
+    3. [Config](#config)
+    4. [Download](#download)
+    5. [Database](#database)
         1. [Database Query Language](#database-query-language)
-    7. [Server](#server)
-    8. [Completions](#completions)
-    9. [Updates](#updates)
+    6. [Server](#server)
+    7. [Completions](#completions)
+    8. [Updates](#updates)
+    9. [Help](#help)
+    10. [Paw](#paw)
 5. [Database](#database-1)
     1. [Settings](#settings)
     2. [Users](#users)
@@ -460,6 +461,26 @@ The `help` command gives information on the usage of the program and its command
 > ```
 > falocalrepo help database search
 > ```
+
+### Paw
+
+`paw [--true-color | --8bit-color] [FLAG]`
+
+Print a PRIDE paw!
+
+<img src="https://raw.githubusercontent.com/FurryCoders/Logos/main/logos/paw-pride.svg" height="300" alt="">
+
+Built-in colors are available for the following flags: pride (default), trans, bisexual, pansexual, nonbinary, lesbian,
+agender, asexual, genderqueer, genderfluid, aromantic, polyamory.
+
+The program will try to determine if the terminal supports truecolor mode (24bit, 16 million colors), if not it will
+fall back to the standard, 8bit ANSI colors. Both truecolor and 8bit colors can be turned on manually using
+the `--true-color` and `--8bit-color` options respectively.
+
+_Note_: the paw works best with a dark background.
+
+If you have suggestions on new flags to add (or color changes in the 8bit mode), don't hesitate to open
+a [feature request](https://github.com/FurryCoders/FALocalRepo/issues/new?labels=enhancement&template=FEATURE-REQUEST.yml&title=%5BFeature+Request%5D%3A+)!
 
 ## Database
 
