@@ -28,7 +28,6 @@ database file and submissions files folder.
 All download operations are performed through the custom FurAffinity scraping
 library [faapi](https://pypi.org/project/faapi/). To ensure proper crawling behavior the library strictly follows
 FurAffinity's [robots.txt](https://www.furaffinity.net/robots.txt) in regard to allowed paths and crawl delay.
-Furthermore, submission files downloads are throttled to 100 KB/s to ensure the program won't use too much bandwidth.
 
 The database and file-storage functions are handled independently by
 the [falocalrepo-database](https://pypi.org/project/falocalrepo-database/) package which performs all transactions,
