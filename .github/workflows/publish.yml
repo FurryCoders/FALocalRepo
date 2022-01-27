@@ -50,32 +50,32 @@ jobs:
           name: dist
           path: dist
       - name: Get Tag Name
-        id: tagName
+        id: tagRef
         uses: olegtarasov/get-tag@v2.1.1
       - name: FormatTag
-        id: formatTag
+        id: tag
         env:
-          TAG_NAME: ${{ steps.tagName.outputs.tag }}
+          TAG: ${{ steps.tagRef.outputs.tag }}
         run: |
-          [[ $TAG_NAME = '' ]] && TAG_NAME="$(git tag -l --sort=-version:refname | head -1)"
-          echo "::set-output name=tag::${TAG_NAME#v}"
+          [[ $TAG = '' ]] && TAG="$(git tag -l --sort=-version:refname | head -1)"
+          echo "::set-output name=tag::$TAG"
+          echo "::set-output name=tagName::${TAG#v}"
       - name: Build Release
-        id: release
+        id: releaseBuild
         uses: MatteoCampinoti94/changelog-to-release@v1.0.1
         with:
-          version-name: ${{ steps.formatTag.outputs.tag }}
+          version-name: ${{ steps.tag.outputs.tagName }}
       - name: Add Links
-        id: release2
+        id: release
         env:
-          TAG_NAME: ${{ steps.tagName.outputs.tag }}
-          RELEASE: ${{ steps.release.outputs.body }}
+          TAG: ${{ steps.tag.outputs.tag }}
+          RELEASE: ${{ steps.releaseBuild.outputs.body }}
         run: |
-          [[ $TAG_NAME = '' ]] && TAG_NAME="$(git tag -l --sort=-version:refname | head -1)"
           PREVIOUS_TAG="$(git tag -l --sort=-version:refname | head -2 | tail -1)"
           printf "%s\n" "$RELEASE" > RELEASE.md
           printf "\n## 🔗 Links\n" >> RELEASE.md
-          printf "\n* %s" "PyPi release: https://pypi.org/project/${GITHUB_REPOSITORY#*/}/${TAG_NAME#v}" >> RELEASE.md
-          printf "\n* %s" "Full changelog: https://github.com/$GITHUB_REPOSITORY/compare/$PREVIOUS_TAG...$TAG_NAME" >> RELEASE.md
+          printf "\n* %s" "PyPi release: https://pypi.org/project/${GITHUB_REPOSITORY#*/}/${TAG#v}" >> RELEASE.md
+          printf "\n* %s" "Full changelog: https://github.com/$GITHUB_REPOSITORY/compare/$PREVIOUS_TAG...$TAG" >> RELEASE.md
           echo "::set-output name=body_path::RELEASE.md"
       - name: Release Result
         run: |
@@ -86,8 +86,8 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          tag_name: ${{ steps.tagName.outputs.tag }}
-          name: ${{ steps.release.outputs.title }}
-          body_path: ${{ steps.release2.outputs.body_path }}
+          tag_name: ${{ steps.tag.outputs.tag }}
+          name: ${{ steps.releaseBuild.outputs.title }}
+          body_path: ${{ steps.release.outputs.body_path }}
           files: |
             dist/*
