@@ -11,7 +11,7 @@ from typing import TypeVar
 from click import echo
 from faapi import FAAPI
 from faapi import SubmissionPartial
-from faapi.exceptions import DisabledAccount
+from faapi.exceptions import DisabledAccount, NotFound
 from faapi.exceptions import NoticeMessage
 from faapi.exceptions import ServerError
 from falocalrepo_database import Column
@@ -444,7 +444,7 @@ class Downloader:
                     err = self.download_user_journals(user, stop, stop > 0)
                 else:
                     err = self.download_user_submissions_folder(user, Folder[folder.lower()], stop, stop > 0)
-                if err in (1, 2, 3):
+                if err in (1, 2):
                     if self.dry_run:
                         pass
                     elif user_added:
