@@ -211,35 +211,25 @@ class Downloader:
 
         1 not found
 
-        2 user not found
+        2 user disabled
 
-        3 user disabled
-
-        4 server error
+        3 server error
         """
         try:
             return func(*args, **kwargs), 0
-        except (NoticeMessage, ServerError) as err:
-            err_args: str = "".join(err.args).lower()
-            if "not in our database" in err_args:
-                return None, 1
-            elif "cannot be found" in err_args or \
-                    "could not be found" in err_args or \
-                    "user not found" in err_args:
-                return None, 2
-            else:
-                self.bar_message("SERVER ERR", red)
-                self.bar_close()
-                return None, 4
+        except NotFound:
+            return None, 1
         except DisabledAccount:
+            return None, 2
+        except (NoticeMessage, ServerError):
             return None, 3
 
     def err_to_bar(self, err: int, *, close: bool = True, close_end: str = "\n") -> int:
-        if err in (1, 2):
+        if err in 1:
             self.bar_message("NOT FOUND", red)
-        elif err == 3:
+        elif err == 2:
             self.bar_message("NOT ACTIVE", red)
-        elif err == 4:
+        elif err == 3:
             self.bar_message("SERVER ERR", red)
         if err and close:
             self.bar_close(close_end)
