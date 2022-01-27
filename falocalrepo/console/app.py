@@ -458,8 +458,8 @@ def app_server(ctx: Context, database: Callable[..., Database], host: str | None
 
 @app.command("paw", short_help="Print the PRIDE paw!")
 @argument("flag", type=str, default="pride", required=False)
-@option("--true-color", is_flag=True, flag_value=True, default=supportsColor.stdout.has16m, show_default=True,
-        help="Force enable 24bit (truecolor) colors")
+@option("--true-color", is_flag=True, flag_value=True, default=getattr(supportsColor.stdout, "has16m", False),
+        show_default=True, help="Force enable 24bit (truecolor) colors")
 @color_option
 @help_option
 @pass_context
