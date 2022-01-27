@@ -1,5 +1,19 @@
 # Changelog
 
+## 4.0.6
+
+### Changes
+
+* Improved download error handling
+* `paw` command detects terminal color capabilities and enables truecolor automatically if supported
+    * Add option to manually switch to 8bit color mode
+* Add deactivated users to download report
+
+### Dependencies
+
+* faapi dependency set to [\~3.4.0](https://pypi.org/project/faapi/3.4.0)
+    * Improve exceptions
+
 ## 4.0.5
 
 ### Changes
