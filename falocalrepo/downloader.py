@@ -226,7 +226,7 @@ class Downloader:
             return None
 
     def err_to_bar(self, err: int, *, close: bool = True, close_end: str = "\n") -> int:
-        if err in 1:
+        if err == 1:
             self.bar_message("NOT FOUND", red)
         elif err == 2:
             self.bar_message("NOT ACTIVE", red)
