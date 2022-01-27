@@ -71,6 +71,26 @@ def get_downloader(api: FAAPI, folder: Folder) -> _FolderDownloader:
         raise KeyError(f"Unknown folder {folder}")
 
 
+def download_catch(func: Callable[..., T], *args, **kwargs) -> tuple[T | None, int]:
+    """
+    0 no errors
+
+    1 not found
+
+    2 user disabled
+
+    3 server error
+    """
+    try:
+        return func(*args, **kwargs), 0
+    except NotFound:
+        return None, 1
+    except DisabledAccount:
+        return None, 2
+    except (NoticeMessage, ServerError):
+        return None, 3
+
+
 class Bar:
     def __init__(self, length: int = 0, *, message: str = ""):
         self.length: int = length
@@ -205,25 +225,6 @@ class Downloader:
         except RequestException:
             return None
 
-    def download_catch(self, func: Callable[..., T], *args, **kwargs) -> tuple[T | None, int]:
-        """
-        0 no errors
-
-        1 not found
-
-        2 user disabled
-
-        3 server error
-        """
-        try:
-            return func(*args, **kwargs), 0
-        except NotFound:
-            return None, 1
-        except DisabledAccount:
-            return None, 2
-        except (NoticeMessage, ServerError):
-            return None, 3
-
     def err_to_bar(self, err: int, *, close: bool = True, close_end: str = "\n") -> int:
         if err in 1:
             self.bar_message("NOT FOUND", red)
@@ -239,7 +240,7 @@ class Downloader:
                             thumbnail: str, replace: bool = False) -> int:
         self.bar_clear()
         self.bar_message("DOWNLOAD")
-        result, err = self.download_catch(self.api.submission, submission_id)
+        result, err = download_catch(self.api.submission, submission_id)
         if self.err_to_bar(err):
             self.submission_errors += 1
             return err
@@ -277,7 +278,7 @@ class Downloader:
                  nl=self.output == OutputType.simple, color=self.color)
             self.bar()
             self.bar_message("DOWNLOAD")
-            result, err = self.download_catch(self.api.journals, user, page)
+            result, err = download_catch(self.api.journals, user, page)
             if err:
                 self.user_errors += 1
                 self.err_to_bar(err)
@@ -344,7 +345,7 @@ class Downloader:
                  nl=self.output == OutputType.simple, color=self.color)
             self.bar()
             self.bar_message("DOWNLOAD")
-            result, err = self.download_catch(downloader, user, next_page)
+            result, err = download_catch(downloader, user, next_page)
             if err:
                 self.user_errors += 1
                 self.err_to_bar(err)
@@ -405,7 +406,7 @@ class Downloader:
             self.clear_line()
             return 0
         self.bar_message("DOWNLOAD")
-        user, err = self.download_catch(self.api.user, username)
+        user, err = download_catch(self.api.user, username)
         self.err_to_bar(err)
         if err:
             self.user_errors += 1
@@ -520,7 +521,7 @@ class Downloader:
                 self.bar_message("SKIPPED", green)
                 self.bar_close()
                 continue
-            journal, err = self.download_catch(self.api.journal, journal_id)
+            journal, err = download_catch(self.api.journal, journal_id)
             if self.err_to_bar(err):
                 continue
             self.db.journals.save_journal({
