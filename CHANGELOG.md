@@ -1522,8 +1522,6 @@ Small patch to fix a search bug and output the number of results found with sear
 This release is only a minor fix to change the PyPi classifier for development status of the program from beta to
 stable.
 
-## 3.0.0
-
 ## 3.0.0 - All New and Improved
 
 Release 3.0.0 marks a complete change in how the program is run, its capabilities and future development.
