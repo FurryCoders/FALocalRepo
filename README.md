@@ -497,7 +497,7 @@ To store all this information, the database uses four tables: `SETTINGS`, `USERS
 
 ### Users
 
-The users' table contains a list of all the users that have been download with the program, the folders that have been
+The users' table contains a list of all the users that have been downloaded with the program, the folders that have been
 downloaded, and the submissions found in each of those.
 
 Each entry contains the following fields:
