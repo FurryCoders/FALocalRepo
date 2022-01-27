@@ -1526,12 +1526,13 @@ stable.
 
 Release 3.0.0 marks a complete change in how the program is run, its capabilities and future development.
 
-Following the change of interface in January 2020, version 2 stopped working, but with this new release the tool can
-once again get content from FurAffinity and is much simpler to update to support future changes to FA's web interface.
+Following the change of interface on Fur Affinity in January 2020, version 2 stopped working, but with this new release
+the tool can once again get content from FurAffinity and is much simpler to update to support future changes to FA's web
+interface.
 
 This change was achieved thanks to the FAAPI package (from the same author of
 FALocalRepo [FAAPI@PyPi.org](https://pypi.org/project/faapi)). All scraping functions are now independent of the
-interface, allowing for much quicker
+interface, allowing for much quicker development and response to changes in the Fur Affinity website.
 
 The interface of the program was changed from an interactive menu to a command line tool. This allows for much quicker
 execution of commands, simpler code and automation via shell scripts.
