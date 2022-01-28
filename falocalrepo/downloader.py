@@ -426,7 +426,7 @@ class Downloader:
         added: bool = (current := self.db.users[username][UsersColumns.USERPAGE.value.name]) == ""
         updated: bool = not added and user.profile != current
         if not added and not updated:
-            self.bar_message("IN DB")
+            self.bar_message("IN DB", green)
             self.bar_close("" if clear_found else "\n")
             self.clear_line()
             return 0
