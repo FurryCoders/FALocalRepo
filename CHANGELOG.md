@@ -1,5 +1,21 @@
 # Changelog
 
+## 4.0.7
+
+### Features
+
+* Add `--verbose-report` option to `download` functions (excluding `download login`)
+
+### Fixes
+
+* Fix user pages being updated incorrectly
+
+### Dependencies
+
+* faapi dependency set to [\~3.4.1](https://pypi.org/project/faapi/3.4.0)
+    * Fix incorrect parsing of notice error messages
+        * Fix incorrect detection of not found errors
+
 ## 4.0.6
 
 ### Changes
