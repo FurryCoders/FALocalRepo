@@ -452,11 +452,11 @@ class Downloader:
                     self.db.users.add_folder(user, folder)
                 err: int
                 if folder == Folder.userpage:
-                    err = self.download_user_page(user, stop > 0)
+                    err = self.download_user_page(user, stop == 1)
                 elif folder == Folder.journals:
-                    err = self.download_user_journals(user, stop, stop > 0)
+                    err = self.download_user_journals(user, stop, stop == 1)
                 else:
-                    err = self.download_user_submissions_folder(user, Folder[folder.lower()], stop, stop > 0)
+                    err = self.download_user_submissions_folder(user, Folder[folder.lower()], stop, stop == 1)
                 if err in (1, 2):
                     if self.dry_run:
                         pass
