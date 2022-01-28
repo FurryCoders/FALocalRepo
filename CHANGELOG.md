@@ -2,7 +2,7 @@
 
 ## 4.0.7
 
-### Features
+### New Features
 
 * Add `--verbose-report` option to `download` functions (excluding `download login`)
 
@@ -44,7 +44,7 @@
 
 ## 4.0.4
 
-### Features
+### New Features
 
 * Add `paw` command, show some PRIDE colors!
 
@@ -124,7 +124,7 @@ To restore the favorites, use the `download users` command to download them agai
 
 ## 4.0.0 - 200th Release!
 
-### Features
+### New Features
 
 * Colorized output using ANSI codes
 * Shell completions
