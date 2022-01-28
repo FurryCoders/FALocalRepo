@@ -44,9 +44,12 @@
 
 ## 4.0.4
 
-### Changes
+### Features
 
 * Add `paw` command, show some PRIDE colors!
+
+### Changes
+
 * Improve dry run behaviour for `download` commands
 
 ### Fixes
@@ -98,7 +101,7 @@ To restore the favorites, use the `download users` command to download them agai
 
 ## 4.0.2
 
-### Changes
+### Dependencies
 
 * faapi dependency set to [\~3.3.6](https://pypi.org/project/faapi/3.3.6)
     * Fix parsing error when downloading user profile with limited info or contacts
@@ -121,14 +124,17 @@ To restore the favorites, use the `download users` command to download them agai
 
 ## 4.0.0 - 200th Release!
 
-### Changes
+### Features
 
-* Complete rewrite using Python 3.10 and [Click](https://click.palletsprojects.com)
 * Colorized output using ANSI codes
 * Shell completions
 * Database search using advanced query language
+* Complete rewrite using Python 3.10 and [Click](https://click.palletsprojects.com)
 * Add support to download user profiles
 * Add filtering and clearing to history command
+
+### Changes
+
 * History events added only when database is modified
 
 ### Dependencies
