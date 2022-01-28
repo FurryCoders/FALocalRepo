@@ -55,45 +55,36 @@ jobs:
         with:
           name: dist
           path: dist
-      - name: Get Tag Name
-        id: tagRef
-        uses: olegtarasov/get-tag@v2.1.1
-      - name: FormatTag
+      - name: Get Tag
         id: tag
-        env:
-          TAG: ${{ steps.tagRef.outputs.tag }}
         run: |
-          [[ $TAG = '' ]] && TAG="$(git tag -l --sort=-version:refname | head -1)"
+          TAG="$(git tag -l --sort=-version:refname | head -1)"
           echo "::set-output name=tag::$TAG"
           echo "::set-output name=tagName::${TAG#v}"
       - name: Build Release
-        id: releaseBuild
+        id: release
         uses: MatteoCampinoti94/changelog-to-release@v1.0.1
         with:
           version-name: ${{ steps.tag.outputs.tagName }}
-      - name: Add Links
-        id: release
+      - name: Build Release File
         env:
           TAG: ${{ steps.tag.outputs.tag }}
-          RELEASE: ${{ steps.releaseBuild.outputs.body }}
+          RELEASE: ${{ steps.release.outputs.body }}
         run: |
           PREVIOUS_TAG="$(git tag -l --sort=-version:refname | head -2 | tail -1)"
           printf "%s\n" "$RELEASE" > RELEASE.md
           printf "\n## 🔗 Links\n" >> RELEASE.md
           printf "\n* %s" "PyPi release: https://pypi.org/project/${GITHUB_REPOSITORY#*/}/${TAG#v}" >> RELEASE.md
           printf "\n* %s" "Full changelog: https://github.com/$GITHUB_REPOSITORY/compare/$PREVIOUS_TAG...$TAG" >> RELEASE.md
-          echo "::set-output name=body_path::RELEASE.md"
-      - name: Release Result
-        run: |
           cat RELEASE.md
-          printf "\n## Dist Files\n"
+          printf "\n\n## Dist Files\n"
           ls -l dist || echo "  no files"
       - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           tag_name: ${{ steps.tag.outputs.tag }}
-          name: ${{ steps.releaseBuild.outputs.title }}
-          body_path: ${{ steps.release.outputs.body_path }}
+          name: ${{ steps.release.outputs.title }}
+          body_path: RELEASE.md
           files: |
             dist/*
