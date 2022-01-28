@@ -1,6 +1,6 @@
 # Changelog
 
-## v4.0.6
+## 4.0.6
 
 ### Changes
 
@@ -14,7 +14,7 @@
 * faapi dependency set to [\~3.4.0](https://pypi.org/project/faapi/3.4.0)
     * Improve exceptions
 
-## v4.0.5
+## 4.0.5
 
 ### Changes
 
@@ -26,7 +26,7 @@
 * Fix `database search` CSV output columns
 * Fix `database search` colorized table output not being enabled unless turned on explicitly with `--color`
 
-## v4.0.4
+## 4.0.4
 
 ### Changes
 
@@ -55,7 +55,7 @@ folders is enabled for them. Some favorites will also be removed even if the use
 
 To restore the favorites, use the `download users` command to download them again.
 
-## v4.0.3
+## 4.0.3
 
 ### Changes
 
@@ -80,14 +80,14 @@ To restore the favorites, use the `download users` command to download them agai
     * Use [Click](https://click.palletsprojects.com) to handle arguments
     * Move to new repository
 
-## v4.0.2
+## 4.0.2
 
 ### Changes
 
 * faapi dependency set to [\~3.3.6](https://pypi.org/project/faapi/3.3.6)
     * Fix parsing error when downloading user profile with limited info or contacts
 
-## v4.0.1
+## 4.0.1
 
 ### Changes
 
@@ -103,7 +103,7 @@ To restore the favorites, use the `download users` command to download them agai
 * falocalrepo-database dependency set to [\~5.0.7](https://pypi.org/project/falocalrepo-database/5.0.7)
     * Fix possible duplicate values in list columns
 
-## v4.0.0 - 200th Release!
+## 4.0.0 - 200th Release!
 
 ### Changes
 
@@ -130,7 +130,7 @@ To restore the favorites, use the `download users` command to download them agai
     * Improved styling with fonts and responsive design
     * Improved efficiency
 
-## v3.25.0
+## 3.25.0
 
 ### Changes
 
@@ -145,7 +145,7 @@ To restore the favorites, use the `download users` command to download them agai
 * falocalrepo-server dependency set to [\~1.14.0](https://pypi.org/project/falocalrepo-server/1.14.0)
     * Change behaviour of HTTP to HTTPS redirection
 
-## v3.24.1
+## 3.24.1
 
 ### Changes
 
@@ -161,7 +161,7 @@ To restore the favorites, use the `download users` command to download them agai
     * Support new HTTP redirection
         * Add `redirect-http` argument to `database server` command
 
-## v3.24.0
+## 3.24.0
 
 ### Fixes
 
@@ -176,14 +176,14 @@ To restore the favorites, use the `download users` command to download them agai
     * Support new SSL arguments and change default port to 80/443
         * Add `ssl-cert` and `ssl-key` arguments to `database server` command
 
-## v3.23.15
+## 3.23.15
 
 ### Dependencies
 
 * falocalrepo-database dependency set to [\~4.19.1](https://pypi.org/project/falocalrepo-database/4.19.1)
     * Submissions tags are no longer sorted alphabetically
 
-## v3.23.14
+## 3.23.14
 
 ### Fixes
 
@@ -195,14 +195,14 @@ To restore the favorites, use the `download users` command to download them agai
 * falocalrepo-database dependency set to [\~4.19.0](https://pypi.org/project/falocalrepo-database/4.19.0)
 * falocalrepo-server dependency set to [\~1.11.0](https://pypi.org/project/falocalrepo-server/1.11.0)
 
-## v3.23.13
+## 3.23.13
 
 ### Fixes
 
 * Fix error in `database add-submission` occurring when not passing a new file/thumbnail with none already present in
   the database
 
-## v3.23.12
+## 3.23.12
 
 ### Fixes
 
@@ -213,7 +213,7 @@ To restore the favorites, use the `download users` command to download them agai
 
 * falocalrepo-database dependency set to [\~4.18.1](https://pypi.org/project/falocalrepo-database/4.18.1)
 
-## v3.23.11
+## 3.23.11
 
 ### Fixes
 
@@ -224,13 +224,13 @@ To restore the favorites, use the `download users` command to download them agai
 * falocalrepo-database dependency set to [\~4.18.0](https://pypi.org/project/falocalrepo-database/4.18.0)
     * Use ISO format YYYY-MM-DD**T**HH:MM for date columns
 
-## v3.23.10
+## 3.23.10
 
 ### Fixes
 
 * Fix `download update` bug when passing parameters
 
-## v3.23.9
+## 3.23.9
 
 ### Changes
 
@@ -240,7 +240,7 @@ To restore the favorites, use the `download users` command to download them agai
 
 * falocalrepo-database dependency set to [\~4.17.0](https://pypi.org/project/falocalrepo-database/4.17.0)
 
-## v3.23.8
+## 3.23.8
 
 ### Changes
 
@@ -252,19 +252,19 @@ To restore the favorites, use the `download users` command to download them agai
 * Fix incorrect output when using the `database search-submisisons` and `database search-journals` commands
 * Fix matching of some edge cases of `<param>=<value>` arguments
 
-## v3.23.7
+## 3.23.7
 
 ### Fixes
 
 * Fix `database server` not closing properly (the database file could still be read as open on some systems)
 
-## v3.23.6
+## 3.23.6
 
 ### Fixes
 
 * Fix `database server` throwing a `TypeError` exception when passing port parameter
 
-## v3.23.5
+## 3.23.5
 
 ### Changes
 
@@ -275,31 +275,31 @@ To restore the favorites, use the `download users` command to download them agai
 
 * falocalrepo-database dependency set to [\~4.16.2](https://pypi.org/project/falocalrepo-database/4.16.2)
 
-## v3.23.4
+## 3.23.4
 
 ### Fixes
 
 * Fix `database add-user` command
 
-## v3.23.3
+## 3.23.3
 
 ### Dependencies
 
 * faapi dependency set to [\~2.18.0](https://pypi.org/project/faapi/2.18.0)
 
-## v3.23.2
+## 3.23.2
 
 ### Dependencies
 
 * falocalrepo-database dependency set to [\~4.16.0](https://pypi.org/project/falocalrepo-database/4.16.0)
 
-## v3.23.1
+## 3.23.1
 
 ### Dependencies
 
 * falocalrepo-server dependency set to [\~1.10.0](https://pypi.org/project/falocalrepo-server/1.10.0)
 
-## v3.23.0
+## 3.23.0
 
 ### Changes
 
@@ -313,7 +313,7 @@ To restore the favorites, use the `download users` command to download them agai
 
 * falocalrepo-database dependency set to [\~4.15.0](https://pypi.org/project/falocalrepo-database/4.15.0)
 
-## v3.22.1
+## 3.22.1
 
 ### Changes
 
@@ -323,7 +323,7 @@ To restore the favorites, use the `download users` command to download them agai
 
 * falocalrepo-database dependency set to [\~4.14.0](https://pypi.org/project/falocalrepo-database/4.14.0)
 
-## v3.22.0
+## 3.22.0
 
 ### Changes
 
@@ -337,7 +337,7 @@ To restore the favorites, use the `download users` command to download them agai
 
 * falocalrepo-database dependency set to [\~4.13.0](https://pypi.org/project/falocalrepo-database/4.13.0)
 
-## v3.21.3
+## 3.21.3
 
 ### Changes
 
@@ -349,19 +349,19 @@ To restore the favorites, use the `download users` command to download them agai
 
 * falocalrepo-database dependency set to [\~4.12.0](https://pypi.org/project/falocalrepo-database/4.12.0)
 
-## v3.21.2
+## 3.21.2
 
 ### Fixes
 
 * Fix error with `database add submission` command
 
-## v3.21.1
+## 3.21.1
 
 ### Changes
 
 * Database version is checked for all `database` commands, but no exception is raised for `info` and `upgrade`
 
-## v3.21.0
+## 3.21.0
 
 ### Changes
 
@@ -373,7 +373,7 @@ To restore the favorites, use the `download users` command to download them agai
 * falocalrepo-server dependency set to [\~1.9.0](https://pypi.org/project/falocalrepo-server/1.9.0)
     * Solve issue #9
 
-## v3.20.3
+## 3.20.3
 
 ### Changes
 
@@ -393,19 +393,19 @@ To restore the favorites, use the `download users` command to download them agai
 * Fix `columns` option being ignore in database search commands
 * Fix `columns` not being selected properly when used in conjunction with `json` option in database search commands
 
-## v3.20.2
+## 3.20.2
 
 ### Changes
 
 * Print environmental variables flags to stderr
 
-## v3.20.1
+## 3.20.1
 
 ### Fixes
 
 * Fix `KeyError`'s in search
 
-## v3.20.0
+## 3.20.0
 
 ### Changes
 
@@ -416,31 +416,31 @@ To restore the favorites, use the `download users` command to download them agai
 * Fix zero-padded ID's not being matched by search commands
 * Fix possible output error during single submissions download
 
-## v3.19.4
+## 3.19.4
 
 ### Fixes
 
 * Fix output error in `download submissions` command
 
-## v3.19.3
+## 3.19.3
 
 ### Fixes
 
 * Catch `NoSuchProcess` exception when checking for other instances of falocalrepo
 
-## v3.19.2
+## 3.19.2
 
 ### Fixes
 
 * Fix incorrect call to database merge
 
-## v3.19.1
+## 3.19.1
 
 ### Fixes
 
 * Fix printing of users search results
 
-## v3.19.0
+## 3.19.0
 
 ### Changes
 
@@ -456,21 +456,21 @@ To restore the favorites, use the `download users` command to download them agai
 * falocalrepo-database dependency set to [\~4.9.4](https://pypi.org/project/falocalrepo-database/4.9.4)
     * Solve issue [#6](https://gitlab.com/MatteoCampinoti94/FALocalRepo/-/issues/6)
 
-## v3.18.2
+## 3.18.2
 
 ### Dependencies
 
 * falocalrepo-database dependency set to [\~4.9.4](https://pypi.org/project/falocalrepo-database/4.9.4)
     * Solve issue [#5](https://gitlab.com/MatteoCampinoti94/FALocalRepo/-/issues/5)
 
-## v3.18.1
+## 3.18.1
 
 ### Fixes
 
 * Fix a type signature causing a startup crash in some systems
     * Solve issue [#4](https://gitlab.com/MatteoCampinoti94/FALocalRepo/-/issues/4)
 
-## v3.18.0
+## 3.18.0
 
 ### Dependencies
 
@@ -479,14 +479,14 @@ To restore the favorites, use the `download users` command to download them agai
 * faapi dependency set to [\~2.17.0](https://pypi.org/project/faapi/2.17.0)
     * Download submissions thumbnails
 
-## v3.17.2
+## 3.17.2
 
 ### Dependencies
 
 * falocalrepo-database dependency set to [\~4.8.0](https://pypi.org/project/falocalrepo-database/4.8.0)
     * Use new bar-separation for list fields
 
-## v3.17.1
+## 3.17.1
 
 ### Changes
 
@@ -494,26 +494,26 @@ To restore the favorites, use the `download users` command to download them agai
 * Print caught exceptions and traceback to standard error
 * `UnknownFolder` exception is caught and handled inside download functions instead of rising
 
-## v3.17.0
+## 3.17.0
 
 ### Changes
 
 * Add `deactivated` option to the `download update` command to check previously deactivated users again
 * Use "deactivated" instead of "disabled" in output messages
 
-## v3.16.13
+## 3.16.13
 
 ### Changes
 
 * Check downloaded size against requests headers before saving submission files
 
-## v3.16.12
+## 3.16.12
 
 ### Fixes
 
 * Fix error when opening help for `database add-user`
 
-## v3.16.11
+## 3.16.11
 
 ### Changes
 
@@ -524,25 +524,25 @@ To restore the favorites, use the `download users` command to download them agai
 * Fix printing errors with `download submissions` and `download journals` that occurred if items where already in the
   database
 
-## v3.16.10
+## 3.16.10
 
 ### Fixes
 
 * Fix sorting of users used in download arguments
 
-## v3.16.9
+## 3.16.9
 
 ### Fixes
 
 * Fix `IS IN DB` message remaining when downloading journals
 
-## v3.16.8
+## 3.16.8
 
 ### Fixes
 
 * Remove test code that interfered with item clearing on update stop
 
-## v3.16.7
+## 3.16.7
 
 ### Changes
 
@@ -554,34 +554,34 @@ To restore the favorites, use the `download users` command to download them agai
 
 * Fix an error in the completion bar function
 
-## v3.16.6
+## 3.16.6
 
 ### Fixes
 
 * Fix output error for users search results
 * Remove unnecessary debug call
 
-## v3.16.5
+## 3.16.5
 
 ### Fixes
 
 * Fix update not finding changed folders correctly
 * Fix update considering items as updated for users' galleries/scraps even when downloaded as favorites
 
-## v3.16.4
+## 3.16.4
 
 ### Fixes
 
 * Fix early stop when update found a submission that changed folder
 
-## v3.16.3
+## 3.16.3
 
 ### Fixes
 
 * Fix error when sorting users during update
 * Fix disabled users being printed even when not selected for updated
 
-## v3.16.2
+## 3.16.2
 
 ### Fixes
 
@@ -589,13 +589,13 @@ To restore the favorites, use the `download users` command to download them agai
 * Fix update not finding favorites in the database
 * Fix missing version 3.16.1 in the changelog
 
-## v3.16.1
+## 3.16.1
 
 ### Fixes
 
 * Fix missing information in README
 
-## v3.16.0
+## 3.16.0
 
 ### Changes
 
@@ -612,7 +612,7 @@ To restore the favorites, use the `download users` command to download them agai
 * faapi dependency set to [\~2.15.0](https://pypi.org/project/faapi/2.15.0)
     * Remove calls to check user existence/status and instead rely on faapi exceptions
 
-## v3.15.7
+## 3.15.7
 
 ### Changes
 
@@ -622,27 +622,27 @@ To restore the favorites, use the `download users` command to download them agai
 
 * Fix help message not displaying when no commands were passed
 
-## v3.15.6
+## 3.15.6
 
 ### Dependencies
 
 * falocalrepo-database dependency set to [\~4.4.0](https://pypi.org/project/falocalrepo-database/4.4.0)
     * Support new `FAVORITE` column for submission entries
 
-## v3.15.5
+## 3.15.5
 
 ### Dependencies
 
 * falocalrepo-server dependency set to [\~1.8.0](https://pypi.org/project/falocalrepo-server/1.8.0)
 
-## v3.15.4
+## 3.15.4
 
 ### Fixes
 
 * The multiple instance check will not be triggered by modules that contain `falocalrepo` in their name (
   e.g. `falocalrepo-server`)
 
-## v3.15.3
+## 3.15.3
 
 ### Changes
 
@@ -650,31 +650,31 @@ To restore the favorites, use the `download users` command to download them agai
   connection is attempted
 * Cookies are listed as-are to allow checking for errors (e.g. incorrect `name` field)
 
-## v3.15.2
+## 3.15.2
 
 ### Dependencies
 
 * faapi dependency set to [\~2.12.0](https://pypi.org/project/faapi/2.12.0)
 
-## v3.15.1
+## 3.15.1
 
 ### Dependencies
 
 * falocalrepo-server dependency set to [\~1.7.0](https://pypi.org/project/falocalrepo-server/1.7.0)
 
-## v3.15.0
+## 3.15.0
 
 ### Changes
 
 * Add `database add-user` command to manually add a user to the database
 
-## v3.14.1
+## 3.14.1
 
 ### Fixes
 
 * Fix an error when users search found 0 results
 
-## v3.14.0
+## 3.14.0
 
 ### Changes
 
@@ -684,25 +684,25 @@ To restore the favorites, use the `download users` command to download them agai
 
 * Fix incorrect UnknownCommand exceptions
 
-## v3.13.17
+## 3.13.17
 
 ### Fixes
 
 * Fix error in help function
 
-## v3.13.16
+## 3.13.16
 
 ### Fixes
 
 * Fix _ not working when searching AUTHOR and USERNAME fields
 
-## v3.13.15
+## 3.13.15
 
 ### Fixes
 
 * Fix error with instance checking causing the program to fail at start
 
-## v3.13.14
+## 3.13.14
 
 ### Changes
 
@@ -712,7 +712,7 @@ To restore the favorites, use the `download users` command to download them agai
 
 * Fix a line-wrapping error in the main help message
 
-## v3.13.13
+## 3.13.13
 
 ### Changes
 
@@ -723,7 +723,7 @@ To restore the favorites, use the `download users` command to download them agai
 * falocalrepo-database dependency set to [\~4.3.0](https://pypi.org/project/falocalrepo-database/4.3.0)
     * Removed counters from `SETTINGS` table
 
-## v3.13.12
+## 3.13.12
 
 ### Changes
 
@@ -737,13 +737,13 @@ To restore the favorites, use the `download users` command to download them agai
 * Fix USERNAME field not being cleaned when performing users search
 * Fix an error when users search found 0 results
 
-## v3.13.11
+## 3.13.11
 
 ### Changes
 
 * Check for faapi updates
 
-## v3.13.10
+## 3.13.10
 
 ### Changes
 
@@ -753,7 +753,7 @@ To restore the favorites, use the `download users` command to download them agai
 
 * faapi dependency set to [\~2.11.0](https://pypi.org/project/faapi/2.11.0)
 
-## v3.13.9
+## 3.13.9
 
 ### Changes
 
@@ -763,7 +763,7 @@ To restore the favorites, use the `download users` command to download them agai
 
 * Fix users not being skipped during update if no folder matches manual folders argument
 
-## v3.13.8
+## 3.13.8
 
 ### Changes
 
@@ -773,7 +773,7 @@ To restore the favorites, use the `download users` command to download them agai
 
 * Fix missing import causing error when importing the module
 
-## v3.13.7
+## 3.13.7
 
 ### Changes
 
@@ -787,13 +787,13 @@ To restore the favorites, use the `download users` command to download them agai
 
 * Fix usage pattern of main help
 
-## v3.13.6
+## 3.13.6
 
 ### Fixes
 
 * Fix submissions with _ in the author name not being found with url formatted name
 
-## v3.13.5
+## 3.13.5
 
 ### Changes
 
@@ -803,32 +803,32 @@ To restore the favorites, use the `download users` command to download them agai
 
 * Fix database transaction being left open and locking `VACUUM` operation
 
-## v3.13.4
+## 3.13.4
 
 ### Fixes
 
 * Fix search filtering out column parameters
 * Fix search not using `like`
 
-## v3.13.3
+## 3.13.3
 
 ### Fixes
 
 * Fix search failing without limit and offset parameters
 
-## v3.13.2
+## 3.13.2
 
 ### Fixes
 
 * Fix missing database upgrade
 
-## v3.13.1
+## 3.13.1
 
 ### Fixes
 
 * Fix broken import causing the program to crash on start
 
-## v3.13.0
+## 3.13.0
 
 With this new release comes the all-new [falocalrepo-database](https://pypi.org/project/falocalrepo-database) version 4.
 Some column names in the database have been changed and the insertion functions have been made safer with built-in
@@ -848,7 +848,7 @@ of the database.
 * falocalrepo-database dependency set to [\~4.2.0](https://pypi.org/project/falocalrepo-database/4.2.0)
 * falocalrepo-server dependency set to [\~1.5.0](https://pypi.org/project/falocalrepo-server/1.5.0)
 
-## v3.12.1
+## 3.12.1
 
 ### Changes
 
@@ -858,7 +858,7 @@ of the database.
 
 * Fix missing messages for assertion errors
 
-## v3.12.0
+## 3.12.0
 
 This new minor bump adds a new `list-<folder>` option to the download users command. Using it allows to list all remote
 items present in a user folder without downloading them. Environmental variables are now supported starting
@@ -879,7 +879,7 @@ with `FALOCALREPO_DATABASE` which allows to set a different path for the databas
 
 * falocalrepo-server dependency set to [\~1.4.0](https://pypi.org/project/falocalrepo-server/1.4.0)
 
-## v3.11.0
+## 3.11.0
 
 This new minor version bump updates the [falocalrepo-database](https://pypi.org/project/falocalrepo-database/)
 dependency to its latest version and adds a new `database merge` command. This new command allows to merge the database
@@ -893,7 +893,7 @@ located in the current folder with a second database located in another folder.
 
 * falocalrepo-database dependency set to [\~3.8.0](https://pypi.org/project/falocalrepo-database/3.8.0)
 
-## v3.10.11
+## 3.10.11
 
 ### Fixes
 
@@ -904,13 +904,13 @@ located in the current folder with a second database located in another folder.
 
 * faapi dependency set to [2.10.2](https://pypi.org/project/faapi/2.10.2)
 
-## v3.10.10
+## 3.10.10
 
 ### Changes
 
 * removed unused filetype dependency
 
-## v3.10.9
+## 3.10.9
 
 ### Changes
 
@@ -925,7 +925,7 @@ located in the current folder with a second database located in another folder.
 * falocalrepo-database dependency set to [\~3.7.1](https://pypi.org/project/falocalrepo-database/3.7.1)
 * falocalrepo-server dependency set to [\~1.3.4](https://pypi.org/project/falocalrepo-server/1.3.4)
 
-## v3.10.8
+## 3.10.8
 
 ### Changes
 
@@ -935,7 +935,7 @@ located in the current folder with a second database located in another folder.
 
 * Fix output error when submission is found in user entry
 
-## v3.10.7
+## 3.10.7
 
 ### Changes
 
@@ -946,7 +946,7 @@ located in the current folder with a second database located in another folder.
 
 * Fix some errors in README
 
-## v3.10.6
+## 3.10.6
 
 ### Changes
 
@@ -957,7 +957,7 @@ located in the current folder with a second database located in another folder.
 
 * Fix submissions not being removed from users' entries with `database remove-submissions` command
 
-## v3.10.5
+## 3.10.5
 
 ### Changes
 
@@ -972,7 +972,7 @@ located in the current folder with a second database located in another folder.
 
 * faapi dependency set to [2.10.1](https://pypi.org/project/faapi/2.10.1)
 
-## v3.10.4
+## 3.10.4
 
 ### Changes
 
@@ -982,25 +982,25 @@ located in the current folder with a second database located in another folder.
 
 * faapi dependency set to [2.10.0](https://pypi.org/project/faapi/2.10.0)
 
-## v3.10.3
+## 3.10.3
 
 ### Dependencies
 
 * faapi dependency set to [2.9.1](https://pypi.org/project/faapi/2.9.1)
 
-## v3.10.2
+## 3.10.2
 
 ### Fixes
 
 * Fix error with users journals download
 
-## v3.10.1
+## 3.10.1
 
 ### Dependencies
 
 * faapi dependency set to [2.9.0](https://pypi.org/project/faapi/2.9.0)
 
-## v3.10.0
+## 3.10.0
 
 Added a new `database search-users` command to search the users table using all the collected metadata. The readme has
 been improved slightly with better explanations. A small error in the database command help message was fixed.
@@ -1015,7 +1015,7 @@ been improved slightly with better explanations. A small error in the database c
 
 * Fix error in database command help
 
-## v3.9.2
+## 3.9.2
 
 ### Changes
 
@@ -1025,13 +1025,13 @@ been improved slightly with better explanations. A small error in the database c
 
 * Fixed erroneous general help message
 
-## v3.9.1
+## 3.9.1
 
 ### Fixes
 
 * Fix bug occurring when saving submissions/journals into the database
 
-## v3.9.0 - 100th Release!
+## 3.9.0 - 100th Release!
 
 Both the database and server modules have been update to versions 3.5.0 and 1.3.1 respectively. The database now holds a
 history of all commands (except for version printing and help) instead of just last start and last update, and A
@@ -1057,7 +1057,7 @@ saved to FA.log.
 * falocalrepo-database dependency set to [\~3.5.0](https://pypi.org/project/falocalrepo-database/3.5.0)
 * falocalrepo-server dependency set to [\~1.3.1](https://pypi.org/project/falocalrepo-server/1.3.1)
 
-## v3.8.2
+## 3.8.2
 
 ### Changes
 
@@ -1067,13 +1067,13 @@ saved to FA.log.
 
 * Fix missing instructions for download help
 
-## v3.8.1
+## 3.8.1
 
 ### Fixes
 
 * Removed some lines of code used for debugging version 3.8.0 (now yanked)
 
-## v3.8.0
+## 3.8.0
 
 From this release all database functions are handled separately by the
 new [falocalrepo-database](https://pypi.org/project/falocalrepo-database/) package. The package is also used
@@ -1093,7 +1093,7 @@ more easily.
 * falocalrepo-database dependency set to [\~3.2.4](https://pypi.org/project/falocalrepo-database/3.2.4)
 * falocalrepo-server dependency set to [\~1.2.2](https://pypi.org/project/falocalrepo-server/1.2.2)
 
-## v3.7.5
+## 3.7.5
 
 The `download journals` command is now fixed and calling the correct function. Two sub-commands aliases have been
 added: `config list` and `database info` which act as `config` and `database` respectively when called without
@@ -1116,13 +1116,13 @@ to [^1.1.3](https://pypi.org/project/falocalrepo-server/1.1.3).
 
 * falocalrepo-server dependency updated to [^1.1.3](https://pypi.org/project/falocalrepo-server/1.1.3)
 
-## v3.7.4
+## 3.7.4
 
 ### Dependencies
 
 * Update faapi dependency to [2.8.3](https://pypi.org/project/faapi/2.8.3)
 
-## v3.7.3
+## 3.7.3
 
 Background changes and fixes. The `main_console` function was renamed to `console` and is now the only direct export of
 the package, falocalrepo-server dependency has been updated to ^1.1.2, help messages have been slightly reformatted, and
@@ -1144,7 +1144,7 @@ command does not default to `init` when absent.
 
 * Update falocalrepo-server dependency to [^1.1.2](https://pypi.org/project/falocalrepo-server/1.1.2)
 
-## v3.7.2
+## 3.7.2
 
 falocalrepo-server dependency has been updated to use the latest above 1.1.1. Command defaults to init if no command is
 passed.
@@ -1157,13 +1157,13 @@ passed.
 
 * Update falocalrepo-server dependency to [^1.1.1](https://pypi.org/project/falocalrepo-server/1.1.1)
 
-## v3.7.1
+## 3.7.1
 
 ### Dependencies
 
 * Update falocalrepo-server dependency to [1.1.1](https://pypi.org/project/falocalrepo-server/1.1.1)
 
-## v3.7.0
+## 3.7.0
 
 The server interface has been moved to its own separate
 package [falocalrepo-server](https://pypi.org/project/falocalrepo-server/) for ease of development, and it is now a
@@ -1186,7 +1186,7 @@ A few small bugs have also been fixed.
 
 * Set falocalrepo-server dependency to [1.0.0](https://pypi.org/project/falocalrepo-server/1.0.0)
 
-## v3.6.2
+## 3.6.2
 
 ### Changes
 
@@ -1196,7 +1196,7 @@ A few small bugs have also been fixed.
 
 * Fix missing information in readme
 
-## v3.6.1
+## 3.6.1
 
 ### Changes
 
@@ -1208,7 +1208,7 @@ A few small bugs have also been fixed.
 * Fix wildcards being removed from author parameter when searching
 * Fix uppercase parameters not matching
 
-## v3.6.0
+## 3.6.0
 
 A new `database server` command has been added, which starts a Flask server that allows to search the local database and
 visualise submissions and journals in a friendly GUI.
@@ -1235,7 +1235,7 @@ regarding search wildcards.
 * Fix incorrect error message when passing an unknown database command
 * Fix error caused by the options arguments parser
 
-## v3.5.4
+## 3.5.4
 
 A new stop option has been added to the download update command to modify the number of submissions after which the
 program stops looking through a user's folder. The database update from 2.7 to 3 has been upgraded and now files are
@@ -1246,13 +1246,13 @@ found directly in the submission folder.
 * Add stop option to download update
 * Improved file-finding for database update from 2.7 to 3
 
-## v3.5.3
+## 3.5.3
 
 ### Fixes
 
 * Fix a SQLite Cursor error
 
-## v3.5.2
+## 3.5.2
 
 ### Changes
 
@@ -1264,13 +1264,13 @@ found directly in the submission folder.
 
 * Fix missing exception when database receives an unknown subcommand
 
-## v3.5.1
+## 3.5.1
 
 ### Fixes
 
 * Fix an import error
 
-## v3.5.0
+## 3.5.0
 
 The new `database search-journals` command allows searching journals by author, title, date and content. The old
 submissions search command is now called `search-submissions`.
@@ -1289,7 +1289,7 @@ journals; uses "items" instead.
 * Fix missing information in help message and readme
 * Fix output of download users command not being generalised
 
-## v3.4.0
+## 3.4.0
 
 The program now uses [FAAPI](https://gitlab.com/MatteoCampinoti94/FAAPI) version 2.7.3, which supports downloading users
 journals. The database has been updated to version 3.2.0 to support this change with a new `JOURNALS` table and
@@ -1316,7 +1316,7 @@ A few errors in the readme have also been solved.
 
 * Update faapi dependency to [2.7.3](https://pypi.org/project/faapi/1.0.0)
 
-## v3.3.5
+## 3.3.5
 
 ### Fixes
 
@@ -1324,32 +1324,32 @@ A few errors in the readme have also been solved.
 * Fixes version when updating database from 3.0 to 3.1
 * Disabled folders do not trigger an error when using download update
 
-## v3.3.4
+## 3.3.4
 
 ### Fixes
 
 * Fix users folders not being properly ported when updating database from 2.7 to 3.0
 
-## v3.3.3
+## 3.3.3
 
 ### Fixes
 
 * Fix file download bar spacing
 * Fix settings not porting over when updating database from 3.0.0 to 3.1.0
 
-## v3.3.2
+## 3.3.2
 
 ### Fixes
 
 * Fix spacing when download page goes over 100
 
-## v3.3.1
+## 3.3.1
 
 ### Fixes
 
 * Fix readme not including new information about database version 3.1.0
 
-## v3.3.0
+## 3.3.0
 
 Database version has been updated to 3.1.0; the "extras" folder has been renamed "mentions". Order of submissions ID's
 is maintained when downloading single submissions.
@@ -1363,13 +1363,13 @@ is maintained when downloading single submissions.
 * Database updated to 3.1.0
     * Extras renamed to mentions
 
-## v3.2.5
+## 3.2.5
 
 ### Fixes
 
 * Fix output bug when downloading single submissions
 
-## v3.2.4
+## 3.2.4
 
 Fixes a bug that causing tiered paths to overlap if the submission ID ended with zeroes.
 
@@ -1377,7 +1377,7 @@ Fixes a bug that causing tiered paths to overlap if the submission ID ended with
 
 * Tiered path for submissions ID's ended with zeroes
 
-## v3.2.3
+## 3.2.3
 
 Order of users and folders passed to download users/update is maintained. Submissions already in the database but not in
 user entry are not downloaded again.
@@ -1387,7 +1387,7 @@ user entry are not downloaded again.
 * Maintain order of users and folders passed to download
 * Do not download submissions again if already present in submissions table
 
-## v3.2.2
+## 3.2.2
 
 Submissions titles are now cleaned of non-ASCII characters before printing them to screen. Non-ASCII characters would
 break the spacing of the download output.
@@ -1396,7 +1396,7 @@ break the spacing of the download output.
 
 * Fix output of submissions titles with non-ASCII characters breaking spacing
 
-## v3.2.1
+## 3.2.1
 
 Fix old database having the wrong version in the name when backing it after updating from version 2.7.0.
 
@@ -1404,7 +1404,7 @@ Fix old database having the wrong version in the name when backing it after upda
 
 * Fix database backup name up when updating from 2.7.0
 
-## v3.2.0
+## 3.2.0
 
 Download update now allows to pass a list of users and/or folders to restrict the update to those.
 
@@ -1412,7 +1412,7 @@ Download update now allows to pass a list of users and/or folders to restrict th
 
 * Pass users and/or folders to download update
 
-## v3.1.9
+## 3.1.9
 
 Database search now allows to use either display or URL author usernames; i.e. `Pippo_Pluto` is equal to `pippopluto`.
 
@@ -1420,7 +1420,7 @@ Database search now allows to use either display or URL author usernames; i.e. `
 
 * Accept both display and URL author usernames in database search
 
-## v3.1.8
+## 3.1.8
 
 Exceptions raised during database updates are caught and any pending changes are committed before the exception is
 raised again.
@@ -1429,7 +1429,7 @@ raised again.
 
 * Safely commit and close when catching exceptions during database updates
 
-## v3.1.7
+## 3.1.7
 
 The memory usage of database select (i.e. read) operations has been reduced by
 using [sqlite3 cursors](https://docs.python.org/3/library/sqlite3.html#cursor-objects) instead of lists. The speed of
@@ -1441,7 +1441,7 @@ entries (1000 for the users table).
 * Database select operations return sqlite3 cursors to reduce memory usage
 * Database update speed increased by reducing the number of commits
 
-## v3.1.6
+## 3.1.6
 
 Fixes an output error in the database update function and improves the way settings and statistics are written in the
 database, using UPDATE instead of INSERT OR REPLACE
@@ -1451,7 +1451,7 @@ database, using UPDATE instead of INSERT OR REPLACE
 * Database update output error
 * Settings are updated instead of inserted
 
-## v3.1.5
+## 3.1.5
 
 Improve database update function by saving the ID's of the submissions files that were not found during the transfer.
 
@@ -1459,7 +1459,7 @@ Improve database update function by saving the ID's of the submissions files tha
 
 * Save ID's of submissions not found during database update
 
-## v3.1.4
+## 3.1.4
 
 ### Dependencies
 
@@ -1469,7 +1469,7 @@ Improve database update function by saving the ID's of the submissions files tha
 
 * Use FAAPI 2.6.0
 
-## v3.1.3
+## 3.1.3
 
 If the now unsupported "extras" folder is encountered during update, it now prints a warning and skips to the next.
 
@@ -1477,7 +1477,7 @@ If the now unsupported "extras" folder is encountered during update, it now prin
 
 * Explicitly warn about extras folders
 
-## v3.1.2
+## 3.1.2
 
 Fixed an IOError that happened when trying to pipe the database search output to a file.
 
@@ -1485,7 +1485,7 @@ Fixed an IOError that happened when trying to pipe the database search output to
 
 * IOError when piping search results
 
-## v3.1.1
+## 3.1.1
 
 Fix a version error. Database version was set to 3.1.0 instead of the program version.
 
@@ -1493,7 +1493,7 @@ Fix a version error. Database version was set to 3.1.0 instead of the program ve
 
 * Fix versions
 
-## v3.1.0
+## 3.1.0
 
 The database search command now allows to pass a parameter multiple times to act as OR values for the same field. The
 readme has been slightly improved and some errors in it have been fixed.
@@ -1506,7 +1506,7 @@ readme has been slightly improved and some errors in it have been fixed.
 
 * Database search accepts OR parameters
 
-## v3.0.3
+## 3.0.3
 
 This releases fixes counters not being updated in the new database when updating from version 2.7.
 
@@ -1519,7 +1519,7 @@ Readme has also been improved with more information about issues and contributin
 
 * Database update function updates counters of new database
 
-## v3.0.2
+## 3.0.2
 
 Small patch to fix a search bug and output the number of results found with search.
 
@@ -1531,12 +1531,12 @@ Small patch to fix a search bug and output the number of results found with sear
 
 * Output total number of results found by search
 
-## v3.0.1
+## 3.0.1
 
 This release is only a minor fix to change the PyPi classifier for development status of the program from beta to
 stable.
 
-## v3.0.0 - All New and Improved
+## 3.0.0 - All New and Improved
 
 Release 3.0.0 marks a complete change in how the program is run, its capabilities and future development.
 
@@ -1582,7 +1582,7 @@ need to have the program itself stored with the database.
 
 * [falocalrepo on PyPi.org](https://pypi.org/project/falocalrepo/)
 
-## v2.10.2
+## 2.10.2
 
 Reduced the number of indexes created and made the whole process safer. Also, interruption is now available during
 indexing.
@@ -1591,7 +1591,7 @@ PS: Linux release is once again bigger than it should. Will work on finding a mo
 
 **Warning**: Binaries are for 64bit systems only
 
-## v2.10.1
+## 2.10.1
 
 Extras' `e` option has been changed to search for ':iconusername:' and ':usernameicon:' only in the descriptions as
 searching in keywords caused too many false positives in case the username was a common word/phrase.
@@ -1607,7 +1607,7 @@ PS: Linux release is once again bigger than it should. Will work on finding a mo
 
 **Warning**: Binaries are for 64bit systems only
 
-## v2.10
+## 2.10
 
 Thanks to a special Python module created by yours truly, Windows users can now enjoy the program with safe interruption
 support. The module can be found on GitHub
@@ -1623,7 +1623,7 @@ PS: Linux release is once again bigger than it should. Will work on finding a mo
 
 **Warning**: Binaries are for 64bit systems only
 
-## v2.9
+## 2.9
 
 Added logging to the program if launched with '--log' or '--logv' as argument (the latter logs ALL operations, thus the
 v of verbose). Log is saved in a file named 'FA.log' and is trimmed to the last 10000 lines at each program start.
@@ -1643,7 +1643,7 @@ PS: Linux release is once again bigger than it should. Will work on finding a mo
 
 **Warning**: Binaries are for 64bit systems only
 
-## v2.8.1
+## 2.8.1
 
 Just a small fix for an incorrect check in the analysis of submissions values.
 
@@ -1651,7 +1651,7 @@ PS: Linux release is once again bigger than it should. Will work on finding a mo
 
 **Warning**: Binaries are for 64bit systems only
 
-## v2.8
+## 2.8
 
 A new entry has been added to the repair menu to analyze all the tables without attempting repair.
 
@@ -1666,7 +1666,7 @@ PS: Linux release is once again bigger than it should. Will work on finding a mo
 
 **Warning**: Binaries are for 64bit systems only
 
-## v2.7.4
+## 2.7.4
 
 Fixed an error in the URL used to search extras. An OR was missing and would stop some results from showing up.
 
@@ -1676,7 +1676,7 @@ PS: Linux release is once again bigger than it should. Will work on finding a mo
 
 **Warning**: Binaries are for 64bit systems only
 
-## v2.7.3
+## 2.7.3
 
 The search URL has been modified to avoid false positives by specifically searching only the description and keywords.
 The default search employed by FA looks for search terms inside submissions filenames as well, and it could cause false
@@ -1692,7 +1692,7 @@ PS: Linux release is once again bigger than it should. Will work on finding a mo
 
 **Warning**: Binaries are for 64bit systems only
 
-## v2.7.2
+## 2.7.2
 
 Fixed bugs with the new submission download status on Windows by moving it to the left of the title.
 
@@ -1706,7 +1706,7 @@ PS: Linux release is once again bigger than it should. Will work on finding a mo
 
 **Warning**: Binaries are for 64bit systems only
 
-## v2.7.1
+## 2.7.1
 
 Just a fix for an output error in the v2.6 to v2.7 upgrade function.
 
@@ -1714,7 +1714,7 @@ PS: Linux release is once again bigger than it should. Will work on finding a mo
 
 **Warning**: Binaries are for 64bit systems only
 
-## v2.7
+## 2.7
 
 New outputs have been added at the start of the program to show what it is doing instead of showing an empty screen.
 
@@ -1735,7 +1735,7 @@ PS: Linux release is once again bigger than it should. Will work on finding a mo
 
 **Warning**: Binaries are for 64bit systems only
 
-## v2.6
+## 2.6
 
 Submissions descriptions are now saved in the database together with the submissions' data.
 
@@ -1759,7 +1759,7 @@ Update 2018/05/02: Linux binary was compiled with an error, it is fixed now
 
 **Warning**: Binaries are for 64bit systems only
 
-## v2.5
+## 2.5
 
 The program is now capable of running searches on the main website. If no results can be found in the local database the
 user will be automatically asked if they want to perform the search online instead.
@@ -1777,7 +1777,7 @@ PS: I have no idea why but this release for Linux is over twice the size of prev
 
 **Warning**: Binaries are for 64bit systems only
 
-## v2.4
+## 2.4
 
 The search has been completely rewritten and should now be a lot faster. It is also now possible to search inside
 specific sections of a user.<br>
@@ -1790,7 +1790,7 @@ PS: I have no idea why but this release for Linux is over twice the size of prev
 
 **Warning**: Binaries are for 64bit systems only
 
-## v2.3
+## 2.3
 
 From this release the USERS table will also contain the "full" version of a user's nickname.<br>
 In earlier versions user 'Tiger_Artist' would be saved only as 'tigerartist', the username used as url on the website.
@@ -1805,7 +1805,7 @@ PS: I have no idea why but this release for Linux is over twice the size of prev
 
 **Warning**: Binaries are for 64bit systems only
 
-## v2.2
+## 2.2
 
 This new release is only a minor upgrade.
 
@@ -1823,7 +1823,7 @@ the next release.
 
 **Warning**: Binaries are for 64bit systems only
 
-## v2.1
+## 2.1
 
 With this release all bugs with the users' database are fixed and the information are properly stored and saved.
 
@@ -1835,13 +1835,13 @@ the [commits](https://github.com/MatteoCampinoti94/FALocalRepo/compare/v2.0.1...
 
 **Warning**: Binaries are for 64bit systems only
 
-## v2.0.1
+## 2.0.1
 
 Fixed a bug in the update functions.
 
 **Warning**: Binaries are for 64bit systems only
 
-## v2.0
+## 2.0
 
 Big update and main version bump.
 
@@ -1857,7 +1857,7 @@ The new favorites page on the forum can now be handled correctly.
 
 **Warning**: Binaries are for 64bit systems only
 
-## v1.5.1
+## 1.5.1
 
 CTRL-C and CTRL-D can now be used to return to the main menu from input fields (e.g. username/sections/options)
 
@@ -1868,14 +1868,14 @@ This new release is now verified
 
 **Warning**: Binaries are for 64bit systems only
 
-## v1.5
+## 1.5
 
 This new version comes with the usual fixes and a whole new menu entry to analyze the database and repair it. More
 information in the readme.
 
 **Warning**: Binaries are for 64bit systems only
 
-## v1.4
+## 1.4
 
 The program now has a GUI! It is very simple and console-based, only a prototype of the planned one.
 
@@ -1886,7 +1886,7 @@ Version has been bumped up to 1.4 skipping 1.3 due to the two major additions.
 
 **Warning**: Binaries are for 64bit systems only
 
-## v1.2.1
+## 1.2.1
 
 Small fix to make sure the infos table has the database name value created empty, to ensure compatibility with planned
 gui.
@@ -1895,7 +1895,7 @@ Other changes are under-the-hood: moved some functions around and into modules t
 
 **Warning**: Binaries are for 64bit systems only
 
-## v1.2
+## 1.2
 
 Filetype detection now works reliably across Windows and Unix platforms!
 Unfortunately safe exit still doesn't work reliably on Windows, so it's still disabled on it.
@@ -1915,7 +1915,7 @@ versions.
 
 **Warning**: Binaries are for 64bit systems only
 
-## v1.1.2
+## 1.1.2
 
 The program can now be run on Windows as well!
 
@@ -1923,7 +1923,7 @@ Unfortunately due to missing libraries on Windows automatic filetype management 
 
 **Warning**: Binaries are for 64bit systems only
 
-## v1.1.1
+## 1.1.1
 
 The readme is now complete and contains all the instructions needed to use the program
 
@@ -1933,7 +1933,7 @@ A small search script has been added in the FA_tools folder
 
 **Warning**: binary is for Linux 64bit only
 
-## v1.1
+## 1.1
 
 Main change is usage of [cfscrape](https://github.com/Anorov/cloudflare-scrape) to bypass cloudflare wait at first
 request
@@ -1949,7 +1949,7 @@ General bugfixes
 
 **Warning**: binary is for Linux 64bit only
 
-## v1.0
+## 1.0
 
 Program now works and handles special cases
 
