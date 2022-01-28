@@ -63,7 +63,7 @@ jobs:
           echo "::set-output name=tagName::${TAG#v}"
       - name: Build Release
         id: release
-        uses: MatteoCampinoti94/changelog-to-release@v1.0.1
+        uses: MatteoCampinoti94/changelog-to-release@v1.0.2
         with:
           version-name: ${{ steps.tag.outputs.tagName }}
       - name: Build Release File
