@@ -254,7 +254,7 @@ class Downloader:
         self.bar_message("DOWNLOAD")
         result, err = download_catch(self.api.submission, submission_id)
         if self.err_to_bar(err):
-            self.submission_errors += 1
+            self.submission_errors += [submission_id]
             return err
         submission, _ = result
         self.bar_clear()
@@ -535,6 +535,7 @@ class Downloader:
                 continue
             journal, err = download_catch(self.api.journal, journal_id)
             if self.err_to_bar(err):
+                self.journal_errors += [journal.id]
                 continue
             self.db.journals.save_journal({
                 **format_entry(dict(journal), self.db.journals.columns),
