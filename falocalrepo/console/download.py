@@ -139,8 +139,8 @@ def download_update(ctx: Context, database: Callable[..., Database], users: tupl
     If the {yellow}--deactivated{reset} option is used, deactivated users are fetched instead of ignore. If the user is
     no longer inactive, the database entry will be modified as well.
 
-    The {yellow}--stop{reset} option allows setting after how many entries of each folder should be found in the database
-    before stopping the update.
+    The {yellow}--stop{reset} option allows setting after how many entries of each folder should be found in the
+    database before stopping the update.
 
     The optional {yellow}--dry-run{reset} option disables downloading and saving and simply lists fetched entries.
     Users are not added/deactivated.
