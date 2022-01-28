@@ -11,7 +11,8 @@ from typing import TypeVar
 from click import echo
 from faapi import FAAPI
 from faapi import SubmissionPartial
-from faapi.exceptions import DisabledAccount, NotFound
+from faapi.exceptions import DisabledAccount
+from faapi.exceptions import NotFound
 from faapi.exceptions import NoticeMessage
 from faapi.exceptions import ServerError
 from falocalrepo_database import Column
@@ -141,35 +142,46 @@ class Downloader:
         self.bar_width: int = 10
         self._bar: Bar | None = None
 
-        self.downloaded: int = 0
-        self.modified: int = 0
-        self.user_errors: int = 0
-        self.user_deactivated: int = 0
-        self.submission_errors: int = 0
-        self.file_errors: int = 0
-        self.thumbnail_errors: int = 0
+        self.downloaded: list[int | str] = []
+        self.modified: list[int | str] = []
+        self.user_errors: list[str] = []
+        self.user_deactivated: list[str] = []
+        self.submission_errors: list[int] = []
+        self.file_errors: list[int] = []
+        self.thumbnail_errors: list[int] = []
+        self.journal_errors: list[int] = []
 
     # noinspection DuplicatedCode
     def report(self):
-        items: list[tuple[str, int]] = []
-        if self.downloaded:
-            items.append(("Downloaded", self.downloaded))
-        if self.modified:
-            items.append(("Modified", self.modified))
-        if self.user_deactivated:
-            items.append(("Users deactivated", self.user_errors))
-        if self.user_errors:
-            items.append(("User errors", self.user_errors))
-        if self.submission_errors:
-            items.append(("Submission errors", self.submission_errors))
-        if self.file_errors:
-            items.append(("File errors", self.file_errors))
-        if self.thumbnail_errors:
-            items.append(("Thumb errors", self.thumbnail_errors))
-        if items:
-            name_padding: int = max(map(len, map(itemgetter(0), items)))
+        items: list[tuple[str, int]] = [
+            ("Downloaded", len(self.downloaded)),
+            ("Modified", len(self.modified)),
+            ("Users deactivated", len(self.user_deactivated)),
+            ("User errors", len(self.user_errors)),
+            ("Submission errors", len(self.submission_errors)),
+            ("File errors", len(self.file_errors)),
+            ("Thumb errors", len(self.thumbnail_errors)),
+            ("Journal Errors", len(self.journal_errors)),
+        ]
+        if items := list(filter(itemgetter(1), items)):
+            name_padding: int = max(map(len, map(itemgetter(0), items or [""])))
             for name, value in items:
                 echo(f"{blue}{name:<{name_padding}}{reset}: {yellow}{value}{reset}", color=self.color)
+
+    def verbose_report(self):
+        items: list[tuple[str, list[int | str]]] = [
+            ("Downloaded", sorted(set(self.downloaded), key=self.downloaded.index)),
+            ("Modified", sorted(set(self.modified), key=self.modified.index)),
+            ("Users deactivated", sorted(set(self.user_deactivated), key=self.user_deactivated.index)),
+            ("User errors", sorted(set(self.user_errors), key=self.user_errors.index)),
+            ("Submission errors", sorted(set(self.submission_errors), key=self.submission_errors.index)),
+            ("File errors", sorted(set(self.file_errors), key=self.file_errors.index)),
+            ("Thumb errors", sorted(set(self.thumbnail_errors), key=self.thumbnail_errors.index)),
+            ("Journal Errors", sorted(set(self.journal_errors), key=self.journal_errors.index)),
+        ]
+        name_padding: int = max(map(len, map(itemgetter(0), items)))
+        for name, value in items:
+            echo(f"{blue}{name:<{name_padding}}{reset}: {yellow}{value}{reset}", color=self.color)
 
     def _make_bar(self, bar_width: int = None):
         return Bar(self.bar_width if bar_width is None else bar_width)
@@ -261,9 +273,9 @@ class Downloader:
         self.db.commit()
         self.bar_message(("#" * self.bar_width) if thumb else "ERROR", green if thumb else red)
         self.bar_close()
-        self.downloaded += 1
-        self.file_errors += 0 if file else 1
-        self.thumbnail_errors += 0 if thumb else 1
+        self.downloaded += [submission_id]
+        self.file_errors += [] if file else [submission_id]
+        self.thumbnail_errors += [] if thumb else [submission_id]
         return 0
 
     # noinspection DuplicatedCode
@@ -280,7 +292,7 @@ class Downloader:
             self.bar_message("DOWNLOAD")
             result, err = download_catch(self.api.journals, user, page)
             if err:
-                self.user_errors += 1
+                self.user_errors += [user]
                 self.err_to_bar(err)
                 return err
             self.bar_close("")
@@ -305,7 +317,7 @@ class Downloader:
                     elif self.db.journals.set_user_update(journal.id, 1):
                         self.db.commit()
                         self.bar_message("UPDATED", green)
-                        self.modified += 1
+                        self.modified += [journal.id]
                     else:
                         stop -= 1
                         if clear_last_found:
@@ -324,7 +336,7 @@ class Downloader:
                     self.db.commit()
                     self.bar_message("#" * self.bar_width, green)
                     self.bar_close()
-                    self.downloaded += 1
+                    self.downloaded += [journal.id]
                 if stop == 0:
                     return 0
             page = next_page
@@ -347,7 +359,7 @@ class Downloader:
             self.bar_message("DOWNLOAD")
             result, err = download_catch(downloader, user, next_page)
             if err:
-                self.user_errors += 1
+                self.user_errors += [user]
                 self.err_to_bar(err)
                 return err
             self.bar_close("")
@@ -372,12 +384,12 @@ class Downloader:
                     elif folder != Folder.favorites and self.db.submissions.set_user_update(sub_partial.id, 1):
                         self.db.commit()
                         self.bar_message("UPDATED", green)
-                        self.modified += 1
+                        self.modified += [sub_partial.id]
                         self.bar_close()
                     elif folder == Folder.favorites and self.db.submissions.add_favorite(sub_partial.id, user):
                         self.db.commit()
                         self.bar_message("ADDED FAV", green)
-                        self.modified += 1
+                        self.modified += [sub_partial.id]
                         self.bar_close()
                     else:
                         stop -= 1
@@ -409,7 +421,7 @@ class Downloader:
         user, err = download_catch(self.api.user, username)
         self.err_to_bar(err)
         if err:
-            self.user_errors += 1
+            self.user_errors += [user]
             return err
         added: bool = (current := self.db.users[username][UsersColumns.USERPAGE.value.name]) == ""
         updated: bool = not added and user.profile != current
@@ -419,8 +431,8 @@ class Downloader:
             self.clear_line()
             return 0
         self.db.users[username] = self.db.users[username] | {UsersColumns.USERPAGE.value.name: user.profile}
-        self.downloaded += added
-        self.modified += updated
+        self.downloaded += [user] if added else []
+        self.modified += [user] if updated else []
         self.bar_message("ADDED" if added else "UPDATED", green)
         return 0
 
@@ -450,9 +462,9 @@ class Downloader:
                         pass
                     elif user_added:
                         del self.db.users[user]
-                    else:
+                    elif err == 2:
                         self.db.users.deactivate(user)
-                        self.user_deactivated += 1
+                        self.user_deactivated += [user]
                     self.db.commit()
                     break
                 self.bar_close()
@@ -529,6 +541,7 @@ class Downloader:
                 "author": journal.author.name,
                 (u := JournalsColumns.USERUPDATE.value.name): entry.get(u, 0)
             }, replace=replace)
+            self.downloaded += [journal.id]
             self.db.commit()
             self.bar_message("#" * self.bar_width, green)
             self.bar_close()
