@@ -412,7 +412,7 @@ class Downloader:
             self.user_errors += 1
             return err
         added: bool = (current := self.db.users[username][UsersColumns.USERPAGE.value.name]) == ""
-        updated: bool = user.profile != current
+        updated: bool = not added and user.profile != current
         if not added and not updated:
             self.bar_message("IN DB")
             self.bar_close("" if clear_found else "\n")
