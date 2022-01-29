@@ -1,5 +1,23 @@
 # Changelog
 
+## 4.0.8
+
+### New Features
+
+* `database search` command now supports multiple `--sort` options for multiple levels of sorting (e.g. `AUTHOR asc`
+  and `ID desc`)
+
+### Changes
+
+* Removed `--order` option of `database search` command, the `--sort` option now handles both columns and sorting order
+* The last entry found during `download update` is cleared only if the `--stop` option is left to its default value of 1
+
+### Fixes
+
+* Fixes non-printable character in simple output mode (enabled automatically when not printing to a terminal) for
+  `download` commands
+* Fix missing color for `IN DB` message during user page downloads
+
 ## 4.0.7
 
 ### New Features
