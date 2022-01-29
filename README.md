@@ -379,11 +379,13 @@ Search is performed case-insensitively.
 
 The output can be set to five different types:
 
-* `table` Table format * `csv` CSV format (comma separated)
+* `table` Table format
+* `csv` CSV format (comma separated)
 * `tsv` TSV format (tab separated)
-* `json` JSON format * `none` Do not print results to screen
+* `json` JSON format
+* `none` Do not print results to screen
 
-_Note_: characters not in the ASCII range will be replaced with □ when using table output
+_Note_: characters outside the ASCII range will be replaced with □ when using table output
 
 > ```
 > falocalrepo search USERS --output json '@folders ^gallery'
