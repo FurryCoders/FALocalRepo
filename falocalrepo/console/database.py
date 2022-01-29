@@ -209,14 +209,14 @@ def print_json(results: Cursor, file: TextIO) -> int:
     return results_total
 
 
-def search(table: Table, headers: list[str], query: str, sort: str, order: str, limit: int | None,
+def search(table: Table, headers: list[str], query: str, sort: tuple[tuple[str, str]], limit: int | None,
            offset: int | None, sql: bool) -> tuple[Cursor, tuple[str, list[str]]]:
     cols_table: list[str] = [c.name for c in table.columns]
     query_elems, values = ([query], []) if sql else query_to_sql(
         query, "any", [*map(str.lower, {*cols_table, "any"} - {"ID", "AUTHOR", "USERNAME"})],
         {"author": "replace(author, '_', '')", "any": f"({'||'.join(cols_table)})"})
     query = " ".join(query_elems)
-    return (table.select_sql(query, values, headers, [f"{sort} {order}"], limit or 0, offset or 0),
+    return (table.select_sql(query, values, headers, [" ".join(s) for s in sort], limit or 0, offset or 0),
             (query, values))
 
 
@@ -334,8 +334,8 @@ def database_history(ctx: Context, database: Callable[..., Database], clear: boo
 @argument("query", nargs=-1, required=True, callback=lambda _c, _p, v: " ".join(v))
 @option("--column", metavar="<COLUMN[,WIDTH]>", type=str, multiple=True, callback=column_callback,
         help=f"Select {yellow}COLUMN{reset} and use {yellow}WIDTH{reset} in table output.")
-@option("--sort", metavar="COLUMN", type=str, help=f"Sort by {yellow}COLUMN{reset}.")
-@option("--order", type=SearchOrderChoice(), default="desc", show_default=True, help="Specify sorting order")
+@option("--sort", metavar="<COLUMN [asc|desc]>", multiple=True, type=(str, SearchOrderChoice()),
+        help=f"Sort by {yellow}COLUMN{reset}.")
 @option("--limit", type=IntRange(0, min_open=True), help="Limit query results.")
 @option("--offset", type=IntRange(0, min_open=True), help="Offset query results.")
 @option("--sql", is_flag=True, help="Treat query as SQLite WHERE statement.")
@@ -350,7 +350,7 @@ def database_history(ctx: Context, database: Callable[..., Database], clear: boo
 @docstring_format(c=cyan, i=italic, r=reset, prog_name=__prog_name__, version=__version__,
                   outputs="\n    ".join(f" * {s.value}\t{s.help}" for s in SearchOutputChoice.completion_items))
 def database_search(ctx: Context, database: Callable[..., Database], table: str, query: str,
-                    column: tuple[tuple[str, int]], sort: str | None, order: str, limit: int | None, offset: int | None,
+                    column: tuple[tuple[str, int]], sort: tuple[tuple[str, str]], limit: int | None, offset: int | None,
                     sql: bool, show_sql: bool, output: str, ignore_width: bool, total: bool):
     """
     Search the database using queries, and output in different formats.
@@ -416,15 +416,17 @@ def database_search(ctx: Context, database: Callable[..., Database], table: str,
     default_headers: list[tuple[str, int]] = []
 
     if table in (submissions_table, journals_table):
-        default_headers = [("ID", 10), ("AUTHOR", 16), ("DATE", 16), ("TITLE", 0)]
+        default_headers = [(SubmissionsColumns.ID.name, 10), (SubmissionsColumns.AUTHOR.name, 16),
+                           (SubmissionsColumns.DATE.name, 16), (SubmissionsColumns.TITLE.name, 0)]
+        sort = sort or ((SubmissionsColumns.ID.name, "desc"),)
     elif table == users_table:
-        default_headers = [("USERNAME", 40), ("FOLDERS", 0)]
+        default_headers = [(UsersColumns.USERNAME.name, 40), (UsersColumns.FOLDERS.name, 0)]
+        sort = sort or ((UsersColumns.USERNAME.name, "ASC"),)
 
     headers: list[tuple[str, int]] = [(c.upper(), w) for c, w in column] if column else default_headers
     headers = [(c, 0) for c in db_table.columns] if any(h == "@" for h, _ in headers) else headers
     headers[-1] = (headers[-1][0], 0)
-    results, [query, values] = search(db_table, [h for h, _ in headers], query, sort or db_table.key.name, order,
-                                      limit, offset, sql)
+    results, [query, values] = search(db_table, [h for h, _ in headers], query, sort, limit, offset, sql)
     results_total: int = 0
 
     if output == Output.table:
@@ -450,8 +452,8 @@ def database_search(ctx: Context, database: Callable[..., Database], table: str,
 @argument("output", nargs=1, required=True, type=ExportOutputChoice())
 @argument("file", nargs=1, required=False, default=stdout, type=File("w"))
 @option("--column", metavar="COLUMN", type=str, multiple=True, help=f"Select {yellow}COLUMN{reset}.")
-@option("--sort", metavar="COLUMN", type=str, help=f"Sort by {yellow}COLUMN{reset}.")
-@option("--order", type=SearchOrderChoice(), default="asc", show_default=True, help="Specify sorting order.")
+@option("--sort", metavar="<COLUMN [asc|desc]>", multiple=True, type=(str, SearchOrderChoice()),
+        help=f"Sort by {yellow}COLUMN{reset}.")
 @option("--total", is_flag=True, help="Print number of results.")
 @database_exists_option
 @color_option
@@ -459,7 +461,7 @@ def database_search(ctx: Context, database: Callable[..., Database], table: str,
 @pass_context
 @docstring_format(outputs="\n    ".join(f" * {s.value}\t{s.help}" for s in ExportOutputChoice.completion_items))
 def database_export(ctx: Context, database: Callable[..., Database], table: str, output: str, file: TextIO,
-                    column: tuple[str], sort: str | None, order: str, total: bool):
+                    column: tuple[str], sort: tuple[tuple[str, str]], total: bool):
     """
     Export all entries in a table to a file. The {yellow}FILE{reset} argument can be omitted to print the results
     directly in the terminal. The results total is not printed to file if a file is used.
@@ -479,7 +481,7 @@ def database_export(ctx: Context, database: Callable[..., Database], table: str,
     db_table: Table = get_table(db, table)
     column = column or db_table.columns
 
-    results: Cursor = db_table.select(None, column, [f"{sort or db_table.key.name} {order}"])
+    results: Cursor = db_table.select(None, column, [" ".join(s) for s in (sort or ((db_table.key.name, ""),))])
     results_total: int = 0
 
     if output == Output.csv:
@@ -707,7 +709,7 @@ def database_copy(ctx: Context, database: Callable[..., Database], database_dest
     cursors: list[Cursor]
     if query:
         cursors = [
-            search(tb := get_table(db, t), [c.name for c in tb.columns], q, tb.key.name, "desc", None, None, False)[0]
+            search(tb := get_table(db, t), [c.name for c in tb.columns], q, ((tb.key.name, ""),), None, None, False)[0]
             for t, q in query]
     else:
         cursors = [get_table(db, t.value).select() for t in TableChoice.completion_items]
@@ -751,7 +753,7 @@ def database_merge(ctx: Context, database: Callable[..., Database], database_ori
     cursors: list[Cursor]
     if query:
         cursors = [
-            search(tb := get_table(db2, t), [c.name for c in tb.columns], q, tb.key.name, "desc", None, None, False)[0]
+            search(tb := get_table(db2, t), [c.name for c in tb.columns], q, ((tb.key.name, ""),), None, None, False)[0]
             for t, q in query]
     else:
         cursors = [get_table(db2, t.value).select() for t in TableChoice.completion_items]
