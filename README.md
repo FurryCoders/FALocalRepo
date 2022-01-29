@@ -194,8 +194,6 @@ The config command allows reading and changing the settings used by the program.
 
 Available config commands are:
 
-Available settings are:
-
 * `list` List settings.
 * `cookies [--cookie <NAME> <VALUE>...]` Read or modify stored cookies. If no `--cookie` option is given, the current
   values are read instead.
