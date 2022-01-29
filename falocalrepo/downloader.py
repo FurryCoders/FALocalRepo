@@ -202,8 +202,10 @@ class Downloader:
             return
         self.bar().update(total, level)
 
-    def bar_message(self, message: str, color: str = ""):
+    def bar_message(self, message: str, color: str = "", *, always: bool = False):
         if self.output == OutputType.simple:
+            if always:
+                echo(message)
             return
         self.bar().message(message, color)
 
@@ -261,7 +263,7 @@ class Downloader:
         self.bar_close("\b")
         self.bar(7)
         file: bytes | None = self.download_bytes(submission.file_url)
-        self.bar_message(("#" * self.bar_width) if file else "ERROR", green if file else red)
+        self.bar_message(("#" * self.bar_width) if file else "ERROR", green if file else red, always=True)
         self.bar_close("]")
         self.bar(1)
         thumb: bytes | None = self.download_bytes(submission.thumbnail_url or thumbnail)
@@ -271,7 +273,7 @@ class Downloader:
                                              SubmissionsColumns.USERUPDATE.value.name: int(user_update)},
                                             file, thumb, replace=replace)
         self.db.commit()
-        self.bar_message(("#" * self.bar_width) if thumb else "ERROR", green if thumb else red)
+        self.bar_message(("#" * self.bar_width) if thumb else "ERROR", green if thumb else red, always=True)
         self.bar_close()
         self.downloaded += [submission_id]
         self.file_errors += [] if file else [submission_id]
@@ -306,7 +308,7 @@ class Downloader:
                 self.bar()
                 self.bar_message("SEARCHING")
                 if journal.id in self.db.journals:
-                    self.bar_message("IN DB", green)
+                    self.bar_message("IN DB", green, always=True)
                     if self.dry_run:
                         stop -= 1
                         if clear_last_found:
@@ -316,7 +318,7 @@ class Downloader:
                             self.bar_close()
                     elif self.db.journals.set_user_update(journal.id, 1):
                         self.db.commit()
-                        self.bar_message("UPDATED", green)
+                        self.bar_message("UPDATED", green, always=True)
                         self.modified += [journal.id]
                     else:
                         stop -= 1
@@ -373,7 +375,7 @@ class Downloader:
                 self.bar()
                 self.bar_message("SEARCHING")
                 if sub_partial.id in self.db.submissions:
-                    self.bar_message("IN DB", green)
+                    self.bar_message("IN DB", green, always=True)
                     if self.dry_run:
                         stop -= 1
                         if clear_last_found and stop == 0:
@@ -383,12 +385,12 @@ class Downloader:
                             self.bar_close()
                     elif folder != Folder.favorites and self.db.submissions.set_user_update(sub_partial.id, 1):
                         self.db.commit()
-                        self.bar_message("UPDATED", green)
+                        self.bar_message("UPDATED", green, always=True)
                         self.modified += [sub_partial.id]
                         self.bar_close()
                     elif folder == Folder.favorites and self.db.submissions.add_favorite(sub_partial.id, user):
                         self.db.commit()
-                        self.bar_message("ADDED FAV", green)
+                        self.bar_message("ADDED FAV", green, always=True)
                         self.modified += [sub_partial.id]
                         self.bar_close()
                     else:
@@ -426,14 +428,14 @@ class Downloader:
         added: bool = (current := self.db.users[username][UsersColumns.USERPAGE.value.name]) == ""
         updated: bool = not added and user.profile != current
         if not added and not updated:
-            self.bar_message("IN DB", green)
+            self.bar_message("IN DB", green, always=True)
             self.bar_close("" if clear_found else "\n")
             self.clear_line()
             return 0
         self.db.users[username] = self.db.users[username] | {UsersColumns.USERPAGE.value.name: user.profile}
         self.downloaded += [user] if added else []
         self.modified += [user] if updated else []
-        self.bar_message("ADDED" if added else "UPDATED", green)
+        self.bar_message("ADDED" if added else "UPDATED", green, always=True)
         return 0
 
     def _download_users(self, users_folders: Iterable[tuple[str, list[str]]], stop: int = -1):
@@ -544,5 +546,5 @@ class Downloader:
             }, replace=replace)
             self.downloaded += [journal.id]
             self.db.commit()
-            self.bar_message("#" * self.bar_width, green)
+            self.bar_message("#" * self.bar_width, green, always=True)
             self.bar_close()
