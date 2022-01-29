@@ -50,6 +50,9 @@ jobs:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
+      - uses: actions/setup-node@v2.5.1
+        with:
+          node-version: 16
       - name: Get dist
         uses: actions/download-artifact@v2
         with:
@@ -61,6 +64,12 @@ jobs:
           TAG="$(git tag -l --sort=-version:refname | head -1)"
           echo "::set-output name=tag::$TAG"
           echo "::set-output name=tagName::${TAG#v}"
+      - name: Clean CHANGELOG.md
+        run: |
+          touch CHANGELOG.md.tmp
+          npm install -g prettier
+          prettier --parser markdown --tab-width 4 --prose-wrap never CHANGELOG.md > CHANGELOG.md.tmp
+          cat CHANGELOG.md.tmp > CHANGELOG.md
       - name: Build Release
         id: release
         uses: MatteoCampinoti94/changelog-to-release@v1.0.2
