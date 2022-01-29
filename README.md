@@ -323,7 +323,7 @@ Available operations are:
 > ```
 
 > ```
-> falocalrepo search JOURNALS --putput csv '@date (2020- | 2019-) @content commission'
+> falocalrepo search JOURNALS --output csv '@date (2020- | 2019-) @content commission'
 > ```
 
 * `export [--column <COLUMN>...] [--sort COLUMN] [--order {asc|desc}] [--total] {SUBMISSIONS|JOURNALS|USERS} {csv|tsv|json} [FILE]`
@@ -346,7 +346,7 @@ Available operations are:
 > ```
 
 > ```
-> falocalrepo export JOURNALS --putput csv '@date (2020- | 2019-) @content commission'
+> falocalrepo export JOURNALS --output csv '@date (2020- | 2019-) @content commission'
 > ```
 
 * `add [--replace] [--submission-file FILENAME] [--submission-thumbnail FILENAME] {SUBMISSIONS|JOURNALS|USERS} <FILE>`
