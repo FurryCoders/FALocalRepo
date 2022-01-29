@@ -181,33 +181,51 @@ Cookies need to be set manually with the config command before the program will 
 
 ### Init
 
-`init`
+```
+init
+```
 
 The `init` command initialises the database. If a database is already present, no operation is performed except for a
 version check.
 
 ### Config
 
-`config <OPERATION>`
+```
+config <OPERATION>
+```
 
 The config command allows reading and changing the settings used by the program.
 
-Available config commands are:
+#### list
 
-* `list` List settings.
-* `cookies [--cookie <NAME> <VALUE>...]` Read or modify stored cookies. If no `--cookie` option is given, the current
-  values are read instead.
+```
+list
+```
+
+#### cookies
+
+```
+cookies [--cookie <NAME> <VALUE>...]
+```
+
+Read or modify stored cookies. If no `--cookie` option is given, the current values are read instead.
 
 > ```
 > falocalrepo config cookies --cookie a 38565475-3421-3f21-7f63-3d341339737 --cookie b 356f5962-5a60-0922-1c11-65003b703038
 > ```
 
-* `files-folder [--move | --no-move] [--relative | --absolute] [<NEW_FOLDER>]` Read or modify the folder used to store
-  submission files, where `NEW_FOLDER` is the path to the new folder. If `NEW_FOLDER` is omitted, the current value is
-  read instead.<br/>
-  By default, `NEW_FOLDER` is considered to be relative to the database folder. Absolute values are allowed as long as a
-  relative path to the database parent folder can exist. To force the use of an absolute value, activate the
-  `--absolute` option.
+#### files-folder
+
+```
+files-folder [--move | --no-move] [--relative | --absolute] [<NEW_FOLDER>]
+```
+
+Read or modify the folder used to store submission files, where `NEW_FOLDER` is the path to the new folder. If
+`NEW_FOLDER` is omitted, the current value is read instead.
+
+By default, `NEW_FOLDER` is considered to be relative to the database folder. Absolute values are allowed as long as a
+relative path to the database parent folder can exist. To force the use of an absolute value, activate the
+`--absolute` option.
 
 > ```
 > falocalrepo config files-folder --no-move FA.files2
@@ -215,7 +233,9 @@ Available config commands are:
 
 ### Download
 
-`download <OPERATION>`
+```
+download <OPERATION>
+```
 
 The download command performs all download operations to save and update users, submissions, and journals. Submissions
 are downloaded together with their files and thumbnails, if there are any. For details on submission files,
@@ -228,12 +248,22 @@ database or not.
 When downloading, submission and journal titles will be displayed in the terminal. Characters in the titles outside the
 ASCII range will be replaced with □ to avoid formatting errors.
 
-Available operations are:
+#### login
 
-* `login` Check whether the cookies stored in the database belong to a login Fur Affinity session.
+```
+login
+```
 
-* `users [--dry-run] -u <USER>... -f <FOLDER>...` Download specific user folders, where `FOLDER` is one of gallery,
-  scraps, favorites, journals, userpage. Multiple `--user` and `--folder` arguments can be passed.
+Check whether the cookies stored in the database belong to a login Fur Affinity session.
+
+#### users
+
+```
+users [--dry-run] -u <USER>... -f <FOLDER>...
+```
+
+Download specific user folders, where `FOLDER` is one of gallery, scraps, favorites, journals, userpage. Multiple
+`--user` and `--folder` arguments can be passed.
 
 > ```
 > falocalrepo download users -u tom -u jerry -f gallery -f scraps -f journals
@@ -242,14 +272,21 @@ Available operations are:
 > falocalrepo download users tom,jerry list-favorites
 > ```
 
-* `update [--dry-run] [--deactivated] [--stop N] [-u <USER>...] [-f <FOLDER>...]` Download new entries using the users
-  and folders already in the database. `--user` and `--folder` options can be used to restrict the update to specific
-  users and or folders, where `FOLDER` is one of gallery, scraps, favorites, journals, userpage. Multiple `--user`
-  and `--folder` arguments can be passed.<br/>
-  If the `--deactivated` option is used, deactivated users are fetched instead of ignore. If the user is no longer
-  inactive, the database entry will be modified as well.<br/>
-  The `--stop` option allows setting how many entries of each folder should be found in the database before stopping the
-  update.
+#### update
+
+```
+update [--dry-run] [--deactivated] [--stop N] [-u <USER>...] [-f <FOLDER>...]
+```
+
+Download new entries using the users and folders already in the database. `--user` and `--folder` options can be used to
+restrict the update to specific users and or folders, where `FOLDER` is one of gallery, scraps, favorites, journals,
+userpage. Multiple `--user` and `--folder` arguments can be passed.
+
+If the `--deactivated` option is used, deactivated users are fetched instead of ignore. If the user is no longer
+inactive, the database entry will be modified as well.
+
+The `--stop` option allows setting how many entries of each folder should be found in the database before stopping the
+update.
 
 > ```
 > falocalrepo download update --stop 5
@@ -261,16 +298,27 @@ Available operations are:
 > falocalrepo download update -u tom -u jerry -f favorites
 > ```
 
-* `submissions [--replace] <SUBMISSION_ID>...` Download single submissions, where `SUBMISSION_ID` is the ID of the
-  submission. If the `--replace` option is used, database entries will be overwritten with new data (favorites will be
-  maintained).
+#### submissions
+
+```
+submissions [--replace] <SUBMISSION_ID>...
+```
+
+Download single submissions, where `SUBMISSION_ID` is the ID of the submission. If the `--replace` option is used,
+database entries will be overwritten with new data (favorites will be maintained).
 
 > ```
 > falocalrepo download submissions 12345678 13572468 87651234
 > ```
 
-* `journals [--replace] <JOURNAL_ID>...` Download single journals, where `JOURNAL_ID` is the ID of the journal.<br/>
-  If the `--replace` option is used, database entries will be overwritten with new data (favorites will be maintained).
+#### journals
+
+```
+journals [--replace] <JOURNAL_ID>...
+```
+
+Download single journals, where `JOURNAL_ID` is the ID of the journal. If the `--replace` option is used, database
+entries will be overwritten with new data (favorites will be maintained).
 
 > ```
 > falocalrepo download journals 123456 135724 876512
@@ -278,39 +326,64 @@ Available operations are:
 
 ### Database
 
-`database <OPERATION>`
+```
+database <OPERATION>
+```
 
 Operate on the database to add, remove, or search entries. For details on columns see [Database](#database-1).
 
 Available operations are:
 
-* `info` show database information, statistics and version.
-* `history [--filter FILTER] [--clear]` Show database history. History events can be filtered using the `--filter`
-  option to match events that contain `FILTER` (the match is performed case-insensitively).<br/>
-  Using the `--clear` option will delete all history entries, or the ones containing `FILTER` if the `--filter` option
-  is used.
+#### info
+
+```
+info
+```
+
+Show database information, statistics and version.
+
+#### history
+
+```
+history [--filter FILTER] [--clear]
+```
+
+Show database history. History events can be filtered using the `--filter` option to match events that contain
+`FILTER` (the match is performed case-insensitively).
+
+Using the `--clear` option will delete all history entries, or the ones containing `FILTER` if the `--filter` option is
+used.
 
 > ```
 > falocalrepo database history --filter upgrade 
 > ```
 
-* `search [--column <COLUMN[,WIDTH]>...] [--limit LIMIT] [--offset OFFSET] [--sort COLUMN] [--order {asc|desc}] [--output {table|csv|tsv|json|none}] [--ignore-width] [--sql] [--show-sql] [--total] {SUBMISSIONS|JOURNALS|USERS} <QUERY>...`
-  Search the database using queries, and output in different formats. For details on the query language,
-  see [Database Query Language](#database-query-language).<br/>
-  The default output format is a table with only the most relevant columns displayed for each entry. To override the
-  displayed column, or change their width, use the --column option to select which columns will be displayed (SQLite
-  statements are supported). The optional `WIDTH` value can be added to format that specific column when the output is
-  set to table.<br/>
-  To output all columns and entries of a table, `COLUMN` and `QUERY` values can be set to `@` and `%` respectively.
-  However, the `database export` command is better suited for this task.<br/>
-  Search is performed case-insensitively.<br/>
-  The output can be set to five different types:
-    * `table` Table format
-    * `csv` CSV format (comma separated)
-    * `tsv` TSV format (tab separated)
-    * `json` JSON format
-    * `none` Do not print results to screen<br/>
-      _Note_: characters not in the ASCII range will be replaced with □ when using table output
+#### search
+
+```
+search [--column <COLUMN[,WIDTH]>...] [--limit LIMIT] [--offset OFFSET] [--sort COLUMN] [--order {asc|desc}] [--output {table|csv|tsv|json|none}] [--ignore-width] [--sql] [--show-sql] [--total] {SUBMISSIONS|JOURNALS|USERS} <QUERY>...
+```
+
+Search the database using queries, and output in different formats. For details on the query language,
+see [Database Query Language](#database-query-language).
+
+The default output format is a table with only the most relevant columns displayed for each entry. To override the
+displayed column, or change their width, use the --column option to select which columns will be displayed (SQLite
+statements are supported). The optional `WIDTH` value can be added to format that specific column when the output is set
+to table.
+
+To output all columns and entries of a table, `COLUMN` and `QUERY` values can be set to `@` and `%` respectively.
+However, the `database export` command is better suited for this task.
+
+Search is performed case-insensitively.
+
+The output can be set to five different types:
+
+* `table` Table format * `csv` CSV format (comma separated)
+* `tsv` TSV format (tab separated)
+* `json` JSON format * `none` Do not print results to screen
+
+_Note_: characters not in the ASCII range will be replaced with □ when using table output
 
 > ```
 > falocalrepo search USERS --output json '@folders ^gallery'
@@ -324,16 +397,25 @@ Available operations are:
 > falocalrepo search JOURNALS --output csv '@date (2020- | 2019-) @content commission'
 > ```
 
-* `export [--column <COLUMN>...] [--sort COLUMN] [--order {asc|desc}] [--total] {SUBMISSIONS|JOURNALS|USERS} {csv|tsv|json} [FILE]`
-  Export all entries in a table to a file. The `FILE` argument can be omitted to print the results directly in the
-  terminal. The results total is not printed to file if a file is used.<br/>
-  By default, all columns of the table are selected, but this can be overridden with the `--column` option (SQLite
-  statements are supported).<br/>
-  Only sort and order statements are supported for exporting, to filter results use the `database search` command.<br/>
-  The `OUTPUT` can be set to four different types:
-    * `csv` CSV format (comma separated)
-    * `tsv` TSV format (tab separated)
-    * `json` JSON format
+#### export
+
+```
+export [--column <COLUMN>...] [--sort COLUMN] [--order {asc|desc}] [--total] {SUBMISSIONS|JOURNALS|USERS} {csv|tsv|json} [FILE]
+```
+
+Export all entries in a table to a file. The `FILE` argument can be omitted to print the results directly in the
+terminal. The results total is not printed to file if a file is used.
+
+By default, all columns of the table are selected, but this can be overridden with the `--column` option (SQLite
+statements are supported).
+
+Only sort and order statements are supported for exporting, to filter results use the `database search` command.
+
+The `OUTPUT` can be set to four different types:
+
+* `csv` CSV format (comma separated)
+* `tsv` TSV format (tab separated)
+* `json` JSON format
 
 > ```
 > falocalrepo export USERS --output json users.json'
@@ -347,46 +429,81 @@ Available operations are:
 > falocalrepo export JOURNALS --output csv '@date (2020- | 2019-) @content commission'
 > ```
 
-* `add [--replace] [--submission-file FILENAME] [--submission-thumbnail FILENAME] {SUBMISSIONS|JOURNALS|USERS} <FILE>`
-  Add entries and submission files manually using a JSON file. Submission files/thumbnails can be added using the
-  respective options.<br/>
-  The JSON file must contain fields for all columns of the table. For a list of columns for each table,
-  see [Database](#database-1). By default, the program will throw an error when trying to add an entry that already
-  exists. To override this behaviour and ignore existing entries, use the `--replace` option.
+#### add
+
+```
+add [--replace] [--submission-file FILENAME] [--submission-thumbnail FILENAME] {SUBMISSIONS|JOURNALS|USERS} <FILE>
+```
+
+Add entries and submission files manually using a JSON file. Submission files/thumbnails can be added using the
+respective options.
+
+The JSON file must contain fields for all columns of the table. For a list of columns for each table,
+see [Database](#database-1). By default, the program will throw an error when trying to add an entry that already
+exists. To override this behaviour and ignore existing entries, use the `--replace` option.
 
 > ```
 > falocalrepo database add USERS user.json
 > ```
 
-* `remove [--yes] {SUBMISSIONS|JOURNALS|USERS} ID...` Remove entries from the database using their IDs. The program will
-  prompt for a confirmation before commencing deletion. To confirm deletion ahead, use the `--yes` option.
+#### remove
+
+```
+remove [--yes] {SUBMISSIONS|JOURNALS|USERS} ID...
+```
+
+Remove entries from the database using their IDs. The program will prompt for a confirmation before commencing deletion.
+To confirm deletion ahead, use the `--yes` option.
 
 > ```
 > falocalrepo database remove SUBMISSIONS 1 5 14789324
 > ```
 
-* `merge [--query <TABLE QUERY>...] [--replace] DATABASE_ORIGIN` Merge database from `DATABASE_ORIGIN`.<br/>
-  Specific tables can be selected with the `--query` option. For details on the syntax for the `QUERY` value, see
-  [Database Query Language](#database-query-language). To select all entries in a table, use `%` as query. The `TABLE`
-  value can be one of SUBMISSIONS, JOURNALS, USERS.<br/>
-  If no `--query` option is given, all major tables from the origin database are copied (SUBMISSIONS, JOURNALS, USERS).
+#### merge
+
+```
+merge [--query <TABLE QUERY>...] [--replace] DATABASE_ORIGIN
+```
+
+Merge database from `DATABASE_ORIGIN`. Specific tables can be selected with the `--query` option. For details on the
+syntax for the `QUERY` value, see [Database Query Language](#database-query-language). To select all entries in a table,
+use `%` as query. The `TABLE` value can be one of SUBMISSIONS, JOURNALS, USERS. If no `--query` option is given, all
+major tables from the origin database are copied (SUBMISSIONS, JOURNALS, USERS).
 
 > ```
 > falocalrepo database merge ~/FA.db --query USERS tom --SUBMISSIONS '@author tom'
 > ```
 
-* `copy [--query <TABLE QUERY>...] [--replace] DATABASE_DEST` Copy database to `DATABASE_DEST`.<br/>
-  Specific tables can be selected with the `--query` option. For details on the syntax for the `QUERY` value, see
-  [Database Query Language](#database-query-language). To select all entries in a table, use `%` as query. The `TABLE`
-  value can be one of SUBMISSIONS, JOURNALS, USERS.<br/>
-  If no `--query` option is given, all major tables from the origin database are copied (SUBMISSIONS, JOURNALS, USERS).
+#### copy
+
+```
+copy [--query <TABLE QUERY>...] [--replace] DATABASE_DEST
+```
+
+Copy database to `DATABASE_DEST`. Specific tables can be selected with the `--query` option. For details on the syntax
+for the `QUERY` value, see [Database Query Language](#database-query-language). To select all entries in a table,
+use `%` as query. The `TABLE` value can be one of SUBMISSIONS, JOURNALS, USERS. If no `--query` option is given, all
+major tables from the origin database are copied (SUBMISSIONS, JOURNALS, USERS).
 
 > ```
 > falocalrepo database copy ~/FA.db --query USERS tom --SUBMISSIONS '@author tom'
 > ```
 
-* `clean` Clean the database using the SQLite [VACUUM](https://www.sqlite.org/lang_vacuum.html) function.
-* `upgrade` Upgrade the database to the latest version.
+#### clean
+
+```
+clean
+```
+
+Clean the database using the SQLite [VACUUM](https://www.sqlite.org/lang_vacuum.html) function.
+
+#### upgrade
+
+```
+upgrade
+```
+
+Upgrade the database to the latest version.
 
 #### Database Query Language
 
@@ -420,7 +537,9 @@ operators need to be used (e.g. `@author %tom%`).
 
 ### Server
 
-`server [--host HOST] [--port PORT] [--ssl-cert FILE] [--ssl-key FILE] [--redirect-http PORT2] [--auth USERNAME:PASSWORD] [--precache]`
+```
+server [--host HOST] [--port PORT] [--ssl-cert FILE] [--ssl-key FILE] [--redirect-http PORT2] [--auth USERNAME:PASSWORD] [--precache]
+```
 
 Start a server at `HOST`:`PORT` to navigate the database. The `--ssl-cert` and `--ssl-cert` allow serving with HTTPS.
 Using `--redirect-http` starts the server in HTTP to HTTPS redirection mode. `--auth` enables HTTP Basic
@@ -429,7 +548,9 @@ authentication. `--precache` caches database entries at startup. For more detail
 
 ### Completions
 
-`completions [--alias NAME] {bash|fish|zsh}`
+```
+completions [--alias NAME] {bash|fish|zsh}
+````
 
 Generate tab-completion scripts for your shell. The generated completion must be saved in the correct location for it to
 be recognized and used by the shell. The optional `--alias` option allows generating completion script with a name other
@@ -443,7 +564,9 @@ Supported shells are:
 
 ### Updates
 
-`updates [--shell]`
+```
+updates [--shell]
+```
 
 Check for updates to falocalrepo and its main dependencies on PyPi. The optional `--shell` option can be used to output
 the shell command to upgrade any component that has available updates.
@@ -452,7 +575,9 @@ _Note_: The command needs an internet connection.
 
 ### Help
 
-`help [<COMMAND>...]`
+```
+help [<COMMAND>...]
+```
 
 The `help` command gives information on the usage of the program and its commands.
 
@@ -462,7 +587,9 @@ The `help` command gives information on the usage of the program and its command
 
 ### Paw
 
-`paw [--true-color | --8bit-color] [FLAG]`
+```
+paw [--true-color | --8bit-color] [FLAG]
+```
 
 Print a PRIDE paw!
 
