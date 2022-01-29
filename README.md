@@ -319,7 +319,7 @@ Available operations are:
 > ```
 
 > ```
-> falocalrepo search SUBMISSIONS '@tags |cat| |mouse| @date 2020- @category artwork' --sort AUTHOR
+> falocalrepo search SUBMISSIONS '@tags |cat| |mouse| @date 2020- @category artwork' --sort AUTHOR asc --sort DATE desc
 > ```
 
 > ```
@@ -342,7 +342,7 @@ Available operations are:
 > ```
 
 > ```
-> falocalrepo export SUBMISSIONS --sort AUTHOR
+> falocalrepo export SUBMISSIONS --sort DATE desc
 > ```
 
 > ```
