@@ -300,7 +300,7 @@ class Downloader:
             journals, next_page = result
             for i, journal in enumerate(journals, 1):
                 title_width: int = w - page_id_width - 1 - self.bar_width - 2 - 1 - 1 if (w := terminal_width()) else 0
-                echo(f"\r{page}/{i:02} {blue}{journal.id:010}{reset} " +
+                echo(("\r" * (self.output == OutputType.rich)) + f"{page}/{i:02} {blue}{journal.id:010}{reset} " +
                      fit_string(clean_string(journal.title), title_width).ljust(title_width) + " ",
                      nl=self.output == OutputType.simple, color=self.color)
                 self.bar()
@@ -367,7 +367,7 @@ class Downloader:
             submissions, next_page = result
             for i, sub_partial in enumerate(submissions, 1):
                 title_width: int = w - page_id_width - 1 - self.bar_width - 2 - 1 - 1 if (w := terminal_width()) else 0
-                echo(f"\r{page}/{i:02} {blue}{sub_partial.id:010}{reset} " +
+                echo(('\r' * (self.output == OutputType.rich)) + f"{page}/{i:02} {blue}{sub_partial.id:010}{reset} " +
                      fit_string(clean_string(sub_partial.title), title_width).ljust(title_width) + " ",
                      nl=self.output == OutputType.simple, color=self.color)
                 self.bar()
