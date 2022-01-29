@@ -331,7 +331,7 @@ def database_history(ctx: Context, database: Callable[..., Database], clear: boo
 
 @database_app.command("search", short_help="Search database entries.", no_args_is_help=True)
 @argument("table", nargs=1, required=True, is_eager=True, type=TableChoice())
-@argument("query", nargs=-1, required=True, callback=lambda _c, _p, v: " ".join(v))
+@argument("query", nargs=-1, required=False, callback=lambda _c, _p, v: " ".join(v))
 @option("--column", metavar="<COLUMN[,WIDTH]>", type=str, multiple=True, callback=column_callback,
         help=f"Select {yellow}COLUMN{reset} and use {yellow}WIDTH{reset} in table output.")
 @option("--sort", metavar="<COLUMN [asc|desc]>", multiple=True, type=(str, SearchOrderChoice()),
