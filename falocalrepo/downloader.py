@@ -63,6 +63,10 @@ def format_entry(entry: dict[str, Any], columns: list[Column]) -> dict:
     return {k.upper().replace("_", ""): v for k, v in entry.items() if k.upper().replace("_", "") in columns_}
 
 
+def sort_set(obj: list[T]) -> list[T]:
+    return sorted(set(obj), key=obj.index)
+
+
 def get_downloader(api: FAAPI, folder: Folder) -> _FolderDownloader:
     if folder == Folder.gallery:
         return api.gallery
@@ -181,37 +185,37 @@ class Downloader:
     def verbose_report(self, file: TextIO | None = None):
         if file:
             dump({"users": {
-                "added": sorted(set(self.added_users), key=self.added_users.index),
-                "modified": sorted(set(self.modified_users), key=self.modified_users.index),
-                "errors": sorted(set(self.user_errors), key=self.user_errors.index),
-                "deactivated": sorted(set(self.user_deactivated), key=self.user_deactivated.index),
+                "added": sort_set(self.added_users),
+                "modified": sort_set(self.modified_users),
+                "errors": sort_set(self.user_errors),
+                "deactivated": sort_set(self.user_deactivated),
             },
                 "submissions": {
-                    "added": sorted(set(self.added_submissions), key=self.added_submissions.index),
-                    "modified": sorted(set(self.modified_submissions), key=self.modified_submissions.index),
-                    "errors": sorted(set(self.submission_errors), key=self.submission_errors.index),
-                    "file_errors": sorted(set(self.file_errors), key=self.file_errors.index),
-                    "thumbnail_errors": sorted(set(self.thumbnail_errors), key=self.thumbnail_errors.index),
+                    "added": sort_set(self.added_submissions),
+                    "modified": sort_set(self.modified_submissions),
+                    "errors": sort_set(self.submission_errors),
+                    "file_errors": sort_set(self.file_errors),
+                    "thumbnail_errors": sort_set(self.thumbnail_errors),
                 },
                 "journals": {
-                    "added": sorted(set(self.added_journals), key=self.added_journals.index),
-                    "modified": sorted(set(self.modified_journals), key=self.modified_journals.index),
-                    "errors": sorted(set(self.journal_errors), key=self.journal_errors.index)
+                    "added": sort_set(self.added_journals),
+                    "modified": sort_set(self.modified_journals),
+                    "errors": sort_set(self.journal_errors)
                 }}, file)
         else:
             items: list[tuple[str, list[int | str]]] = [
-                ("Added users", sorted(set(self.added_users), key=self.added_users.index)),
-                ("Modified users", sorted(set(self.modified_users), key=self.modified_users.index)),
-                ("Users deactivated", sorted(set(self.user_deactivated), key=self.user_deactivated.index)),
-                ("User errors", sorted(set(self.user_errors), key=self.user_errors.index)),
-                ("Added submission", sorted(set(self.added_submissions), key=self.added_submissions.index)),
-                ("Modified submission", sorted(set(self.modified_submissions), key=self.modified_submissions.index)),
-                ("Submission errors", sorted(set(self.submission_errors), key=self.submission_errors.index)),
-                ("File errors", sorted(set(self.file_errors), key=self.file_errors.index)),
-                ("Thumbnail errors", sorted(set(self.thumbnail_errors), key=self.thumbnail_errors.index)),
-                ("Added journal", sorted(set(self.added_journals), key=self.added_journals.index)),
-                ("Modified journal", sorted(set(self.modified_journals), key=self.modified_journals.index)),
-                ("Journal Errors", sorted(set(self.journal_errors), key=self.journal_errors.index)),
+                ("Added users", sort_set(self.added_users)),
+                ("Modified users", sort_set(self.modified_users)),
+                ("Users deactivated", sort_set(self.user_deactivated)),
+                ("User errors", sort_set(self.user_errors)),
+                ("Added submission", sort_set(self.added_submissions)),
+                ("Modified submission", sort_set(self.modified_submissions)),
+                ("Submission errors", sort_set(self.submission_errors)),
+                ("File errors", sort_set(self.file_errors)),
+                ("Thumbnail errors", sort_set(self.thumbnail_errors)),
+                ("Added journal", sort_set(self.added_journals)),
+                ("Modified journal", sort_set(self.modified_journals)),
+                ("Journal Errors", sort_set(self.journal_errors)),
             ]
             name_padding: int = max(map(len, map(itemgetter(0), items)))
             for name, value in items:
