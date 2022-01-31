@@ -144,8 +144,12 @@ class Downloader:
         self.bar_width: int = 10
         self._bar: Bar | None = None
 
-        self.downloaded: list[int | str] = []
-        self.modified: list[int | str] = []
+        self.added_users: list[int | str] = []
+        self.added_submissions: list[int | str] = []
+        self.added_journals: list[int | str] = []
+        self.modified_users: list[int | str] = []
+        self.modified_submissions: list[int | str] = []
+        self.modified_journals: list[int | str] = []
         self.user_errors: list[str] = []
         self.user_deactivated: list[str] = []
         self.submission_errors: list[int] = []
@@ -156,8 +160,12 @@ class Downloader:
     # noinspection DuplicatedCode
     def report(self):
         items: list[tuple[str, int]] = [
-            ("Downloaded", len(self.downloaded)),
-            ("Modified", len(self.modified)),
+            ("Added users", len(set(self.added_users))),
+            ("Added submissions", len(set(self.added_submissions))),
+            ("Added journals", len(set(self.added_journals))),
+            ("Modified users", len(self.modified_users)),
+            ("Modified submissions", len(self.modified_submissions)),
+            ("Modified journals", len(self.modified_journals)),
             ("Users deactivated", len(self.user_deactivated)),
             ("User errors", len(self.user_errors)),
             ("Submission errors", len(self.submission_errors)),
@@ -167,34 +175,42 @@ class Downloader:
         ]
         if items := list(filter(itemgetter(1), items)):
             name_padding: int = max(map(len, map(itemgetter(0), items or [""])))
-            for name, value in  items:
+            for name, value in items:
                 echo(f"{blue}{name:<{name_padding}}{reset}: {yellow}{value}{reset}", color=self.color)
 
     def verbose_report(self, file: TextIO | None = None):
         if file:
-            dump({"downloaded": sorted(set(self.downloaded), key=self.downloaded.index),
-                  "modified": sorted(set(self.modified), key=self.modified.index),
-                  "users": {
-                      "errors": sorted(set(self.user_errors), key=self.user_errors.index),
-                      "deactivated": sorted(set(self.user_deactivated), key=self.user_deactivated.index),
-                  },
-                  "submissions": {
-                      "errors": sorted(set(self.submission_errors), key=self.submission_errors.index),
-                      "file_errors": sorted(set(self.file_errors), key=self.file_errors.index),
-                      "thumbnail_errors": sorted(set(self.thumbnail_errors), key=self.thumbnail_errors.index),
-                  },
-                  "journals": {
-                      "errors": sorted(set(self.journal_errors), key=self.journal_errors.index)
-                  }}, file)
+            dump({"users": {
+                "added": sorted(set(self.added_users), key=self.added_users.index),
+                "modified": sorted(set(self.modified_users), key=self.modified_users.index),
+                "errors": sorted(set(self.user_errors), key=self.user_errors.index),
+                "deactivated": sorted(set(self.user_deactivated), key=self.user_deactivated.index),
+            },
+                "submissions": {
+                    "added": sorted(set(self.added_submissions), key=self.added_submissions.index),
+                    "modified": sorted(set(self.modified_submissions), key=self.modified_submissions.index),
+                    "errors": sorted(set(self.submission_errors), key=self.submission_errors.index),
+                    "file_errors": sorted(set(self.file_errors), key=self.file_errors.index),
+                    "thumbnail_errors": sorted(set(self.thumbnail_errors), key=self.thumbnail_errors.index),
+                },
+                "journals": {
+                    "added": sorted(set(self.added_journals), key=self.added_journals.index),
+                    "modified": sorted(set(self.modified_journals), key=self.modified_journals.index),
+                    "errors": sorted(set(self.journal_errors), key=self.journal_errors.index)
+                }}, file)
         else:
             items: list[tuple[str, list[int | str]]] = [
-                ("Downloaded", sorted(set(self.downloaded), key=self.downloaded.index)),
-                ("Modified", sorted(set(self.modified), key=self.modified.index)),
+                ("Added users", sorted(set(self.added_users), key=self.added_users.index)),
+                ("Modified users", sorted(set(self.modified_users), key=self.modified_users.index)),
                 ("Users deactivated", sorted(set(self.user_deactivated), key=self.user_deactivated.index)),
                 ("User errors", sorted(set(self.user_errors), key=self.user_errors.index)),
+                ("Added submission", sorted(set(self.added_submissions), key=self.added_submissions.index)),
+                ("Modified submission", sorted(set(self.modified_submissions), key=self.modified_submissions.index)),
                 ("Submission errors", sorted(set(self.submission_errors), key=self.submission_errors.index)),
                 ("File errors", sorted(set(self.file_errors), key=self.file_errors.index)),
                 ("Thumbnail errors", sorted(set(self.thumbnail_errors), key=self.thumbnail_errors.index)),
+                ("Added journal", sorted(set(self.added_journals), key=self.added_journals.index)),
+                ("Modified journal", sorted(set(self.modified_journals), key=self.modified_journals.index)),
                 ("Journal Errors", sorted(set(self.journal_errors), key=self.journal_errors.index)),
             ]
             name_padding: int = max(map(len, map(itemgetter(0), items)))
@@ -293,7 +309,7 @@ class Downloader:
         self.db.commit()
         self.bar_message(("#" * self.bar_width) if thumb else "ERROR", green if thumb else red, always=True)
         self.bar_close()
-        self.downloaded += [submission_id]
+        self.added_submissions += [submission_id]
         self.file_errors += [] if file else [submission_id]
         self.thumbnail_errors += [] if thumb else [submission_id]
         return 0
@@ -337,7 +353,7 @@ class Downloader:
                     elif self.db.journals.set_user_update(journal.id, 1):
                         self.db.commit()
                         self.bar_message("UPDATED", green, always=True)
-                        self.modified += [journal.id]
+                        self.modified_journals += [journal.id]
                     else:
                         stop -= 1
                         if clear_last_found:
@@ -356,7 +372,7 @@ class Downloader:
                     self.db.commit()
                     self.bar_message("#" * self.bar_width, green)
                     self.bar_close()
-                    self.downloaded += [journal.id]
+                    self.added_journals += [journal.id]
                 if stop == 0:
                     return 0
             page = next_page
@@ -404,12 +420,12 @@ class Downloader:
                     elif folder != Folder.favorites and self.db.submissions.set_user_update(sub_partial.id, 1):
                         self.db.commit()
                         self.bar_message("UPDATED", green, always=True)
-                        self.modified += [sub_partial.id]
+                        self.modified_submissions += [sub_partial.id]
                         self.bar_close()
                     elif folder == Folder.favorites and self.db.submissions.add_favorite(sub_partial.id, user):
                         self.db.commit()
                         self.bar_message("ADDED FAV", green, always=True)
-                        self.modified += [sub_partial.id]
+                        self.modified_submissions += [sub_partial.id]
                         self.bar_close()
                     else:
                         stop -= 1
@@ -451,8 +467,8 @@ class Downloader:
             self.clear_line()
             return 0
         self.db.users[username] = self.db.users[username] | {UsersColumns.USERPAGE.value.name: user.profile}
-        self.downloaded += [user] if added else []
-        self.modified += [user] if updated else []
+        self.added_users += [user] if added else []
+        self.modified_users += [user] if updated else []
         self.bar_message("ADDED" if added else "UPDATED", green, always=True)
         return 0
 
@@ -562,7 +578,7 @@ class Downloader:
                 "author": journal.author.name,
                 (u := JournalsColumns.USERUPDATE.value.name): entry.get(u, 0)
             }, replace=replace)
-            self.downloaded += [journal.id]
+            self.added_journals += [journal.id]
             self.db.commit()
             self.bar_message("#" * self.bar_width, green, always=True)
             self.bar_close()
