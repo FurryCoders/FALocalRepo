@@ -29,8 +29,10 @@ from falocalrepo_database import Database
 from falocalrepo_server import __name__ as __server_name__
 from falocalrepo_server import __version__ as __server_version__
 from falocalrepo_server import server
+
 try:
     from supports_color import supportsColor
+
     _supports_truecolor: bool = getattr(supportsColor.stdout, "has16m", False)
 except TypeError:
     _supports_truecolor: bool = False
@@ -57,9 +59,10 @@ _pride_flags: list[str] = [
     "genderfluid", "aromantic", "polyamory"
 ]
 _pride_colors: list[str] = [
-    red, green, yellow, blue, magenta, cyan, white, bright_red,
-    bright_green, bright_yellow, bright_blue, bright_magenta,
-    bright_cyan, bright_white
+    hex_to_ansi("E50000"), hex_to_ansi("FF8D00"), hex_to_ansi("FFEE00"),
+    hex_to_ansi("028121"), hex_to_ansi("004CFF"), hex_to_ansi("770088"),
+] if _supports_truecolor else [
+    bright_red, red, bright_yellow, green, bright_blue, magenta
 ]
 
 
@@ -467,7 +470,8 @@ def app_server(ctx: Context, database: Callable[..., Database], host: str | None
 @color_option
 @help_option
 @pass_context
-@docstring_format("\n    ".join(f"* {choice(_pride_colors)}{f}{reset}" for f in _pride_flags))
+@docstring_format("\n    ".join(f"* {_pride_colors[i % len(_pride_colors)]}{f}{reset}"
+                                for i, f in enumerate(_pride_flags)))
 def paw(ctx: Context, flag: str, true_color: bool):
     """
     Print a PRIDE {yellow}FLAG{reset} paw!
