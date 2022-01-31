@@ -1,7 +1,9 @@
 from typing import Callable
+from typing import TextIO
 
 from click import BadParameter
 from click import Context
+from click import File
 from click import IntRange
 from click import Option
 from click import argument
@@ -41,6 +43,7 @@ class FolderChoice(CompleteChoice):
 output_option = option("--simple-output", is_flag=True, default=False, help="Simplified output.")
 dry_run_option = option("--dry-run", is_flag=True, default=False, help="Fetch entries without modifying database.")
 verbose_report_option = option("--verbose-report", is_flag=True, default=False, help="Output full report with IDs.")
+report_file_option = option("--report-file", default=None, type=File("w"), help="Write download report to a file.")
 
 
 @group("download", cls=CustomHelpColorsGroup, short_help="Download resources.", no_args_is_help=True,
@@ -92,13 +95,14 @@ def download_login(ctx: Context, database: Callable[..., Database]):
         callback=lambda _c, _p, v: sorted(set(v), key=v.index), help="Folder to download.")
 @dry_run_option
 @verbose_report_option
+@report_file_option
 @database_exists_option
 @color_option
 @help_option
 @pass_context
 @docstring_format(', '.join(Folder))
 def download_users(ctx: Context, database: Callable[..., Database], users: tuple[str], folders: tuple[str],
-                   dry_run: bool, verbose_report: bool):
+                   dry_run: bool, verbose_report: bool, report_file: TextIO | None):
     """
     Download specific user folders, where {yellow}FOLDER{reset} is one of {0}. Multiple {yellow}--user{reset} and
     {yellow}--folder{reset} arguments can be passed.
@@ -113,6 +117,8 @@ def download_users(ctx: Context, database: Callable[..., Database], users: tuple
         downloader.download_users(list(users), list(folders))
     finally:
         echo()
+        if report_file:
+            downloader.verbose_report(report_file)
         downloader.verbose_report() if verbose_report else downloader.report()
 
 
@@ -126,13 +132,14 @@ def download_users(ctx: Context, database: Callable[..., Database], users: tuple
 @option("--deactivated", is_flag=True, default=False, help="Check deactivated users.")
 @dry_run_option
 @verbose_report_option
+@report_file_option
 @database_exists_option
 @color_option
 @help_option
 @pass_context
 @docstring_format(', '.join(Folder))
 def download_update(ctx: Context, database: Callable[..., Database], users: tuple[str], folders: tuple[str], stop: int,
-                    deactivated: bool, dry_run: bool, verbose_report: bool):
+                    deactivated: bool, dry_run: bool, verbose_report: bool, report_file: TextIO | None):
     """
     Download new entries using the users and folders already in the database. {yellow}--user{reset} and
     {yellow}--folder{reset} options can be used to restrict the update to specific users and or folders, where
@@ -155,6 +162,8 @@ def download_update(ctx: Context, database: Callable[..., Database], users: tupl
         downloader.download_users_update(list(users), list(folders), stop, deactivated)
     finally:
         echo()
+        if report_file:
+            downloader.verbose_report(report_file)
         downloader.verbose_report() if verbose_report else downloader.report()
 
 
@@ -164,13 +173,14 @@ def download_update(ctx: Context, database: Callable[..., Database], users: tupl
 @option("--replace", is_flag=True, default=False, show_default=True, help="Replace submissions already in database.")
 @dry_run_option
 @verbose_report_option
+@report_file_option
 @database_exists_option
 @color_option
 @help_option
 @pass_context
 @docstring_format()
 def download_submissions(ctx: Context, database: Callable[..., Database], submission_id: tuple[int], replace: bool,
-                         dry_run: bool, verbose_report: bool):
+                         dry_run: bool, verbose_report: bool, report_file: TextIO | None):
     """
     Download single submissions, where {yellow}SUBMISSION_ID{reset} is the ID of the submission.
 
@@ -186,6 +196,8 @@ def download_submissions(ctx: Context, database: Callable[..., Database], submis
         downloader.download_submissions(list(submission_id), replace)
     finally:
         echo()
+        if report_file:
+            downloader.verbose_report(report_file)
         downloader.verbose_report() if verbose_report else downloader.report()
 
 
@@ -195,13 +207,14 @@ def download_submissions(ctx: Context, database: Callable[..., Database], submis
 @option("--replace", is_flag=True, default=False, show_default=True, help="Replace submissions already in database.")
 @dry_run_option
 @verbose_report_option
+@report_file_option
 @database_exists_option
 @color_option
 @help_option
 @pass_context
 @docstring_format()
 def download_journals(ctx: Context, database: Callable[..., Database], journal_id: tuple[int], replace: bool,
-                      dry_run: bool, verbose_report: bool):
+                      dry_run: bool, verbose_report: bool, report_file: TextIO | None):
     """
     Download single journals, where {yellow}JOURNAL_ID{reset} is the ID of the journal.
 
@@ -217,6 +230,8 @@ def download_journals(ctx: Context, database: Callable[..., Database], journal_i
         downloader.download_journals(list(journal_id), replace)
     finally:
         echo()
+        if report_file:
+            downloader.verbose_report(report_file)
         downloader.verbose_report() if verbose_report else downloader.report()
 
 
