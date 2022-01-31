@@ -1,4 +1,4 @@
-name: Publish and Release
+name: Publish
 
 on:
   push:
@@ -8,6 +8,7 @@ on:
 
 jobs:
   build:
+    name: Build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -30,20 +31,38 @@ jobs:
           poetry config virtualenvs.in-project true
           poetry install --no-root
           poetry build
-      - name: Publish
-        if: ${{ startsWith(github.ref, 'refs/tags/v') }}
-        env:
-          PYPI_USERNAME: __token__
-          PYPI_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
-        run: |
-          poetry publish --username $PYPI_USERNAME --password $PYPI_PASSWORD
       - name: Save dist
         uses: actions/upload-artifact@v2
         with:
           name: dist
           path: dist
 
+  publish:
+    name: Publish
+    runs-on: ubuntu-latest
+    needs: build
+    if: ${{ startsWith(github.ref, 'refs/tags/v') }}
+    steps:
+      - uses: actions/setup-python@v2
+        with:
+          python-version: "3.10.1"
+      - uses: abatilo/actions-poetry@v2.0.0
+        with:
+          poetry-version: "1.1.12"
+      - name: Get dist
+        uses: actions/download-artifact@v2
+        with:
+          name: dist
+          path: dist
+      - name: Publish
+        env:
+          PYPI_USERNAME: __token__
+          PYPI_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
+        run: |
+          poetry publish --username $PYPI_USERNAME --password $PYPI_PASSWORD
+
   release:
+    name: Release
     runs-on: ubuntu-latest
     needs: build
     steps:
