@@ -484,6 +484,7 @@ class Downloader:
                                                  UsersColumns.FOLDERS.value.name: {},
                                                  UsersColumns.USERPAGE.value.name: ""})
                         self.db.commit()
+                        self.added_users += [user]
                     self.db.users.activate(user)
                     self.db.users.add_folder(user, folder)
                 err: int
@@ -498,6 +499,7 @@ class Downloader:
                         pass
                     elif user_added:
                         del self.db.users[user]
+                        self.added_users.remove(user)
                     elif err == 2:
                         self.db.users.deactivate(user)
                         self.user_deactivated += [user]
