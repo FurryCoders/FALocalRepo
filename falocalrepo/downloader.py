@@ -1,11 +1,13 @@
 from enum import Enum
 from enum import EnumMeta
 from enum import auto
+from json import dump
 from operator import itemgetter
 from shutil import get_terminal_size
 from typing import Any
 from typing import Callable
 from typing import Iterable
+from typing import TextIO
 from typing import TypeVar
 
 from click import echo
@@ -165,23 +167,39 @@ class Downloader:
         ]
         if items := list(filter(itemgetter(1), items)):
             name_padding: int = max(map(len, map(itemgetter(0), items or [""])))
-            for name, value in items:
+            for name, value in  items:
                 echo(f"{blue}{name:<{name_padding}}{reset}: {yellow}{value}{reset}", color=self.color)
 
-    def verbose_report(self):
-        items: list[tuple[str, list[int | str]]] = [
-            ("Downloaded", sorted(set(self.downloaded), key=self.downloaded.index)),
-            ("Modified", sorted(set(self.modified), key=self.modified.index)),
-            ("Users deactivated", sorted(set(self.user_deactivated), key=self.user_deactivated.index)),
-            ("User errors", sorted(set(self.user_errors), key=self.user_errors.index)),
-            ("Submission errors", sorted(set(self.submission_errors), key=self.submission_errors.index)),
-            ("File errors", sorted(set(self.file_errors), key=self.file_errors.index)),
-            ("Thumbnail errors", sorted(set(self.thumbnail_errors), key=self.thumbnail_errors.index)),
-            ("Journal Errors", sorted(set(self.journal_errors), key=self.journal_errors.index)),
-        ]
-        name_padding: int = max(map(len, map(itemgetter(0), items)))
-        for name, value in items:
-            echo(f"{blue}{name:<{name_padding}}{reset}: {yellow}{value}{reset}", color=self.color)
+    def verbose_report(self, file: TextIO | None = None):
+        if file:
+            dump({"downloaded": sorted(set(self.downloaded), key=self.downloaded.index),
+                  "modified": sorted(set(self.modified), key=self.modified.index),
+                  "users": {
+                      "errors": sorted(set(self.user_errors), key=self.user_errors.index),
+                      "deactivated": sorted(set(self.user_deactivated), key=self.user_deactivated.index),
+                  },
+                  "submissions": {
+                      "errors": sorted(set(self.submission_errors), key=self.submission_errors.index),
+                      "file_errors": sorted(set(self.file_errors), key=self.file_errors.index),
+                      "thumbnail_errors": sorted(set(self.thumbnail_errors), key=self.thumbnail_errors.index),
+                  },
+                  "journals": {
+                      "errors": sorted(set(self.journal_errors), key=self.journal_errors.index)
+                  }}, file)
+        else:
+            items: list[tuple[str, list[int | str]]] = [
+                ("Downloaded", sorted(set(self.downloaded), key=self.downloaded.index)),
+                ("Modified", sorted(set(self.modified), key=self.modified.index)),
+                ("Users deactivated", sorted(set(self.user_deactivated), key=self.user_deactivated.index)),
+                ("User errors", sorted(set(self.user_errors), key=self.user_errors.index)),
+                ("Submission errors", sorted(set(self.submission_errors), key=self.submission_errors.index)),
+                ("File errors", sorted(set(self.file_errors), key=self.file_errors.index)),
+                ("Thumbnail errors", sorted(set(self.thumbnail_errors), key=self.thumbnail_errors.index)),
+                ("Journal Errors", sorted(set(self.journal_errors), key=self.journal_errors.index)),
+            ]
+            name_padding: int = max(map(len, map(itemgetter(0), items)))
+            for name, value in items:
+                echo(f"{blue}{name:<{name_padding}}{reset}: {yellow}{value}{reset}", color=self.color)
 
     def _make_bar(self, bar_width: int = None):
         return Bar(self.bar_width if bar_width is None else bar_width)
