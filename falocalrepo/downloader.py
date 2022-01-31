@@ -160,7 +160,7 @@ class Downloader:
             ("User errors", len(self.user_errors)),
             ("Submission errors", len(self.submission_errors)),
             ("File errors", len(self.file_errors)),
-            ("Thumb errors", len(self.thumbnail_errors)),
+            ("Thumbnail errors", len(self.thumbnail_errors)),
             ("Journal Errors", len(self.journal_errors)),
         ]
         if items := list(filter(itemgetter(1), items)):
@@ -176,7 +176,7 @@ class Downloader:
             ("User errors", sorted(set(self.user_errors), key=self.user_errors.index)),
             ("Submission errors", sorted(set(self.submission_errors), key=self.submission_errors.index)),
             ("File errors", sorted(set(self.file_errors), key=self.file_errors.index)),
-            ("Thumb errors", sorted(set(self.thumbnail_errors), key=self.thumbnail_errors.index)),
+            ("Thumbnail errors", sorted(set(self.thumbnail_errors), key=self.thumbnail_errors.index)),
             ("Journal Errors", sorted(set(self.journal_errors), key=self.journal_errors.index)),
         ]
         name_padding: int = max(map(len, map(itemgetter(0), items)))
