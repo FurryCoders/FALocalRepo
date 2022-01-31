@@ -6,11 +6,15 @@
 
 * `database search` command now supports multiple `--sort` options for multiple levels of sorting (e.g. `AUTHOR asc`
   and `ID desc`)
+* `--report-file` option added to `download` functions (excluding `download login`) to print a detailed report in 
+  JSON format to a file
 
 ### Changes
 
 * Remove `--order` option of `database search` command, the `--sort` option now handles both columns and sorting order
 * The last entry found during `download update` is cleared only if the `--stop` option is left to its default value of 1
+* `download` reports are more detailed and broken down by type (users, submissions, and journals)
+* `download` reports use _thumbnail_ instead of _thumb_
 
 ### Fixes
 
