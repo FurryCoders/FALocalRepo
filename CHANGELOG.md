@@ -1,5 +1,15 @@
 # Changelog
 
+## 4.0.10
+
+### Changes
+
+* Improve download messages for journals
+
+### Fixes
+
+* Fix submissions that changed folder not being updated
+
 ## 4.0.9
 
 ### Changes
