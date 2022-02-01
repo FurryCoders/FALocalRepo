@@ -1,5 +1,11 @@
 # Changelog
 
+## 4.0.9
+
+### Fixes
+
+* Fix error when `--report-file` was used together with a `download` command concerning user pages.
+
 ## 4.0.8
 
 ### New Features
