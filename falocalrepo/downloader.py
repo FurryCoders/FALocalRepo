@@ -374,7 +374,7 @@ class Downloader:
                         JournalsColumns.USERUPDATE.value.name: 1,
                     })
                     self.db.commit()
-                    self.bar_message("#" * self.bar_width, green)
+                    self.bar_message("ADDED", green)
                     self.bar_close()
                     self.added_journals += [journal.id]
                 if stop == 0:
@@ -586,5 +586,5 @@ class Downloader:
             }, replace=replace)
             self.added_journals += [journal.id]
             self.db.commit()
-            self.bar_message("#" * self.bar_width, green, always=True)
+            self.bar_message("ADDED", green, always=True)
             self.bar_close()
