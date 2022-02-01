@@ -421,7 +421,8 @@ class Downloader:
                             self.clear_line()
                         else:
                             self.bar_close()
-                    elif folder != Folder.favorites and self.db.submissions.set_user_update(sub_partial.id, 1):
+                    elif folder != Folder.favorites and (self.db.submissions.set_user_update(sub_partial.id, 1) or
+                                                         self.db.submissions.set_folder(sub_partial.id, folder.value)):
                         self.db.commit()
                         self.bar_message("UPDATED", green, always=True)
                         self.modified_submissions += [sub_partial.id]
