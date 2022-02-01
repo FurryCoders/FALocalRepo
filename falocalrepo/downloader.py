@@ -461,7 +461,7 @@ class Downloader:
         user, err = download_catch(self.api.user, username)
         self.err_to_bar(err)
         if err:
-            self.user_errors += [user]
+            self.user_errors += [username]
             return err
         added: bool = (current := self.db.users[username][UsersColumns.USERPAGE.value.name]) == ""
         updated: bool = not added and user.profile != current
@@ -471,8 +471,8 @@ class Downloader:
             self.clear_line()
             return 0
         self.db.users[username] = self.db.users[username] | {UsersColumns.USERPAGE.value.name: user.profile}
-        self.added_users += [user] if added else []
-        self.modified_users += [user] if updated else []
+        self.added_users += [username] if added else []
+        self.modified_users += [username] if updated else []
         self.bar_message("ADDED" if added else "UPDATED", green, always=True)
         return 0
 
