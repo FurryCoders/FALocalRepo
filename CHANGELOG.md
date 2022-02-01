@@ -2,6 +2,10 @@
 
 ## 4.0.9
 
+### Changes
+
+* Improved colors in the `paw` command help
+
 ### Fixes
 
 * Fix error when `--report-file` was used together with a `download` command concerning user pages.
