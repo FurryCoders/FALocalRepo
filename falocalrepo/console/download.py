@@ -117,9 +117,9 @@ def download_users(ctx: Context, database: Callable[..., Database], users: tuple
         downloader.download_users(list(users), list(folders))
     finally:
         echo()
+        downloader.verbose_report() if verbose_report else downloader.report()
         if report_file:
             downloader.verbose_report(report_file)
-        downloader.verbose_report() if verbose_report else downloader.report()
 
 
 @download_app.command("update", short_help="Download new entries for users in database.")
@@ -162,9 +162,9 @@ def download_update(ctx: Context, database: Callable[..., Database], users: tupl
         downloader.download_users_update(list(users), list(folders), stop, deactivated)
     finally:
         echo()
+        downloader.verbose_report() if verbose_report else downloader.report()
         if report_file:
             downloader.verbose_report(report_file)
-        downloader.verbose_report() if verbose_report else downloader.report()
 
 
 @download_app.command("submissions", short_help="Download single submissions.", no_args_is_help=True)
@@ -196,9 +196,9 @@ def download_submissions(ctx: Context, database: Callable[..., Database], submis
         downloader.download_submissions(list(submission_id), replace)
     finally:
         echo()
+        downloader.verbose_report() if verbose_report else downloader.report()
         if report_file:
             downloader.verbose_report(report_file)
-        downloader.verbose_report() if verbose_report else downloader.report()
 
 
 @download_app.command("journals", short_help="Download single journals.", no_args_is_help=True)
@@ -230,9 +230,9 @@ def download_journals(ctx: Context, database: Callable[..., Database], journal_i
         downloader.download_journals(list(journal_id), replace)
     finally:
         echo()
+        downloader.verbose_report() if verbose_report else downloader.report()
         if report_file:
             downloader.verbose_report(report_file)
-        downloader.verbose_report() if verbose_report else downloader.report()
 
 
 download_app.list_commands = lambda *_: [
