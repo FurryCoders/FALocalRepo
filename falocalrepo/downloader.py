@@ -165,16 +165,16 @@ class Downloader:
     def report(self):
         items: list[tuple[str, int]] = [
             ("Added users", len(set(self.added_users))),
-            ("Added submissions", len(set(self.added_submissions))),
-            ("Added journals", len(set(self.added_journals))),
             ("Modified users", len(self.modified_users)),
-            ("Modified submissions", len(self.modified_submissions)),
-            ("Modified journals", len(self.modified_journals)),
             ("Users deactivated", len(self.user_deactivated)),
             ("User errors", len(self.user_errors)),
+            ("Added submissions", len(set(self.added_submissions))),
+            ("Modified submissions", len(self.modified_submissions)),
             ("Submission errors", len(self.submission_errors)),
             ("File errors", len(self.file_errors)),
             ("Thumbnail errors", len(self.thumbnail_errors)),
+            ("Added journals", len(set(self.added_journals))),
+            ("Modified journals", len(self.modified_journals)),
             ("Journal Errors", len(self.journal_errors)),
         ]
         if items := list(filter(itemgetter(1), items)):
