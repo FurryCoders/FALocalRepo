@@ -33,6 +33,7 @@ __prog_name__ = __prog_name__.split('/')[-1].split('\\')[-1].strip().upper()
 _envar_database: str = f"{__prog_name__}_DATABASE"
 _envar_no_color: str = f"{__prog_name__}_NOCOLOR"
 _envar_multi_connection: str = f"{__prog_name__}_MULTI_CONNECTION"
+_envar_craw_delay: str = f"{__prog_name__}_CRAWL_DELAY"
 _cookies_setting: str = "COOKIES"
 _help_option_names: list[str] = ["--help", "-h"]
 
@@ -92,7 +93,16 @@ def open_api(db: Database) -> FAAPI:
     if not (cookies := read_cookies(db)):
         raise Unauthorized("No cookies")
 
-    return FAAPI(cookies)
+    api: FAAPI = FAAPI(cookies)
+
+    if EnvVars.CRAWL_DELAY is not None:
+        EnvVars.print_crawl_delay()
+        if EnvVars.CRAWL_DELAY < (delay := int(api.robots.crawl_delay(api.user_agent) or 0)):
+            raise BadParameter(f"Value lower than allowed ({delay})", param_hint=_envar_craw_delay)
+        # noinspection PyUnresolvedReferences
+        api.robots.default_entry.delay = EnvVars.CRAWL_DELAY
+
+    return api
 
 
 class CustomHelpColorsGroup(HelpColorsGroup):
@@ -106,6 +116,7 @@ class EnvVars:
     DATABASE: Path | None = Path(p) if (p := environ.get(_envar_database, None)) is not None else None
     NOCOLOR: bool = environ.get(_envar_no_color, None) is not None
     MULTI_CONNECTION: bool = environ.get(_envar_multi_connection, None) is not None
+    CRAWL_DELAY: int | None = int(e) if (e := environ.get(_envar_craw_delay, None)) is not None else None
 
     @classmethod
     def print_database(cls, file: TextIO = stderr):
@@ -121,6 +132,11 @@ class EnvVars:
     def print_multi_connection(cls, file: TextIO = stderr):
         if cls.MULTI_CONNECTION:
             echo(f"Using {_envar_multi_connection}", file=file)
+
+    @classmethod
+    def print_crawl_delay(cls, file: TextIO = stderr):
+        if cls.CRAWL_DELAY is not None:
+            echo(f"Using {_envar_craw_delay}: {cls.CRAWL_DELAY}", file=file)
 
 
 class CompleteChoice(Choice):
