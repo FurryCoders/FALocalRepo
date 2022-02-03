@@ -517,7 +517,7 @@ class Downloader:
         self._download_users([(u, folders) for u in users])
 
     def download_users_update(self, users: list[str], folders: list[str], stop: int, deactivated: bool):
-        for user in filter(self.db.users.__contains__, users):
+        for user in [u for u in users if u not in self.db.users]:
             padding: int = terminal_width() - 1 - self.bar_width - 2
             echo(f"{green}{user:<{padding}}{reset}", nl=self.output == OutputType.simple, color=self.color)
             self.bar()
