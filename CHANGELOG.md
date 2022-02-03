@@ -4,7 +4,7 @@
 
 ### Fixes
 
-* Fix `download update` command waning for users not in archive
+* Fix `download update` command warning for users not in archive
 
 ## 4.0.10
 
