@@ -517,6 +517,13 @@ class Downloader:
         self._download_users([(u, folders) for u in users])
 
     def download_users_update(self, users: list[str], folders: list[str], stop: int, deactivated: bool):
+        for user in filter(self.db.users.__contains__, users):
+            padding: int = terminal_width() - 1 - self.bar_width - 2
+            echo(f"{green}{user:<{padding}}{reset}", nl=self.output == OutputType.simple, color=self.color)
+            self.bar()
+            self.bar_message("NOT IN DB", red, always=True)
+            self.bar_close()
+
         users_cursor: Iterable[dict] = self.db.users[users] if users else self.db.users.select(
             order=[UsersColumns.USERNAME.value.name])
         users_folders: Iterable[tuple[str, list[str]]]
