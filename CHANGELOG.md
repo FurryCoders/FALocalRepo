@@ -5,7 +5,7 @@
 ### New Features
 
 * Print an error for users given to `download update` command that aren't in the archive
-* Use `FALOCALEPO_CRAWL_DELAY` environment variable to set a crawl delay higher (or equal) than the one in Fur
+* Use `FALOCALREPO_CRAWL_DELAY` environment variable to set a crawl delay higher (or equal) than the one in Fur
   Affinity's [robots.txt](https://furaffinity.net/robots.txt)
 
 ### Changes
