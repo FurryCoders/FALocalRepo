@@ -115,15 +115,6 @@ can be opened with &#8679;F9, on Safari with &#8997;&#8984;I, etc.
 
 To set the cookies use the `config cookies` command. See [Config](#config) for more details.
 
-### Environmental Variables
-
-`falocalrepo` supports the following environmental variables:
-
-* `FALOCALREPO_DATABASE` sets a path for the database rather than using the current folder.
-* `FALOCALREPO_MULTI_CONNECTION` allow operating on the database even if it is already opened in other processes.<br/>
-  **Warning**: using this option may cause the database to become corrupt and irreparable.
-* `FALOCALREPO_NO_COLOR` turn off colors for all commands.
-
 ## Usage
 
 > **How to Read Usage Instructions**
@@ -178,6 +169,15 @@ When the database is first initialised, it sets the submissions files folder to 
 location). This value can be changed using the [`config` command](#config).
 
 Cookies need to be set manually with the config command before the program will be able to access protected pages.
+
+### Environmental Variables
+
+`falocalrepo` supports the following environmental variables:
+
+* `FALOCALREPO_DATABASE` sets a path for the database rather than using the current folder.
+* `FALOCALREPO_MULTI_CONNECTION` allow operating on the database even if it is already opened in other processes.<br/>
+  **Warning**: using this option may cause the database to become corrupt and irreparable.
+* `FALOCALREPO_NO_COLOR` turn off colors for all commands.
 
 ### Init
 
