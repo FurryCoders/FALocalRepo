@@ -2,6 +2,10 @@
 
 ## 4.0.10
 
+### New Features
+
+* Print an error for users given to `download update` command that aren't in the archive
+
 ### Changes
 
 * Improve download messages for journals
