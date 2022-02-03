@@ -12,7 +12,6 @@ database.
 
 [![](https://img.shields.io/github/v/tag/FurryCoders/falocalrepo?label=github&sort=date&logo=github&color=blue)](https://github.com/FurryCoders/falocalrepo)
 [![](https://img.shields.io/github/issues/FurryCoders/falocalrepo?logo=github&color=blue)](https://github.com/FurryCoders/falocalrepo/issues)
-[![](https://img.shields.io/badge/github-Wiki-blue?logo=github)](https://github.com/FurryCoders/falocalrepo/wiki)
 
 </div>
 
@@ -36,6 +35,9 @@ queries, and file operations.
 
 The [falocalrepo-server](https://pypi.org/project/falocalrepo-server/) package is used to provide the server
 functionalities of the program.
+
+For an in-depth guide on the features of the program and guides on how to perform the most common operations, visit the
+project's [GitHub wiki](https://github.com/FurryCoders/falocalrepo/wiki).
 
 ## Contents
 
