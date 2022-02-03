@@ -5,6 +5,8 @@
 ### New Features
 
 * Print an error for users given to `download update` command that aren't in the archive
+* Use `FALOCALEPO_CRAWL_DELAY` environment variable to set a crawl delay higher (or equal) than the one in Fur
+  Affinity's [robots.txt](https://furaffinity.net/robots.txt)
 
 ### Changes
 
@@ -30,8 +32,8 @@
 
 * `database search` command now supports multiple `--sort` options for multiple levels of sorting (e.g. `AUTHOR asc`
   and `ID desc`)
-* `--report-file` option added to `download` functions (excluding `download login`) to print a detailed report in 
-  JSON format to a file
+* `--report-file` option added to `download` functions (excluding `download login`) to print a detailed report in JSON
+  format to a file
 
 ### Changes
 
