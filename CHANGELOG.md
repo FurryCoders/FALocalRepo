@@ -1,5 +1,11 @@
 # Changelog
 
+## 4.0.11
+
+### Fixes
+
+* Fix `download update` command waning for users not in archive
+
 ## 4.0.10
 
 ### New Features
