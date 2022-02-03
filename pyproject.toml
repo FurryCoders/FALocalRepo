@@ -20,6 +20,8 @@ classifiers = [
 [tool.poetry.urls]
 "Changelog" = "https://github.com/FurryCoders/FALocalRepo/blob/main/CHANGELOG.md"
 "Source" = "https://github.com/FurryCoders/FALocalRepo"
+"Bug Reports" = "https://github.com/FurryCoders/FALocalRepo/issues"
+"Documentation" = "https://github.com/FurryCoders/FALocalRepo/wiki"
 "Download" = "https://pypi.org/project/falocalrepo/#files"
 
 [tool.poetry.scripts]
