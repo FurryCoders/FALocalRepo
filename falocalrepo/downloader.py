@@ -483,7 +483,6 @@ class Downloader:
         for user, folders in users_folders:
             for folder in folders:
                 echo(f"{operation}: {yellow}{user}{reset}/{yellow}{folder}{reset}", color=self.color)
-                continue
                 user_added: bool = False
                 if not self.dry_run:
                     if user_added := user not in self.db.users:
