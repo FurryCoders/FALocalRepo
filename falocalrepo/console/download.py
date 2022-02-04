@@ -59,7 +59,7 @@ def download_app():
 
 
 def users_callback(ctx: Context, param: Option, value: tuple[str]) -> tuple[str]:
-    value_clean: list[str] = list(filter(bool, map(clean_username, value)))
+    value_clean: list[str] = value if ctx.params.get("like") else list(filter(bool, map(clean_username, value)))
     if not value_clean and param.required:
         raise BadParameter("Invalid users", ctx, param)
     return tuple(sorted(set(value_clean), key=value_clean.index))
@@ -130,6 +130,7 @@ def download_users(ctx: Context, database: Callable[..., Database], users: tuple
 @option("--stop", metavar="STOP", type=IntRange(0, min_open=True), default=1, show_default=True,
         help="Number of submissions to find in the database before stopping.")
 @option("--deactivated", is_flag=True, default=False, help="Check deactivated users.")
+@option("--like", is_flag=True, is_eager=True, default=False, help=f"Consider {yellow}USER{reset} to be LIKE queries.")
 @dry_run_option
 @verbose_report_option
 @report_file_option
@@ -139,7 +140,7 @@ def download_users(ctx: Context, database: Callable[..., Database], users: tuple
 @pass_context
 @docstring_format(', '.join(Folder))
 def download_update(ctx: Context, database: Callable[..., Database], users: tuple[str], folders: tuple[str], stop: int,
-                    deactivated: bool, dry_run: bool, verbose_report: bool, report_file: TextIO | None):
+                    deactivated: bool, like: bool, dry_run: bool, verbose_report: bool, report_file: TextIO | None):
     """
     Download new entries using the users and folders already in the database. {yellow}--user{reset} and
     {yellow}--folder{reset} options can be used to restrict the update to specific users and or folders, where
@@ -159,7 +160,7 @@ def download_update(ctx: Context, database: Callable[..., Database], users: tupl
     add_history(db, ctx, users=users, folders=folders, stop=stop)
     downloader: Downloader = Downloader(db, open_api(db), color=ctx.color, dry_run=dry_run)
     try:
-        downloader.download_users_update(list(users), list(folders), stop, deactivated)
+        downloader.download_users_update(list(users), list(folders), stop, deactivated, like)
     finally:
         echo()
         downloader.verbose_report() if verbose_report else downloader.report()

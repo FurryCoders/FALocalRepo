@@ -19,6 +19,7 @@ from faapi.exceptions import NoticeMessage
 from faapi.exceptions import ServerError
 from falocalrepo_database import Column
 from falocalrepo_database import Database
+from falocalrepo_database.selector import SelectorBuilder as Sb
 from falocalrepo_database.tables import JournalsColumns
 from falocalrepo_database.tables import SubmissionsColumns
 from falocalrepo_database.tables import UsersColumns
@@ -482,6 +483,7 @@ class Downloader:
         for user, folders in users_folders:
             for folder in folders:
                 echo(f"{operation}: {yellow}{user}{reset}/{yellow}{folder}{reset}", color=self.color)
+                continue
                 user_added: bool = False
                 if not self.dry_run:
                     if user_added := user not in self.db.users:
@@ -516,22 +518,27 @@ class Downloader:
     def download_users(self, users: list[str], folders: list[str]):
         self._download_users([(u, folders) for u in users])
 
-    def download_users_update(self, users: list[str], folders: list[str], stop: int, deactivated: bool):
-        for user in [u for u in users if u not in self.db.users]:
-            padding: int = terminal_width() - 1 - self.bar_width - 2
-            echo(f"{green}{user:<{padding}}{reset}", nl=self.output == OutputType.simple, color=self.color)
-            self.bar()
-            self.bar_message("NOT IN DB", red, always=True)
-            self.bar_close()
+    def download_users_update(self, users: list[str], folders: list[str], stop: int, deactivated: bool, like: bool):
+        if not like:
+            for user in [u for u in users if u not in self.db.users]:
+                padding: int = terminal_width() - 1 - self.bar_width - 2
+                echo(f"{green}{user:<{padding}}{reset}", nl=self.output == OutputType.simple, color=self.color)
+                self.bar()
+                self.bar_message("NOT IN DB", red, always=True)
+                self.bar_close()
 
-        users_cursor: Iterable[dict] = self.db.users[users] if users else self.db.users.select(
-            order=[UsersColumns.USERNAME.value.name])
+        users_cursor: Iterable[dict]
+        if like and users:
+            users_cursor = self.db.users.select(Sb() | [Sb(UsersColumns.USERNAME.value.name) % u for u in users])
+        elif users:
+            users_cursor = self.db.users[users]
+        else:
+            users_cursor = self.db.users.select(order=[UsersColumns.USERNAME.value.name])
         users_folders: Iterable[tuple[str, list[str]]]
-        users_folders = ((u[UsersColumns.USERNAME.value.name],
-                          [f for f in u[UsersColumns.FOLDERS.value.name]])
+        users_folders = ((u[UsersColumns.USERNAME.value.name], [f for f in u[UsersColumns.FOLDERS.value.name]])
                          for u in users_cursor)
 
-        users_folders = sorted(users_folders, key=lambda uf: users.index(uf[0]) if users else uf[0])
+        users_folders = sorted(users_folders, key=lambda uf: users.index(uf[0]) if users and not like else uf[0])
 
         if deactivated:
             users_folders = ((u, [*map(lambda f: f.strip("!"), fs)]) for u, fs in users_folders)
