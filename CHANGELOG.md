@@ -1,5 +1,11 @@
 # Changelog
 
+## 4.0.12
+
+### New Features
+
+* Allow passing SQLite LIKE queries to `download update` to select multiple users
+
 ## 4.0.11
 
 ### Fixes
