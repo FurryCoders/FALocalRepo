@@ -265,11 +265,14 @@ Check whether the cookies stored in the database belong to a login Fur Affinity 
 #### users
 
 ```
-users [--dry-run] -u <USER>... -f <FOLDER>...
+users [--dry-run] [--verbose-report] [--report-file REPORT_FILE] -u <USER>... -f <FOLDER>...
 ```
 
 Download specific user folders, where `FOLDER` is one of gallery, scraps, favorites, journals, userpage. Multiple
 `--user` and `--folder` arguments can be passed.
+
+The `--verbose-report` options enables printing all the IDs and usernames of the entries fetched/added/modified by the
+program. The `--report-file` options allows saving a detailed download report in JSON format to `REPORT_FILE`.
 
 > ```
 > falocalrepo download users -u tom -u jerry -f gallery -f scraps -f journals
@@ -281,7 +284,7 @@ Download specific user folders, where `FOLDER` is one of gallery, scraps, favori
 #### update
 
 ```
-update [--dry-run] [--deactivated] [--stop N] [-u <USER>...] [-f <FOLDER>...]
+update [--dry-run] [--deactivated] [--stop N] [--verbose-report] [--report-file REPORT_FILE] [-u <USER>...] [-f <FOLDER>...]
 ```
 
 Download new entries using the users and folders already in the database. `--user` and `--folder` options can be used to
@@ -293,6 +296,9 @@ inactive, the database entry will be modified as well.
 
 The `--stop` option allows setting how many entries of each folder should be found in the database before stopping the
 update.
+
+The `--verbose-report` options enables printing all the IDs and usernames of the entries fetched/added/modified by the
+program. The `--report-file` options allows saving a detailed download report in JSON format to `REPORT_FILE`.
 
 > ```
 > falocalrepo download update --stop 5
@@ -307,11 +313,14 @@ update.
 #### submissions
 
 ```
-submissions [--replace] <SUBMISSION_ID>...
+submissions [--replace] [--verbose-report] [--report-file REPORT_FILE] <SUBMISSION_ID>...
 ```
 
 Download single submissions, where `SUBMISSION_ID` is the ID of the submission. If the `--replace` option is used,
 database entries will be overwritten with new data (favorites will be maintained).
+
+The `--verbose-report` options enables printing all the IDs and usernames of the entries fetched/added/modified by the
+program. The `--report-file` options allows saving a detailed download report in JSON format to `REPORT_FILE`.
 
 > ```
 > falocalrepo download submissions 12345678 13572468 87651234
@@ -320,11 +329,14 @@ database entries will be overwritten with new data (favorites will be maintained
 #### journals
 
 ```
-journals [--replace] <JOURNAL_ID>...
+journals [--replace] [--verbose-report] [--report-file REPORT_FILE] <JOURNAL_ID>...
 ```
 
 Download single journals, where `JOURNAL_ID` is the ID of the journal. If the `--replace` option is used, database
 entries will be overwritten with new data (favorites will be maintained).
+
+The `--verbose-report` options enables printing all the IDs and usernames of the entries fetched/added/modified by the
+program. The `--report-file` options allows saving a detailed download report in JSON format to `REPORT_FILE`.
 
 > ```
 > falocalrepo download journals 123456 135724 876512
