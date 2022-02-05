@@ -4,7 +4,7 @@
 
 ### New Features
 
-* Allow passing SQLite LIKE queries to `download update` to select multiple users
+* Allow passing SQLite LIKE queries to `--user` arguments of `download update`
 
 ## 4.0.11
 
