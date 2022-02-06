@@ -280,7 +280,7 @@ def html_to_ansi(html: str, *, root: bool = False) -> str:
     return html
 
 
-def view_entry(entry: dict[str, Any], html_fields: list[str]) -> str:
+def view_entry(entry: dict[str, Any], html_fields: list[str], *, raw_html: bool = False) -> str:
     outputs: list[str] = []
     padding: int = max(map(len, entry.keys()))
     for field, value in ((k, v) for k, v in entry.items() if k not in html_fields):
@@ -288,7 +288,8 @@ def view_entry(entry: dict[str, Any], html_fields: list[str]) -> str:
                  (("\n" + (" " * (padding + 2))).join(value) if isinstance(value, (list, set)) else str(value).strip())
         outputs.append(output)
     for field, value in zip(html_fields, map(entry.__getitem__, html_fields)):
-        outputs.append(f"{blue}{field:<{padding}}{reset}:\n" + html_to_ansi(value, root=True).strip())
+        outputs.append(f"{blue}{field:<{padding}}{reset}:\n" +
+                       (value if raw_html else html_to_ansi(value, root=True)).strip())
     return "\n".join(outputs)
 
 
@@ -541,16 +542,14 @@ def database_view(ctx: Context, database: Callable[..., Database], table: str, i
 
     if not (entry := get_table(db, table)[id_[0]]):
         secho(f"Entry {id_!r} could not be found in {table.lower()}", fg="red", color=ctx.color)
-    elif raw_content:
-        echo(view_entry(entry, []), color=ctx.color)
     elif table == submissions_table:
-        echo(view_entry(entry, [SubmissionsColumns.DESCRIPTION.name]), color=ctx.color)
+        echo(view_entry(entry, [SubmissionsColumns.DESCRIPTION.name], raw_html=raw_content), color=ctx.color)
     elif table == journals_table:
-        echo(view_entry(entry, [JournalsColumns.CONTENT.name]), color=ctx.color)
+        echo(view_entry(entry, [JournalsColumns.CONTENT.name], raw_html=raw_content), color=ctx.color)
     elif table == users_table:
-        echo(view_entry(entry, [UsersColumns.USERPAGE.name]), color=ctx.color)
+        echo(view_entry(entry, [UsersColumns.USERPAGE.name], raw_html=raw_content), color=ctx.color)
     else:
-        echo(view_entry(entry, []), color=ctx.color)
+        echo(view_entry(entry, [], raw_html=raw_content), color=ctx.color)
 
 
 @database_app.command("export", short_help="Export all entries in a table.", no_args_is_help=True)
