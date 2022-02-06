@@ -30,6 +30,8 @@ from falocalrepo_server import __name__ as __server_name__
 from falocalrepo_server import __version__ as __server_version__
 from falocalrepo_server import server
 
+from .util import get_param
+
 try:
     from supports_color import supportsColor
 
@@ -448,11 +450,9 @@ def app_server(ctx: Context, database: Callable[..., Database], host: str | None
     """
 
     if ssl_cert and not ssl_key:
-        raise BadParameter(f"'--ssl-cert' and '--ssl-key' must be set together.", ctx,
-                           next(_p for _p in ctx.command.params if _p.name == 'ssl_key'))
+        raise BadParameter(f"'--ssl-cert' and '--ssl-key' must be set together.", ctx, get_param(ctx, "ssl_key"))
     elif ssl_key and not ssl_cert:
-        raise BadParameter(f"'--ssl-cert' and '--ssl-key' must be set together.", ctx,
-                           next(_p for _p in ctx.command.params if _p.name == 'ssl_cert'))
+        raise BadParameter(f"'--ssl-cert' and '--ssl-key' must be set together.", ctx, get_param(ctx, 'ssl_cert'))
 
     db: Database = database()
     db_path: Path = db.path

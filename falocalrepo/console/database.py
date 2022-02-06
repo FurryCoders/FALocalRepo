@@ -56,6 +56,7 @@ from .util import color_option
 from .util import database_callback
 from .util import database_exists_option
 from .util import docstring_format
+from .util import get_param
 from .util import help_option
 from .. import __name__ as __prog_name__
 from ..__version__ import __version__
@@ -119,7 +120,8 @@ def column_callback(_ctx: Context, _param: Option, value: tuple[str]) -> list[tu
     return [((vs := v.split(",", 1))[0], int(vs[1])) if "," in v else (v, 0) for v in map(str.strip, value) if v]
 
 
-def id_callback(ctx: Context, param: Argument, value: tuple[str, ...]) -> tuple[str | int, ...]:
+def id_callback(ctx: Context, param: Argument, value: tuple[str, ...] | str) -> tuple[str | int, ...]:
+    value = value if isinstance(value, tuple) else (value,)
     if (t := ctx.params["table"]).lower() == users_table.lower():
         return value
     elif any(not v.isdigit() for v in value):
@@ -574,10 +576,10 @@ def database_add(ctx: Context, database: Callable[..., Database], table: str, fi
         if any(c.name.upper() not in data for c in db.submissions.columns):
             raise BadParameter(f"Missing fields {set(map(str.upper, db.submissions.columns)) - set(data.keys())}"
                                f" for table {table}",
-                               ctx, next((p for p in ctx.command.params if p.name == "file")))
+                               ctx, get_param(ctx, "file"))
         elif not replace and (id_ := data[idc := db.submissions.key.name.upper()]) in db.submissions:
             raise BadParameter(f"Entry with {idc} {id_!r} already exists in {table} table, but '--replace' is not set.",
-                               ctx, next((p for p in ctx.command.params if p.name == "file")))
+                               ctx, get_param(ctx, "file"))
         sub_file_orig, sub_thumb_orig = db.submissions.get_submission_files(data["id"])
         sub_file: bytes | None = None
         sub_thumb: bytes | None = None
@@ -600,10 +602,10 @@ def database_add(ctx: Context, database: Callable[..., Database], table: str, fi
         if any(c.name.upper() not in data for c in db_table.columns):
             raise BadParameter(f"Missing fields {set(map(str.upper, db_table.columns)) - set(data.keys())}"
                                f" for table {table}",
-                               ctx, next((p for p in ctx.command.params if p.name == "file")))
+                               ctx, get_param(ctx, "file"))
         elif not replace and (id_ := data[idc := db_table.key.name.upper()]) in db_table:
             raise BadParameter(f"Entry with {idc} {id_!r} already exists in {table} table, but '--replace' is not set.",
-                               ctx, next((p for p in ctx.command.params if p.name == "file")))
+                               ctx, get_param(ctx, "file"))
         try:
             db_table.insert(db_table.format_entry(data), replace=replace)
         finally:
@@ -638,19 +640,16 @@ def database_edit(ctx: Context, database: Callable[..., Database], table: str, _
     file.close()
 
     if not data and table.lower() != db.submissions.name.lower():
-        raise BadParameter(f"FILE cannot be empty for {table} table.", ctx,
-                           next(p for p in ctx.command.params if p.name == "file"))
+        raise BadParameter(f"FILE cannot be empty for {table} table.", ctx, get_param(ctx, "file"))
     elif not isinstance(data, dict):
-        raise BadParameter(f"Data must be in JSON object format.", ctx,
-                           next(p for p in ctx.command.params if p.name == "file"))
+        raise BadParameter(f"Data must be in JSON object format.", ctx, get_param(ctx, "file"))
 
     add_history(db, ctx, table=table, id=_id, file=file.name,
                 submission_file=submission_file.name if submission_file else None,
                 submission_thumbnail=submission_thumbnail.name if submission_thumbnail else None)
 
     if (entry := db_table[_id]) is None:
-        raise BadParameter(f"No entry with ID {_id} in {table}.", ctx,
-                           next(p for p in ctx.command.params if p.name == "_id"))
+        raise BadParameter(f"No entry with ID {_id} in {table}.", ctx, get_param(ctx, "_id"))
 
     if submission_file:
         ext: str = db.submissions.save_submission_file(_id, submission_file.read(), "submission", "")

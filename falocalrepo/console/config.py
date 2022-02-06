@@ -22,6 +22,7 @@ from .util import add_history
 from .util import color_option
 from .util import database_exists_option
 from .util import docstring_format
+from .util import get_param
 from .util import help_option
 from .util import read_cookies
 from .util import write_cookies
@@ -124,13 +125,13 @@ def config_files_folder(ctx: Context, database: Callable[..., Database], new_fol
         return
 
     if relative and new_folder.is_absolute() and not new_folder.is_relative_to(db.path.parent):
-        raise BadParameter(f"Path {str(new_folder)!r} is absolute but '--relative' is used.", ctx,
-                           next(filter(lambda p: p.name == "new_folder", ctx.command.params)))
+        raise BadParameter(f"Path {str(new_folder)!r} is absolute but '--relative' is used.",
+                           ctx, get_param(ctx, "new_folder"))
     elif relative:
         new_folder = new_folder.relative_to(db.path.parent) if new_folder.is_absolute() else new_folder
     elif not new_folder.is_absolute():
-        raise BadParameter(f"Path {str(new_folder)!r} is relative but '--absolute' is used.", ctx,
-                           next(filter(lambda p: p.name == "new_folder", ctx.command.params)))
+        raise BadParameter(f"Path {str(new_folder)!r} is relative but '--absolute' is used.",
+                           ctx, get_param(ctx, "new_folder"))
     else:
         new_folder = new_folder.resolve()
 

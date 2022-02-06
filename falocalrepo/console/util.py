@@ -183,3 +183,7 @@ def add_history(db: Database, ctx: Context, **kwargs):
     db.history.add_event((f"{parent.name} {comm.name}" if root != parent else comm.name) + " " +
                          " ".join(f"{k}={v}" for k, v in kwargs.items()))
     db.commit()
+
+
+def get_param(ctx: Context, name: str) -> Parameter | None:
+    return next((p for p in ctx.command.params if p.name == name), None)
