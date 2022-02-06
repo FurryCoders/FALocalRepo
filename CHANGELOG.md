@@ -4,6 +4,7 @@
 
 ### New Features
 
+* Add `database view` command to view entries directly in the terminal
 * Allow passing SQLite LIKE queries to `--user` arguments of `download update`
 
 ## 4.0.11
