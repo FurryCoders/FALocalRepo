@@ -6,15 +6,18 @@ from json import dumps
 from json import load
 from os.path import getsize
 from pathlib import Path
+from re import match
 from re import sub
 from shutil import get_terminal_size
 from sys import stderr
 from sys import stdout
+from textwrap import wrap
 from typing import Any
 from typing import Callable
 from typing import Iterable
 from typing import TextIO
 
+from bs4 import BeautifulSoup
 from click import Argument
 from click import BadParameter
 from click import Context
@@ -220,6 +223,73 @@ def search(table: Table, headers: list[str], query: str, sort: tuple[tuple[str, 
     query = " ".join(query_elems)
     return (table.select_sql(query, values, headers, [" ".join(s) for s in sort], limit or 0, offset or 0),
             (query, values))
+
+
+def html_to_ansi(html: str, *, root: bool = False) -> str:
+    html = sub("[\n\r]+", "", html) if root else html
+    html_parsed: BeautifulSoup = BeautifulSoup(html, "lxml")
+    width: int = get_terminal_size((0, 0)).columns
+    for img in html_parsed.select("img"):
+        img.replaceWith("")
+    for br in html_parsed.select("br"):
+        br.replaceWith("\n")
+    for hr in html_parsed.select("hr"):
+        hr.replaceWith(f"\n{'-' * (width or 40):^{(width or 1) - 1}}\n")
+    for [tag_name, tag_style] in (("i", italic), ("strong", bold), ("u", underline), ("s", strikethrough)):
+        for tag in html_parsed.select(tag_name):
+            for child in tag.select("*"):
+                child.replaceWith(html_to_ansi(child.decode_contents()))
+            tag.replaceWith(f"{tag_style}{tag.text}{reset}")
+    for a in html_parsed.select("a"):
+        for child in a.select("*"):
+            child.replaceWith(html_to_ansi(child.decode_contents()))
+        a.replaceWith(f"[{a.text.strip()}]({a['href']})")
+    for span in html_parsed.select("span.bbcode[style*=color]"):
+        for child in span.select("*"):
+            child.replaceWith(html_to_ansi(child.decode_contents()))
+        color: str = m[1] if (m := match(r".*color: ([^ ;]+).*", span.attrs["style"])) else ""
+        color = hex_to_ansi(color[1:]) if color.startswith("#") else colors_dict.get(color, "")
+        span.replaceWith(f"{(bold + color) if color else ''}{span.text}{reset if color else ''}")
+    for span in html_parsed.select("span.bbcode_quote_name"):
+        for child in span.select("*"):
+            child.replaceWith(html_to_ansi(child.decode_contents()))
+        span.replaceWith(f"{bold}{italic}{span.text}{reset}")
+    for span in html_parsed.select("span.bbcode_quote"):
+        for child in span.select("*"):
+            child.replaceWith(html_to_ansi(child.decode_contents()))
+        width_: int = (width or 80) - 1
+        span.replaceWith("\n".join(line2
+                                   for line in span.text.splitlines()
+                                   for line2 in wrap(line, width_, initial_indent=" ", subsequent_indent=" ") or [""]))
+    for code in html_parsed.select("code.bbcode_center,code.bbcode_right") if width else []:
+        for child in code.select("*"):
+            child.replaceWith(html_to_ansi(child.decode_contents()))
+        formatter: str = "^" if "bbcode_center" in code["class"] else ">"
+        code.replaceWith("\n".join(f"{line2:{formatter}{(width or 1) - 1}}"
+                                   for line in code.text.splitlines()
+                                   for line2 in wrap(line, width)))
+    for child in html_parsed.select("*"):
+        child.replaceWith(child.text)
+    html = html_parsed.text
+    if root:
+        html = html.replace("&amp;", "&")
+        html = html.replace("&gt;", ">")
+        html = html.replace("&lt;", "<")
+        html = html.replace("&nbsp;", " ")
+        html = html.replace("\xA0", " ")
+    return html
+
+
+def view_entry(entry: dict[str, Any], html_fields: list[str]) -> str:
+    outputs: list[str] = []
+    padding: int = max(map(len, entry.keys()))
+    for field, value in ((k, v) for k, v in entry.items() if k not in html_fields):
+        output = f"{blue}{field:<{padding}}{reset}: " + \
+                 (("\n" + (" " * (padding + 2))).join(value) if isinstance(value, (list, set)) else str(value).strip())
+        outputs.append(output)
+    for field, value in zip(html_fields, map(entry.__getitem__, html_fields)):
+        outputs.append(f"{blue}{field:<{padding}}{reset}:\n" + html_to_ansi(value, root=True).strip())
+    return "\n".join(outputs)
 
 
 @group("database", cls=CustomHelpColorsGroup, short_help="Operate on the database.", no_args_is_help=True)
@@ -447,6 +517,40 @@ def database_search(ctx: Context, database: Callable[..., Database], table: str,
         echo(f"{blue}Items{reset}: {yellow}{dumps(values)}{reset}", color=ctx.color)
     if total:
         echo(f"{blue}Total{reset}: {yellow}{results_total}{reset}", color=ctx.color)
+
+
+@database_app.command("view", short_help="View and entry.", no_args_is_help=True)
+@argument("table", nargs=1, required=True, is_eager=True, type=TableChoice())
+@argument("id_", metavar="ID", nargs=1, required=True, type=str, callback=id_callback)
+@option("--raw-content", is_flag=True, default=False, help="Do not format HTMl fields.")
+@database_exists_option
+@color_option
+@help_option
+@pass_context
+def database_view(ctx: Context, database: Callable[..., Database], table: str, id_: tuple[str | int, ...],
+                  raw_content: bool):
+    """
+    View a single entry in the terminal. Submission descriptions, journal contents, and user profile pages are rendered
+    and formatted.
+
+    Formatting is limited to alignment, horizontal lines, quotes, links, color (partial), and emphasis. To view the
+    properly formatted HTML content, use the {yellow}server{reset}. Formatting can be disabled with the
+    {yellow}--raw-content{reset} options to print the raw HTML content.
+    """
+    db: Database = database()
+
+    if not (entry := get_table(db, table)[id_[0]]):
+        secho(f"Entry {id_!r} could not be found in {table.lower()}", fg="red", color=ctx.color)
+    elif raw_content:
+        echo(view_entry(entry, []), color=ctx.color)
+    elif table == submissions_table:
+        echo(view_entry(entry, [SubmissionsColumns.DESCRIPTION.name]), color=ctx.color)
+    elif table == journals_table:
+        echo(view_entry(entry, [JournalsColumns.CONTENT.name]), color=ctx.color)
+    elif table == users_table:
+        echo(view_entry(entry, [UsersColumns.USERPAGE.name]), color=ctx.color)
+    else:
+        echo(view_entry(entry, []), color=ctx.color)
 
 
 @database_app.command("export", short_help="Export all entries in a table.", no_args_is_help=True)
@@ -788,6 +892,7 @@ database_app.list_commands = lambda *_: [
     database_info.name,
     database_history.name,
     database_search.name,
+    database_view.name,
     database_export.name,
     database_add.name,
     database_remove.name,
