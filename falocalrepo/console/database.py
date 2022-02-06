@@ -536,7 +536,7 @@ def database_view(ctx: Context, database: Callable[..., Database], table: str, i
 
     Formatting is limited to alignment, horizontal lines, quotes, links, color (partial), and emphasis. To view the
     properly formatted HTML content, use the {yellow}server{reset}. Formatting can be disabled with the
-    {yellow}--raw-content{reset} options to print the raw HTML content.
+    {yellow}--raw-content{reset} option to print the raw HTML content.
     """
     db: Database = database()
 
