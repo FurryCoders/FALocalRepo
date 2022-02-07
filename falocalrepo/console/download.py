@@ -41,6 +41,14 @@ class FolderChoice(CompleteChoice):
     ]
 
 
+class UpdateFolderChoice(CompleteChoice):
+    completion_items: list[CompletionItem] = [
+        *FolderChoice.completion_items,
+        CompletionItem(f"{Folder.watchlist_by.value}", help=f"User's watches"),
+        CompletionItem(f"{Folder.watchlist_to.value}", help=f"Users watching user"),
+    ]
+
+
 class DownloadFolderChoice(CompleteChoice):
     completion_items: list[CompletionItem] = [
         *FolderChoice.completion_items,
@@ -152,7 +160,7 @@ def download_users(ctx: Context, database: Callable[..., Database], users: tuple
 @download_app.command("update", short_help="Download new entries for users in database.")
 @option("--user", "-u", "users", metavar="USER", multiple=True, type=str, callback=users_callback,
         help="User to update.")
-@option("--folder", "-f", "folders", metavar="FOLDER", multiple=True, type=FolderChoice(),
+@option("--folder", "-f", "folders", metavar="FOLDER", multiple=True, type=UpdateFolderChoice(),
         callback=lambda _c, _p, v: sorted(set(v), key=v.index), help="Folder to update.")
 @option("--stop", metavar="STOP", type=IntRange(0, min_open=True), default=1, show_default=True,
         help="Number of submissions to find in the database before stopping.")
@@ -165,7 +173,7 @@ def download_users(ctx: Context, database: Callable[..., Database], users: tuple
 @color_option
 @help_option
 @pass_context
-@docstring_format(', '.join(Folder))
+@docstring_format(', '.join(c.value for c in UpdateFolderChoice.completion_items))
 def download_update(ctx: Context, database: Callable[..., Database], users: tuple[str], folders: tuple[str], stop: int,
                     deactivated: bool, like: bool, dry_run: bool, verbose_report: bool, report_file: TextIO | None):
     """

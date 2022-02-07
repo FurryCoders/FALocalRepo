@@ -564,6 +564,18 @@ class Downloader:
                         self.db.commit()
                         self.added_users += [user]
                     self.db.users.activate(user)
+                    if folder.startswith(Folder.watchlist_by):
+                        watchlist_folder: str | None = next((f for f in self.db.users[user][UsersColumns.FOLDERS.name]
+                                                             if f.startswith(Folder.watchlist_by)), None)
+                        if watchlist_folder:
+                            self.db.users.remove_folder(user, watchlist_folder)
+                            self.modified_users += [user]
+                    elif folder.startswith(Folder.watchlist_to):
+                        watchlist_folder: str | None = next((f for f in self.db.users[user][UsersColumns.FOLDERS.name]
+                                                             if f.startswith(Folder.watchlist_to)), None)
+                        if watchlist_folder:
+                            self.db.users.remove_folder(user, watchlist_folder)
+                            self.modified_users += [user]
                     self.db.users.add_folder(user, folder)
                 err: int
                 if folder == Folder.userpage:
@@ -625,10 +637,12 @@ class Downloader:
             users_folders = ((u, fs) for u, fs in users_folders if not any("!" in f for f in fs))
 
         if folders:
-            users_folders = ((u, sorted(filter(folders.__contains__, fs), key=folders.index))
+            users_folders = ((u, sorted(filter(lambda f: f.split(":")[0] in folders, fs),
+                                        key=lambda f: folders.index(f.split(":")[0])))
                              for u, fs in users_folders)
         else:
-            users_folders = ((u, sorted(fs, key=Folder.as_list().index)) for u, fs in users_folders)
+            users_folders = ((u, sorted(fs, key=lambda f: Folder.as_list().index(f.split(":")[0])))
+                             for u, fs in users_folders)
 
         self._download_users(users_folders, stop)
 
