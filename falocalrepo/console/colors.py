@@ -1,3 +1,9 @@
+try:
+    from supports_color import supportsColor
+    supports_truecolor: bool = getattr(supportsColor.stdout, "has16m", False)
+except TypeError:
+    supports_truecolor: bool = False
+
 reset: str = "\x1b[0m"
 
 black: str = "\x1b[30m"

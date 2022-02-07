@@ -31,13 +31,6 @@ from falocalrepo_server import server
 
 from .util import get_param
 
-try:
-    from supports_color import supportsColor
-
-    _supports_truecolor: bool = getattr(supportsColor.stdout, "has16m", False)
-except TypeError:
-    _supports_truecolor: bool = False
-
 from .colors import *
 from .config import config_app
 from .database import database_app
@@ -62,7 +55,7 @@ _pride_flags: list[str] = [
 _pride_colors: list[str] = [
     hex_to_ansi("E50000"), hex_to_ansi("FF8D00"), hex_to_ansi("FFEE00"),
     hex_to_ansi("028121"), hex_to_ansi("004CFF"), hex_to_ansi("770088"),
-] if _supports_truecolor else [
+] if supports_truecolor else [
     bright_red, red, bright_yellow, green, bright_blue, magenta
 ]
 
@@ -470,7 +463,7 @@ def app_server(ctx: Context, database: Callable[..., Database], host: str | None
 
 @app.command("paw", short_help="Print the PRIDE paw!")
 @argument("flag", type=str, default="pride", required=False)
-@option("--true-color / --8bit-color", is_flag=True, default=_supports_truecolor, show_default=True,
+@option("--true-color / --8bit-color", is_flag=True, default=supports_truecolor, show_default=True,
         help="Force enable color mode.")
 @color_option
 @help_option
