@@ -65,6 +65,56 @@ color_option = option("--color/--no-color", is_flag=True, is_eager=True, default
 help_option = help_option_click(*_help_option_names, is_eager=True, help="Show help message and exit.")
 
 
+class CustomHelpColorsGroup(HelpColorsGroup):
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+        self.help_headers_color = "blue"
+        self.help_options_color = "yellow"
+
+
+class CompleteChoice(Choice):
+    completion_items: list[CompletionItem] = []
+
+    def __init__(self):
+        super(CompleteChoice, self).__init__([c.value for c in self.completion_items], False)
+
+    def shell_complete(self, ctx: Context, param: Parameter, incomplete: str) -> list[CompletionItem]:
+        return [i for i in self.completion_items if i.value.lower().startswith(incomplete.lower())]
+
+
+class EnvVars:
+    DATABASE: Path | None = Path(p) if (p := environ.get(_envar_database, None)) is not None else None
+    NOCOLOR: bool = environ.get(_envar_no_color, None) is not None
+    MULTI_CONNECTION: bool = environ.get(_envar_multi_connection, None) is not None
+    CRAWL_DELAY: int | None = int(e) if (e := environ.get(_envar_craw_delay, None)) is not None else None
+    FA_ROOT: str | None = environ.get(_envar_fa_root, None)
+
+    @classmethod
+    def print_database(cls, file: TextIO = stderr):
+        if cls.DATABASE:
+            echo(f"Using {_envar_database}: {cls.DATABASE}", file=file)
+
+    @classmethod
+    def print_nocolor(cls, file: TextIO = stderr):
+        if cls.NOCOLOR:
+            echo(f"Using {_envar_no_color}", file=file)
+
+    @classmethod
+    def print_multi_connection(cls, file: TextIO = stderr):
+        if cls.MULTI_CONNECTION:
+            echo(f"Using {_envar_multi_connection}", file=file)
+
+    @classmethod
+    def print_crawl_delay(cls, file: TextIO = stderr):
+        if cls.CRAWL_DELAY is not None:
+            echo(f"Using {_envar_craw_delay}: {cls.CRAWL_DELAY}", file=file)
+
+    @classmethod
+    def print_fa_root(cls, file: TextIO = stderr):
+        if cls.FA_ROOT is not None:
+            echo(f"Using {_envar_fa_root}: {cls.FA_ROOT}", file=file)
+
+
 def open_database(path: Path, *, ctx: Context, param: Parameter, check_init: bool = True,
                   check_version: bool = True, print_envvar: bool = True) -> Database:
     if print_envvar and ctx.get_parameter_source(param.name) == ParameterSource.ENVIRONMENT:
@@ -108,56 +158,6 @@ def open_api(db: Database) -> FAAPI:
         faapi.connection.root = EnvVars.FA_ROOT
 
     return api
-
-
-class CustomHelpColorsGroup(HelpColorsGroup):
-    def __init__(self, *args, **kwargs) -> None:
-        super().__init__(*args, **kwargs)
-        self.help_headers_color = "blue"
-        self.help_options_color = "yellow"
-
-
-class EnvVars:
-    DATABASE: Path | None = Path(p) if (p := environ.get(_envar_database, None)) is not None else None
-    NOCOLOR: bool = environ.get(_envar_no_color, None) is not None
-    MULTI_CONNECTION: bool = environ.get(_envar_multi_connection, None) is not None
-    CRAWL_DELAY: int | None = int(e) if (e := environ.get(_envar_craw_delay, None)) is not None else None
-    FA_ROOT: str | None = environ.get(_envar_fa_root, None)
-
-    @classmethod
-    def print_database(cls, file: TextIO = stderr):
-        if cls.DATABASE:
-            echo(f"Using {_envar_database}: {cls.DATABASE}", file=file)
-
-    @classmethod
-    def print_nocolor(cls, file: TextIO = stderr):
-        if cls.NOCOLOR:
-            echo(f"Using {_envar_no_color}", file=file)
-
-    @classmethod
-    def print_multi_connection(cls, file: TextIO = stderr):
-        if cls.MULTI_CONNECTION:
-            echo(f"Using {_envar_multi_connection}", file=file)
-
-    @classmethod
-    def print_crawl_delay(cls, file: TextIO = stderr):
-        if cls.CRAWL_DELAY is not None:
-            echo(f"Using {_envar_craw_delay}: {cls.CRAWL_DELAY}", file=file)
-
-    @classmethod
-    def print_fa_root(cls, file: TextIO = stderr):
-        if cls.FA_ROOT is not None:
-            echo(f"Using {_envar_fa_root}: {cls.FA_ROOT}", file=file)
-
-
-class CompleteChoice(Choice):
-    completion_items: list[CompletionItem] = []
-
-    def __init__(self):
-        super(CompleteChoice, self).__init__([c.value for c in self.completion_items], False)
-
-    def shell_complete(self, ctx: Context, param: Parameter, incomplete: str) -> list[CompletionItem]:
-        return [i for i in self.completion_items if i.value.lower().startswith(incomplete.lower())]
 
 
 def read_cookies(db: Database) -> list[dict[str, str]]:
