@@ -8,9 +8,7 @@ import faapi
 import falocalrepo_database
 import falocalrepo_server
 from click import BadParameter
-from click import Command
 from click import Context
-from click import Group
 from click import Option
 from click import Path as PathClick
 from click import UsageError
