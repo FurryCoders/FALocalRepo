@@ -29,8 +29,6 @@ from falocalrepo_server import __name__ as __server_name__
 from falocalrepo_server import __version__ as __server_version__
 from falocalrepo_server import server
 
-from .util import get_param
-
 from .colors import *
 from .config import config_app
 from .database import database_app
@@ -43,211 +41,91 @@ from .util import color_option
 from .util import database_exists_option
 from .util import database_no_exists_option
 from .util import docstring_format
+from .util import get_param
 from .util import help_option
 from .. import __name__ as __prog_name__
 from ..__version__ import __version__
 
-_pride_flags: list[str] = [
-    "pride", "trans", "bisexual", "pansexual", "nonbinary",
-    "lesbian", "agender", "asexual", "genderqueer",
-    "genderfluid", "aromantic", "polyamory"
-]
-_pride_colors: list[str] = [
-    hex_to_ansi("E50000"), hex_to_ansi("FF8D00"), hex_to_ansi("FFEE00"),
-    hex_to_ansi("028121"), hex_to_ansi("004CFF"), hex_to_ansi("770088"),
-] if supports_truecolor else [
-    bright_red, red, bright_yellow, green, bright_blue, magenta
-]
-
-
 # noinspection SpellCheckingInspection
-def _pride_colors_8bit(flag: str) -> list[str] | None:
-    if flag == "pride":
-        return [
-            *([bright_red] * 3),
-            *([red] * 3),
-            *([bright_yellow] * 3),
-            *([green] * 3),
-            *([bright_blue] * 3),
-            *([magenta] * 4),
-        ]
-    elif flag == "trans":
-        return [
-            *([cyan] * 4),
-            *([magenta] * 4),
-            *([bright_white] * 4),
-            *([magenta] * 4),
-            *([cyan] * 4),
-        ]
-    elif flag == "bisexual":
-        return [
-            *([red] * 7),
-            *([bright_magenta] * 5),
-            *([blue] * 7)
-        ]
-    elif flag == "pansexual":
-        return [
-            *([magenta] * 7),
-            *([bright_yellow] * 6),
-            *([blue] * 7)
-        ]
-    elif flag == "nonbinary":
-        return [
-            *([bright_yellow] * 5),
-            *([bright_white] * 5),
-            *([bright_magenta] * 5),
-            *([dim] * 4),
-        ]
-    elif flag == "lesbian":
-        return [
-            *([red] * 4),
-            *([green] * 4),
-            *([white] * 4),
-            *([magenta] * 4),
-            *([bright_magenta] * 4),
-        ]
-    elif flag == "agender":
-        return [
-            *([dim] * 2),
-            *([reset + white] * 3),
-            *([bright_white] * 3),
-            *([green] * 3),
-            *([bright_white] * 3),
-            *([reset + white] * 3),
-            *([dim] * 2),
-        ]
-    elif flag == "asexual":
-        return [
-            *([dim] * 5),
-            *([reset + white] * 5),
-            *([bright_white] * 5),
-            *([blue] * 4),
-        ]
-    elif flag == "genderqueer":
-        return [
-            *([magenta] * 7),
-            *([bright_white] * 6),
-            *([green] * 7)
-        ]
-    elif flag == "genderfluid":
-        return [
-            *([magenta] * 4),
-            *([bright_white] * 4),
-            *([bright_magenta] * 4),
-            *([dim] * 4),
-            *([blue] * 4),
-        ]
-    elif flag == "aromantic":
-        return [
-            *([bright_green] * 4),
-            *([green] * 4),
-            *([bright_white] * 4),
-            *([reset + white] * 4),
-            *([dim + dim] * 4),
-        ]
-    elif flag == "polyamory":
-        return [
-            *([bright_blue] * 5),
-            *([bright_red] * 9),
-            *([dim] * 5)
-        ]
-    else:
-        return None
-
-
-# noinspection SpellCheckingInspection
-def _pride_colors_24bit(flag: str) -> list[str] | None:
-    if flag == "pride":
-        return [
-            *(["E50000"] * 3),
-            *(["FF8D00"] * 3),
-            *(["FFEE00"] * 3),
-            *(["028121"] * 3),
-            *(["004CFF"] * 3),
-            *(["770088"] * 4),
-        ]
-    elif flag == "trans":
-        return [
-            *(["5BCFFB"] * 4),
-            *(["F5ABB9"] * 4),
-            *(["FFFFFF"] * 4),
-            *(["F5ABB9"] * 4),
-            *(["5BCFFB"] * 4),
-        ]
-    elif flag == "bisexual":
-        return [
-            *(["D60270"] * 7),
-            *(["9B4F96"] * 5),
-            *(["0038A8"] * 7)
-        ]
-    elif flag == "pansexual":
-        return [
-            *(["FF1C8D"] * 7),
-            *(["FFD700"] * 6),
-            *(["1AB3FF"] * 7)
-        ]
-    elif flag == "nonbinary":
-        return [
-            *(["FCF431"] * 5),
-            *(["FCFCFC"] * 5),
-            *(["9D59D2"] * 5),
-            *(["282828"] * 4),
-        ]
-    elif flag == "lesbian":
-        return [
-            *(["D62800"] * 4),
-            *(["FF9B56"] * 4),
-            *(["FFFFFF"] * 4),
-            *(["D462A6"] * 4),
-            *(["A40062"] * 4),
-        ]
-    elif flag == "agender":
-        return [
-            *(["101010"] * 2),
-            *(["BABABA"] * 3),
-            *(["FFFFFF"] * 3),
-            *(["BAF484"] * 3),
-            *(["FFFFFF"] * 3),
-            *(["BABABA"] * 3),
-            *(["101010"] * 2),
-        ]
-    elif flag == "asexual":
-        return [
-            *(["101010"] * 5),
-            *(["A4A4A4"] * 5),
-            *(["FFFFFF"] * 5),
-            *(["810081"] * 4),
-        ]
-    elif flag == "genderqueer":
-        return [
-            *(["B57FDD"] * 7),
-            *(["FFFFFF"] * 6),
-            *(["49821E"] * 7)
-        ]
-    elif flag == "genderfluid":
-        return [
-            *(["FE76E2"] * 4),
-            *(["FFFFFF"] * 4),
-            *(["BF12D7"] * 4),
-            *(["101010"] * 4),
-            *(["303CBE"] * 4),
-        ]
-    elif flag == "aromantic":
-        return [
-            *(["3BA740"] * 4),
-            *(["A8D47A"] * 4),
-            *(["FFFFDD"] * 4),
-            *(["ABABAB"] * 4),
-            *(["101010"] * 4),
-        ]
-    elif flag == "polyamory":
-        return [
-            *(["0000FF"] * 5),
-            *(["FF0000"] * 9),
-            *(["101010"] * 5)
-        ]
-    else:
-        return None
+_pride_colors: dict[str, list[tuple[str, str]]] = {
+    "pride": [
+        *([(bright_red, "\x1b[38;2;229;0;0m")] * 3),
+        *([(red, "\x1b[38;2;255;141;0m")] * 3),
+        *([(bright_yellow, "\x1b[38;2;255;238;0m")] * 3),
+        *([(green, "\x1b[38;2;2;129;33m")] * 3),
+        *([(bright_blue, "\x1b[38;2;0;76;255m")] * 3),
+        *([(magenta, "\x1b[38;2;119;0;136m")] * 4),
+    ],
+    "trans": [
+        *([(cyan, "\x1b[38;2;91;207;251m")] * 4),
+        *([(magenta, "\x1b[38;2;245;171;185m")] * 4),
+        *([(bright_white, "\x1b[38;2;255;255;255m")] * 4),
+        *([(magenta, "\x1b[38;2;245;171;185m")] * 4),
+        *([(cyan, "\x1b[38;2;91;207;251m")] * 4),
+    ],
+    "bisexual": [
+        *([(red, "\x1b[38;2;214;2;112m")] * 7),
+        *([(bright_magenta, "\x1b[38;2;155;79;150m")] * 5),
+        *([(blue, "\x1b[38;2;0;56;168m")] * 7)
+    ],
+    "pansexual": [
+        *([(magenta, "\x1b[38;2;255;28;141m")] * 7),
+        *([(bright_yellow, "\x1b[38;2;255;215;0m")] * 6),
+        *([(blue, "\x1b[38;2;26;179;255m")] * 7)
+    ],
+    "nonbinary": [
+        *([(bright_yellow, "\x1b[38;2;252;244;49m")] * 5),
+        *([(bright_white, "\x1b[38;2;252;252;252m")] * 5),
+        *([(bright_magenta, "\x1b[38;2;157;89;210m")] * 5),
+        *([(dim, "\x1b[38;2;40;40;40m")] * 4),
+    ],
+    "lesbian": [
+        *([(red, "\x1b[38;2;214;40;0m")] * 4),
+        *([(green, "\x1b[38;2;255;155;86m")] * 4),
+        *([(white, "\x1b[38;2;255;255;255m")] * 4),
+        *([(magenta, "\x1b[38;2;212;98;166m")] * 4),
+        *([(bright_magenta, "\x1b[38;2;164;0;98m")] * 4),
+    ],
+    "agender": [
+        *([(dim, "\x1b[38;2;16;16;16m")] * 2),
+        *([(reset, "\x1b[38;2;186;186;186m")] * 3),
+        *([(bright_white, "\x1b[38;2;255;255;255m")] * 3),
+        *([(green, "\x1b[38;2;186;244;132m")] * 3),
+        *([(bright_white, "\x1b[38;2;255;255;255m")] * 3),
+        *([(reset, "\x1b[38;2;186;186;186m")] * 3),
+        *([(dim, "\x1b[38;2;16;16;16m")] * 2),
+    ],
+    "asexual": [
+        *([(dim, "\x1b[38;2;16;16;16m")] * 5),
+        *([(reset, "\x1b[38;2;164;164;164m")] * 5),
+        *([(bright_white, "\x1b[38;2;255;255;255m")] * 5),
+        *([(blue, "\x1b[38;2;129;0;129m")] * 4),
+    ],
+    "genderqueer": [
+        *([(magenta, "\x1b[38;2;181;127;221m")] * 7),
+        *([(bright_white, "\x1b[38;2;255;255;255m")] * 6),
+        *([(green, "\x1b[38;2;73;130;30m")] * 7)
+    ],
+    "genderfluid": [
+        *([(magenta, "\x1b[38;2;254;118;226m")] * 4),
+        *([(bright_white, "\x1b[38;2;255;255;255m")] * 4),
+        *([(bright_magenta, "\x1b[38;2;191;18;215m")] * 4),
+        *([(dim, "\x1b[38;2;16;16;16m")] * 4),
+        *([(blue, "\x1b[38;2;48;60;190m")] * 4),
+    ],
+    "aromantic": [
+        *([(bright_green, "\x1b[38;2;59;167;64m")] * 4),
+        *([(green, "\x1b[38;2;168;212;122m")] * 4),
+        *([(bright_white, "\x1b[38;2;255;255;221m")] * 4),
+        *([(reset, "\x1b[38;2;171;171;171m")] * 4),
+        *([(dim, "\x1b[38;2;16;16;16m")] * 4),
+    ],
+    "polyamory": [
+        *([(bright_blue, "\x1b[38;2;0;0;255m")] * 5),
+        *([(bright_red, "\x1b[38;2;255;0;0m")] * 9),
+        *([(dim, "\x1b[38;2;16;16;16m")] * 5)
+    ]
+}
 
 
 class ShellChoice(CompleteChoice):
@@ -256,6 +134,10 @@ class ShellChoice(CompleteChoice):
         CompletionItem(FishComplete.name, help="The friendly interactive shell"),
         CompletionItem(ZshComplete.name, help="The Z shell")
     ]
+
+
+class FlagChoice(CompleteChoice):
+    completion_items: list[CompletionItem] = list(map(CompletionItem, _pride_colors.keys()))
 
 
 def version_callback(ctx: Context, _param: Option, value: str):
@@ -462,14 +344,15 @@ def app_server(ctx: Context, database: Callable[..., Database], host: str | None
 
 
 @app.command("paw", short_help="Print the PRIDE paw!")
-@argument("flag", type=str, default="pride", required=False)
+@argument("flag", metavar="[FLAG]", type=FlagChoice(), default="pride", required=False)
 @option("--true-color / --8bit-color", is_flag=True, default=supports_truecolor, show_default=True,
         help="Force enable color mode.")
 @color_option
 @help_option
 @pass_context
-@docstring_format("\n    ".join(f"* {_pride_colors[i % len(_pride_colors)]}{f}{reset}"
-                                for i, f in enumerate(_pride_flags)))
+@docstring_format("\n    ".join(
+    f"* {_pride_colors['pride'][(i % ((len(_pride_colors[f]) - 1) // 3)) * 3][supports_truecolor]}{f}{reset}"
+    for i, f in enumerate(_pride_colors.keys())))
 def paw(ctx: Context, flag: str, true_color: bool):
     """
     Print a PRIDE {yellow}FLAG{reset} paw!
@@ -484,12 +367,10 @@ def paw(ctx: Context, flag: str, true_color: bool):
 
     {italic}Note{reset}: the paw works best with a dark background.
     """
-    if flag not in _pride_flags:
-        flag = choice(_pride_flags)
+    if flag not in _pride_colors:
+        flag = choice(list(_pride_colors.keys()))
         echo("Your flag isn't in the program yet :(\n"
              f"In the meantime, hope you enjoy the {flag} flag :)\n")
-
-    colors: list[str] = list(map(hex_to_ansi, _pride_colors_24bit(flag))) if true_color else _pride_colors_8bit(flag)
 
     paw_ascii = """
                             -*#%%#=               
@@ -514,7 +395,7 @@ def paw(ctx: Context, flag: str, true_color: bool):
     """.removeprefix("\n").removesuffix("\n")
 
     paw_ascii = "\n".join(line.ljust(46) for line in paw_ascii.splitlines())
-    paw_ascii = "\n".join(bold + color + line + reset for color, line in zip(colors, paw_ascii.splitlines()))
+    paw_ascii = "\n".join(bold + c[true_color] + l + reset for c, l in zip(_pride_colors[flag], paw_ascii.splitlines()))
     echo(paw_ascii, color=ctx.color)
 
 
