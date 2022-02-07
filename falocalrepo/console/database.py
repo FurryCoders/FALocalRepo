@@ -281,9 +281,11 @@ def html_to_ansi(html: str, *, root: bool = False) -> str:
     for span in html_parsed.select("span.bbcode[style*=color]"):
         for child in span.select("*"):
             child.replaceWith(html_to_ansi(str(child)))
-        color: str = m[1] if (m := match(r".*color: ([^ ;]+).*", span.attrs["style"])) else ""
-        color = hex_to_ansi(color[1:]) if color.startswith("#") else colors_dict.get(color, "")
-        span.replaceWith(f"{(bold + color) if color else ''}{span.text}{reset if color else ''}")
+        if (color := m[1] if (m := match(r".*color: ([^ ;]+).*", span.attrs["style"])) else "") in colors_dict:
+            color = colors_dict[color]
+        elif color in css_colors or color.startswith("#"):
+            color = hex_to_ansi(css_colors.get(color, color))
+        span.replaceWith(f"{color}{span.text}{reset if color else ''}")
     for span in html_parsed.select("span.bbcode_quote_name"):
         for child in span.select("*"):
             child.replaceWith(html_to_ansi(str(child)))
