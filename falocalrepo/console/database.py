@@ -18,7 +18,6 @@ from typing import Iterable
 from typing import TextIO
 
 from bs4 import BeautifulSoup
-from bs4.element import Tag
 from click import Argument
 from click import BadParameter
 from click import Choice
