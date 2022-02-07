@@ -9,6 +9,7 @@ import falocalrepo_database
 import falocalrepo_server
 from click import BadParameter
 from click import Context
+from click import Group
 from click import Option
 from click import Path as PathClick
 from click import UsageError
@@ -272,7 +273,7 @@ def app_help(ctx: Context, commands: list[str]):
 
     try:
         commands = [c for c in commands if not c.startswith("-")]
-        command = reduce(lambda a, c: a.commands[c], commands, app)
+        command = reduce(lambda a, c: a.commands[c] if isinstance(a, Group) else a, commands, app)
         echo(command.get_help(app.make_context(command.name, commands, ctx.parent)), color=ctx.color)
     except (KeyError, AttributeError):
         raise UsageError(f"No such command {' '.join(commands)!r}.", ctx)
