@@ -6,6 +6,8 @@ from json import dumps
 from json import load
 from os.path import getsize
 from pathlib import Path
+from re import Pattern
+from re import compile as re_compile
 from re import match
 from re import sub
 from shutil import get_terminal_size
@@ -130,6 +132,12 @@ def serializer(obj: object) -> object:
         return list(obj)
     else:
         return str(obj)
+
+
+def date_callback(ctx: Context, param: Parameter, value: str) -> tuple[str | None, ...]:
+    if not (m := match(r"(?:(\d{4})(?:-(\d\d?)(?:-(\d\d?))?)?)?[ ]?(?:(\d\d?)(?::(\d\d?)(?::(\d\d?))?)?)?", value)):
+        raise BadParameter("Not a valid date format.", ctx, param)
+    return m.groups()
 
 
 def column_callback(ctx: Context, param: Option, value: tuple[str]) -> tuple[str]:
@@ -397,18 +405,23 @@ def database_info(ctx: Context, database: Callable[..., Database]):
 
 
 @database_app.command("history", short_help="Show database history.")
-@option("--filter", "_filter", metavar="FILTER", type=str, default="", callback=lambda _c, _p, v: v.lower(),
+@option("--filter", "_filter", metavar="FILTER", type=str, default=None,
         help=f"Show entries containing {yellow}FILTER{reset}.")
+@option("--filter-date", metavar="DATE", type=str, default=None, callback=date_callback,
+        help=f"Filter by {yellow}DATE{reset}.")
 @option("--clear", is_flag=True, default=False, required=False, help="Clear entries.")
 @database_exists_option
 @color_option
 @help_option
 @pass_context
 @docstring_format()
-def database_history(ctx: Context, database: Callable[..., Database], clear: bool, _filter: str):
+def database_history(ctx: Context, database: Callable[..., Database], clear: bool, _filter: str | None,
+                     filter_date: tuple[str | None, ...] | None):
     """
     Show database history. History events can be filtered using the {yellow}--filter{reset} option to match events that
-    contain {yellow}FILTER{reset} (the match is performed case-insensitively).
+    contain {yellow}FILTER{reset} (the match is performed case-insensitively). The {yellow}--filter-date{reset} option
+    allows filtering by date. The {yellow}DATE{reset} value must be in the format {cyan}YYYY-MM-DD HH:MM:SS{reset}, any
+    component can be omitted for generalised results.
 
     Using the {yellow}--clear{reset} option will delete all history entries, or the ones containing
     {yellow}FILTER{reset} if the {yellow}--filter{reset} option is used.
@@ -416,13 +429,15 @@ def database_history(ctx: Context, database: Callable[..., Database], clear: boo
 
     db: Database = database()
 
-    history: Iterable[tuple[datetime, str]]
+    history: Iterable[tuple[datetime, str]] = db.history.select().tuples
     removed: int = 0
 
     if _filter:
-        history = ((t, e) for t, e in db.history.select().tuples if _filter in e.lower())
-    else:
-        history = db.history.select().tuples
+        history = ((t, e) for t, e in history if _filter.lower() in e.lower())
+    if filter_date:
+        filter_exp: Pattern = re_compile("{:>02}-{:>02}-{:>02} {:>02}:{:>02}:{:>02}"
+                                         .format(*map(lambda d: d or r"\d+", filter_date)))
+        history = ((t, e) for t, e in history if match(filter_exp, f"{t:%Y-%m-%d %H:%M:%S}"))
 
     try:
         for t, e in history:
