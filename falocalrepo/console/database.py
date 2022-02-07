@@ -18,6 +18,7 @@ from typing import Iterable
 from typing import TextIO
 
 from bs4 import BeautifulSoup
+from bs4.element import Tag
 from click import Argument
 from click import BadParameter
 from click import Choice
@@ -272,32 +273,32 @@ def html_to_ansi(html: str, *, root: bool = False) -> str:
     for [tag_name, tag_style] in (("i", italic), ("strong", bold), ("u", underline), ("s", strikethrough)):
         for tag in html_parsed.select(tag_name):
             for child in tag.select("*"):
-                child.replaceWith(html_to_ansi(child.decode_contents()))
+                child.replaceWith(html_to_ansi(str(child)))
             tag.replaceWith(f"{tag_style}{tag.text}{reset}")
     for a in html_parsed.select("a"):
         for child in a.select("*"):
-            child.replaceWith(html_to_ansi(child.decode_contents()))
+            child.replaceWith(html_to_ansi(str(child)))
         a.replaceWith(f"[{a.text.strip()}]({a['href']})")
     for span in html_parsed.select("span.bbcode[style*=color]"):
         for child in span.select("*"):
-            child.replaceWith(html_to_ansi(child.decode_contents()))
+            child.replaceWith(html_to_ansi(str(child)))
         color: str = m[1] if (m := match(r".*color: ([^ ;]+).*", span.attrs["style"])) else ""
         color = hex_to_ansi(color[1:]) if color.startswith("#") else colors_dict.get(color, "")
         span.replaceWith(f"{(bold + color) if color else ''}{span.text}{reset if color else ''}")
     for span in html_parsed.select("span.bbcode_quote_name"):
         for child in span.select("*"):
-            child.replaceWith(html_to_ansi(child.decode_contents()))
+            child.replaceWith(html_to_ansi(str(child)))
         span.replaceWith(f"{bold}{italic}{span.text}{reset}")
     for span in html_parsed.select("span.bbcode_quote"):
         for child in span.select("*"):
-            child.replaceWith(html_to_ansi(child.decode_contents()))
+            child.replaceWith(html_to_ansi(str(child)))
         width_: int = (width or 80) - 1
         span.replaceWith("\n".join(line2
                                    for line in span.text.splitlines()
                                    for line2 in wrap(line, width_, initial_indent=" ", subsequent_indent=" ") or [""]))
     for code in html_parsed.select("code.bbcode_center,code.bbcode_right") if width else []:
         for child in code.select("*"):
-            child.replaceWith(html_to_ansi(child.decode_contents()))
+            child.replaceWith(html_to_ansi(str(child)))
         formatter: str = "^" if "bbcode_center" in code["class"] else ">"
         code.replaceWith("\n".join(f"{line2:{formatter}{(width or 1) - 1}}"
                                    for line in code.text.splitlines()
