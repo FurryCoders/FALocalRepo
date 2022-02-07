@@ -67,6 +67,7 @@ from .util import get_param
 from .util import help_option
 from .. import __name__ as __prog_name__
 from ..__version__ import __version__
+from ..downloader import sort_set
 
 
 class Output(str, Enum):
@@ -116,15 +117,18 @@ class ColumnsChoice(Choice):
           for c in JournalsColumns.as_list()],
         *[(users_table, CompletionItem(c.name, help=f"{users_table}:{c.name}"))
           for c in UsersColumns.as_list()],
+        (submissions_table, CompletionItem("@", help=f"{submissions_table}:ALL")),
+        (journals_table, CompletionItem("@", help=f"{journals_table}:ALL")),
+        (users_table, CompletionItem("@", help=f"{users_table}:ALL")),
     ]
 
     def __init__(self):
-        super().__init__([i.value for _, i in self.completion_items], False)
+        super().__init__(sort_set([i.value for _, i in self.completion_items]), False)
 
     def shell_complete(self, ctx: Context, param: Parameter, incomplete: str) -> list[CompletionItem]:
         table: str = ctx.params.get("table", None) or (ctx.args or [""])[0]
         return [i for t, i in self.completion_items
-                if (not table or t == table) and i.value.lower().startswith(incomplete.lower())]
+                if (not table or t.lower() == table.lower()) and i.value.lower().startswith(incomplete.lower())]
 
 
 def serializer(obj: object) -> object:
@@ -148,7 +152,7 @@ def column_callback(ctx: Context, param: Option, value: tuple[str]) -> tuple[str
         table_columns = [c.name for c in JournalsColumns.as_list()]
     elif table == users_table:
         table_columns = [c.name for c in UsersColumns.as_list()]
-    if (col := next((c for c in value if c not in table_columns), None)) is not None:
+    if (col := next((c for c in value if c not in table_columns and c != "@"), None)) is not None:
         raise BadParameter(f"{col!r} is not one of {', '.join(map(repr, table_columns))}.", ctx, param)
     return value
 
