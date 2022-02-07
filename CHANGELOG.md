@@ -8,6 +8,7 @@
 * Column shell completions for `database search`
 * Commands shell completions for `help`
 * Allow passing SQLite LIKE queries to `--user` arguments of `download update`
+* Add `--filter-date` option to `database history`
 
 ### Changes
 
