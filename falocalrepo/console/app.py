@@ -399,14 +399,8 @@ def app_help(ctx: Context, commands: list[str]):
 
     try:
         commands = [c for c in commands if not c.startswith("-")]
-        context: Context = ctx.parent
-        command: Group | Command = app
-        for i, command_name in enumerate(commands, 1):
-            command = command.get_command(context, command_name)
-            context = command.make_context(command.name,
-                                           commands[i:i + 1] if isinstance(command, Group) else [],
-                                           context)
-        echo(command.get_help(context), color=ctx.color)
+        command = reduce(lambda a, c: a.commands[c], commands, app)
+        echo(command.get_help(app.make_context(command.name, commands, ctx.parent)), color=ctx.color)
     except (KeyError, AttributeError, UsageError):
         raise UsageError(f"No such command {' '.join(commands)!r}.", ctx)
 
