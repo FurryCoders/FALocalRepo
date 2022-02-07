@@ -5,6 +5,7 @@
 ### New Features
 
 * Add `database view` command to view entries directly in the terminal
+    * Alignment, colors, emphasis, links and more are converted from the HTML fields and formatted for the terminal 
 * Shell completions for `database search` column
 * Shell completions for `help` commands
 * Allow passing SQLite LIKE queries to `--user` arguments of `download update`
