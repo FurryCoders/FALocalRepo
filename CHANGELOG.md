@@ -6,6 +6,7 @@
 
 * Add `database view` command to view entries directly in the terminal
 * Column shell completions for `database search`
+* Commands completions for `help`
 * Allow passing SQLite LIKE queries to `--user` arguments of `download update`
 
 ### Changes
