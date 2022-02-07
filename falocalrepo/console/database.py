@@ -474,12 +474,12 @@ def database_search(ctx: Context, database: Callable[..., Database], table: str,
 
     The default output format is a table with only the most relevant columns displayed for each entry. To override the
     displayed column, or change their width, use the {yellow}--column{reset} option to select which columns will be
-    displayed (SQLite statements are supported). The optional {yellow}WIDTH{reset} value can be added to format that
-    specific column when the output is set to {cyan}table{reset}.
+    displayed (SQLite statements are supported). The optional {yellow}WIDTH{reset} values can be added to format the
+    width of the specified columns when the output is set to {cyan}table{reset} and the {yellow}--column{reset} option
+    is used.
 
     To output all columns and entries of a table, {yellow}COLUMN{reset} and {yellow}QUERY{reset} values can be set to
-    {cyan}@{reset} and {cyan}%{reset} respectively. However, the {yellow}database export{reset} command is better
-    suited for this task.
+    {cyan}@{reset} and {cyan}%{reset} respectively.
 
     For a list of columns, see {yellow}database{reset} help.
 
