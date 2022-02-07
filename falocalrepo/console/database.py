@@ -456,7 +456,7 @@ def database_history(ctx: Context, database: Callable[..., Database], clear: boo
 @option("--sql", is_flag=True, help="Treat query as SQLite WHERE statement.")
 @option("--show-sql", is_flag=True, help="Show generated SQLite WHERE statement.")
 @option("--output", default="table", type=SearchOutputChoice(), help="Specify output type.")
-@option("--table-widths", metavar="WIDTH,[WIDTH,...]", type=str, callback=table_width_callback,
+@option("--table-widths", metavar="WIDTH,[WIDTH...]", type=str, callback=table_width_callback,
         help="Specify width of table columns.")
 @option("--ignore-width", is_flag=True, help="Ignore terminal width when printing results in table format.")
 @option("--total", is_flag=True, help="Print number of results.")
