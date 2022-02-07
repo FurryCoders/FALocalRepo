@@ -1,3 +1,4 @@
+from functools import reduce
 from pathlib import Path
 from random import choice
 from typing import Callable
@@ -294,6 +295,17 @@ def port_callback(ctx: Context, param: Option, value: str | int) -> int | None:
         return int(value)
 
 
+def commands_callback(ctx: Context, _param: Option, incomplete: str) -> list[CompletionItem]:
+    try:
+        return [
+            CompletionItem(n, help=c.short_help)
+            for n, c in reduce(lambda a, c: a.commands[c], ctx.params.get("commands", ctx.args), app).commands.items()
+            if n.lower().startswith(incomplete.lower())
+        ]
+    except (KeyError, AttributeError) as err:
+        return []
+
+
 @group(name=__prog_name__, no_args_is_help=True, cls=CustomHelpColorsGroup, add_help_option=False)
 @option("--version", is_flag=True, expose_value=False, is_eager=True, callback=version_callback,
         help="Show version and exit.")
@@ -374,7 +386,8 @@ def app_updates(ctx: Context, shell: bool):
 
 
 @app.command("help", context_settings={"ignore_unknown_options": True})
-@argument("commands", nargs=-1, required=False, type=str, callback=lambda _c, _p, v: list(v))
+@argument("commands", nargs=-1, required=False, type=str, callback=lambda _c, _p, v: list(v),
+          shell_complete=commands_callback)
 @color_option
 @help_option
 @option("--database", expose_value=False, required=False, hidden=True)
