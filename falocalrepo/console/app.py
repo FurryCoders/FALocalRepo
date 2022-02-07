@@ -302,7 +302,7 @@ def commands_callback(ctx: Context, _param: Option, incomplete: str) -> list[Com
             for n, c in reduce(lambda a, c: a.commands[c], ctx.params.get("commands", ctx.args), app).commands.items()
             if n.lower().startswith(incomplete.lower())
         ]
-    except (KeyError, AttributeError) as err:
+    except (KeyError, AttributeError):
         return []
 
 
