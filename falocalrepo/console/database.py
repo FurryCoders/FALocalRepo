@@ -106,14 +106,6 @@ class SearchOutputChoice(CompleteChoice):
     ]
 
 
-class ExportOutputChoice(CompleteChoice):
-    completion_items: list[CompletionItem] = [
-        CompletionItem(Output.csv.value, help="CSV format (comma separated)"),
-        CompletionItem(Output.tsv.value, help="TSV format (tab separated)"),
-        CompletionItem(Output.json.value, help="JSON format"),
-    ]
-
-
 class ColumnsChoice(Choice):
     completion_items: list[tuple[str, CompletionItem]] = [
         *[(submissions_table, CompletionItem(c.name, help=f"{submissions_table}:{c.name}"))
