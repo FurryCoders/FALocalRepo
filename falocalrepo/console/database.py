@@ -158,6 +158,13 @@ def sort_callback(ctx: Context, param: Option, value: tuple[tuple[str, str]]) ->
     return value
 
 
+def table_width_callback(ctx: Context, param: Option, value: str) -> tuple[int]:
+    values: list[str] = list(map(str.strip, value.split(",")))
+    if (err := next(filter(lambda v: not v.isdigit(), values), None)) is not None:
+        raise BadParameter(f"{err!r} is not a valid integer.", ctx, param)
+    return tuple(map(int, values))
+
+
 def id_callback(ctx: Context, param: Argument, value: tuple[str, ...] | str) -> tuple[str | int, ...]:
     value = value if isinstance(value, tuple) else (value,)
     if (t := ctx.params["table"]).lower() == users_table.lower():
@@ -449,6 +456,8 @@ def database_history(ctx: Context, database: Callable[..., Database], clear: boo
 @option("--sql", is_flag=True, help="Treat query as SQLite WHERE statement.")
 @option("--show-sql", is_flag=True, help="Show generated SQLite WHERE statement.")
 @option("--output", default="table", type=SearchOutputChoice(), help="Specify output type.")
+@option("--table-widths", metavar="WIDTH,[WIDTH,...]", type=str, callback=table_width_callback,
+        help="Specify width of table columns.")
 @option("--ignore-width", is_flag=True, help="Ignore terminal width when printing results in table format.")
 @option("--total", is_flag=True, help="Print number of results.")
 @database_exists_option
@@ -459,7 +468,7 @@ def database_history(ctx: Context, database: Callable[..., Database], clear: boo
                   outputs="\n    ".join(f" * {s.value}\t{s.help}" for s in SearchOutputChoice.completion_items))
 def database_search(ctx: Context, database: Callable[..., Database], table: str, query: str, column: tuple[str],
                     sort: tuple[tuple[str, str]], limit: int | None, offset: int | None, sql: bool, show_sql: bool,
-                    output: str, ignore_width: bool, total: bool):
+                    output: str, table_widths: tuple[int], ignore_width: bool, total: bool):
     """
     Search the database using queries, and output in different formats.
 
@@ -521,17 +530,16 @@ def database_search(ctx: Context, database: Callable[..., Database], table: str,
 
     db: Database = database()
     db_table: Table = get_table(db, table)
-    default_headers: list[tuple[str, int]] = []
+    headers: list[tuple[str, int]] = [*zip(map(str.upper, column), (*table_widths, *([0] * len(column))))]
 
     if table in (submissions_table, journals_table):
-        default_headers = [(SubmissionsColumns.ID.name, 10), (SubmissionsColumns.AUTHOR.name, 16),
-                           (SubmissionsColumns.DATE.name, 16), (SubmissionsColumns.TITLE.name, 0)]
+        headers = headers or [(SubmissionsColumns.ID.name, 10), (SubmissionsColumns.AUTHOR.name, 16),
+                              (SubmissionsColumns.DATE.name, 16), (SubmissionsColumns.TITLE.name, 0)]
         sort = sort or ((SubmissionsColumns.ID.name, "desc"),)
     elif table == users_table:
-        default_headers = [(UsersColumns.USERNAME.name, 40), (UsersColumns.FOLDERS.name, 0)]
+        headers = headers or [(UsersColumns.USERNAME.name, 40), (UsersColumns.FOLDERS.name, 0)]
         sort = sort or ((UsersColumns.USERNAME.name, "ASC"),)
 
-    headers: list[tuple[str, int]] = [(c.upper(), len(c)) for c in column] if column else default_headers
     headers = [(c, 0) for c in db_table.columns] if any(h == "@" for h, _ in headers) else headers
     headers[-1] = (headers[-1][0], 0)
     results, [query, values] = search(db_table, [h for h, _ in headers], query, sort, limit, offset, sql)
