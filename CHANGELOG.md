@@ -14,6 +14,10 @@
     * `database search` can produce the same output with the `--column @` option and piping
 * Table column widths for `table` output of `database search` command are now set using the `--table-widths` option
 
+### Fixes
+
+* Fix `help` raising an error if the command seeking help for required an existing database file which couldn't be found
+
 ## 4.0.11
 
 ### Fixes
