@@ -7,6 +7,7 @@ from sys import stderr
 from typing import Callable
 from typing import TextIO
 
+import faapi
 from click import BadParameter
 from click import Choice
 from click import Context
@@ -34,6 +35,7 @@ _envar_database: str = f"{__prog_name__}_DATABASE"
 _envar_no_color: str = f"{__prog_name__}_NOCOLOR"
 _envar_multi_connection: str = f"{__prog_name__}_MULTI_CONNECTION"
 _envar_craw_delay: str = f"{__prog_name__}_CRAWL_DELAY"
+_envar_fa_root: str = f"{__prog_name__}_FA_ROOT"
 _cookies_setting: str = "COOKIES"
 _help_option_names: list[str] = ["--help", "-h"]
 
@@ -101,6 +103,9 @@ def open_api(db: Database) -> FAAPI:
             raise BadParameter(f"Value lower than allowed ({delay})", param_hint=_envar_craw_delay)
         # noinspection PyUnresolvedReferences
         api.robots.default_entry.delay = EnvVars.CRAWL_DELAY
+    if EnvVars.FA_ROOT is not None:
+        EnvVars.print_fa_root()
+        faapi.connection.root = EnvVars.FA_ROOT
 
     return api
 
@@ -117,6 +122,7 @@ class EnvVars:
     NOCOLOR: bool = environ.get(_envar_no_color, None) is not None
     MULTI_CONNECTION: bool = environ.get(_envar_multi_connection, None) is not None
     CRAWL_DELAY: int | None = int(e) if (e := environ.get(_envar_craw_delay, None)) is not None else None
+    FA_ROOT: str | None = environ.get(_envar_fa_root, None)
 
     @classmethod
     def print_database(cls, file: TextIO = stderr):
@@ -137,6 +143,11 @@ class EnvVars:
     def print_crawl_delay(cls, file: TextIO = stderr):
         if cls.CRAWL_DELAY is not None:
             echo(f"Using {_envar_craw_delay}: {cls.CRAWL_DELAY}", file=file)
+
+    @classmethod
+    def print_fa_root(cls, file: TextIO = stderr):
+        if cls.FA_ROOT is not None:
+            echo(f"Using {_envar_fa_root}: {cls.FA_ROOT}", file=file)
 
 
 class CompleteChoice(Choice):
