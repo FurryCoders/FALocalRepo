@@ -259,7 +259,7 @@ def print_json(results: Cursor, file: TextIO) -> int:
 def search(table: Table, headers: list[str], query: str, sort: tuple[tuple[str, str]], limit: int | None,
            offset: int | None, sql: bool) -> tuple[Cursor, tuple[str, list[str]]]:
     cols_table: list[str] = [c.name for c in table.columns]
-    query_elems, values = ([query], []) if sql or not query else query_to_sql(
+    query_elems, values = ([query], []) if sql or not query.strip() else query_to_sql(
         query, "any", [*map(str.lower, {*cols_table, "any"} - {"ID", "AUTHOR", "USERNAME"})],
         {"author": "replace(author, '_', '')", "any": f"({'||'.join(cols_table)})"})
     query = " ".join(query_elems)
