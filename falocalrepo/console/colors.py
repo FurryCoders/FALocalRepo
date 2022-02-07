@@ -1,5 +1,6 @@
 try:
     from supports_color import supportsColor
+
     supports_truecolor: bool = getattr(supportsColor.stdout, "has16m", False)
 except TypeError:
     supports_truecolor: bool = False
@@ -102,4 +103,3 @@ css_colors: dict[str, str] = {
 def hex_to_ansi(color_hex: str) -> str:
     color_hex = color_hex.removeprefix("#")
     return f"\x1b[38;2;{int(color_hex[0:2], base=16)};{int(color_hex[2:4], base=16)};{int(color_hex[4:6], base=16)}m"
-
