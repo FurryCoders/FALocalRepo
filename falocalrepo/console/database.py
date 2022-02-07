@@ -20,10 +20,12 @@ from typing import TextIO
 from bs4 import BeautifulSoup
 from click import Argument
 from click import BadParameter
+from click import Choice
 from click import Context
 from click import File
 from click import IntRange
 from click import Option
+from click import Parameter
 from click import Path as PathClick
 from click import argument
 from click import confirmation_option
@@ -112,6 +114,25 @@ class ExportOutputChoice(CompleteChoice):
     ]
 
 
+class ColumnsChoice(Choice):
+    completion_items: list[tuple[str, CompletionItem]] = [
+        *[(submissions_table, CompletionItem(c.name, help=f"{submissions_table}:{c.name}"))
+          for c in SubmissionsColumns.as_list()],
+        *[(journals_table, CompletionItem(c.name, help=f"{journals_table}:{c.name}"))
+          for c in JournalsColumns.as_list()],
+        *[(users_table, CompletionItem(c.name, help=f"{users_table}:{c.name}"))
+          for c in UsersColumns.as_list()],
+    ]
+
+    def __init__(self):
+        super().__init__([i.value for _, i in self.completion_items], False)
+
+    def shell_complete(self, ctx: Context, param: Parameter, incomplete: str) -> list[CompletionItem]:
+        table: str = ctx.params.get("table", None) or (ctx.args or [""])[0]
+        return [i for t, i in self.completion_items
+                if (not table or t == table) and i.value.lower().startswith(incomplete.lower())]
+
+
 def serializer(obj: object) -> object:
     if isinstance(obj, Iterable):
         return list(obj)
@@ -119,8 +140,22 @@ def serializer(obj: object) -> object:
         return str(obj)
 
 
-def column_callback(_ctx: Context, _param: Option, value: tuple[str]) -> list[tuple[str, int]]:
-    return [((vs := v.split(",", 1))[0], int(vs[1])) if "," in v else (v, 0) for v in map(str.strip, value) if v]
+def column_callback(ctx: Context, param: Option, value: tuple[str]) -> tuple[str]:
+    table_columns: list[str] = []
+    if (table := ctx.params["table"]) == submissions_table:
+        table_columns = [c.name for c in SubmissionsColumns.as_list()]
+    elif table == journals_table:
+        table_columns = [c.name for c in JournalsColumns.as_list()]
+    elif table == users_table:
+        table_columns = [c.name for c in UsersColumns.as_list()]
+    if (col := next((c for c in value if c not in table_columns), None)) is not None:
+        raise BadParameter(f"{col!r} is not one of {', '.join(map(repr, table_columns))}.", ctx, param)
+    return value
+
+
+def sort_callback(ctx: Context, param: Option, value: tuple[tuple[str, str]]) -> tuple[tuple[str, str]]:
+    column_callback(ctx, param, tuple(c for c, _ in value))
+    return value
 
 
 def id_callback(ctx: Context, param: Argument, value: tuple[str, ...] | str) -> tuple[str | int, ...]:
@@ -217,7 +252,7 @@ def print_json(results: Cursor, file: TextIO) -> int:
 def search(table: Table, headers: list[str], query: str, sort: tuple[tuple[str, str]], limit: int | None,
            offset: int | None, sql: bool) -> tuple[Cursor, tuple[str, list[str]]]:
     cols_table: list[str] = [c.name for c in table.columns]
-    query_elems, values = ([query], []) if sql else query_to_sql(
+    query_elems, values = ([query], []) if sql or not query else query_to_sql(
         query, "any", [*map(str.lower, {*cols_table, "any"} - {"ID", "AUTHOR", "USERNAME"})],
         {"author": "replace(author, '_', '')", "any": f"({'||'.join(cols_table)})"})
     query = " ".join(query_elems)
@@ -405,10 +440,10 @@ def database_history(ctx: Context, database: Callable[..., Database], clear: boo
 @database_app.command("search", short_help="Search database entries.", no_args_is_help=True)
 @argument("table", nargs=1, required=True, is_eager=True, type=TableChoice())
 @argument("query", nargs=-1, required=False, callback=lambda _c, _p, v: " ".join(v))
-@option("--column", metavar="<COLUMN[,WIDTH]>", type=str, multiple=True, callback=column_callback,
+@option("--column", metavar="COLUMN", type=ColumnsChoice(), multiple=True, callback=column_callback,
         help=f"Select {yellow}COLUMN{reset} and use {yellow}WIDTH{reset} in table output.")
-@option("--sort", metavar="<COLUMN [asc|desc]>", multiple=True, type=(str, SearchOrderChoice()),
-        help=f"Sort by {yellow}COLUMN{reset}.")
+@option("--sort", metavar="<COLUMN [asc|desc]>", multiple=True, type=(ColumnsChoice(), SearchOrderChoice()),
+        help=f"Sort by {yellow}COLUMN{reset}.", callback=sort_callback)
 @option("--limit", type=IntRange(0, min_open=True), help="Limit query results.")
 @option("--offset", type=IntRange(0, min_open=True), help="Offset query results.")
 @option("--sql", is_flag=True, help="Treat query as SQLite WHERE statement.")
@@ -422,9 +457,9 @@ def database_history(ctx: Context, database: Callable[..., Database], clear: boo
 @pass_context
 @docstring_format(c=cyan, i=italic, r=reset, prog_name=__prog_name__, version=__version__,
                   outputs="\n    ".join(f" * {s.value}\t{s.help}" for s in SearchOutputChoice.completion_items))
-def database_search(ctx: Context, database: Callable[..., Database], table: str, query: str,
-                    column: tuple[tuple[str, int]], sort: tuple[tuple[str, str]], limit: int | None, offset: int | None,
-                    sql: bool, show_sql: bool, output: str, ignore_width: bool, total: bool):
+def database_search(ctx: Context, database: Callable[..., Database], table: str, query: str, column: tuple[str],
+                    sort: tuple[tuple[str, str]], limit: int | None, offset: int | None, sql: bool, show_sql: bool,
+                    output: str, ignore_width: bool, total: bool):
     """
     Search the database using queries, and output in different formats.
 
@@ -496,7 +531,7 @@ def database_search(ctx: Context, database: Callable[..., Database], table: str,
         default_headers = [(UsersColumns.USERNAME.name, 40), (UsersColumns.FOLDERS.name, 0)]
         sort = sort or ((UsersColumns.USERNAME.name, "ASC"),)
 
-    headers: list[tuple[str, int]] = [(c.upper(), w) for c, w in column] if column else default_headers
+    headers: list[tuple[str, int]] = [(c.upper(), len(c)) for c in column] if column else default_headers
     headers = [(c, 0) for c in db_table.columns] if any(h == "@" for h, _ in headers) else headers
     headers[-1] = (headers[-1][0], 0)
     results, [query, values] = search(db_table, [h for h, _ in headers], query, sort, limit, offset, sql)
@@ -550,54 +585,6 @@ def database_view(ctx: Context, database: Callable[..., Database], table: str, i
         echo(view_entry(entry, [UsersColumns.USERPAGE.name], raw_html=raw_content), color=ctx.color)
     else:
         echo(view_entry(entry, [], raw_html=raw_content), color=ctx.color)
-
-
-@database_app.command("export", short_help="Export all entries in a table.", no_args_is_help=True)
-@argument("table", nargs=1, required=True, is_eager=True, type=TableChoice())
-@argument("output", nargs=1, required=True, type=ExportOutputChoice())
-@argument("file", nargs=1, required=False, default=stdout, type=File("w"))
-@option("--column", metavar="COLUMN", type=str, multiple=True, help=f"Select {yellow}COLUMN{reset}.")
-@option("--sort", metavar="<COLUMN [asc|desc]>", multiple=True, type=(str, SearchOrderChoice()),
-        help=f"Sort by {yellow}COLUMN{reset}.")
-@option("--total", is_flag=True, help="Print number of results.")
-@database_exists_option
-@color_option
-@help_option
-@pass_context
-@docstring_format(outputs="\n    ".join(f" * {s.value}\t{s.help}" for s in ExportOutputChoice.completion_items))
-def database_export(ctx: Context, database: Callable[..., Database], table: str, output: str, file: TextIO,
-                    column: tuple[str], sort: tuple[tuple[str, str]], total: bool):
-    """
-    Export all entries in a table to a file. The {yellow}FILE{reset} argument can be omitted to print the results
-    directly in the terminal. The results total is not printed to file if a file is used.
-
-    By default, all columns of the table are selected, but this can be overridden with the {yellow}--column{reset}
-    option (SQLite statements are supported).
-
-    Only sort and order statements are supported for exporting, to filter results use the {yellow}database search{reset}
-    command.
-
-    \b
-    The {yellow}OUTPUT{reset} can be set to four different types:
-    {outputs}
-    """
-    db: Database = database()
-
-    db_table: Table = get_table(db, table)
-    column = column or db_table.columns
-
-    results: Cursor = db_table.select(None, column, [" ".join(s) for s in (sort or ((db_table.key.name, ""),))])
-    results_total: int = 0
-
-    if output == Output.csv:
-        results_total = print_csv(results, file, ",")
-    elif output == Output.tsv:
-        results_total = print_csv(results, file, "\t")
-    elif output == Output.json:
-        results_total = print_json(results, file)
-
-    if total:
-        echo(f"{blue}Total{reset}: {yellow}{results_total}{reset}", color=ctx.color)
 
 
 @database_app.command("remove", no_args_is_help=True, short_help="Remove entries.")
@@ -892,7 +879,6 @@ database_app.list_commands = lambda *_: [
     database_history.name,
     database_search.name,
     database_view.name,
-    database_export.name,
     database_add.name,
     database_remove.name,
     database_merge.name,
