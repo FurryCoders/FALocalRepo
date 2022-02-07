@@ -28,6 +28,7 @@ from .util import help_option
 from .util import open_api
 from ..downloader import Downloader
 from ..downloader import Folder
+from ..downloader import sort_set
 
 
 class FolderChoice(CompleteChoice):
@@ -37,6 +38,14 @@ class FolderChoice(CompleteChoice):
         CompletionItem(Folder.favorites.value, help="User's favorites folder"),
         CompletionItem(Folder.journals.value, help="User's journals"),
         CompletionItem(Folder.userpage.value, help="User's profile page"),
+    ]
+
+
+class DownloadFolderChoice(CompleteChoice):
+    completion_items: list[CompletionItem] = [
+        *FolderChoice.completion_items,
+        *[CompletionItem(f"{Folder.watchlist_by.value}:{f}", help=f"User's watches ({f})") for f in Folder],
+        *[CompletionItem(f"{Folder.watchlist_to.value}:{f}", help=f"Users watching user ({f})") for f in Folder],
     ]
 
 
@@ -91,7 +100,7 @@ def download_login(ctx: Context, database: Callable[..., Database]):
 @download_app.command("users", short_help="Download users.", no_args_is_help=True)
 @option("--user", "-u", "users", metavar="USER", required=True, multiple=True, type=str, callback=users_callback,
         help="Username.")
-@option("--folder", "-f", "folders", metavar="FOLDER", required=True, multiple=True, type=FolderChoice(),
+@option("--folder", "-f", "folders", metavar="FOLDER", required=True, multiple=True, type=DownloadFolderChoice(),
         callback=lambda _c, _p, v: sorted(set(v), key=v.index), help="Folder to download.")
 @dry_run_option
 @verbose_report_option
@@ -100,12 +109,16 @@ def download_login(ctx: Context, database: Callable[..., Database]):
 @color_option
 @help_option
 @pass_context
-@docstring_format(', '.join(Folder))
+@docstring_format(', '.join([c.value for c in FolderChoice.completion_items] +
+                            [Folder.watchlist_by.value + f":{yellow}FOLDER{reset}"] +
+                            [Folder.watchlist_to.value + f":{yellow}FOLDER{reset}"]))
 def download_users(ctx: Context, database: Callable[..., Database], users: tuple[str], folders: tuple[str],
                    dry_run: bool, verbose_report: bool, report_file: TextIO | None):
     """
     Download specific user folders, where {yellow}FOLDER{reset} is one of {0}. Multiple {yellow}--user{reset} and
-    {yellow}--folder{reset} arguments can be passed.
+    {yellow}--folder{reset} arguments can be passed. {cyan}watchlist-by:{yellow}FOLDER{reset} and
+    {cyan}watchlist-to:{yellow}FOLDER{reset} arguments add the specified {yellow}FOLDER{reset}(s) to the new user
+    entries.
 
     The optional {yellow}--dry-run{reset} option disables downloading and saving and simply lists fetched entries.
     Users are not added/deactivated.
@@ -113,6 +126,18 @@ def download_users(ctx: Context, database: Callable[..., Database], users: tuple
     db: Database = database()
     add_history(db, ctx, users=users, folders=folders)
     downloader: Downloader = Downloader(db, open_api(db), color=ctx.color, dry_run=dry_run)
+    watchlist_by_folders: list[str] = [f.split(":")[1] for f in folders if f.startswith(Folder.watchlist_by.value)]
+    watchlist_to_folders: list[str] = [f.split(":")[1] for f in folders if f.startswith(Folder.watchlist_to.value)]
+    watchlist_by_folders, watchlist_to_folders = sort_set(watchlist_by_folders), sort_set(watchlist_to_folders)
+    folders_ = [f for f in folders
+                if not (f.startswith(Folder.watchlist_by.value) or f.startswith(Folder.watchlist_to.value))]
+    if watchlist_by_folders:
+        folders_.insert(folders.index(next((f for f in folders if f.startswith(Folder.watchlist_by.value)))),
+                        f"{Folder.watchlist_by.value}:{':'.join(watchlist_by_folders)}")
+    if watchlist_to_folders:
+        folders_.insert(folders.index(next((f for f in folders if f.startswith(Folder.watchlist_to.value)))),
+                        f"{Folder.watchlist_to.value}:{':'.join(watchlist_to_folders)}")
+    folders = folders_
     try:
         downloader.download_users(list(users), list(folders))
     finally:
