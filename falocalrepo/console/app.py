@@ -344,7 +344,7 @@ def app_server(ctx: Context, database: Callable[..., Database], host: str | None
 
 
 @app.command("paw", short_help="Print the PRIDE paw!")
-@argument("flag", metavar="[FLAG]", type=FlagChoice(), default="pride", required=False)
+@argument("flag", type=str, default="pride", required=False, shell_complete=FlagChoice().shell_complete)
 @option("--true-color / --8bit-color", is_flag=True, default=supports_truecolor, show_default=True,
         help="Force enable color mode.")
 @color_option
