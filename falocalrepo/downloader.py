@@ -45,6 +45,8 @@ class Folder(str, Enum):
     favorites = "favorites"
     journals = "journals"
     userpage = "userpage"
+    watchlist_by = "watchlist-by"
+    watchlist_to = "watchlist-to"
 
     @classmethod
     def as_list(cls: EnumMeta) -> list[str]:
@@ -139,6 +141,7 @@ class Bar:
         self.message_: str = message
 
 
+# noinspection DuplicatedCode
 class Downloader:
     def __init__(self, db: Database, api: FAAPI, *, color: bool = True, dry_run: bool = False):
         self.db: Database = db
@@ -162,7 +165,6 @@ class Downloader:
         self.thumbnail_errors: list[int] = []
         self.journal_errors: list[int] = []
 
-    # noinspection DuplicatedCode
     def report(self):
         items: list[tuple[str, int]] = [
             ("Added users", len(set(self.added_users))),
@@ -319,7 +321,6 @@ class Downloader:
         self.thumbnail_errors += [] if thumb else [submission_id]
         return 0
 
-    # noinspection DuplicatedCode
     def download_user_journals(self, user: str, stop: int = -1, clear_last_found: bool = False) -> int:
         page: int = 1
         while page:
@@ -382,7 +383,6 @@ class Downloader:
                     return 0
             page = next_page
 
-    # noinspection DuplicatedCode
     def download_user_submissions_folder(self, user: str, folder: Folder, stop: int = -1,
                                          clear_last_found: bool = False) -> int:
         page: int = 0
@@ -478,11 +478,83 @@ class Downloader:
         self.bar_message("ADDED" if added else "UPDATED", green, always=True)
         return 0
 
+    def download_user_watchlist(self, user: str, watchlist: Folder, folders: list[str], stop: int = -1,
+                                clear_last_found: bool = False) -> int:
+        page: int = 1
+        while page:
+            page_width: int = len(str(page))
+            folder_page_width: int = len(user) + 1 + len(watchlist.value) + 1 + page_width
+            padding: int = (w - folder_page_width - self.bar_width - 2 - 1) if (w := terminal_width()) else 0
+            echo(f"{yellow}{user}{reset}/{yellow}{watchlist.value}{reset} {page}" + (" " * padding),
+                 nl=self.output == OutputType.simple, color=self.color)
+            self.bar()
+            self.bar_message("DOWNLOAD")
+            result, err = download_catch(
+                self.api.watchlist_by if watchlist == Folder.watchlist_by else self.api.watchlist_to,
+                user, page)
+            if err:
+                self.user_errors += [user]
+                self.err_to_bar(err)
+                return err
+            self.bar_close("")
+            self.clear_line()
+            watches, next_page = result
+            page_items_width: int = len(str(len(watches)))
+            for i, watch in enumerate(watches, 1):
+                page_id_width: int = page_width + 1 + page_items_width + 1 + len(repr(watch))
+                title_width: int = w - page_id_width - 1 - self.bar_width - 2 - 1 if (w := terminal_width()) else 0
+                echo(('\r' * (self.output == OutputType.rich)) +
+                     f"{page}/{i:0{page_items_width}} {blue}{repr(watch)}{reset} " +
+                     " " * title_width,
+                     nl=self.output == OutputType.simple, color=self.color)
+                self.bar()
+                self.bar_message("SEARCHING")
+                if entry := self.db.users[watch.name_url]:
+                    self.bar_message("IN DB", green, always=True)
+                    if self.dry_run:
+                        stop -= 1
+                        if clear_last_found and stop == 0:
+                            self.bar_close("")
+                            self.clear_line()
+                        else:
+                            self.bar_close()
+                    elif folders_ := [f for f in folders
+                                      if f not in [f_.strip("!") for f_ in entry[UsersColumns.FOLDERS.name]]]:
+                        active: str = "!" if any(f.startswith("!") for f in entry[UsersColumns.FOLDERS.name]) else ""
+                        for folder in folders_:
+                            self.db.users.add_folder(watch.name_url, active + folder)
+                        self.db.commit()
+                        self.bar_message("UPDATED", green, always=True)
+                        self.modified_users += [watch.name_url]
+                        self.bar_close()
+                    else:
+                        stop -= 1
+                        if clear_last_found and stop == 0:
+                            self.bar_close("")
+                            self.clear_line()
+                        else:
+                            self.bar_close()
+                elif self.dry_run:
+                    self.bar_message("SKIPPED", green)
+                    self.bar_close()
+                else:
+                    self.db.users.save_user({UsersColumns.USERNAME.value.name: watch.name_url,
+                                             UsersColumns.FOLDERS.value.name: set(folders),
+                                             UsersColumns.USERPAGE.value.name: ""})
+                    self.db.commit()
+                    self.bar_message("ADDED", green)
+                    self.bar_close()
+                    self.added_users += [watch.name_url]
+                if stop == 0:
+                    return 0
+            self.clear_line()
+            page = next_page
+
     def _download_users(self, users_folders: Iterable[tuple[str, list[str]]], stop: int = -1):
         operation: str = "Downloading" if stop < 0 else "Updating"
         for user, folders in users_folders:
             for folder in folders:
-                echo(f"{operation}: {yellow}{user}{reset}/{yellow}{folder}{reset}", color=self.color)
+                echo(f"{operation}: {yellow}{user}{reset}/{yellow}{folder.split(':')[0]}{reset}", color=self.color)
                 user_added: bool = False
                 if not self.dry_run:
                     if user_added := user not in self.db.users:
@@ -498,8 +570,16 @@ class Downloader:
                     err = self.download_user_page(user, stop == 1)
                 elif folder == Folder.journals:
                     err = self.download_user_journals(user, stop, stop == 1)
-                else:
+                elif folder == Folder.gallery or folder == Folder.scraps or folder == Folder.favorites:
                     err = self.download_user_submissions_folder(user, Folder[folder.lower()], stop, stop == 1)
+                elif folder.startswith(Folder.watchlist_by.value):
+                    err = self.download_user_watchlist(user, Folder.watchlist_by, folder.split(":")[1:],
+                                                       stop, stop == 1)
+                elif folder.startswith(Folder.watchlist_to.value):
+                    err = self.download_user_watchlist(user, Folder.watchlist_to, folder.split(":")[1:],
+                                                       stop, stop == 1)
+                else:
+                    raise Exception(f"Unknown folder {folder}")
                 if err in (1, 2):
                     if self.dry_run:
                         pass
