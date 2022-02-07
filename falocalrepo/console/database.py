@@ -150,8 +150,8 @@ def sort_callback(ctx: Context, param: Option, value: tuple[tuple[str, str]]) ->
     return value
 
 
-def table_width_callback(ctx: Context, param: Option, value: str) -> tuple[int]:
-    values: list[str] = list(map(str.strip, value.split(",")))
+def table_width_callback(ctx: Context, param: Option, value: str | None) -> tuple[int]:
+    values: list[str] = list(map(str.strip, value.split(","))) if value is not None else []
     if (err := next(filter(lambda v: not v.isdigit(), values), None)) is not None:
         raise BadParameter(f"{err!r} is not a valid integer.", ctx, param)
     return tuple(map(int, values))
