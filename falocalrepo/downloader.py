@@ -350,7 +350,7 @@ class Downloader:
                     self.bar_message("IN DB", green, always=True)
                     if self.dry_run:
                         stop -= 1
-                        if clear_last_found:
+                        if clear_last_found and stop == 0:
                             self.bar_close("")
                             self.clear_line()
                         else:
@@ -361,7 +361,7 @@ class Downloader:
                         self.modified_journals += [journal.id]
                     else:
                         stop -= 1
-                        if clear_last_found:
+                        if clear_last_found and stop == 0:
                             self.bar_close("")
                             self.clear_line()
                         else:
