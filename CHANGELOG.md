@@ -5,7 +5,14 @@
 ### New Features
 
 * Add `database view` command to view entries directly in the terminal
+* Column shell completions for `database search`
 * Allow passing SQLite LIKE queries to `--user` arguments of `download update`
+
+### Changes
+
+* Remove `database export` command
+    * `database search` can produce the same output with the `--column @` option and piping
+* Table column widths for `table` output of `database search` command are now set using the `--table-widths` option
 
 ## 4.0.11
 
