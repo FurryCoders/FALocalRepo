@@ -5,8 +5,8 @@
 ### New Features
 
 * Add `database view` command to view entries directly in the terminal
-* Column shell completions for `database search`
-* Commands shell completions for `help`
+* Shell completions for `database search` column
+* Shell completions for `help` commands
 * Allow passing SQLite LIKE queries to `--user` arguments of `download update`
 * Add `--filter-date` option to `database history`
 
