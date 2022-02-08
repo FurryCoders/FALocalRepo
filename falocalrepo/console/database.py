@@ -94,8 +94,8 @@ class TableChoice(CompleteChoice):
 
 class SearchOrderChoice(CompleteChoice):
     completion_items: list[CompletionItem] = [
-        CompletionItem("asc", "Ascending order"),
-        CompletionItem("desc", "Descending order"),
+        CompletionItem("asc", help="Ascending order"),
+        CompletionItem("desc", help="Descending order"),
     ]
 
 
