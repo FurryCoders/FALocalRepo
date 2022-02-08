@@ -553,7 +553,9 @@ def database_search(ctx: Context, database: Callable[..., Database], table: str,
         headers = headers or [(UsersColumns.USERNAME.name, 40), (UsersColumns.FOLDERS.name, 0)]
         sort = sort or ((UsersColumns.USERNAME.name, "ASC"),)
 
-    headers = [(c, 0) for c in db_table.columns] if any(h == "@" for h, _ in headers) else headers
+    if any(h == "@" for h, _ in headers):
+        headers = list(zip([c.name for c in db_table.columns], (*table_widths, *([0] * len(db_table.columns)))))
+
     headers[-1] = (headers[-1][0], 0)
     results, [query, values] = search(db_table, [h for h, _ in headers], query, sort, limit, offset, sql)
     results_total: int = 0
