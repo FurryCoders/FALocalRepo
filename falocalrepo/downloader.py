@@ -564,18 +564,16 @@ class Downloader:
                         self.db.commit()
                         self.added_users += [user]
                     self.db.users.activate(user)
-                    if folder.startswith(Folder.watchlist_by):
-                        watchlist_folder: str | None = next((f for f in self.db.users[user][UsersColumns.FOLDERS.name]
-                                                             if f.startswith(Folder.watchlist_by)), None)
-                        if watchlist_folder:
-                            self.db.users.remove_folder(user, watchlist_folder)
-                            self.modified_users += [user]
-                    elif folder.startswith(Folder.watchlist_to):
-                        watchlist_folder: str | None = next((f for f in self.db.users[user][UsersColumns.FOLDERS.name]
-                                                             if f.startswith(Folder.watchlist_to)), None)
-                        if watchlist_folder:
-                            self.db.users.remove_folder(user, watchlist_folder)
-                            self.modified_users += [user]
+                    if folder.startswith(w := Folder.watchlist_by) and \
+                            (wfs := [f for f in self.db.users[user][UsersColumns.FOLDERS.name] if f.startswith(w)]):
+                        for wf in wfs:
+                            self.db.users.remove_folder(user, wf)
+                        self.modified_users += [user]
+                    elif folder.startswith(w := Folder.watchlist_to) and \
+                            (wfs := [f for f in self.db.users[user][UsersColumns.FOLDERS.name] if f.startswith(w)]):
+                        for wf in wfs:
+                            self.db.users.remove_folder(user, wf)
+                        self.modified_users += [user]
                     self.db.users.add_folder(user, folder)
                 err: int
                 if folder == Folder.userpage:
