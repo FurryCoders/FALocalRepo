@@ -142,10 +142,7 @@ class SearchColumnsChoice(ColumnsChoice):
 
 
 def serializer(obj: object) -> object:
-    if isinstance(obj, Iterable):
-        return list(obj)
-    else:
-        return str(obj)
+    return list(obj) if isinstance(obj, Iterable) else str(obj)
 
 
 def date_callback(ctx: Context, param: Parameter, value: str) -> tuple[str | None, ...]:
