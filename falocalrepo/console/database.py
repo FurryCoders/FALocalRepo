@@ -553,11 +553,13 @@ def database_search(ctx: Context, database: Callable[..., Database], table: str,
     headers: list[tuple[str, int]] = [*zip(map(str.upper, column), (*table_widths, *([0] * len(column))))]
 
     if table in (submissions_table, journals_table):
-        headers = headers or [(SubmissionsColumns.ID.name, 10), (SubmissionsColumns.AUTHOR.name, 16),
-                              (SubmissionsColumns.DATE.name, 16), (SubmissionsColumns.TITLE.name, 0)]
+        headers = headers or [*zip(cols := [SubmissionsColumns.ID.name, SubmissionsColumns.AUTHOR.name,
+                                            SubmissionsColumns.DATE.name, SubmissionsColumns.TITLE.name],
+                                   ((*table_widths, *([0] * len(cols))) if table_widths else (10, 16, 16, 0)))]
         sort = sort or ((SubmissionsColumns.ID.name, "desc"),)
     elif table == users_table:
-        headers = headers or [(UsersColumns.USERNAME.name, 40), (UsersColumns.FOLDERS.name, 0)]
+        headers = headers or [*zip(cols := [UsersColumns.USERNAME.name, UsersColumns.FOLDERS.name],
+                                   ((*table_widths, *([0] * len(cols))) if table_widths else (40, 0)))]
         sort = sort or ((UsersColumns.USERNAME.name, "ASC"),)
 
     if any(h == "@" for h, _ in headers):
