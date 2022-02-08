@@ -11,7 +11,7 @@
 * Allow passing SQLite LIKE queries to `--user` arguments of `download update`
 * Add `--filter-date` option to `database history`
 * Use `FALOCALREPO_FA_ROOT` environment variable to set Fur Affinity request root
-* Shell completions for `database search` column
+* Shell completions for `database search` columns
 * Shell completions for `help` commands
 
 ### Changes
