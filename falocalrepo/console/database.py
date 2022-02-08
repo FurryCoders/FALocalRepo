@@ -110,17 +110,7 @@ class SearchOutputChoice(CompleteChoice):
 
 
 class ColumnsChoice(Choice):
-    completion_items: list[tuple[str, CompletionItem]] = [
-        *[(submissions_table, CompletionItem(c.name, help=f"{submissions_table}:{c.name}"))
-          for c in SubmissionsColumns.as_list()],
-        *[(journals_table, CompletionItem(c.name, help=f"{journals_table}:{c.name}"))
-          for c in JournalsColumns.as_list()],
-        *[(users_table, CompletionItem(c.name, help=f"{users_table}:{c.name}"))
-          for c in UsersColumns.as_list()],
-        (submissions_table, CompletionItem("@", help=f"{submissions_table}:ALL")),
-        (journals_table, CompletionItem("@", help=f"{journals_table}:ALL")),
-        (users_table, CompletionItem("@", help=f"{users_table}:ALL")),
-    ]
+    completion_items: list[tuple[str, CompletionItem]] = []
 
     def __init__(self):
         super().__init__(sort_set([i.value for _, i in self.completion_items]), False)
@@ -129,6 +119,26 @@ class ColumnsChoice(Choice):
         table: str = ctx.params.get("table", None) or (ctx.args or [""])[0]
         return [i for t, i in self.completion_items
                 if (not table or t.lower() == table.lower()) and i.value.lower().startswith(incomplete.lower())]
+
+
+class SortColumnsChoice(ColumnsChoice):
+    completion_items: list[tuple[str, CompletionItem]] = [
+        *[(submissions_table, CompletionItem(c.name, help=f"{submissions_table}:{c.name}"))
+          for c in SubmissionsColumns.as_list()],
+        *[(journals_table, CompletionItem(c.name, help=f"{journals_table}:{c.name}"))
+          for c in JournalsColumns.as_list()],
+        *[(users_table, CompletionItem(c.name, help=f"{users_table}:{c.name}"))
+          for c in UsersColumns.as_list()],
+    ]
+
+
+class SearchColumnsChoice(ColumnsChoice):
+    completion_items: list[tuple[str, CompletionItem]] = [
+        *SortColumnsChoice.completion_items,
+        (submissions_table, CompletionItem("@", help=f"{submissions_table}:ALL")),
+        (journals_table, CompletionItem("@", help=f"{journals_table}:ALL")),
+        (users_table, CompletionItem("@", help=f"{users_table}:ALL")),
+    ]
 
 
 def serializer(obj: object) -> object:
@@ -460,9 +470,9 @@ def database_history(ctx: Context, database: Callable[..., Database], clear: boo
 @database_app.command("search", short_help="Search database entries.", no_args_is_help=True)
 @argument("table", nargs=1, required=True, is_eager=True, type=TableChoice())
 @argument("query", nargs=-1, required=False, callback=lambda _c, _p, v: " ".join(v))
-@option("--column", metavar="COLUMN", type=ColumnsChoice(), multiple=True, callback=column_callback,
+@option("--column", metavar="COLUMN", type=SearchColumnsChoice(), multiple=True, callback=column_callback,
         help=f"Select {yellow}COLUMN{reset} and use {yellow}WIDTH{reset} in table output.")
-@option("--sort", metavar="<COLUMN [asc|desc]>", multiple=True, type=(ColumnsChoice(), SearchOrderChoice()),
+@option("--sort", metavar="<COLUMN [asc|desc]>", multiple=True, type=(SortColumnsChoice(), SearchOrderChoice()),
         help=f"Sort by {yellow}COLUMN{reset}.", callback=sort_callback)
 @option("--limit", type=IntRange(0, min_open=True), help="Limit query results.")
 @option("--offset", type=IntRange(0, min_open=True), help="Offset query results.")
