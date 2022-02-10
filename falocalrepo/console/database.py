@@ -601,9 +601,12 @@ def database_view(ctx: Context, database: Callable[..., Database], table: str, i
     View a single entry in the terminal. Submission descriptions, journal contents, and user profile pages are rendered
     and formatted.
 
-    Formatting is limited to alignment, horizontal lines, quotes, links, color (partial), and emphasis. To view the
-    properly formatted HTML content, use the {yellow}server{reset}. Formatting can be disabled with the
+    Formatting is limited to alignment, horizontal lines, quotes, links, color, and emphasis. To view the properly
+    formatted HTML content, use the {yellow}server{reset} command. Formatting can be disabled with the
     {yellow}--raw-content{reset} option to print the raw HTML content.
+
+    {italic}Note{reset}: full color support is only enabled for truecolor terminals. If the terminal does not support
+    truecolor, the closest ANSI color match will be used instead.
     """
     db: Database = database()
 
