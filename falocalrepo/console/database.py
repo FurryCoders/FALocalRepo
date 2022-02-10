@@ -303,7 +303,7 @@ def html_to_ansi(html: str, *, root: bool = False) -> str:
         if (color := m[1] if (m := match(r".*color: ([^ ;]+).*", span.attrs["style"])) else "") in colors_dict:
             color = colors_dict[color]
         elif color in css_colors or color.startswith("#"):
-            color = hex_to_ansi(css_colors.get(color, color))
+            color = hex_to_ansi(css_colors.get(color, color), truecolor=supports_truecolor)
         span.replaceWith(f"{color}{span.text}{reset if color else ''}")
     for span in html_parsed.select("span.bbcode_quote_name"):
         for child in span.select("*"):
