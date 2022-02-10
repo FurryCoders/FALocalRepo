@@ -188,6 +188,9 @@ def download_update(ctx: Context, database: Callable[..., Database], users: tupl
     The {yellow}--stop{reset} option allows setting after how many entries of each folder should be found in the
     database before stopping the update.
 
+    The {yellow}--like{reset} option enables using SQLite LIKE statements for {yellow}USER{reset} values, allowing to
+    select multiple users at once.
+
     The optional {yellow}--dry-run{reset} option disables downloading and saving and simply lists fetched entries.
     Users are not added/deactivated.
     """
