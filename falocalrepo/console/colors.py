@@ -1,5 +1,3 @@
-from operator import sub
-
 try:
     from supports_color import supportsColor
 
