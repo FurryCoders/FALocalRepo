@@ -111,7 +111,7 @@ def download_login(ctx: Context, database: Callable[..., Database]):
 @option("--user", "-u", "users", metavar="USER", required=True, multiple=True, type=str, callback=users_callback,
         help="Username.")
 @option("--folder", "-f", "folders", metavar="FOLDER", required=True, multiple=True, type=DownloadFolderChoice(),
-        callback=lambda _c, _p, v: sorted(set(v), key=v.index), help="Folder to download.")
+        callback=lambda _c, _p, v: sort_set(v), help="Folder to download.")
 @dry_run_option
 @verbose_report_option
 @report_file_option
@@ -137,17 +137,16 @@ def download_users(ctx: Context, database: Callable[..., Database], users: tuple
     if not dry_run:
         add_history(db, ctx, users=users, folders=folders)
     downloader: Downloader = Downloader(db, open_api(db), color=ctx.color, dry_run=dry_run)
-    watchlist_by_folders: list[str] = [f.split(":")[1] for f in folders if f.startswith(Folder.watchlist_by.value)]
-    watchlist_to_folders: list[str] = [f.split(":")[1] for f in folders if f.startswith(Folder.watchlist_to.value)]
-    watchlist_by_folders, watchlist_to_folders = sort_set(watchlist_by_folders), sort_set(watchlist_to_folders)
+    watchlist_by: list[str] = [f.split(":")[1] for f in folders if f.startswith(Folder.watchlist_by.value)]
+    watchlist_to: list[str] = [f.split(":")[1] for f in folders if f.startswith(Folder.watchlist_to.value)]
     folders_ = [f for f in folders
                 if not (f.startswith(Folder.watchlist_by.value) or f.startswith(Folder.watchlist_to.value))]
-    if watchlist_by_folders:
+    if watchlist_by:
         folders_.insert(folders.index(next((f for f in folders if f.startswith(Folder.watchlist_by.value)))),
-                        f"{Folder.watchlist_by.value}:{':'.join(watchlist_by_folders)}")
-    if watchlist_to_folders:
+                        f"{Folder.watchlist_by.value}:{':'.join(watchlist_by)}")
+    if watchlist_to:
         folders_.insert(folders.index(next((f for f in folders if f.startswith(Folder.watchlist_to.value)))),
-                        f"{Folder.watchlist_to.value}:{':'.join(watchlist_to_folders)}")
+                        f"{Folder.watchlist_to.value}:{':'.join(watchlist_to)}")
     folders = folders_
     try:
         downloader.download_users(list(users), list(folders))
@@ -162,7 +161,7 @@ def download_users(ctx: Context, database: Callable[..., Database], users: tuple
 @option("--user", "-u", "users", metavar="USER", multiple=True, type=str, callback=users_callback,
         help="User to update.")
 @option("--folder", "-f", "folders", metavar="FOLDER", multiple=True, type=UpdateFolderChoice(),
-        callback=lambda _c, _p, v: sorted(set(v), key=v.index), help="Folder to update.")
+        callback=lambda _c, _p, v: sort_set(v), help="Folder to update.")
 @option("--stop", metavar="STOP", type=IntRange(0, min_open=True), default=1, show_default=True,
         help="Number of submissions to find in the database before stopping.")
 @option("--deactivated", is_flag=True, default=False, help="Check deactivated users.")
