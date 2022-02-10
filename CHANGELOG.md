@@ -19,6 +19,7 @@
 * Remove `database export` command
     * `database search` can produce the same output with the `--column @` option and piping
 * Table column widths for `table` output of `database search` command are now set using the `--table-widths` option
+* History events are not added for `download` command using `--dry-run`
 
 ### Fixes
 
