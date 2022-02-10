@@ -1,3 +1,5 @@
+from operator import sub
+
 try:
     from supports_color import supportsColor
 
@@ -61,6 +63,25 @@ colors_dict: dict[str, str] = {
     "strikethrough": strikethrough,
 }
 
+_ansi_rgb: dict[str, tuple[int, int, int]] = {
+    "black": (0, 0, 0),
+    "red": (170, 0, 0),
+    "green": (0, 170, 0),
+    "yellow": (170, 170, 0),
+    "blue": (0, 0, 170),
+    "magenta": (170, 0, 170),
+    "cyan": (0, 170, 170),
+    "white": (170, 170, 170),
+    "bright_black": (85, 85, 85),
+    "bright_red": (255, 85, 85),
+    "bright_green": (85, 255, 85),
+    "bright_yellow": (255, 255, 85),
+    "bright_blue": (85, 85, 255),
+    "bright_magenta": (255, 85, 255),
+    "bright_cyan": (85, 255, 255),
+    "bright_white": (255, 255, 255),
+}
+
 # noinspection SpellCheckingInspection
 css_colors: dict[str, str] = {
     "aliceblue": "#F0F8FF", "antiquewhite": "#FAEBD7", "aqua": "#00FFFF", "aquamarine": "#7FFFD4", "azure": "#F0FFFF",
@@ -100,6 +121,11 @@ css_colors: dict[str, str] = {
 }
 
 
-def hex_to_ansi(color_hex: str) -> str:
+def rgb_to_ansi_8bit(rgb: tuple[int, int, int]) -> str:
+    return colors_dict[sorted(_ansi_rgb.items(), key=lambda c: sum(map(abs, (a - b for a, b in zip(c[1], rgb)))))[0][0]]
+
+
+def hex_to_ansi(color_hex: str, *, truecolor: bool = True) -> str:
     color_hex = color_hex.removeprefix("#")
-    return f"\x1b[38;2;{int(color_hex[0:2], base=16)};{int(color_hex[2:4], base=16)};{int(color_hex[4:6], base=16)}m"
+    rgb: tuple[int, int, int] = int(color_hex[0:2], base=16), int(color_hex[2:4], base=16), int(color_hex[4:6], base=16)
+    return "\x1b[38;2;{};{};{}m".format(*rgb) if truecolor else rgb_to_ansi_8bit(rgb)
