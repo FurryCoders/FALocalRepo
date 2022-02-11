@@ -7,7 +7,7 @@
 * Add `database view` command to view entries directly in the terminal
     * Alignment, colors, emphasis, links and more are converted from the HTML fields and formatted for the terminal
 * Add watchlist by/to support to `download users`
-    * Creates/modifies user entries for each user found in the specified watchlist 
+    * Creates/modifies user entries for each user found in the specified watchlist
 * Allow passing SQLite LIKE queries to `--user` arguments of `download update`
 * Add `--filter-date` option to `database history`
 * Use `FALOCALREPO_FA_ROOT` environment variable to set Fur Affinity request root
@@ -25,8 +25,9 @@
 
 ### Fixes
 
-* Fix `help` raising an error if the command seeking help for required an existing database file which couldn't be found
-* Fix rare inconsistent download output 
+* Fix `help` raising an error if the command seeking help for required an existing database file which couldn't be
+  found, but was set by the `FALOCALREPO_DATABASE` environment variable.
+* Fix rare inconsistent download output
 
 ## 4.0.11
 
