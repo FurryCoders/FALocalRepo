@@ -612,7 +612,7 @@ The `help` command gives information on the usage of the program and its command
 ### Paw
 
 ```
-paw [--true-color | --8bit-color] [FLAG]
+paw [--truecolor | --8bit-color] [FLAG]
 ```
 
 Print a PRIDE paw!
@@ -624,7 +624,7 @@ agender, asexual, genderqueer, genderfluid, aromantic, polyamory.
 
 The program will try to determine if the terminal supports truecolor mode (24bit, 16 million colors), if not it will
 fall back to the standard 8bit ANSI colors. Both truecolor and 8bit colors can be turned on manually using
-the `--true-color` and `--8bit-color` options respectively.
+the `--truecolor` and `--8bit-color` options respectively.
 
 _Note_: the paw works best with a dark background.
 
