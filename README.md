@@ -725,6 +725,7 @@ more advanced it upgrades the database.
 _Note:_ versions prior to 4.19.0 are not supported by falocalrepo-database version 5.0.0 and above. To update from
 those, use [falocalrepo version 3.25.0](https://pypi.org/project/falocalrepo/v3.25.0) to upgrade the database to version
 4.19.0 first.
+
 _Note:_ Versions before 2.7.0 are not supported by falocalrepo version 3.0.0 and above. To update from those to the new
 version use version 2.11.2 to update the database to version 2.7.0
 
