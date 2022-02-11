@@ -5,6 +5,7 @@
 ### Fixes
 
 * Fix users being set as modified when using `download update` with a watchlist folder
+* Fix `download update` throwing an error if no `--user` option was given
 
 ## 4.1.0
 
