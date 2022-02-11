@@ -326,12 +326,6 @@ def html_to_ansi(html: str, *, root: bool = False) -> str:
     for child in html_parsed.select("*"):
         child.replaceWith(child.text)
     html = html_parsed.text
-    if root:
-        html = html.replace("&amp;", "&")
-        html = html.replace("&gt;", ">")
-        html = html.replace("&lt;", "<")
-        html = html.replace("&nbsp;", " ")
-        html = html.replace("\xA0", " ")
     return html
 
 
