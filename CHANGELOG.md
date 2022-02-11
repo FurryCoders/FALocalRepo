@@ -29,6 +29,11 @@
   found, but was set by the `FALOCALREPO_DATABASE` environment variable.
 * Fix rare inconsistent download output
 
+### Dependencies
+
+* faapi dependency set to [\~3.4.2](https://pypi.org/project/faapi/3.4.2)
+    * Detect users pending deletion and flag them as deactivated
+
 ## 4.0.11
 
 ### Fixes
