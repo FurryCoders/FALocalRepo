@@ -56,7 +56,7 @@ class Folder(str, Enum):
 
 
 def terminal_width() -> int:
-    return get_terminal_size((0, 0)).columns
+    return 80  # get_terminal_size((0, 0)).columns
 
 
 def fit_string(value: str, width: int | None) -> str:
@@ -360,11 +360,12 @@ class Downloader:
                 entry_id: str = clean_string(entry_formats[0].format(entry).strip())
                 entry_title: str = clean_string(entry_formats[1].format(entry).strip())
                 entry_outputs: list[str] = list(filter(bool, [entry_num, entry_id, entry_title]))
-                while (padding := available_space - len(" ".join(entry_outputs))) < 0:
+                padding = available_space - len(" ".join(entry_outputs))
+                while entry_outputs and (padding := available_space - len(" ".join(entry_outputs))) < 0:
                     if (space_last := available_space - len(" ".join(entry_outputs[:-1]))) < 1:
                         entry_outputs.pop()
                     else:
-                        entry_outputs[-1] = fit_string(entry_outputs[-1], space_last)
+                        entry_outputs[-1] = fit_string(entry_outputs[-1], space_last - 1)
                 padding = 0 if padding < 0 else padding
                 entry_outputs = [entry_outputs[0],
                                  (blue + entry_outputs[1] + reset) if entry_outputs[1:] else "",
