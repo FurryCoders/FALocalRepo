@@ -100,7 +100,7 @@
 
 ### Dependencies
 
-* faapi dependency set to [\~3.4.1](https://pypi.org/project/faapi/3.4.0)
+* faapi dependency set to [\~3.4.1](https://pypi.org/project/faapi/3.4.1)
     * Fix incorrect parsing of notice error messages
         * Fix incorrect detection of not found errors
 
