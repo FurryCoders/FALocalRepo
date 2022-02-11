@@ -16,14 +16,17 @@
 
 ### Changes
 
+* Rewrite of the download handler to be more stable and fix inconsistent output
 * Remove `database export` command
     * `database search` can produce the same output with the `--column @` option and piping
 * Table column widths for `table` output of `database search` command are now set using the `--table-widths` option
 * History events are not added for `download` command using `--dry-run`
+* Rename `--true-color` option to `--truecolor` for `paw` command
 
 ### Fixes
 
 * Fix `help` raising an error if the command seeking help for required an existing database file which couldn't be found
+* Fix rare inconsistent download output 
 
 ## 4.0.11
 
