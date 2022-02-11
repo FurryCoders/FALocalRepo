@@ -325,8 +325,7 @@ def html_to_ansi(html: str, *, root: bool = False) -> str:
                                    for line2 in wrap(line, width)))
     for child in html_parsed.select("*"):
         child.replaceWith(child.text)
-    html = html_parsed.text
-    return html
+    return html_parsed.text
 
 
 def view_entry(entry: dict[str, Any], html_fields: list[str], *, raw_html: bool = False) -> str:
