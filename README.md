@@ -268,23 +268,27 @@ Check whether the cookies stored in the database belong to a login Fur Affinity 
 users [--dry-run] [--verbose-report] [--report-file REPORT_FILE] -u <USER>... -f <FOLDER>...
 ```
 
-Download specific user folders, where `FOLDER` is one of gallery, scraps, favorites, journals, userpage. Multiple
-`--user` and `--folder` arguments can be passed.
+Download specific user folders, where `FOLDER` is one of gallery, scraps, favorites, journals, userpage, watchlist-by,
+watchlist-to. Multiple `--user` and `--folder` arguments can be passed. `watchlist-by:FOLDER` and `watchlist-to:FOLDER`
+arguments add the specified `FOLDER`(s) to the new user entries.
 
 The `--verbose-report` options enables printing all the IDs and usernames of the entries fetched/added/modified by the
 program. The `--report-file` options allows saving a detailed download report in JSON format to `REPORT_FILE`.
 
 > ```
-> falocalrepo download users -u tom -u jerry -f gallery -f scraps -f journals
+> falocalrepo download users -u tom -u jerry -f gallery -f scraps -f journals -f userpage
 > ```
 > ```
-> falocalrepo download users tom,jerry list-favorites
+> falocalrepo download users -u cat -f watchlist-by:gallery -f watchlist-by:scraps -f watchlist-by:journals 
+> ```
+> ```
+> falocalrepo download users -u tom -u jerry -f favorites --dry-run
 > ```
 
 #### update
 
 ```
-update [--dry-run] [--deactivated] [--stop N] [--verbose-report] [--report-file REPORT_FILE] [-u <USER>...] [-f <FOLDER>...]
+update [--dry-run] [--deactivated] [--stop N] [--verbose-report] [--report-file REPORT_FILE] [--like] [-u <USER>...] [-f <FOLDER>...]
 ```
 
 Download new entries using the users and folders already in the database. `--user` and `--folder` options can be used to
@@ -297,6 +301,8 @@ inactive, the database entry will be modified as well.
 The `--stop` option allows setting how many entries of each folder should be found in the database before stopping the
 update.
 
+The `--like` option enables using SQLite LIKE statements for `USER` values, allowing to select multiple users at once.
+
 The `--verbose-report` options enables printing all the IDs and usernames of the entries fetched/added/modified by the
 program. The `--report-file` options allows saving a detailed download report in JSON format to `REPORT_FILE`.
 
@@ -307,7 +313,10 @@ program. The `--report-file` options allows saving a detailed download report in
 > falocalrepo download update --deactivated -f gallery -f scraps
 > ```
 > ```
-> falocalrepo download update -u tom -u jerry -f favorites
+> falocalrepo download update -u tom -u jerry -f favorites --report-file FA.update.json
+> ```
+> ```
+> falocalrepo download update -u a% -u b%
 > ```
 
 #### submissions
@@ -363,17 +372,21 @@ Show database information, statistics and version.
 #### history
 
 ```
-history [--filter FILTER] [--clear]
+history [--filter FILTER] [--filter-date DATE] [--clear]
 ```
 
 Show database history. History events can be filtered using the `--filter` option to match events that contain
-`FILTER` (the match is performed case-insensitively).
+`FILTER` (the match is performed case-insensitively). The `--filter-date` option allows filtering by date. The `DATE`
+value must be in the format `YYYY-MM-DD HH:MM:SS`, any component can be omitted for generalised results.
 
 Using the `--clear` option will delete all history entries, or the ones containing `FILTER` if the `--filter` option is
 used.
 
 > ```
 > falocalrepo database history --filter upgrade 
+> ```
+> ```
+> falocalrepo database history --filter-date 2022-01 --filter download 
 > ```
 
 #### search
@@ -417,36 +430,27 @@ _Note_: characters outside the ASCII range will be replaced with □ when using 
 > falocalrepo search JOURNALS --output csv '@date (2020- | 2019-) @content commission'
 > ```
 
-#### export
+#### view
 
 ```
-export [--column <COLUMN>...] [--sort COLUMN] [--order {asc|desc}] [--total] {SUBMISSIONS|JOURNALS|USERS} {csv|tsv|json} [FILE]
+view [--raw-content] {SUBMISSIONS|JOURNALS|USERS} ID
 ```
 
-Export all entries in a table to a file. The `FILE` argument can be omitted to print the results directly in the
-terminal. The results total is not printed to file if a file is used.
+View a single entry in the terminal. Submission descriptions, journal contents, and user profile pages are rendered and
+formatted.
 
-By default, all columns of the table are selected, but this can be overridden with the `--column` option (SQLite
-statements are supported).
+Formatting is limited to alignment, horizontal lines, quotes, links, color, and emphasis. To view the properly formatted
+HTML content, use the `server` command. Formatting can be disabled with the `--raw-content` option to print the raw HTML
+content.
 
-Only sort and order statements are supported for exporting, to filter results use the `database search` command.
-
-The `OUTPUT` can be set to four different types:
-
-* `csv` CSV format (comma separated)
-* `tsv` TSV format (tab separated)
-* `json` JSON format
+_Note_: full color support is only enabled for truecolor terminals. If the terminal does not support truecolor, the
+closest ANSI color match will be used instead.
 
 > ```
-> falocalrepo export USERS --output json users.json'
+> falocalrepo database view USERS tom
 > ```
-
 > ```
-> falocalrepo export SUBMISSIONS --sort DATE desc
-> ```
-
-> ```
-> falocalrepo export JOURNALS --output csv '@date (2020- | 2019-) @content commission'
+> falocalrepo database view SUBMISSIONS 12345678
 > ```
 
 #### add
