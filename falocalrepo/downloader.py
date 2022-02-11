@@ -531,12 +531,12 @@ class Downloader:
                     self.db.users.activate(user)
                     if folder.startswith(w := Folder.watchlist_by) and \
                             (wfs := [f for f in self.db.users[user][UsersColumns.FOLDERS.name] if f.startswith(w)]):
-                        for wf in wfs:
+                        for wf in filter(lambda f: f != folder, wfs):
                             self.db.users.remove_folder(user, wf)
-                        self.modified_users += [user]
+                            self.modified_users += [user]
                     elif folder.startswith(w := Folder.watchlist_to) and \
                             (wfs := [f for f in self.db.users[user][UsersColumns.FOLDERS.name] if f.startswith(w)]):
-                        for wf in wfs:
+                        for wf in filter(lambda f: f != folder, wfs):
                             self.db.users.remove_folder(user, wf)
                         self.modified_users += [user]
                     self.db.users.add_folder(user, folder)
