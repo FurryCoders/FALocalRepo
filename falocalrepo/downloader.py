@@ -13,6 +13,7 @@ from typing import TypeVar
 from click import echo
 from faapi import FAAPI
 from faapi import SubmissionPartial
+from faapi import UserPartial
 from faapi.exceptions import DisabledAccount
 from faapi.exceptions import NotFound
 from faapi.exceptions import NoticeMessage
@@ -32,6 +33,7 @@ from .console.util import clean_string
 _FolderDownloader = Callable[[str, int | str], tuple[list[SubmissionPartial], str | int]]
 
 T = TypeVar("T")
+P = TypeVar("P")
 
 
 class OutputType(str, Enum):
@@ -239,32 +241,32 @@ class Downloader:
         return self._bar
 
     def bar_update(self, total: int, level: int):
-        if self.output == OutputType.simple:
+        if self._bar is None or self.output == OutputType.simple:
             return
-        self.bar().update(total, level)
+        self._bar.update(total, level)
 
     def bar_message(self, message: str, color: str = "", *, always: bool = False):
-        if self.output == OutputType.simple:
+        if self._bar is None or self.output == OutputType.simple:
             if always:
                 echo(message)
             return
-        self.bar().message(message, color)
+        self._bar.message(message, color)
 
     def bar_close(self, end: str = "\n"):
         if self._bar is None or self.output == OutputType.simple:
             return
-        self.bar().close(end)
+        self._bar.close(end)
         self._bar = None
 
     def bar_clear(self):
         if self._bar is None or self.output == OutputType.simple:
             return
-        self.bar().clear()
+        self._bar.clear()
 
     def bar_delete(self):
         if self._bar is None or self.output == OutputType.simple:
             return
-        self.bar().delete()
+        self._bar.delete()
 
     def download_bytes(self, url: str) -> bytes | None:
         try:
@@ -321,134 +323,169 @@ class Downloader:
         self.thumbnail_errors += [] if thumb else [submission_id]
         return 0
 
-    def download_user_journals(self, user: str, stop: int = -1, clear_last_found: bool = False) -> int:
-        page: int = 1
+    def download_folder(self, user: str, folder: Folder, downloader_entries: Callable[[str, P], tuple[list[T], P]],
+                        page_start: P, entry_id_getter: Callable[[T], int | str], entry_formats: tuple[str, str],
+                        contains: Callable[[T], dict | None],
+                        modify_checks: list[tuple[Callable[[T, dict], bool], str]],
+                        save: tuple[Callable[[T], int | None], str], stop: int = -1, clear_last_found: bool = False
+                        ) -> tuple[int, tuple[list[int | str], list[int | str], list[int | str]]]:
+        entries_added: list[int | str] = []
+        entries_modified: list[int | str] = []
+        entries_errors: list[int | str] = []
+        page: P | None = page_start
+        page_i: int = 0
         while page:
-            page_width: int = len(str(page))
-            page_id_width: int = page_width + 4 + 10
-            folder_page_width: int = len(user) + 1 + len(Folder.journals.name) + 1 + page_width
-            padding: int = (w - folder_page_width - self.bar_width - 2 - 1) if (w := terminal_width()) else 0
-            echo(f"{yellow}{user}{reset}/{yellow}{Folder.journals.name}{reset} {page}" + (" " * padding),
-                 nl=self.output == OutputType.simple, color=self.color)
-            self.bar()
-            self.bar_message("DOWNLOAD")
-            result, err = download_catch(self.api.journals, user, page)
-            if err:
-                self.user_errors += [user]
-                self.err_to_bar(err)
-                return err
-            self.bar_close("")
-            self.clear_line()
-            journals, next_page = result
-            for i, journal in enumerate(journals, 1):
-                title_width: int = w - page_id_width - 1 - self.bar_width - 2 - 1 - 1 if (w := terminal_width()) else 0
-                echo(("\r" * (self.output == OutputType.rich)) + f"{page}/{i:02} {blue}{journal.id:010}{reset} " +
-                     fit_string(clean_string(journal.title), title_width).ljust(title_width) + " ",
-                     nl=self.output == OutputType.simple, color=self.color)
-                self.bar()
-                self.bar_message("SEARCHING")
-                if journal.id in self.db.journals:
-                    self.bar_message("IN DB", green, always=True)
-                    if self.dry_run:
-                        stop -= 1
-                        if clear_last_found and stop == 0:
-                            self.bar_close("")
-                            self.clear_line()
-                        else:
-                            self.bar_close()
-                    elif self.db.journals.set_user_update(journal.id, 1):
-                        self.db.commit()
-                        self.bar_message("UPDATED", green, always=True)
-                        self.modified_journals += [journal.id]
-                    else:
-                        stop -= 1
-                        if clear_last_found and stop == 0:
-                            self.bar_close("")
-                            self.clear_line()
-                        else:
-                            self.bar_close()
-                elif self.dry_run:
-                    self.bar_message("SKIPPED", green)
-                    self.bar_close()
-                else:
-                    self.db.journals.save_journal({
-                        **format_entry(dict(journal) | {"author": journal.author.name}, self.db.journals.columns),
-                        JournalsColumns.USERUPDATE.value.name: 1,
-                    })
-                    self.db.commit()
-                    self.bar_message("ADDED", green)
-                    self.bar_close()
-                    self.added_journals += [journal.id]
-                if stop == 0:
-                    return 0
-            page = next_page
-
-    def download_user_submissions_folder(self, user: str, folder: Folder, stop: int = -1,
-                                         clear_last_found: bool = False) -> int:
-        page: int = 0
-        next_page: int | str = "/" if folder == Folder.favorites else 1
-        downloader: _FolderDownloader = get_downloader(self.api, folder)
-        while next_page:
-            page += 1
-            page_width: int = len(str(page))
-            page_id_width: int = page_width + 4 + 10
+            page_i += 1
+            page_width: int = len(str(page_i))
             folder_page_width: int = len(user) + 1 + len(folder.name) + 1 + page_width
             padding: int = (w - folder_page_width - self.bar_width - 2 - 1) if (w := terminal_width()) else 0
-            echo(f"{yellow}{user}{reset}/{yellow}{folder.name}{reset} {page}" + (" " * padding),
+            echo(f"{yellow}{user}{reset}/{yellow}{folder.name}{reset} {page_i}" +
+                 (" " * padding),
                  nl=self.output == OutputType.simple, color=self.color)
             self.bar()
             self.bar_message("DOWNLOAD")
-            result, err = download_catch(downloader, user, next_page)
+            result, err = download_catch(downloader_entries, user, page)
             if err:
                 self.user_errors += [user]
                 self.err_to_bar(err)
-                return err
+                return err, (entries_added, entries_modified, entries_errors)
             self.bar_close("")
             self.clear_line()
-            submissions, next_page = result
-            for i, sub_partial in enumerate(submissions, 1):
-                title_width: int = w - page_id_width - 1 - self.bar_width - 2 - 1 - 1 if (w := terminal_width()) else 0
-                echo(('\r' * (self.output == OutputType.rich)) + f"{page}/{i:02} {blue}{sub_partial.id:010}{reset} " +
-                     fit_string(clean_string(sub_partial.title), title_width).ljust(title_width) + " ",
+            entries: list[T] = result[0]
+            page = result[1]
+            entries_width: int = len(str(len(entries)))
+            for i, entry in enumerate(entries, 1):
+                available_space: int = terminal_width() - self.bar_width - 2 - 1 - 1
+                entry_num: str = f"{page_i}/{i:0{entries_width}}"
+                entry_id: str = clean_string(entry_formats[0].format(entry).strip())
+                entry_title: str = clean_string(entry_formats[1].format(entry).strip())
+                entry_outputs: list[str] = list(filter(bool, [entry_num, entry_id, entry_title]))
+                while (padding := available_space - len(" ".join(entry_outputs))) < 0:
+                    if (space_last := available_space - len(" ".join(entry_outputs[:-1]))) < 1:
+                        entry_outputs.pop()
+                    else:
+                        entry_outputs[-1] = fit_string(entry_outputs[-1], space_last)
+                padding = 0 if padding < 0 else padding
+                entry_outputs = [entry_outputs[0],
+                                 (blue + entry_outputs[1] + reset) if entry_outputs[1:] else "",
+                                 entry_outputs[2] if entry_outputs[2:] else ""]
+                entry_output: str = " ".join(filter(bool, entry_outputs)) + " "
+                echo(("\r" if self.output == OutputType.rich else "") + entry_output + (" " * padding),
                      nl=self.output == OutputType.simple, color=self.color)
                 self.bar()
                 self.bar_message("SEARCHING")
-                if sub_partial.id in self.db.submissions:
+                if curr_entry := contains(entry):
                     self.bar_message("IN DB", green, always=True)
                     if self.dry_run:
                         stop -= 1
                         if clear_last_found and stop == 0:
                             self.bar_close("")
                             self.clear_line()
-                        else:
-                            self.bar_close()
-                    elif folder != Folder.favorites and (self.db.submissions.set_user_update(sub_partial.id, 1) or
-                                                         self.db.submissions.set_folder(sub_partial.id, folder.value)):
-                        self.db.commit()
-                        self.bar_message("UPDATED", green, always=True)
-                        self.modified_submissions += [sub_partial.id]
-                        self.bar_close()
-                    elif folder == Folder.favorites and self.db.submissions.add_favorite(sub_partial.id, user):
-                        self.db.commit()
-                        self.bar_message("ADDED FAV", green, always=True)
-                        self.modified_submissions += [sub_partial.id]
-                        self.bar_close()
                     else:
-                        stop -= 1
-                        if clear_last_found and stop == 0:
-                            self.bar_close("")
-                            self.clear_line()
-                        else:
-                            self.bar_close()
+                        modified: bool = False
+                        for check, message in modify_checks:
+                            if check(entry, curr_entry):
+                                self.db.commit()
+                                self.bar_message(message or "UPDATED", green, always=True)
+                                entries_modified.append(entry_id_getter(entry))
+                                break
+                        if not modified:
+                            stop -= 1
+                            if clear_last_found and stop == 0:
+                                self.bar_close("")
+                                self.clear_line()
                 elif self.dry_run:
                     self.bar_message("SKIPPED", green)
-                    self.bar_close()
                 else:
-                    self.download_submission(sub_partial.id, int(folder != Folder.favorites),
-                                             [user] if folder == Folder.favorites else None, sub_partial.thumbnail_url)
+                    err = save[0](entry)
+                    if not self.err_to_bar(err) and save[1]:
+                        self.bar_message(save[1], green, always=True)
+                    entries_added.append(entry_id_getter(entry))
+                self.bar_close()
                 if stop == 0:
-                    return 0
+                    page = None
+                    break
             self.clear_line()
+        return 0, (entries_added, entries_modified, entries_errors)
+
+    def download_user_journals(self, user: str, stop: int = -1, clear_last_found: bool = False) -> int:
+        err, [entries_added, entries_modified, entries_errors] = self.download_folder(
+            user=user, folder=Folder.journals, downloader_entries=self.api.journals, page_start=1,
+            entry_id_getter=lambda j: j.id,
+            entry_formats=("{0.id:010}", "{0.title}"),
+            contains=lambda j: self.db.journals[j.id],
+            modify_checks=[(lambda journal, _: self.db.journals.set_user_update(journal.id, 1), "")],
+            save=(lambda journal: self.db.journals.save_journal(
+                {**format_entry(dict(journal) | {"author": journal.author.name}, self.db.journals.columns),
+                 JournalsColumns.USERUPDATE.value.name: 1, }), "ADDED"),
+            stop=stop, clear_last_found=clear_last_found
+        )
+        self.added_journals.extend(entries_added)
+        self.modified_journals.extend(entries_modified)
+        self.journal_errors.extend(entries_errors)
+        return err
+
+    def download_user_submissions(self, user: str, folder: Folder, stop: int = -1,
+                                  clear_last_found: bool = False) -> int:
+        downloader: _FolderDownloader = get_downloader(self.api, folder)
+        page_start: int | str = "/" if folder == Folder.favorites else 1
+        modify_checks: list[tuple[Callable[[SubmissionPartial, dict], bool], str]]
+
+        if folder == Folder.favorites:
+            modify_checks = [(lambda submission, _: self.db.submissions.add_favorite(submission.id, user),
+                              "UPDATED")]
+        else:
+            modify_checks = [(lambda submission, _: (self.db.submissions.set_user_update(submission.id, 1) or
+                                                     self.db.submissions.set_folder(submission.id, folder.value)),
+                              "ADDED FAV")]
+
+        err, [_entries_added, entries_modified, _entries_errors] = self.download_folder(
+            user=user, folder=folder, downloader_entries=downloader, page_start=page_start,
+            entry_id_getter=lambda s: s.id,
+            entry_formats=("{0.id:010}", "{0.title}"),
+            contains=lambda s: self.db.submissions[s.id],
+            modify_checks=modify_checks,
+            save=(lambda sub_partial: self.download_submission(
+                sub_partial.id, int(folder != Folder.favorites),
+                [user] if folder == Folder.favorites else None,
+                sub_partial.thumbnail_url), ""),
+            stop=stop, clear_last_found=clear_last_found
+        )
+        self.modified_submissions.extend(entries_modified)
+        return err
+
+    def download_user_watchlist(self, user: str, watchlist: Folder, folders: list[str], stop: int = -1,
+                                clear_last_found: bool = False) -> int:
+        downloader: Callable[[str, int], tuple[list[UserPartial], int]]
+
+        if watchlist == Folder.watchlist_by:
+            downloader = self.api.watchlist_by
+        else:
+            downloader = self.api.watchlist_to
+
+        def check_folders(db: Database, watch: UserPartial, entry: dict[str, Any]) -> bool:
+            if folders_ := [f for f in folders if f not in [f_.strip("!") for f_ in entry[UsersColumns.FOLDERS.name]]]:
+                active: str = "!" if any(f.startswith("!") for f in entry[UsersColumns.FOLDERS.name]) else ""
+                for folder in folders_:
+                    db.users.add_folder(watch.name_url, active + folder)
+                return True
+            return False
+
+        err, [entries_added, entries_modified, _entries_errors] = self.download_folder(
+            user=user, folder=watchlist, downloader_entries=downloader, page_start=1,
+            entry_id_getter=lambda u: u.name_url,
+            entry_formats=("{0.status}{0.name}", ""),
+            contains=lambda u: self.db.users[u.name_url],
+            modify_checks=[(lambda w, e: check_folders(self.db, w, e), "UPDATED")],
+            save=(lambda watch: self.db.users.save_user(
+                {UsersColumns.USERNAME.value.name: watch.name_url,
+                 UsersColumns.FOLDERS.value.name: set(folders),
+                 UsersColumns.USERPAGE.value.name: ""}), "ADDED"),
+            stop=stop, clear_last_found=clear_last_found
+        )
+        self.added_users.extend(entries_added)
+        self.modified_users.extend(entries_modified)
+        return 1
 
     def download_user_page(self, username: str, clear_found: bool = False) -> int:
         padding: int = w - self.bar_width - 2 - 1 if (w := terminal_width()) else 0
@@ -477,78 +514,6 @@ class Downloader:
         self.modified_users += [username] if updated else []
         self.bar_message("ADDED" if added else "UPDATED", green, always=True)
         return 0
-
-    def download_user_watchlist(self, user: str, watchlist: Folder, folders: list[str], stop: int = -1,
-                                clear_last_found: bool = False) -> int:
-        page: int = 1
-        while page:
-            page_width: int = len(str(page))
-            folder_page_width: int = len(user) + 1 + len(watchlist.value) + 1 + page_width
-            padding: int = (w - folder_page_width - self.bar_width - 2 - 1) if (w := terminal_width()) else 0
-            echo(f"{yellow}{user}{reset}/{yellow}{watchlist.value}{reset} {page}" + (" " * padding),
-                 nl=self.output == OutputType.simple, color=self.color)
-            self.bar()
-            self.bar_message("DOWNLOAD")
-            result, err = download_catch(
-                self.api.watchlist_by if watchlist == Folder.watchlist_by else self.api.watchlist_to,
-                user, page)
-            if err:
-                self.user_errors += [user]
-                self.err_to_bar(err)
-                return err
-            self.bar_close("")
-            self.clear_line()
-            watches, next_page = result
-            page_items_width: int = len(str(len(watches)))
-            for i, watch in enumerate(watches, 1):
-                page_id_width: int = page_width + 1 + page_items_width + 1 + len(repr(watch))
-                title_width: int = w - page_id_width - 1 - self.bar_width - 2 - 1 if (w := terminal_width()) else 0
-                echo(('\r' * (self.output == OutputType.rich)) +
-                     f"{page}/{i:0{page_items_width}} {blue}{repr(watch)}{reset} " +
-                     " " * title_width,
-                     nl=self.output == OutputType.simple, color=self.color)
-                self.bar()
-                self.bar_message("SEARCHING")
-                if entry := self.db.users[watch.name_url]:
-                    self.bar_message("IN DB", green, always=True)
-                    if self.dry_run:
-                        stop -= 1
-                        if clear_last_found and stop == 0:
-                            self.bar_close("")
-                            self.clear_line()
-                        else:
-                            self.bar_close()
-                    elif folders_ := [f for f in folders
-                                      if f not in [f_.strip("!") for f_ in entry[UsersColumns.FOLDERS.name]]]:
-                        active: str = "!" if any(f.startswith("!") for f in entry[UsersColumns.FOLDERS.name]) else ""
-                        for folder in folders_:
-                            self.db.users.add_folder(watch.name_url, active + folder)
-                        self.db.commit()
-                        self.bar_message("UPDATED", green, always=True)
-                        self.modified_users += [watch.name_url]
-                        self.bar_close()
-                    else:
-                        stop -= 1
-                        if clear_last_found and stop == 0:
-                            self.bar_close("")
-                            self.clear_line()
-                        else:
-                            self.bar_close()
-                elif self.dry_run:
-                    self.bar_message("SKIPPED", green)
-                    self.bar_close()
-                else:
-                    self.db.users.save_user({UsersColumns.USERNAME.value.name: watch.name_url,
-                                             UsersColumns.FOLDERS.value.name: set(folders),
-                                             UsersColumns.USERPAGE.value.name: ""})
-                    self.db.commit()
-                    self.bar_message("ADDED", green)
-                    self.bar_close()
-                    self.added_users += [watch.name_url]
-                if stop == 0:
-                    return 0
-            self.clear_line()
-            page = next_page
 
     def _download_users(self, users_folders: Iterable[tuple[str, list[str]]], stop: int = -1):
         operation: str = "Downloading" if stop < 0 else "Updating"
@@ -580,8 +545,8 @@ class Downloader:
                     err = self.download_user_page(user, stop == 1)
                 elif folder == Folder.journals:
                     err = self.download_user_journals(user, stop, stop == 1)
-                elif folder == Folder.gallery or folder == Folder.scraps or folder == Folder.favorites:
-                    err = self.download_user_submissions_folder(user, Folder[folder.lower()], stop, stop == 1)
+                elif folder in (Folder.gallery, Folder.scraps, Folder.favorites):
+                    err = self.download_user_submissions(user, Folder[folder.lower()], stop, stop == 1)
                 elif folder.startswith(Folder.watchlist_by.value):
                     err = self.download_user_watchlist(user, Folder.watchlist_by, folder.split(":")[1:],
                                                        stop, stop == 1)
