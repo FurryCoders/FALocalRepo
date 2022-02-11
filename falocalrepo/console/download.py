@@ -11,11 +11,13 @@ from click import echo
 from click import group
 from click import option
 from click import pass_context
+from click import secho
 from click.shell_completion import CompletionItem
 from faapi import User
 from faapi.exceptions import Unauthorized
 from falocalrepo_database import Database
 from falocalrepo_database.database import clean_username
+from requests.exceptions import RequestException
 
 from .colors import *
 from .util import CompleteChoice
@@ -103,7 +105,7 @@ def download_login(ctx: Context, database: Callable[..., Database]):
         echo(f"{blue}User{reset}: ", nl=False, color=ctx.color)
         me: User = open_api(db).me()
         echo(f"{green}{me.name}{reset}", color=ctx.color)
-    except Unauthorized as err:
+    except (Unauthorized, RequestException) as err:
         echo(f"{red}{' '.join(err.args)}{reset}", color=ctx.color)
         ctx.exit(1)
 
@@ -151,6 +153,8 @@ def download_users(ctx: Context, database: Callable[..., Database], users: tuple
     folders = folders_
     try:
         downloader.download_users(list(users), list(folders))
+    except RequestException as err:
+        secho(f"\nError: An error occurred during download: {err!r}.", fg="red", color=ctx.color)
     finally:
         echo()
         downloader.verbose_report() if verbose_report else downloader.report()
@@ -201,6 +205,8 @@ def download_update(ctx: Context, database: Callable[..., Database], users: tupl
     downloader: Downloader = Downloader(db, open_api(db), color=ctx.color, dry_run=dry_run)
     try:
         downloader.download_users_update(list(users), list(folders), stop, deactivated, like)
+    except RequestException as err:
+        secho(f"\nError: An error occurred during download: {err!r}.", fg="red", color=ctx.color)
     finally:
         echo()
         downloader.verbose_report() if verbose_report else downloader.report()
@@ -236,6 +242,8 @@ def download_submissions(ctx: Context, database: Callable[..., Database], submis
     downloader: Downloader = Downloader(db, open_api(db), color=ctx.color, dry_run=dry_run)
     try:
         downloader.download_submissions(list(submission_id), replace)
+    except RequestException as err:
+        secho(f"\nError: An error occurred during download: {err!r}.", fg="red", color=ctx.color)
     finally:
         echo()
         downloader.verbose_report() if verbose_report else downloader.report()
@@ -271,6 +279,8 @@ def download_journals(ctx: Context, database: Callable[..., Database], journal_i
     downloader: Downloader = Downloader(db, open_api(db), color=ctx.color, dry_run=dry_run)
     try:
         downloader.download_journals(list(journal_id), replace)
+    except RequestException as err:
+        secho(f"\nError: An error occurred during download: {err!r}.", fg="red", color=ctx.color)
     finally:
         echo()
         downloader.verbose_report() if verbose_report else downloader.report()
