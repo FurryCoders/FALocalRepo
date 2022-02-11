@@ -13,7 +13,7 @@ from click import option
 from click import pass_context
 from click import secho
 from click.shell_completion import CompletionItem
-from faapi import User
+from faapi import FAAPI
 from faapi.exceptions import Unauthorized
 from falocalrepo_database import Database
 from falocalrepo_database.database import clean_username
@@ -98,13 +98,13 @@ def download_login(ctx: Context, database: Callable[..., Database]):
     """
 
     db: Database = database()
+    api: FAAPI = open_api(db)
 
     echo(f"{bold}Login{reset}", color=ctx.color)
 
     try:
         echo(f"{blue}User{reset}: ", nl=False, color=ctx.color)
-        me: User = open_api(db).me()
-        echo(f"{green}{me.name}{reset}", color=ctx.color)
+        echo(f"{green}{api.me().name}{reset}", color=ctx.color)
     except (Unauthorized, RequestException) as err:
         echo(f"{red}{' '.join(err.args)}{reset}", color=ctx.color)
         ctx.exit(1)
