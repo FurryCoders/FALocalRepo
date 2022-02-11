@@ -144,8 +144,8 @@ Available options are:
 
 The following global options are available for all commands:
 
-* `--database` Specify a database different from the default (FA.db in local folder). Overrides `FALOCALREPO_DATABASE`
-  environment variable.
+* `--database` Specify a database different from the default (FA.db in the current working directory). Overrides
+  the `FALOCALREPO_DATABASE` environment variable (see [Environmental Variables](#environmental-variables)).
 * `--color / --no-color` Toggle ANSI colors.
 * `-h, --help` Show help message and exit.
 
@@ -179,6 +179,7 @@ Cookies need to be set manually with the config command before the program will 
 
 * `FALOCALREPO_CRAWL_DELAY` sets a different crawl delay for the `download` operations.<br/>
   _Note_: the crawl delay can only be higher or equal to the one in Fur
+* `FALOCALREPO_FA_ROOT` sets a different root for Fur Affinity pages (default is `https://furaffinity.net`).
   Affinity's [robots.txt](https://furaffinity.net/robots.txt), lower values will cause an error.
 * `FALOCALREPO_DATABASE` sets a path for the database rather than using the current folder.
 * `FALOCALREPO_MULTI_CONNECTION` allow operating on the database even if it is already opened in other processes.<br/>
