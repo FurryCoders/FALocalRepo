@@ -1,5 +1,11 @@
 # Changelog
 
+## 4.1.1
+
+### Fixes
+
+* Fix users being set as modified when using `download update` with a watchlist folder
+
 ## 4.1.0
 
 ### New Features
