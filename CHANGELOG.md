@@ -1,5 +1,11 @@
 # Changelog
 
+## 4.1.2
+
+### Fixes
+
+* Fix infinite loop on `download` if the terminal width was too small
+
 ## 4.1.1
 
 ### Fixes
