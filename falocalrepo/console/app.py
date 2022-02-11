@@ -346,7 +346,7 @@ def app_server(ctx: Context, database: Callable[..., Database], host: str | None
 
 @app.command("paw", short_help="Print the PRIDE paw!")
 @argument("flag", type=str, default="pride", required=False, shell_complete=FlagChoice().shell_complete)
-@option("--true-color / --8bit-color", is_flag=True, default=supports_truecolor, show_default=True,
+@option("--truecolor / --8bit-color", is_flag=True, default=supports_truecolor, show_default=True,
         help="Force enable color mode.")
 @color_option
 @help_option
@@ -360,8 +360,8 @@ def paw(ctx: Context, flag: str, true_color: bool):
 
     If used inside a truecolor-supporting terminal, the full 24bit color range will be used for the most colorful flags!
 
-    truecolor/8bit color modes can be forcefully enabled using the {yellow}--true-color{reset}
-    and {yellow}--8bit-color{reset} options.
+    truecolor/8bit color modes can be forcefully enabled using the {yellow}--truecolor{reset} and
+    {yellow}--8bit-color{reset} options.
 
     \b
     {0}
