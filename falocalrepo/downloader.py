@@ -56,7 +56,7 @@ class Folder(str, Enum):
 
 
 def terminal_width() -> int:
-    return 80  # get_terminal_size((0, 0)).columns
+    return get_terminal_size((0, 0)).columns
 
 
 def fit_string(value: str, width: int | None) -> str:
