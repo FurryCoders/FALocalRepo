@@ -1,5 +1,16 @@
 # Changelog
 
+## 4.1.3
+
+### Changes
+
+* Catch request exceptions during `download` commands for better output and graceful exit
+
+### Fixes
+
+* Fix leftover debug code blocking the terminal width to 80 columns
+* Fix incorrect output of `download login` when `FALOCALREPO_FA_ROOT` was set
+
 ## 4.1.2
 
 ### Fixes
