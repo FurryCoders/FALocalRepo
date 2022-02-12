@@ -145,10 +145,12 @@ def serializer(obj: object) -> object:
     return list(obj) if isinstance(obj, Iterable) else str(obj)
 
 
-def date_callback(ctx: Context, param: Parameter, value: str) -> tuple[str | None, ...]:
-    if not (m := match(r"(?:(\d{4})(?:-(\d\d?)(?:-(\d\d?))?)?)?[ ]?(?:(\d\d?)(?::(\d\d?)(?::(\d\d?))?)?)?", value)):
-        raise BadParameter("Not a valid date format.", ctx, param)
-    return m.groups()
+def date_callback(ctx: Context, param: Parameter, value: str) -> tuple[str | None, ...] | None:
+    if not value:
+        return None
+    elif m := match(r"(?:(\d{4})(?:-(\d\d?)(?:-(\d\d?))?)?)?[ ]?(?:(\d\d?)(?::(\d\d?)(?::(\d\d?))?)?)?", value):
+        return m.groups()
+    raise BadParameter("Not a valid date format.", ctx, param)
 
 
 def column_callback(ctx: Context, param: Option, value: tuple[str]) -> tuple[str]:
