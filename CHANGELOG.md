@@ -1,5 +1,11 @@
 # Changelog
 
+## 4.1.4
+
+### Fixes
+
+* Fix `database date` throwing an error when called without `--filter-date`
+
 ## 4.1.3
 
 ### Changes
