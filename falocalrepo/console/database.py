@@ -250,9 +250,9 @@ def print_csv(results: Cursor, file: TextIO, delimiter: str) -> int:
     results_total: int = 0
     writer = csv_writer(file, delimiter=delimiter)
     writer.writerow([c.name for c in results.columns])
-    for row in results.entries:
+    for row in results.tuples:
         results_total += 1
-        writer.writerow(map(format_value, row.values()))
+        writer.writerow(map(format_value, row))
     return results_total
 
 
