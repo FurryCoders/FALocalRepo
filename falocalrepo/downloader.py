@@ -530,7 +530,7 @@ class Downloader:
             return "", err
         self.bar_message("FOUND", green, always=True)
         echo(("\r" if self.output == OutputType.rich else "") +
-             f"{blue}@me{reset} {user.name_url[:padding - 4 if padding else None]:<{padding - 4 if padding else None}}",
+             f"{blue}@me{reset} {fit_string(repr(user), padding - 4).ljust(padding - 4)}",
              nl=self.output == OutputType.simple, color=self.color)
         self.bar_close()
         return user.name_url, err
