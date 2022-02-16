@@ -356,19 +356,20 @@ class Downloader:
             page = result[1]
             entries_width: int = len(str(len(entries)))
             for i, entry in enumerate(entries, 1):
-                available_space: int = terminal_width() - self.bar_width - 2 - 1 - 1
+                t_width: int = terminal_width()
+                available_space: int = t_width - self.bar_width - 2 - 1 - 1
                 entry_num: str = f"{page_i}/{i:0{entries_width}}"
                 entry_id: str = clean_string(entry_formats[0].format(entry).strip())
                 entry_title: str = clean_string(entry_formats[1].format(entry).strip())
                 entry_outputs: list[str] = list(filter(bool, [entry_num, entry_id, entry_title]))
                 padding = available_space - len(" ".join(entry_outputs))
-                while entry_outputs and (padding := available_space - len(" ".join(entry_outputs))) < 0:
+                while entry_outputs and t_width and (padding := available_space - len(" ".join(entry_outputs))) < 0:
                     if (space_last := available_space - len(" ".join(entry_outputs[:-1]))) < 1:
                         entry_outputs.pop()
                     else:
                         entry_outputs[-1] = fit_string(entry_outputs[-1], space_last - 1)
                 padding = 0 if padding < 0 else padding
-                entry_outputs = [entry_outputs[0],
+                entry_outputs = [entry_outputs[0] if entry_outputs else "",
                                  (blue + entry_outputs[1] + reset) if entry_outputs[1:] else "",
                                  entry_outputs[2] if entry_outputs[2:] else ""]
                 entry_output: str = " ".join(filter(bool, entry_outputs)) + " "
