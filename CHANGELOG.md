@@ -15,6 +15,7 @@
 
 ### Fixes
 
+* Fix crashes when piping output of `download` commands
 * Fix watchlists updates stopping too early because of alphabetic sorting
 * Fix modified entries being considered as found by `download update`, stopping the update too early
 * Fix color ANSI codes used by `download` output for userpages not being turned off for pipes or when using `--no-color`
