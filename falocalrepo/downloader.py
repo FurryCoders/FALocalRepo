@@ -525,14 +525,17 @@ class Downloader:
         echo(f"{blue}{'@me':<{padding}}{reset}", nl=self.output == OutputType.simple,
              color=self.color)
         self.bar()
+        self.bar_message("DOWNLOAD")
         user, err = download_catch(self.api.me)
         if self.err_to_bar(err) or not user:
             self.user_errors += ["@me"]
             return "", err
-        self.bar_message("FOUND", green, always=True)
         echo(("\r" if self.output == OutputType.rich else "") +
              f"{blue}@me{reset} {fit_string(repr(user), padding - 4).ljust(padding - 4)}",
              nl=self.output == OutputType.simple, color=self.color)
+        self.bar_close("")
+        self.bar()
+        self.bar_message("FOUND", green, always=True)
         self.bar_close()
         return user.name_url, err
 
