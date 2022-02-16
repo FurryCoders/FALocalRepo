@@ -1,5 +1,19 @@
 # Changelog
 
+### 4.1.5
+
+### Changes
+
+* The `download update` commands treats watchlists updates like downloads, because watchlist pages are sorted by name,
+  not by watch date
+    * During update, only modified/added entries will be shown, unless the `--stop` option is used, in which case all
+      entries are shown
+
+### Fixes
+
+* Fix watchlists updates stopping too early
+* Fix modified entries being considered as found during update, stopping the update too early.
+
 ## 4.1.4
 
 ### Fixes
