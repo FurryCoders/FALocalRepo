@@ -2,19 +2,21 @@
 
 ### 4.1.5
 
-### Changes
+### New Features
 
-* The `download update` commands treats watchlists updates like downloads, because watchlist pages are sorted by name,
-  not by watch date
-    * During update, only modified/added entries will be shown, unless the `--stop` option is used, in which case all
-      entries are shown
 * Add support for `@me` user in `download users` and `download update` commands to select own username
     * The username is fetched at the start of the download process
 
+### Changes
+
+* The `download update` command treats watchlists updates like downloads
+    * During updates, only modified/added entries will be shown unless the `--stop` option is used, in which case all
+      entries are shown
+
 ### Fixes
 
-* Fix watchlists updates stopping too early
-* Fix modified entries being considered as found during update, stopping the update too early.
+* Fix watchlists updates stopping too early because of alphabetic sorting
+* Fix modified entries being considered as found by `download update`, stopping the update too early
 * Fix color ANSI codes used by `download` output for userpages not being turned off for pipes or when using `--no-color`
   option
 
