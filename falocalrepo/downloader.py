@@ -386,7 +386,7 @@ class Downloader:
                     else:
                         modified: bool = False
                         for check, message in modify_checks:
-                            if check(entry, curr_entry):
+                            if modified := check(entry, curr_entry):
                                 self.db.commit()
                                 self.bar_message(message or "UPDATED", green, always=True)
                                 entries_modified.append(entry_id_getter(entry))
