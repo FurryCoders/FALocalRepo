@@ -518,6 +518,23 @@ class Downloader:
         self.bar_message("ADDED" if added else "UPDATED", green, always=True)
         return 0
 
+    def download_me(self) -> tuple[str, int]:
+        padding: int = w - self.bar_width - 2 - 1 if (w := terminal_width()) else 0
+        echo(f"Downloading: {yellow}@me{reset}/{yellow}username{reset}", color=self.color)
+        echo(f"{blue}{'@me':<{padding}}{reset}", nl=self.output == OutputType.simple,
+             color=self.color)
+        self.bar()
+        user, err = download_catch(self.api.me)
+        if self.err_to_bar(err) or not user:
+            self.user_errors += ["@me"]
+            return "", err
+        self.bar_message("FOUND", green, always=True)
+        echo(("\r" if self.output == OutputType.rich else "") +
+             f"{blue}@me{reset} {user.name_url[:padding - 4 if padding else None]:<{padding - 4 if padding else None}}",
+             nl=self.output == OutputType.simple, color=self.color)
+        self.bar_close()
+        return user.name_url, err
+
     def _download_users(self, users_folders: Iterable[tuple[str, list[str]]], stop: int = -1):
         operation: str = "Downloading" if stop < 0 else "Updating"
         for user, folders in users_folders:
@@ -571,16 +588,28 @@ class Downloader:
                 self.db.commit()
 
     def download_users(self, users: list[str], folders: list[str]):
+        if "@me" in users:
+            if me := self.download_me()[0]:
+                users[users.index("@me")] = me
+            else:
+                users.remove("@me")
+
         self._download_users([(u, folders) for u in users])
 
     def download_users_update(self, users: list[str], folders: list[str], stop: int, deactivated: bool, like: bool):
         if not like:
-            for user in [u for u in users if u not in self.db.users]:
+            for user in [u for u in users if u != "@me" and u not in self.db.users]:
                 padding: int = terminal_width() - 1 - self.bar_width - 2
                 echo(f"{green}{user:<{padding}}{reset}", nl=self.output == OutputType.simple, color=self.color)
                 self.bar()
                 self.bar_message("NOT IN DB", red, always=True)
                 self.bar_close()
+
+        if "@me" in users:
+            if me := self.download_me()[0]:
+                users[users.index("@me")] = me
+            else:
+                users.remove("@me")
 
         users_cursor: Iterable[dict]
         if like and users:

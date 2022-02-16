@@ -82,7 +82,7 @@ def download_app():
 def users_callback(ctx: Context, param: Option, value: tuple[str]) -> tuple[str]:
     if not value or ctx.params.get("like"):
         return value
-    if not (value_clean := list(filter(bool, map(clean_username, value)))):
+    if not (value_clean := [u.lower() if u.lower() == "@me" else clean_username(u) for u in value]):
         raise BadParameter("No valid users (allowed characters are [a-z0-9.~-]).", ctx, param)
     return tuple(sorted(set(value_clean), key=value_clean.index))
 
