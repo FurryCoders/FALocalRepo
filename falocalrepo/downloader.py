@@ -491,7 +491,8 @@ class Downloader:
 
     def download_user_page(self, username: str, clear_found: bool = False) -> int:
         padding: int = w - self.bar_width - 2 - 1 if (w := terminal_width()) else 0
-        echo(f"{yellow}{username[:padding or None]:<{padding}}{reset}", nl=self.output == OutputType.simple)
+        echo(f"{yellow}{username[:padding or None]:<{padding}}{reset}", nl=self.output == OutputType.simple,
+             color=self.color)
         self.bar()
         if self.dry_run:
             self.bar_message("SKIPPED", green)
