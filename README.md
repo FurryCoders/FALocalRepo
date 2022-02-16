@@ -307,6 +307,12 @@ The `--like` option enables using SQLite LIKE statements for `USER` values, allo
 The `--verbose-report` options enables printing all the IDs and usernames of the entries fetched/added/modified by the
 program. The `--report-file` options allows saving a detailed download report in JSON format to `REPORT_FILE`.
 
+_Note_: userpages may be updated even if the text is the same if they contain user icons, as the URLs used in the HTML
+tags are temporary
+
+_Note_: watchlists updates check all watches, regardless of the `--stop` value because watchlist pages are sorted by
+name, not by watch date
+
 > ```
 > falocalrepo download update --stop 5
 > ```
