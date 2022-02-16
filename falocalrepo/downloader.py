@@ -323,13 +323,13 @@ class Downloader:
         self.thumbnail_errors += [] if thumb else [submission_id]
         return 0
 
-    def download_folder(self, user: str, folder: Folder, downloader_entries: Callable[[str, P], tuple[list[T], P]],
-                        page_start: P, entry_id_getter: Callable[[T], int | str], entry_formats: tuple[str, str],
-                        contains: Callable[[T], dict | None],
-                        modify_checks: list[tuple[Callable[[T, dict], bool], str]],
-                        save: tuple[Callable[[T], int | None], str], stop: int = -1, clear_last_found: bool = False,
-                        clear_found: bool = False,
-                        ) -> tuple[int, tuple[list[int | str], list[int | str], list[int | str]]]:
+    def download_user_folder(self, user: str, folder: Folder, downloader_entries: Callable[[str, P], tuple[list[T], P]],
+                             page_start: P, entry_id_getter: Callable[[T], int | str], entry_formats: tuple[str, str],
+                             contains: Callable[[T], dict | None],
+                             modify_checks: list[tuple[Callable[[T, dict], bool], str]],
+                             save: tuple[Callable[[T], int | None], str], stop: int = -1,
+                             clear_last_found: bool = False, clear_found: bool = False,
+                             ) -> tuple[int, tuple[list[int | str], list[int | str], list[int | str]]]:
         entries_added: list[int | str] = []
         entries_modified: list[int | str] = []
         entries_errors: list[int | str] = []
@@ -412,7 +412,7 @@ class Downloader:
         return 0, (entries_added, entries_modified, entries_errors)
 
     def download_user_journals(self, user: str, stop: int = -1, clear_last_found: bool = False) -> int:
-        err, [entries_added, entries_modified, entries_errors] = self.download_folder(
+        err, [entries_added, entries_modified, entries_errors] = self.download_user_folder(
             user=user, folder=Folder.journals, downloader_entries=self.api.journals, page_start=1,
             entry_id_getter=lambda j: j.id,
             entry_formats=("{0.id:010}", "{0.title}"),
@@ -442,7 +442,7 @@ class Downloader:
                                                      self.db.submissions.set_folder(submission.id, folder.value)),
                               "ADDED FAV")]
 
-        err, [_entries_added, entries_modified, _entries_errors] = self.download_folder(
+        err, [_entries_added, entries_modified, _entries_errors] = self.download_user_folder(
             user=user, folder=folder, downloader_entries=downloader, page_start=page_start,
             entry_id_getter=lambda s: s.id,
             entry_formats=("{0.id:010}", "{0.title}"),
@@ -474,7 +474,7 @@ class Downloader:
                 return True
             return False
 
-        err, [entries_added, entries_modified, _entries_errors] = self.download_folder(
+        err, [entries_added, entries_modified, _entries_errors] = self.download_user_folder(
             user=user, folder=watchlist, downloader_entries=downloader, page_start=1,
             entry_id_getter=lambda u: u.name_url,
             entry_formats=("{0.status}{0.name}", ""),
