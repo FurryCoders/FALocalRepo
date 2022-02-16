@@ -327,7 +327,8 @@ class Downloader:
                         page_start: P, entry_id_getter: Callable[[T], int | str], entry_formats: tuple[str, str],
                         contains: Callable[[T], dict | None],
                         modify_checks: list[tuple[Callable[[T, dict], bool], str]],
-                        save: tuple[Callable[[T], int | None], str], stop: int = -1, clear_last_found: bool = False
+                        save: tuple[Callable[[T], int | None], str], stop: int = -1, clear_last_found: bool = False,
+                        clear_found: bool = False,
                         ) -> tuple[int, tuple[list[int | str], list[int | str], list[int | str]]]:
         entries_added: list[int | str] = []
         entries_modified: list[int | str] = []
@@ -379,7 +380,7 @@ class Downloader:
                     self.bar_message("IN DB", green, always=True)
                     if self.dry_run:
                         stop -= 1
-                        if clear_last_found and stop == 0:
+                        if clear_found or (clear_last_found and stop == 0):
                             self.bar_close("")
                             self.clear_line()
                     else:
@@ -392,7 +393,7 @@ class Downloader:
                                 break
                         if not modified:
                             stop -= 1
-                            if clear_last_found and stop == 0:
+                            if clear_found or (clear_last_found and stop == 0):
                                 self.bar_close("")
                                 self.clear_line()
                 elif self.dry_run:
@@ -455,8 +456,8 @@ class Downloader:
         self.modified_submissions.extend(entries_modified)
         return err
 
-    def download_user_watchlist(self, user: str, watchlist: Folder, folders: list[str], stop: int = -1,
-                                clear_last_found: bool = False) -> int:
+    def download_user_watchlist(self, user: str, watchlist: Folder, folders: list[str], clear_found: bool = False
+                                ) -> int:
         downloader: Callable[[str, int], tuple[list[UserPartial], int]]
 
         if watchlist == Folder.watchlist_by:
@@ -482,7 +483,7 @@ class Downloader:
                 {UsersColumns.USERNAME.value.name: watch.name_url,
                  UsersColumns.FOLDERS.value.name: set(folders),
                  UsersColumns.USERPAGE.value.name: ""}), "ADDED"),
-            stop=stop, clear_last_found=clear_last_found
+            stop=-1, clear_found=clear_found
         )
         self.added_users.extend(entries_added)
         self.modified_users.extend(entries_modified)
@@ -549,11 +550,9 @@ class Downloader:
                 elif folder in (Folder.gallery, Folder.scraps, Folder.favorites):
                     err = self.download_user_submissions(user, Folder[folder.lower()], stop, stop == 1)
                 elif folder.startswith(Folder.watchlist_by.value):
-                    err = self.download_user_watchlist(user, Folder.watchlist_by, folder.split(":")[1:],
-                                                       stop, stop == 1)
+                    err = self.download_user_watchlist(user, Folder.watchlist_by, folder.split(":")[1:], stop == 1)
                 elif folder.startswith(Folder.watchlist_to.value):
-                    err = self.download_user_watchlist(user, Folder.watchlist_to, folder.split(":")[1:],
-                                                       stop, stop == 1)
+                    err = self.download_user_watchlist(user, Folder.watchlist_to, folder.split(":")[1:], stop == 1)
                 else:
                     raise Exception(f"Unknown folder {folder}")
                 if err in (1, 2):
