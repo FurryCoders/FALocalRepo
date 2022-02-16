@@ -129,9 +129,9 @@ def download_users(ctx: Context, database: Callable[..., Database], users: tuple
                    dry_run: bool, verbose_report: bool, report_file: TextIO | None):
     """
     Download specific user folders, where {yellow}FOLDER{reset} is one of {0}. Multiple {yellow}--user{reset} and
-    {yellow}--folder{reset} arguments can be passed. {cyan}watchlist-by:{yellow}FOLDER{reset} and
-    {cyan}watchlist-to:{yellow}FOLDER{reset} arguments add the specified {yellow}FOLDER{reset}(s) to the new user
-    entries.
+    {yellow}--folder{reset} arguments can be passed. {yellow}USER{reset} can be set to {cyan}@me{reset} to fetch own
+    username. {cyan}watchlist-by:{yellow}FOLDER{reset} and {cyan}watchlist-to:{yellow}FOLDER{reset} arguments add the
+    specified {yellow}FOLDER{reset}(s) to the new user entries.
 
     The optional {yellow}--dry-run{reset} option disables downloading and saving and simply lists fetched entries.
     Users are not added/deactivated.
@@ -185,7 +185,7 @@ def download_update(ctx: Context, database: Callable[..., Database], users: tupl
     Download new entries using the users and folders already in the database. {yellow}--user{reset} and
     {yellow}--folder{reset} options can be used to restrict the update to specific users and or folders, where
     {yellow}FOLDER{reset} is one of {0}. Multiple {yellow}--user{reset} and {yellow}--folder{reset} arguments can be
-    passed.
+    passed. {yellow}USER{reset} can be set to {cyan}@me{reset} to fetch own username.
 
     If the {yellow}--deactivated{reset} option is used, deactivated users are fetched instead of ignore. If the user is
     no longer inactive, the database entry will be modified as well.
