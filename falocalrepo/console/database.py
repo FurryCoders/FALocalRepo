@@ -606,7 +606,7 @@ def database_view(ctx: Context, database: Callable[..., Database], table: str, i
     db: Database = database()
 
     if not (entry := get_table(db, table)[id_[0]]):
-        secho(f"Entry {id_!r} could not be found in {table.lower()}", fg="red", color=ctx.color)
+        secho(f"Entry {id_[0]!r} could not be found in {table.lower()}", fg="red", color=ctx.color)
     elif table == submissions_table:
         echo(view_entry(entry, [SubmissionsColumns.DESCRIPTION.name], raw_html=raw_content), color=ctx.color)
     elif table == journals_table:
