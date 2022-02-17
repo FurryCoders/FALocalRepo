@@ -1,5 +1,12 @@
 # Changelog
 
+## 4.1.6
+
+### Fixes
+
+* Fix incorrect formatting of error message when `database view` could not find the entry
+* Fix missing `@me` information in `download users` and `download update` help messages
+
 ## 4.1.5
 
 ### New Features
