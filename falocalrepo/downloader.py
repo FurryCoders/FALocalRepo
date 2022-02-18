@@ -438,7 +438,7 @@ class Downloader:
             modify_checks = [(lambda submission, _: self.db.submissions.add_favorite(submission.id, user),
                               "ADDED FAV")]
         else:
-            modify_checks = [(lambda submission, _: (self.db.submissions.set_user_update(submission.id, 1) or
+            modify_checks = [(lambda submission, _: (self.db.submissions.set_user_update(submission.id, 1) +
                                                      self.db.submissions.set_folder(submission.id, folder.value)),
                               "UPDATED")]
 
