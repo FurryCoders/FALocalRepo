@@ -1,5 +1,12 @@
 # Changelog
 
+## 4.1.7
+
+### Fixes
+
+* Fix submissions not being fully updated if a submission is already present in the database and has changed folder
+  since it was downloaded
+
 ## 4.1.6
 
 ### Fixes
