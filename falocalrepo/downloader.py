@@ -436,11 +436,11 @@ class Downloader:
 
         if folder == Folder.favorites:
             modify_checks = [(lambda submission, _: self.db.submissions.add_favorite(submission.id, user),
-                              "UPDATED")]
+                              "ADDED FAV")]
         else:
             modify_checks = [(lambda submission, _: (self.db.submissions.set_user_update(submission.id, 1) or
                                                      self.db.submissions.set_folder(submission.id, folder.value)),
-                              "ADDED FAV")]
+                              "UPDATED")]
 
         err, [_entries_added, entries_modified, _entries_errors] = self.download_user_folder(
             user=user, folder=folder, downloader_entries=downloader, page_start=page_start,
