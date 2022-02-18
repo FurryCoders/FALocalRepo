@@ -6,6 +6,8 @@
 
 * Fix incorrect formatting of error message when `database view` could not find the entry
 * Fix missing `@me` information in `download users` and `download update` help messages
+* Fix inverted `UPDATED` and `ADDED FAV` messages when downloading submissions via `download users`
+  and `download update`
 
 ## 4.1.5
 
