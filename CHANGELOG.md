@@ -1,5 +1,11 @@
 # Changelog
 
+## 4.1.8
+
+### Fixes
+
+* Fix unexpected keyword argument in `paw` command
+
 ## 4.1.7
 
 ### Fixes
