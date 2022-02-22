@@ -2,9 +2,15 @@
 
 ## 4.1.8
 
+### Changes
+
+* If an invalid username (one that does not contain any of the allowed characters `[a-z0-9.~-]` and is not `@me`) is
+  passed to `download users` and `download update` an error is raised and the program stops
+
 ### Fixes
 
-* Fix unexpected keyword argument in `paw` command
+* Fix unexpected keyword argument error in `paw` command
+* Fix invalid usernames passing through `download users` and `download update` arguments parsers without errors
 
 ## 4.1.7
 
