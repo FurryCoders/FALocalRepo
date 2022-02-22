@@ -354,7 +354,7 @@ def app_server(ctx: Context, database: Callable[..., Database], host: str | None
 @docstring_format("\n    ".join(
     f"* {_pride_colors['pride'][(i % ((len(_pride_colors[f]) - 1) // 3)) * 3][supports_truecolor]}{f}{reset}"
     for i, f in enumerate(_pride_colors.keys())))
-def paw(ctx: Context, flag: str, true_color: bool):
+def paw(ctx: Context, flag: str, truecolor: bool):
     """
     Print a PRIDE {yellow}FLAG{reset} paw!
 
@@ -396,7 +396,7 @@ def paw(ctx: Context, flag: str, true_color: bool):
     """.removeprefix("\n").removesuffix("\n")
 
     paw_ascii = "\n".join(line.ljust(46) for line in paw_ascii.splitlines())
-    paw_ascii = "\n".join(bold + c[true_color] + l + reset for c, l in zip(_pride_colors[flag], paw_ascii.splitlines()))
+    paw_ascii = "\n".join(bold + c[truecolor] + l + reset for c, l in zip(_pride_colors[flag], paw_ascii.splitlines()))
     echo(paw_ascii, color=ctx.color)
 
 
