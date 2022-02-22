@@ -82,9 +82,14 @@ def download_app():
 def users_callback(ctx: Context, param: Option, value: tuple[str]) -> tuple[str]:
     if not value or ctx.params.get("like"):
         return value
-    if not (value_clean := [u.lower() if u.lower() == "@me" else clean_username(u) for u in value]):
-        raise BadParameter("No valid users (allowed characters are [a-z0-9.~-]).", ctx, param)
-    return tuple(sorted(set(value_clean), key=value_clean.index))
+    value_clean: list[str] = [u if u == "@me" else clean_username(u) for u in map(str.lower, value)]
+    if invalid := [u1 for u1, u2 in zip(value, value_clean) if not u2]:
+        raise BadParameter(
+            f"User{'s' if len(invalid) - 1 else ''} {', '.join(map(repr, invalid))}"
+            f" {'do' if len(invalid) - 1 else 'does'} not contain any valid characters"
+            f" (allowed characters are [a-z0-9.~-]).",
+            ctx, param)
+    return tuple(sort_set(list(filter(bool, value_clean))))
 
 
 @download_app.command("login", short_help="Check cookies' validity.")
