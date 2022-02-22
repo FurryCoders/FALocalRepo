@@ -142,9 +142,9 @@ def download_users(ctx: Context, database: Callable[..., Database], users: tuple
     Users are not added/deactivated.
     """
     db: Database = database()
+    downloader: Downloader = Downloader(db, open_api(db), color=ctx.color, dry_run=dry_run)
     if not dry_run:
         add_history(db, ctx, users=users, folders=folders)
-    downloader: Downloader = Downloader(db, open_api(db), color=ctx.color, dry_run=dry_run)
     watchlist_by: list[str] = [f.split(":")[1] for f in folders if f.startswith(Folder.watchlist_by.value)]
     watchlist_to: list[str] = [f.split(":")[1] for f in folders if f.startswith(Folder.watchlist_to.value)]
     folders_ = [f for f in folders
@@ -205,9 +205,9 @@ def download_update(ctx: Context, database: Callable[..., Database], users: tupl
     Users are not added/deactivated.
     """
     db: Database = database()
+    downloader: Downloader = Downloader(db, open_api(db), color=ctx.color, dry_run=dry_run)
     if not dry_run:
         add_history(db, ctx, users=users, folders=folders, stop=stop)
-    downloader: Downloader = Downloader(db, open_api(db), color=ctx.color, dry_run=dry_run)
     try:
         downloader.download_users_update(list(users), list(folders), stop, deactivated, like)
     except RequestException as err:
@@ -242,9 +242,9 @@ def download_submissions(ctx: Context, database: Callable[..., Database], submis
     The optional {yellow}--dry-run{reset} option disables downloading and saving and simply lists fetched entries
     """
     db: Database = database()
+    downloader: Downloader = Downloader(db, open_api(db), color=ctx.color, dry_run=dry_run)
     if not dry_run:
         add_history(db, ctx, submission_id=submission_id, replace=replace)
-    downloader: Downloader = Downloader(db, open_api(db), color=ctx.color, dry_run=dry_run)
     try:
         downloader.download_submissions(list(submission_id), replace)
     except RequestException as err:
@@ -279,9 +279,9 @@ def download_journals(ctx: Context, database: Callable[..., Database], journal_i
     The optional {yellow}--dry-run{reset} option disables downloading and saving and simply lists fetched entries.
     """
     db: Database = database()
+    downloader: Downloader = Downloader(db, open_api(db), color=ctx.color, dry_run=dry_run)
     if not dry_run:
         add_history(db, ctx, journal_id=journal_id, replace=replace)
-    downloader: Downloader = Downloader(db, open_api(db), color=ctx.color, dry_run=dry_run)
     try:
         downloader.download_journals(list(journal_id), replace)
     except RequestException as err:
