@@ -21,7 +21,6 @@ from click.core import ParameterSource
 from click.shell_completion import CompletionItem
 from click_help_colors import HelpColorsGroup
 from faapi import FAAPI
-from faapi.exceptions import Unauthorized
 from falocalrepo_database import Database
 from requests import Response
 from requests import get
@@ -143,7 +142,9 @@ def open_database(path: Path, *, ctx: Context, param: Parameter, check_init: boo
 
 def open_api(db: Database) -> FAAPI:
     if not (cookies := read_cookies(db)):
-        raise Unauthorized("No cookies")
+        from .config import config_app, config_cookies
+        raise BadParameter(f"No cookies in selected database.\n\nSet using '{config_app.name} {config_cookies.name}'",
+                           param_hint=repr("--database"))
 
     api: FAAPI = FAAPI(cookies)
 
