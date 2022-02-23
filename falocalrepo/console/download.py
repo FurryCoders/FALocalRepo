@@ -92,18 +92,6 @@ def users_callback(ctx: Context, param: Option, value: tuple[str]) -> tuple[str]
     return tuple(sort_set(list(filter(bool, value_clean))))
 
 
-def check_login(api: FAAPI, ctx: Context, *, exit_on_error: bool = True) -> bool:
-    try:
-        echo(f"{blue}User{reset}: ", nl=False, color=ctx.color)
-        echo(f"{green}{api.me().name}{reset}", color=ctx.color)
-        return True
-    except (Unauthorized, RequestException) as err:
-        echo(f"{red}{' '.join(err.args)}{reset}", color=ctx.color)
-        if exit_on_error:
-            ctx.exit(1)
-        return False
-
-
 @download_app.command("login", short_help="Check cookies' validity.")
 @database_exists_option
 @color_option
@@ -115,11 +103,16 @@ def download_login(ctx: Context, database: Callable[..., Database]):
     """
 
     db: Database = database()
-    api: FAAPI = open_api(db)
+    api: FAAPI = open_api(db, ctx, check_login=False)
 
     echo(f"{bold}Login{reset}", color=ctx.color)
 
-    check_login(api, ctx)
+    try:
+        echo(f"{blue}User{reset}: ", nl=False, color=ctx.color)
+        echo(f"{green}{api.me().name}{reset}", color=ctx.color)
+    except (Unauthorized, RequestException) as err:
+        echo(f"{red}{' '.join(err.args)}{reset}", color=ctx.color)
+        ctx.exit(1)
 
 
 @download_app.command("users", short_help="Download users.", no_args_is_help=True)
@@ -149,7 +142,7 @@ def download_users(ctx: Context, database: Callable[..., Database], users: tuple
     Users are not added/deactivated.
     """
     db: Database = database()
-    check_login(api := open_api(db), ctx)
+    api: FAAPI = open_api(db, ctx)
     downloader: Downloader = Downloader(db, api, color=ctx.color, dry_run=dry_run)
     if not dry_run:
         add_history(db, ctx, users=users, folders=folders)
@@ -215,7 +208,7 @@ def download_update(ctx: Context, database: Callable[..., Database], users: tupl
     Users are not added/deactivated.
     """
     db: Database = database()
-    check_login(api := open_api(db), ctx)
+    api: FAAPI = open_api(db, ctx)
     downloader: Downloader = Downloader(db, api, color=ctx.color, dry_run=dry_run)
     if not dry_run:
         add_history(db, ctx, users=users, folders=folders, stop=stop)
@@ -255,7 +248,7 @@ def download_submissions(ctx: Context, database: Callable[..., Database], submis
     The optional {yellow}--dry-run{reset} option disables downloading and saving and simply lists fetched entries
     """
     db: Database = database()
-    check_login(api := open_api(db), ctx)
+    api: FAAPI = open_api(db, ctx)
     downloader: Downloader = Downloader(db, api, color=ctx.color, dry_run=dry_run)
     if not dry_run:
         add_history(db, ctx, submission_id=submission_id, replace=replace)
@@ -295,7 +288,7 @@ def download_journals(ctx: Context, database: Callable[..., Database], journal_i
     The optional {yellow}--dry-run{reset} option disables downloading and saving and simply lists fetched entries.
     """
     db: Database = database()
-    check_login(api := open_api(db), ctx)
+    api: FAAPI = open_api(db, ctx)
     downloader: Downloader = Downloader(db, api, color=ctx.color, dry_run=dry_run)
     if not dry_run:
         add_history(db, ctx, journal_id=journal_id, replace=replace)
