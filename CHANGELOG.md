@@ -7,12 +7,16 @@
 * If an invalid username (one that does not contain any of the allowed characters `[a-z0-9.~-]` and is not `@me`) is
   passed to `download users` and `download update` an error is raised and the program stops
 * Raise a clear error if no cookies are saved in the database instead of raising `faapi.exceptions.Unauthorized`
+* Handle `faapi.exceptions.Unauthorized` if it's caught during a download
+* Login status is checked before starting a download
 
 ### Fixes
 
 * Fix unexpected keyword argument error in `paw` command
 * Fix invalid usernames passing through `download users` and `download update` arguments parsers without errors
 * Fix download history event added even when the download never started
+* Fix rare error occurring when setting a crawl delay with `FALOCALREPO_CRAWL_DELAY` and Fur Affinity's robots.txt was
+  somehow empty.
 
 ## 4.1.7
 
