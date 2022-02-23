@@ -142,9 +142,11 @@ def open_database(path: Path, *, ctx: Context, param: Parameter, check_init: boo
 
 def open_api(db: Database, ctx: Context = None, *, check_login: bool = True) -> FAAPI:
     if not (cookies := read_cookies(db)):
+        from .app import app
         from .config import config_app, config_cookies
-        raise BadParameter(f"No cookies in selected database.\n\nSet using '{config_app.name} {config_cookies.name}'",
-                           param_hint=repr("--database"))
+        raise BadParameter(f"No cookies in selected database."
+                           f"\n\nSet using '{app.name} {config_app.name} {config_cookies.name}'",
+                           ctx, param_hint=repr("--database"))
 
     api: FAAPI = FAAPI(cookies)
 
