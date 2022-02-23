@@ -72,6 +72,7 @@ def config_list(database: Callable[..., Database]):
 @color_option
 @help_option
 @pass_context
+@docstring_format()
 def config_cookies(ctx: Context, database: Callable[..., Database], cookies: list[tuple[str, str]]):
     """
     Read or modify stored cookies. If no {yellow}--cookie{reset} option is given, the current values are read instead.
