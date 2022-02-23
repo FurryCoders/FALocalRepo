@@ -152,10 +152,9 @@ def open_api(db: Database, ctx: Context = None, *, check_login: bool = True) -> 
 
     if EnvVars.CRAWL_DELAY is not None:
         EnvVars.print_crawl_delay()
-        if EnvVars.CRAWL_DELAY < (delay := int(api.robots.crawl_delay(api.user_agent) or 0)):
+        if EnvVars.CRAWL_DELAY < (delay := int(api.crawl_delay or 0)):
             raise BadParameter(f"Value lower than allowed ({delay})", param_hint=_envar_craw_delay)
-        # noinspection PyUnresolvedReferences
-        api.robots.default_entry.delay = EnvVars.CRAWL_DELAY
+        api.robots.crawl_delay = lambda *_: EnvVars.CRAWL_DELAY
     if EnvVars.FA_ROOT is not None:
         EnvVars.print_fa_root()
         faapi.connection.root = EnvVars.FA_ROOT
