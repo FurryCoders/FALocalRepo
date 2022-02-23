@@ -16,7 +16,8 @@
 * Fix invalid usernames passing through `download users` and `download update` arguments parsers without errors
 * Fix download history event added even when the download never started
 * Fix rare error occurring when setting a crawl delay with `FALOCALREPO_CRAWL_DELAY` and Fur Affinity's robots.txt was
-  somehow empty.
+  somehow empty
+* Fix missing color formatting in `config cookies` help message
 
 ## 4.1.7
 
