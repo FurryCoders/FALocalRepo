@@ -140,7 +140,7 @@ def open_database(path: Path, *, ctx: Context, param: Parameter, check_init: boo
     return db
 
 
-def open_api(db: Database) -> FAAPI:
+def open_api(db: Database, ctx: Context = None, *, check_login: bool = True) -> FAAPI:
     if not (cookies := read_cookies(db)):
         from .config import config_app, config_cookies
         raise BadParameter(f"No cookies in selected database.\n\nSet using '{config_app.name} {config_cookies.name}'",
@@ -157,6 +157,12 @@ def open_api(db: Database) -> FAAPI:
     if EnvVars.FA_ROOT is not None:
         EnvVars.print_fa_root()
         faapi.connection.root = EnvVars.FA_ROOT
+
+    if check_login and not api.login_status:
+        from .app import app
+        from .config import config_app, config_cookies
+        raise BadParameter(f"Unauthorized cookies.\n\nSet using '{app.name} {config_app.name} {config_cookies.name}'",
+                           ctx)
 
     return api
 
