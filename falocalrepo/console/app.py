@@ -169,11 +169,11 @@ def port_callback(ctx: Context, param: Option, value: str | int) -> int | None:
         return int(value)
 
 
-def commands_callback(ctx: Context, _param: Option, incomplete: str) -> list[CompletionItem]:
+def commands_callback(ctx: Context, param: Option, incomplete: str) -> list[CompletionItem]:
     try:
         return [
             CompletionItem(n, help=c.short_help)
-            for n, c in reduce(lambda a, c: a.commands[c], ctx.params.get("commands", ctx.args), app).commands.items()
+            for n, c in reduce(lambda a, c: a.commands[c], ctx.params.get(param.name, ctx.args), app).commands.items()
             if n.lower().startswith(incomplete.lower())
         ]
     except (KeyError, AttributeError):
