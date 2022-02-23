@@ -67,18 +67,6 @@ verbose_report_option = option("--verbose-report", is_flag=True, default=False, 
 report_file_option = option("--report-file", default=None, type=File("w"), help="Write download report to a file.")
 
 
-@group("download", cls=CustomHelpColorsGroup, short_help="Download resources.", no_args_is_help=True,
-       add_help_option=False)
-@color_option
-@help_option
-def download_app():
-    """
-    The download command performs all download operations to save and update users, submissions, and journals.
-    Submissions are downloaded together with their thumbnails, if there are any.
-    """
-    pass
-
-
 def users_callback(ctx: Context, param: Option, value: tuple[str]) -> tuple[str]:
     if not value or ctx.params.get("like"):
         return value
@@ -90,6 +78,18 @@ def users_callback(ctx: Context, param: Option, value: tuple[str]) -> tuple[str]
             f" (allowed characters are [a-z0-9.~-]).",
             ctx, param)
     return tuple(sort_set(list(filter(bool, value_clean))))
+
+
+@group("download", cls=CustomHelpColorsGroup, short_help="Download resources.", no_args_is_help=True,
+       add_help_option=False)
+@color_option
+@help_option
+def download_app():
+    """
+    The download command performs all download operations to save and update users, submissions, and journals.
+    Submissions are downloaded together with their thumbnails, if there are any.
+    """
+    pass
 
 
 @download_app.command("login", short_help="Check cookies' validity.")
