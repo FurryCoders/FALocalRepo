@@ -1,5 +1,12 @@
 # Changelog
 
+## 4.1.9
+
+### Fixes
+
+* Fix deleted users (accounts that have been removed instead of simply disabled) not being deactivated in the database
+  during `download users` and `download update`
+
 ## 4.1.8
 
 ### Changes
