@@ -169,7 +169,7 @@ def port_callback(ctx: Context, param: Option, value: str | int) -> int | None:
         return int(value)
 
 
-def commands_callback(ctx: Context, param: Option, incomplete: str) -> list[CompletionItem]:
+def commands_completion(ctx: Context, param: Option, incomplete: str) -> list[CompletionItem]:
     try:
         return [
             CompletionItem(n, help=c.short_help)
@@ -261,7 +261,7 @@ def app_updates(ctx: Context, shell: bool):
 
 @app.command("help", context_settings={"ignore_unknown_options": True})
 @argument("commands", nargs=-1, required=False, type=str, callback=lambda _c, _p, v: list(v),
-          shell_complete=commands_callback)
+          shell_complete=commands_completion)
 @color_option
 @help_option
 @option("--database", expose_value=False, required=False, hidden=True)
