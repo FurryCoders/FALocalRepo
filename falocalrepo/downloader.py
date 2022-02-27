@@ -583,7 +583,7 @@ class Downloader:
                     elif user_added:
                         del self.db.users[user]
                         self.added_users.remove(user)
-                    elif err == 2:
+                    else:
                         self.db.users.deactivate(user)
                         self.user_deactivated += [user]
                     self.db.commit()
