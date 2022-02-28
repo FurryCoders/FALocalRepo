@@ -6,6 +6,7 @@
 
 * Fix deleted users (accounts that have been removed instead of simply disabled) not being deactivated in the database
   during `download users` and `download update`
+* Fix watchlists downloads and updates causing users to be deactivated
 
 ## 4.1.8
 
