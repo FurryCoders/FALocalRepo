@@ -482,6 +482,7 @@ class Downloader:
             save=(lambda watch: self.db.users.save_user(
                 {UsersColumns.USERNAME.value.name: watch.name_url,
                  UsersColumns.FOLDERS.value.name: set(folders),
+                 UsersColumns.ACTIVE.value.name: True,
                  UsersColumns.USERPAGE.value.name: ""}), "ADDED"),
             stop=-1, clear_found=clear_found
         )
