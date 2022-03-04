@@ -5,7 +5,7 @@
 ### New Features
 
 * Fully rewritten web server!
-    * The new version uses [Bootstrap](https://getbootstrap.com) for a responsive, modern interface
+    * Fully rewritten UI using [Bootstrap](https://getbootstrap.com) for a responsive, modern interface
     * Javascript usage has been almost completely eliminated for a much faster experience and lighter load
     * Search settings can now be customized for each table and saved in the database
 
