@@ -489,7 +489,7 @@ class Downloader:
         self.added_users.extend(entries_added)
         self.modified_users.extend(entries_modified)
 
-        return 0
+        return err
 
     def download_user_page(self, username: str, clear_found: bool = False) -> int:
         padding: int = w - self.bar_width - 2 - 1 if (w := terminal_width()) else 0
