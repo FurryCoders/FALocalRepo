@@ -467,10 +467,9 @@ class Downloader:
             downloader = self.api.watchlist_to
 
         def check_folders(db: Database, watch: UserPartial, entry: dict[str, Any]) -> bool:
-            if folders_ := [f for f in folders if f not in [f_.strip("!") for f_ in entry[UsersColumns.FOLDERS.name]]]:
-                active: str = "!" if any(f.startswith("!") for f in entry[UsersColumns.FOLDERS.name]) else ""
+            if folders_ := [f for f in folders if f not in entry[UsersColumns.FOLDERS.name]]:
                 for folder in folders_:
-                    db.users.add_folder(watch.name_url, active + folder)
+                    db.users.add_folder(watch.name_url, folder)
                 return True
             return False
 
