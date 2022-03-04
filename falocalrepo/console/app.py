@@ -393,7 +393,7 @@ def paw(ctx: Context, flag: str, truecolor: bool):
                   =@@@@@@@@@@.  .-++++-.          
                    .#@@@@@@@*                     
                      -*%@@#=                      
-    """.removeprefix("\n").removesuffix("\n")
+    """.strip("\n").rstrip()
 
     paw_ascii = "\n".join(line.ljust(46) for line in paw_ascii.splitlines())
     paw_ascii = "\n".join(bold + c[truecolor] + l + reset for c, l in zip(_pride_colors[flag], paw_ascii.splitlines()))
