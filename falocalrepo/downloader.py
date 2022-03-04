@@ -579,10 +579,8 @@ class Downloader:
                     err = self.download_user_watchlist(user, Folder.watchlist_to, folder.split(":")[1:], stop == 1)
                 else:
                     raise Exception(f"Unknown folder {folder}")
-                if err in (1, 2):
-                    if self.dry_run:
-                        pass
-                    elif user_added:
+                if not self.dry_run and err in (1, 2):
+                    if user_added:
                         del self.db.users[user]
                         self.added_users.remove(user)
                     else:
