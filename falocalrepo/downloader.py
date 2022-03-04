@@ -623,19 +623,22 @@ class Downloader:
             users_cursor = self.db.users[users]
         else:
             users_cursor = self.db.users.select(order=[UsersColumns.USERNAME.value.name])
-        users_folders: Iterable[tuple[str, list[str]]]
-        users_folders = ((u[UsersColumns.USERNAME.value.name], [f for f in u[UsersColumns.FOLDERS.value.name]])
-                         for u in users_cursor if u[UsersColumns.ACTIVE.value.name] or deactivated)
+        users_folders: list[tuple[str, list[str]]]
+        users_folders = [(u[UsersColumns.USERNAME.value.name], [*u[UsersColumns.FOLDERS.value.name]])
+                         for u in users_cursor if u[UsersColumns.ACTIVE.value.name] or deactivated]
 
         users_folders = sorted(users_folders, key=lambda uf: users.index(uf[0]) if users and not like else uf[0])
 
         if folders:
-            users_folders = ((u, sorted(filter(lambda f: f.split(":")[0] in folders, fs),
+            users_folders = [(u, sorted(filter(lambda f: f.split(":")[0] in folders, fs),
                                         key=lambda f: folders.index(f.split(":")[0])))
-                             for u, fs in users_folders)
+                             for u, fs in users_folders]
         else:
-            users_folders = ((u, sorted(fs, key=lambda f: Folder.as_list().index(f.split(":")[0])))
-                             for u, fs in users_folders)
+            users_folders = [(u, sorted(fs, key=lambda f: Folder.as_list().index(f.split(":")[0])))
+                             for u, fs in users_folders]
+
+        if not users_folders:
+            return echo("No users to update")
 
         self._download_users(users_folders, stop)
 
