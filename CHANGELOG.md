@@ -14,15 +14,16 @@
 * A message is now printed when using `database upgrade` on a database that is already up-to-date
 * A message is now printed when no users can be updated with `download update` (either because the `--like` queries
   returned no results or because the selected users are not active)
+* Give meaningful error messages for those cases where the program does not have read or write access to the database
+  path or its parent folder, or if the latter does not exist
 
 ### Fixes
 
 * Fix deleted users (accounts that have been removed instead of simply disabled) not being deactivated in the database
   during `download users` and `download update`
 * Fix watchlists downloads and updates causing users to be deactivated
-* Properly handle cases where the program does not have read or write access to the database path
-    * Fix uncaught `OperationalError` exception raised when calling `init` with a database path pointing, for example,
-      to an external volume that wasn't mounted
+* Fix uncaught `OperationalError` exception raised when calling `init` with a database path pointing to an external
+  volume that wasn't mounted or other inaccessible location
 
 ### Dependencies
 
