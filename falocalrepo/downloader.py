@@ -417,7 +417,7 @@ class Downloader:
             entry_id_getter=lambda j: j.id,
             entry_formats=("{0.id:010}", "{0.title}"),
             contains=lambda j: self.db.journals[j.id],
-            modify_checks=[(lambda journal, _: self.db.journals.set_user_update(journal.id, 1), "")],
+            modify_checks=[(lambda journal, _: self.db.journals.set_user_update(journal.id, True), "")],
             save=(lambda journal: self.db.journals.save_journal(
                 {**format_entry(dict(journal) | {"author": journal.author.name}, self.db.journals.columns),
                  JournalsColumns.USERUPDATE.value.name: 1, }), "ADDED"),
@@ -438,7 +438,7 @@ class Downloader:
             modify_checks = [(lambda submission, _: self.db.submissions.add_favorite(submission.id, user),
                               "ADDED FAV")]
         else:
-            modify_checks = [(lambda submission, _: (self.db.submissions.set_user_update(submission.id, 1) +
+            modify_checks = [(lambda submission, _: (self.db.submissions.set_user_update(submission.id, True) +
                                                      self.db.submissions.set_folder(submission.id, folder.value)),
                               "UPDATED")]
 
@@ -550,10 +550,11 @@ class Downloader:
                     if user_added := user not in self.db.users:
                         self.db.users.save_user({UsersColumns.USERNAME.value.name: user,
                                                  UsersColumns.FOLDERS.value.name: {},
+                                                 UsersColumns.ACTIVE.value.name: True,
                                                  UsersColumns.USERPAGE.value.name: ""})
                         self.db.commit()
                         self.added_users += [user]
-                    self.db.users.activate(user)
+                    self.db.users.set_active(user, True)
                     if folder.startswith(w := Folder.watchlist_by) and \
                             (wfs := [f for f in self.db.users[user][UsersColumns.FOLDERS.name] if f.startswith(w)]):
                         for wf in filter(lambda f: f != folder, wfs):
@@ -585,7 +586,7 @@ class Downloader:
                         del self.db.users[user]
                         self.added_users.remove(user)
                     else:
-                        self.db.users.deactivate(user)
+                        self.db.users.set_active(user, False)
                         self.user_deactivated += [user]
                     self.db.commit()
                     break
@@ -625,14 +626,9 @@ class Downloader:
             users_cursor = self.db.users.select(order=[UsersColumns.USERNAME.value.name])
         users_folders: Iterable[tuple[str, list[str]]]
         users_folders = ((u[UsersColumns.USERNAME.value.name], [f for f in u[UsersColumns.FOLDERS.value.name]])
-                         for u in users_cursor)
+                         for u in users_cursor if u[UsersColumns.ACTIVE.value.name] or deactivated)
 
         users_folders = sorted(users_folders, key=lambda uf: users.index(uf[0]) if users and not like else uf[0])
-
-        if deactivated:
-            users_folders = ((u, [*map(lambda f: f.strip("!"), fs)]) for u, fs in users_folders)
-        else:
-            users_folders = ((u, fs) for u, fs in users_folders if not any("!" in f for f in fs))
 
         if folders:
             users_folders = ((u, sorted(filter(lambda f: f.split(":")[0] in folders, fs),
