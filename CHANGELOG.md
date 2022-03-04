@@ -2,11 +2,35 @@
 
 ## 4.1.9
 
+### New Features
+
+* Fully rewritten web server!
+    * The new version uses [Bootstrap](https://getbootstrap.com) for a responsive, modern interface
+    * Javascript usage has been almost completely eliminated for a much faster experience and lighter load
+    * Search settings can now be customized for each table and saved in the database
+
+### Changes
+
+* A message is now printed when using `database upgrade` on a database that is already up-to-date
+* A message is now printed when no users can be updated with `download update` (either because the `--like` queries
+  returned no results or because the selected users are not active)
+
 ### Fixes
 
 * Fix deleted users (accounts that have been removed instead of simply disabled) not being deactivated in the database
   during `download users` and `download update`
 * Fix watchlists downloads and updates causing users to be deactivated
+
+### Dependencies
+
+* falocalrepo-database dependency set to [\~5.1.2](https://pypi.org/project/falocalrepo-database/5.1.2)
+    * Add a new `ACTIVE` column to the `USERS` table for easier tracking of inactive users (added in version 5.1.0)
+    * Fix `CATEGORY` column in the `SUBMISSIONS` not respecting spaces around slashes (/) as they are shown on Fur
+      Affinity
+* falocalrepo-server dependency set to [\~3.0.0](https://pypi.org/project/falocalrepo-server/3.0.0)
+    * Fully rewritten frontend using Bootstrap and almost no Javascript for a much faster and more responsive experience
+* faapi dependency set to [\~3.4.3](https://pypi.org/project/faapi/3.4.3)
+    * Fix submission category not respecting spaces around slashes (/) as they are shown on Fur Affinity
 
 ## 4.1.8
 
