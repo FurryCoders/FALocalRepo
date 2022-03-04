@@ -20,6 +20,9 @@
 * Fix deleted users (accounts that have been removed instead of simply disabled) not being deactivated in the database
   during `download users` and `download update`
 * Fix watchlists downloads and updates causing users to be deactivated
+* Properly handle cases where the program does not have read or write access to the database path
+    * Fix uncaught `OperationalError` exception raised when calling `init` with a database path pointing, for example,
+      to an external volume that wasn't mounted
 
 ### Dependencies
 
