@@ -1,6 +1,9 @@
 from functools import partial
 from json import dumps
 from json import loads
+from os import R_OK
+from os import W_OK
+from os import access
 from os import environ
 from pathlib import Path
 from sys import stderr
@@ -118,7 +121,11 @@ def open_database(path: Path, *, ctx: Context, param: Parameter, check_init: boo
                   check_version: bool = True, print_envvar: bool = True) -> Database:
     if print_envvar and ctx.get_parameter_source(param.name) == ParameterSource.ENVIRONMENT:
         EnvVars.print_database()
-    if EnvVars.MULTI_CONNECTION:
+    if not access(path, R_OK):
+        raise BadParameter(f"No read access to {str(path)!r}", ctx, param)
+    elif not access(path, W_OK):
+        raise BadParameter(f"No write access to {str(path)!r}", ctx, param)
+    elif EnvVars.MULTI_CONNECTION:
         if print_envvar:
             EnvVars.print_multi_connection()
     elif path.is_file and (ps := Database.check_connection(path, raise_for_error=False)):
