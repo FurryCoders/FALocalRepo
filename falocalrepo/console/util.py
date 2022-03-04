@@ -121,14 +121,23 @@ def open_database(path: Path, *, ctx: Context, param: Parameter, check_init: boo
                   check_version: bool = True, print_envvar: bool = True) -> Database:
     if print_envvar and ctx.get_parameter_source(param.name) == ParameterSource.ENVIRONMENT:
         EnvVars.print_database()
-    if not access(path, R_OK):
-        raise BadParameter(f"No read access to {str(path)!r}", ctx, param)
-    elif not access(path, W_OK):
-        raise BadParameter(f"No write access to {str(path)!r}", ctx, param)
-    elif EnvVars.MULTI_CONNECTION:
+
+    if path.is_file():
+        if not access(path, R_OK):
+            raise BadParameter(f"No read access to {str(path)!r}", ctx, param)
+        elif not access(path, W_OK):
+            raise BadParameter(f"No write access to {str(path)!r}", ctx, param)
+    elif not path.parent.is_dir():
+        raise BadParameter(f"Folder not found {str(path.parent)!r}", ctx, param)
+    elif not access(path.parent, R_OK):
+        raise BadParameter(f"No read access to folder {str(path.parent)!r}", ctx, param)
+    elif not access(path.parent, W_OK):
+        raise BadParameter(f"No write access to folder {str(path.parent)!r}", ctx, param)
+
+    if EnvVars.MULTI_CONNECTION:
         if print_envvar:
             EnvVars.print_multi_connection()
-    elif path.is_file and (ps := Database.check_connection(path, raise_for_error=False)):
+    elif ps := Database.check_connection(path, raise_for_error=False):
         raise BadParameter(f"Multiple connections to database {str(path)!r}: {ps}", ctx, param)
 
     db: Database = Database(path, check_version=False, check_connections=False)
