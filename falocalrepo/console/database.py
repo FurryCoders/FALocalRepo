@@ -901,7 +901,8 @@ def database_upgrade(ctx: Context, database: Callable[..., Database]):
 
     db: Database = database(check_version=False)
     if (version := db.version) == __database_version__:
-        echo(f"Database is already updated to the latest version ({yellow}{__database_version__}{reset})")
+        echo(f"Database is already updated to the latest version ({yellow}{__database_version__}{reset})",
+             color=ctx.color)
     else:
         db.upgrade(check_connections=EnvVars.MULTI_CONNECTION)
         add_history(db, ctx, version_from=version, version_to=__database_version__)
