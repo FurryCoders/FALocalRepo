@@ -553,8 +553,9 @@ def database_search(ctx: Context, database: Callable[..., Database], table: str,
                                    ((*table_widths, *([0] * len(cols))) if table_widths else (10, 16, 16, 0)))]
         sort = sort or ((SubmissionsColumns.ID.name, "desc"),)
     elif table == users_table:
-        headers = headers or [*zip(cols := [UsersColumns.USERNAME.name, UsersColumns.FOLDERS.name],
-                                   ((*table_widths, *([0] * len(cols))) if table_widths else (40, 0)))]
+        headers = headers or [
+            *zip(cols := [UsersColumns.USERNAME.name, UsersColumns.ACTIVE.name, UsersColumns.FOLDERS.name],
+                 ((*table_widths, *([0] * len(cols))) if table_widths else (40, 6, 0)))]
         sort = sort or ((UsersColumns.USERNAME.name, "ASC"),)
 
     if any(h == "@" for h, _ in headers):
