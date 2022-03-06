@@ -302,7 +302,7 @@ def html_to_ansi(html: str, *, root: bool = False) -> str:
     for span in html_parsed.select("span.bbcode[style*=color]"):
         for child in span.select("*"):
             child.replaceWith(html_to_ansi(str(child)))
-        if (color := m[1] if (m := match(r".*color: ([^ ;]+).*", span.attrs["style"])) else "") in colors_dict:
+        if (color := m[1] if (m := match(r".*color: ([^ ;]+).*", span.attrs["style"])) else "").lower() in colors_dict:
             color = colors_dict[color]
         elif color in css_colors or color.startswith("#"):
             color = hex_to_ansi(css_colors.get(color, color), truecolor=supports_truecolor)
