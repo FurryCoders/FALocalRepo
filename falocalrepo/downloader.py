@@ -172,19 +172,19 @@ class Downloader:
     def report(self):
         items: list[tuple[str, int]] = [
             ("Added users", len(set(self.added_users))),
-            ("Modified users", len(self.modified_users)),
-            ("Added userpages", len(self.added_userpages)),
-            ("Modified userpages", len(self.modified_userpages)),
-            ("Users deactivated", len(self.user_deactivated)),
-            ("User errors", len(self.user_errors)),
+            ("Modified users", len(set(self.modified_users))),
+            ("Added userpages", len(set(self.added_userpages))),
+            ("Modified userpages", len(set(self.modified_userpages))),
+            ("Users deactivated", len(set(self.user_deactivated))),
+            ("User errors", len(set(self.user_errors))),
             ("Added submissions", len(set(self.added_submissions))),
-            ("Modified submissions", len(self.modified_submissions)),
-            ("Submission errors", len(self.submission_errors)),
-            ("File errors", len(self.file_errors)),
-            ("Thumbnail errors", len(self.thumbnail_errors)),
+            ("Modified submissions", len(set(self.modified_submissions))),
+            ("Submission errors", len(set(self.submission_errors))),
+            ("File errors", len(set(self.file_errors))),
+            ("Thumbnail errors", len(set(self.thumbnail_errors))),
             ("Added journals", len(set(self.added_journals))),
-            ("Modified journals", len(self.modified_journals)),
-            ("Journal Errors", len(self.journal_errors)),
+            ("Modified journals", len(set(self.modified_journals))),
+            ("Journal Errors", len(set(self.journal_errors))),
         ]
         if items := list(filter(itemgetter(1), items)):
             name_padding: int = max(map(len, map(itemgetter(0), items or [""])))
