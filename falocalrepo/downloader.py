@@ -189,12 +189,13 @@ class Downloader:
 
     def verbose_report(self, file: TextIO | None = None):
         if file:
-            dump({"users": {
-                "added": sort_set(self.added_users),
-                "modified": sort_set(self.modified_users),
-                "errors": sort_set(self.user_errors),
-                "deactivated": sort_set(self.user_deactivated),
-            },
+            dump({
+                "users": {
+                    "added": sort_set(self.added_users),
+                    "modified": sort_set(self.modified_users),
+                    "errors": sort_set(self.user_errors),
+                    "deactivated": sort_set(self.user_deactivated),
+                },
                 "submissions": {
                     "added": sort_set(self.added_submissions),
                     "modified": sort_set(self.modified_submissions),
