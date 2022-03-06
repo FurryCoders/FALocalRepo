@@ -155,9 +155,11 @@ class Downloader:
         self._bar: Bar | None = None
 
         self.added_users: list[int | str] = []
+        self.added_userpages: list[int | str] = []
         self.added_submissions: list[int | str] = []
         self.added_journals: list[int | str] = []
         self.modified_users: list[int | str] = []
+        self.modified_userpages: list[int | str] = []
         self.modified_submissions: list[int | str] = []
         self.modified_journals: list[int | str] = []
         self.user_errors: list[str] = []
@@ -171,6 +173,8 @@ class Downloader:
         items: list[tuple[str, int]] = [
             ("Added users", len(set(self.added_users))),
             ("Modified users", len(self.modified_users)),
+            ("Added userpages", len(self.added_userpages)),
+            ("Modified userpages", len(self.modified_userpages)),
             ("Users deactivated", len(self.user_deactivated)),
             ("User errors", len(self.user_errors)),
             ("Added submissions", len(set(self.added_submissions))),
@@ -195,6 +199,8 @@ class Downloader:
                     "modified": sort_set(self.modified_users),
                     "errors": sort_set(self.user_errors),
                     "deactivated": sort_set(self.user_deactivated),
+                    "added_userpages": sort_set(self.added_userpages),
+                    "modified_userpages": sort_set(self.modified_userpages),
                 },
                 "submissions": {
                     "added": sort_set(self.added_submissions),
@@ -212,6 +218,8 @@ class Downloader:
             items: list[tuple[str, list[int | str]]] = [
                 ("Added users", sort_set(self.added_users)),
                 ("Modified users", sort_set(self.modified_users)),
+                ("Added userpages", sort_set(self.added_userpages)),
+                ("Modified userpages", sort_set(self.modified_userpages)),
                 ("Users deactivated", sort_set(self.user_deactivated)),
                 ("User errors", sort_set(self.user_errors)),
                 ("Added submission", sort_set(self.added_submissions)),
@@ -516,8 +524,8 @@ class Downloader:
             self.clear_line()
             return 0
         self.db.users[username] = self.db.users[username] | {UsersColumns.USERPAGE.value.name: user.profile}
-        self.added_users += [username] if added else []
-        self.modified_users += [username] if updated else []
+        self.added_userpages += [username] if added else []
+        self.modified_userpages += [username] if updated else []
         self.bar_message("ADDED" if added else "UPDATED", green, always=True)
         return 0
 
@@ -544,18 +552,20 @@ class Downloader:
     def _download_users(self, users_folders: Iterable[tuple[str, list[str]]], stop: int = -1):
         operation: str = "Downloading" if stop < 0 else "Updating"
         for user, folders in users_folders:
+            user_added: bool = False
+            user_downloaded: bool = False
+            if not self.dry_run:
+                if user_added := user not in self.db.users:
+                    self.db.users.save_user({UsersColumns.USERNAME.value.name: user,
+                                             UsersColumns.FOLDERS.value.name: {},
+                                             UsersColumns.ACTIVE.value.name: True,
+                                             UsersColumns.USERPAGE.value.name: ""})
+                    self.db.commit()
+                    self.added_users += [user]
+                self.db.users.set_active(user, True)
             for folder in folders:
                 echo(f"{operation}: {yellow}{user}{reset}/{yellow}{folder.split(':')[0]}{reset}", color=self.color)
-                user_added: bool = False
                 if not self.dry_run:
-                    if user_added := user not in self.db.users:
-                        self.db.users.save_user({UsersColumns.USERNAME.value.name: user,
-                                                 UsersColumns.FOLDERS.value.name: {},
-                                                 UsersColumns.ACTIVE.value.name: True,
-                                                 UsersColumns.USERPAGE.value.name: ""})
-                        self.db.commit()
-                        self.added_users += [user]
-                    self.db.users.set_active(user, True)
                     if folder.startswith(w := Folder.watchlist_by) and \
                             (wfs := [f for f in self.db.users[user][UsersColumns.FOLDERS.name] if f.startswith(w)]):
                         for wf in filter(lambda f: f != folder, wfs):
@@ -566,7 +576,8 @@ class Downloader:
                         for wf in filter(lambda f: f != folder, wfs):
                             self.db.users.remove_folder(user, wf)
                         self.modified_users += [user]
-                    self.db.users.add_folder(user, folder)
+                    added_folder: bool = self.db.users.add_folder(user, folder)
+                    self.modified_users += [user] if not user_added and added_folder else []
                 err: int
                 if folder == Folder.userpage:
                     err = self.download_user_page(user, stop == 1)
@@ -580,8 +591,10 @@ class Downloader:
                     err = self.download_user_watchlist(user, Folder.watchlist_to, folder.split(":")[1:], stop == 1)
                 else:
                     raise Exception(f"Unknown folder {folder}")
-                if not self.dry_run and err in (1, 2):
-                    if user_added:
+                if not err:
+                    user_downloaded = True
+                elif not self.dry_run and err in (1, 2):
+                    if user_added and not user_downloaded:
                         del self.db.users[user]
                         self.added_users.remove(user)
                     else:
