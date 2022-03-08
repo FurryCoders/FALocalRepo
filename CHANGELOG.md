@@ -13,6 +13,12 @@
 * Fix rare error when using the `database view` command on entries that contained CSS color styles that were not
   lowercase, causing the color to not be displayed correctly
 
+### Dependencies
+
+* falocalrepo-server dependency set to [\~3.0.2](https://pypi.org/project/falocalrepo-server/3.0.2)
+    * Change default sorting column of journals and submissions to `DATE` (same results as `ID`)
+    * Fix rare decoding error when the submission file was an unrecognized file format and the file url had no extension
+
 ## 4.1.9
 
 ### New Features
