@@ -661,6 +661,7 @@ Each entry contains the following fields:
 
 * `USERNAME` The URL username of the user (no underscores or spaces)
 * `FOLDERS` the folders downloaded for that specific user, sorted and bar-separated
+* `ACTIVE` `1` if the user is active, `0` if not
 * `USERPAGE` the user's profile text
 
 ### Submissions
@@ -707,6 +708,7 @@ The settings table contains settings for the program and variable used by the da
 * `COOKIES` cookies for the scraper, stored in JSON format
 * `FILESFOLDER` location of downloaded submission files
 * `VERSION` database version, this can differ from the program version
+* `SERVER.SEARCH` search settings if saved using the web server (see [server](#server))
 
 ### History
 
