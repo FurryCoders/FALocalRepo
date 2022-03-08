@@ -1,5 +1,18 @@
 # Changelog
 
+## 4.1.10
+
+### Changes
+
+* Separate download counter for userpages to make the "modified users" counter specific to changes to `ACTIVE`
+  and `FOLDERS`
+
+### Fixes
+
+* Fix some download counters not giving the correct amount of unique entries
+* Fix rare error when using the `database view` command on entries that contained CSS color styles that were not
+  lowercase, causing the color to not be displayed correctly
+
 ## 4.1.9
 
 ### New Features
