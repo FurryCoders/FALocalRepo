@@ -316,9 +316,9 @@ class Downloader:
         self.bar_close("\b")
         self.bar(7)
         file: bytes | None = None
-        retry: int = self.retry
+        retry: int = self.retry + 1
         while file is None and (retry := retry - 1):
-            file = self.download_bytes(submission.file_url)
+            file = None  # self.download_bytes(submission.file_url)
             if file is None and retry:
                 self.bar_message("RETRY")
                 self.api.handle_delay()
@@ -326,7 +326,7 @@ class Downloader:
         self.bar_close("]")
         self.bar(1)
         thumb: bytes | None = None
-        retry = self.retry
+        retry = self.retry + 1
         while thumb is None and (retry := retry - 1):
             thumb = self.download_bytes(submission.thumbnail_url or thumbnail)
             if thumb is None and retry:
