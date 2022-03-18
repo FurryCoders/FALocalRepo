@@ -327,9 +327,9 @@ class Downloader:
         self.bar(1)
         thumb: bytes | None = None
         retry = self.retry
-        while file is None and (retry := retry - 1):
+        while thumb is None and (retry := retry - 1):
             thumb = self.download_bytes(submission.thumbnail_url or thumbnail)
-            if file is None and retry:
+            if thumb is None and retry:
                 self.bar_message("RETRY")
                 self.api.handle_delay()
         self.db.submissions.save_submission({**format_entry(dict(submission), self.db.submissions.columns),
