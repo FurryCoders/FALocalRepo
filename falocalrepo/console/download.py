@@ -65,6 +65,8 @@ output_option = option("--simple-output", is_flag=True, default=False, help="Sim
 dry_run_option = option("--dry-run", is_flag=True, default=False, help="Fetch entries without modifying database.")
 verbose_report_option = option("--verbose-report", is_flag=True, default=False, help="Output full report with IDs.")
 report_file_option = option("--report-file", default=None, type=File("w"), help="Write download report to a file.")
+retry_option = option("--retry", metavar="INTEGER", default=0, type=IntRange(1, 5), show_default=True,
+                      help="Retry downloads.")
 
 
 def users_callback(ctx: Context, param: Option, value: tuple[str]) -> tuple[str]:
@@ -120,6 +122,7 @@ def download_login(ctx: Context, database: Callable[..., Database]):
         help="Username.")
 @option("--folder", "-f", "folders", metavar="FOLDER", required=True, multiple=True, type=DownloadFolderChoice(),
         callback=lambda _c, _p, v: sort_set(v), help="Folder to download.")
+@retry_option
 @dry_run_option
 @verbose_report_option
 @report_file_option
@@ -131,7 +134,7 @@ def download_login(ctx: Context, database: Callable[..., Database]):
                             [Folder.watchlist_by.value + f":{yellow}FOLDER{reset}"] +
                             [Folder.watchlist_to.value + f":{yellow}FOLDER{reset}"]))
 def download_users(ctx: Context, database: Callable[..., Database], users: tuple[str], folders: tuple[str],
-                   dry_run: bool, verbose_report: bool, report_file: TextIO | None):
+                   retry: int, dry_run: bool, verbose_report: bool, report_file: TextIO | None):
     """
     Download specific user folders, where {yellow}FOLDER{reset} is one of {0}. Multiple {yellow}--user{reset} and
     {yellow}--folder{reset} arguments can be passed. {yellow}USER{reset} can be set to {cyan}@me{reset} to fetch own
@@ -143,7 +146,7 @@ def download_users(ctx: Context, database: Callable[..., Database], users: tuple
     """
     db: Database = database()
     api: FAAPI = open_api(db, ctx)
-    downloader: Downloader = Downloader(db, api, color=ctx.color, dry_run=dry_run)
+    downloader: Downloader = Downloader(db, api, color=ctx.color, retry=retry, dry_run=dry_run)
     if not dry_run:
         add_history(db, ctx, users=users, folders=folders)
     watchlist_by: list[str] = [f.split(":")[1] for f in folders if f.startswith(Folder.watchlist_by.value)]
@@ -179,6 +182,7 @@ def download_users(ctx: Context, database: Callable[..., Database], users: tuple
         help="Number of submissions to find in the database before stopping.")
 @option("--deactivated", is_flag=True, default=False, help="Check deactivated users.")
 @option("--like", is_flag=True, is_eager=True, default=False, help=f"Consider {yellow}USER{reset} to be LIKE queries.")
+@retry_option
 @dry_run_option
 @verbose_report_option
 @report_file_option
@@ -188,7 +192,8 @@ def download_users(ctx: Context, database: Callable[..., Database], users: tuple
 @pass_context
 @docstring_format(', '.join(c.value for c in UpdateFolderChoice.completion_items))
 def download_update(ctx: Context, database: Callable[..., Database], users: tuple[str], folders: tuple[str], stop: int,
-                    deactivated: bool, like: bool, dry_run: bool, verbose_report: bool, report_file: TextIO | None):
+                    deactivated: bool, like: bool, retry: int, dry_run: bool, verbose_report: bool,
+                    report_file: TextIO | None):
     """
     Download new entries using the users and folders already in the database. {yellow}--user{reset} and
     {yellow}--folder{reset} options can be used to restrict the update to specific users and or folders, where
@@ -209,7 +214,7 @@ def download_update(ctx: Context, database: Callable[..., Database], users: tupl
     """
     db: Database = database()
     api: FAAPI = open_api(db, ctx)
-    downloader: Downloader = Downloader(db, api, color=ctx.color, dry_run=dry_run)
+    downloader: Downloader = Downloader(db, api, color=ctx.color, retry=retry, dry_run=dry_run)
     if not dry_run:
         add_history(db, ctx, users=users, folders=folders, stop=stop)
     try:
@@ -229,6 +234,7 @@ def download_update(ctx: Context, database: Callable[..., Database], users: tupl
 @argument("submission_id", nargs=-1, required=True, type=IntRange(1),
           callback=lambda _c, _p, v: sorted(set(v), key=v.index))
 @option("--replace", is_flag=True, default=False, show_default=True, help="Replace submissions already in database.")
+@retry_option
 @dry_run_option
 @verbose_report_option
 @report_file_option
@@ -238,7 +244,7 @@ def download_update(ctx: Context, database: Callable[..., Database], users: tupl
 @pass_context
 @docstring_format()
 def download_submissions(ctx: Context, database: Callable[..., Database], submission_id: tuple[int], replace: bool,
-                         dry_run: bool, verbose_report: bool, report_file: TextIO | None):
+                         retry: int, dry_run: bool, verbose_report: bool, report_file: TextIO | None):
     """
     Download single submissions, where {yellow}SUBMISSION_ID{reset} is the ID of the submission.
 
@@ -249,7 +255,7 @@ def download_submissions(ctx: Context, database: Callable[..., Database], submis
     """
     db: Database = database()
     api: FAAPI = open_api(db, ctx)
-    downloader: Downloader = Downloader(db, api, color=ctx.color, dry_run=dry_run)
+    downloader: Downloader = Downloader(db, api, color=ctx.color, retry=retry, dry_run=dry_run)
     if not dry_run:
         add_history(db, ctx, submission_id=submission_id, replace=replace)
     try:
@@ -269,6 +275,7 @@ def download_submissions(ctx: Context, database: Callable[..., Database], submis
 @argument("journal_id", nargs=-1, required=True, type=IntRange(1),
           callback=lambda _c, _p, v: sorted(set(v), key=v.index))
 @option("--replace", is_flag=True, default=False, show_default=True, help="Replace submissions already in database.")
+@retry_option
 @dry_run_option
 @verbose_report_option
 @report_file_option
@@ -278,7 +285,7 @@ def download_submissions(ctx: Context, database: Callable[..., Database], submis
 @pass_context
 @docstring_format()
 def download_journals(ctx: Context, database: Callable[..., Database], journal_id: tuple[int], replace: bool,
-                      dry_run: bool, verbose_report: bool, report_file: TextIO | None):
+                      retry: int, dry_run: bool, verbose_report: bool, report_file: TextIO | None):
     """
     Download single journals, where {yellow}JOURNAL_ID{reset} is the ID of the journal.
 
@@ -289,7 +296,7 @@ def download_journals(ctx: Context, database: Callable[..., Database], journal_i
     """
     db: Database = database()
     api: FAAPI = open_api(db, ctx)
-    downloader: Downloader = Downloader(db, api, color=ctx.color, dry_run=dry_run)
+    downloader: Downloader = Downloader(db, api, color=ctx.color, retry=retry, dry_run=dry_run)
     if not dry_run:
         add_history(db, ctx, journal_id=journal_id, replace=replace)
     try:
