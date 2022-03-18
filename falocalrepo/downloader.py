@@ -145,10 +145,11 @@ class Bar:
 
 # noinspection DuplicatedCode
 class Downloader:
-    def __init__(self, db: Database, api: FAAPI, *, color: bool = True, dry_run: bool = False):
+    def __init__(self, db: Database, api: FAAPI, *, color: bool = True, retry: int = 0, dry_run: bool = False):
         self.db: Database = db
         self.output: OutputType = OutputType.rich if terminal_width() > 0 else OutputType.simple
         self.color: bool = color
+        self.retry: int = retry + 1
         self.dry_run: bool = dry_run
         self.api: FAAPI = api
         self.bar_width: int = 10
@@ -314,11 +315,23 @@ class Downloader:
         self.bar_clear()
         self.bar_close("\b")
         self.bar(7)
-        file: bytes | None = self.download_bytes(submission.file_url)
+        file: bytes | None = None
+        retry: int = self.retry
+        while file is None and (retry := retry - 1):
+            file = self.download_bytes(submission.file_url)
+            if file is None and retry:
+                self.bar_message("RETRY")
+                self.api.handle_delay()
         self.bar_message(("#" * self.bar_width) if file else "ERROR", green if file else red, always=True)
         self.bar_close("]")
         self.bar(1)
-        thumb: bytes | None = self.download_bytes(submission.thumbnail_url or thumbnail)
+        thumb: bytes | None = None
+        retry = self.retry
+        while file is None and (retry := retry - 1):
+            thumb = self.download_bytes(submission.thumbnail_url or thumbnail)
+            if file is None and retry:
+                self.bar_message("RETRY")
+                self.api.handle_delay()
         self.db.submissions.save_submission({**format_entry(dict(submission), self.db.submissions.columns),
                                              "author": submission.author.name,
                                              SubmissionsColumns.FAVORITE.value.name: {*favorites} if favorites else {},
