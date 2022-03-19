@@ -315,23 +315,21 @@ class Downloader:
         self.bar_clear()
         self.bar_close("\b")
         self.bar(7)
-        file: bytes | None = None
-        retry: int = self.retry + 2
+        file: bytes | None = self.download_bytes(submission.file_url)
+        retry: int = self.retry + 1
         while file is None and (retry := retry - 1):
+            self.bar_message("RETRY")
+            self.api.handle_delay()
             file = self.download_bytes(submission.file_url)
-            if file is None and retry > 1:
-                self.bar_message("RETRY")
-                self.api.handle_delay()
         self.bar_message(("#" * self.bar_width) if file else "ERROR", green if file else red, always=True)
         self.bar_close("]")
         self.bar(1)
-        thumb: bytes | None = None
-        retry = self.retry + 2
+        thumb: bytes | None = self.download_bytes(submission.thumbnail_url or thumbnail)
+        retry = self.retry + 1
         while thumb is None and (retry := retry - 1):
+            self.bar_message("RETRY")
+            self.api.handle_delay()
             thumb = self.download_bytes(submission.thumbnail_url or thumbnail)
-            if thumb is None and retry > 1:
-                self.bar_message("RETRY")
-                self.api.handle_delay()
         self.db.submissions.save_submission({**format_entry(dict(submission), self.db.submissions.columns),
                                              "author": submission.author.name,
                                              SubmissionsColumns.FAVORITE.value.name: {*favorites} if favorites else {},
