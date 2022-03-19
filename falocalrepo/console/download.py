@@ -284,7 +284,6 @@ def download_submissions(ctx: Context, database: Callable[..., Database], submis
 @argument("journal_id", nargs=-1, required=True, type=IntRange(1),
           callback=lambda _c, _p, v: sorted(set(v), key=v.index))
 @option("--replace", is_flag=True, default=False, show_default=True, help="Replace submissions already in database.")
-@retry_option
 @dry_run_option
 @verbose_report_option
 @report_file_option
@@ -300,8 +299,6 @@ def download_journals(ctx: Context, database: Callable[..., Database], journal_i
 
     If the {yellow}--replace{reset} option is used, database entries will be overwritten with new data (favorites will
     be maintained).
-
-    The {yellow}--retry{reset} option enables downloads retries for submission files and thumbnails up to 5 retries.
 
     The optional {yellow}--dry-run{reset} option disables downloading and saving and simply lists fetched entries.
     """
