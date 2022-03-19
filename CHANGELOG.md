@@ -1,5 +1,16 @@
 # Changelog
 
+## 4.1.11
+
+### New Features
+
+* Added `--retry` option to `download` commands. When set, failed submission files and thumbnails downloads will be
+  performed again up to a maximum of 5 retries.
+
+### Dependencies
+
+* falocalrepo-server dependency set to [\~3.0.3](https://pypi.org/project/falocalrepo-server/3.0.3)
+
 ## 4.1.10
 
 ### Changes
