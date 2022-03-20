@@ -253,7 +253,7 @@ modified, nor are submission files downloaded. Entries are simply listed and the
 database or not.
 
 All download operations pertaining submissions (`users`, `update` and `submissions`) support the `--retry` option to
-enable download retries for submission files and thumbnails up to 5 times.
+enable download retries for submission files and thumbnails up to 5 times. The default behaviour is to retry one time.
 
 When downloading, submission and journal titles will be displayed in the terminal. Characters in the titles outside the
 ASCII range will be replaced with □ to avoid formatting errors.
