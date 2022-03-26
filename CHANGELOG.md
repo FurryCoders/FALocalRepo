@@ -1,5 +1,18 @@
 # Changelog
 
+## 4.1.12
+
+### Changes
+
+* `--retry` option for `download` commands defaults to 1
+* Removed `--retry` option from `download journals` (it is only used for file downloads, which never occur when
+  downloading journals only)
+
+### Dependencies
+
+* falocalrepo-server dependency set to [\~3.0.4](https://pypi.org/project/falocalrepo-server/3.0.4)
+* faapi dependency set to [\~3.5.0](https://pypi.org/project/faapi/3.5.0)
+
 ## 4.1.11
 
 ### New Features
