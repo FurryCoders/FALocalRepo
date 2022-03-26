@@ -125,7 +125,7 @@ values = "*"
 
 [[package]]
 name = "faapi"
-version = "3.4.3"
+version = "3.5.0"
 description = "Python module to implement API-like functionality for the FurAffinity.net website."
 category = "main"
 optional = false
@@ -153,7 +153,7 @@ psutil = ">=5.9.0,<6.0.0"
 
 [[package]]
 name = "falocalrepo-server"
-version = "3.0.3"
+version = "3.0.4"
 description = "Web interface for falocalrepo."
 category = "main"
 optional = false
@@ -165,16 +165,16 @@ chardet = ">=4.0.0,<5.0.0"
 click = ">=8.0.4,<9.0.0"
 click-help-colors = ">=0.9.1,<0.10.0"
 falocalrepo-database = ">=5.1.2,<5.2.0"
-fastapi = ">=0.74.1,<0.75.0"
+fastapi = ">=0.75.0,<0.76.0"
 htmlmin = ">=0.1.12,<0.2.0"
 Jinja2 = ">=3.0.3,<4.0.0"
 lxml = ">=4.8.0,<5.0.0"
 Pillow = ">=9.0.0,<10.0.0"
-uvicorn = ">=0.17.5,<0.18.0"
+uvicorn = ">=0.17.6,<0.18.0"
 
 [[package]]
 name = "fastapi"
-version = "0.74.1"
+version = "0.75.0"
 description = "FastAPI framework, high performance, easy to learn, fast to code, ready for production"
 category = "main"
 optional = false
@@ -232,11 +232,11 @@ python-versions = ">=3.5"
 
 [[package]]
 name = "jinja2"
-version = "3.0.3"
+version = "3.1.1"
 description = "A very fast and expressive template engine."
 category = "main"
 optional = false
-python-versions = ">=3.6"
+python-versions = ">=3.7"
 
 [package.dependencies]
 MarkupSafe = ">=2.0"
@@ -446,7 +446,7 @@ python-versions = "*"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "9eb8ced7c7c7353e23b6242b1722790633f8be74b4ffc75a719df4befef54eff"
+content-hash = "a209c91d4bac658d797c5817e33b744c6646cc1d96923b57ebe6d2514d5a3bb1"
 
 [metadata.files]
 anyio = [
@@ -493,20 +493,20 @@ dict = [
     {file = "dict-2020.12.3.tar.gz", hash = "sha256:8a14ff62e2a9dff5ef751a2e5eee07715c79ddab6b9ca06c59e73622f80761b5"},
 ]
 faapi = [
-    {file = "faapi-3.4.3-py3-none-any.whl", hash = "sha256:3c7ad5547eae302ea8a50dd895f743fa2fbc77021ad0a95f61daf9ee3194e86f"},
-    {file = "faapi-3.4.3.tar.gz", hash = "sha256:fd810552fecada1ab264ee195f06a5ef33014dcb14302e8df8f5f01ccc6bde14"},
+    {file = "faapi-3.5.0-py3-none-any.whl", hash = "sha256:fae226507dbfbffb5084b9c2f555455d433de29c8107f08b74c115783dd65d10"},
+    {file = "faapi-3.5.0.tar.gz", hash = "sha256:9f9ed692d15b7d0d7be62cb029301b83e02ec1f5e7b45c2396a0f1f16e721b1b"},
 ]
 falocalrepo-database = [
     {file = "falocalrepo-database-5.1.2.tar.gz", hash = "sha256:859f8d0060a2587a0064f3e8a2f6c779df6caf08299969208b052ae841cce713"},
     {file = "falocalrepo_database-5.1.2-py3-none-any.whl", hash = "sha256:93496d5a01737d457cd9c90d8ae7925f5b176e7a23a95d3068d3eced9ec05fb0"},
 ]
 falocalrepo-server = [
-    {file = "falocalrepo-server-3.0.3.tar.gz", hash = "sha256:db890c48b704f73527aa5ba5cffaf1573c671d8599df844fc9490266829390e2"},
-    {file = "falocalrepo_server-3.0.3-py3-none-any.whl", hash = "sha256:87ea347eb8e372dd37a14b6bfcf0f843cbd10d8e1b8822ece480951c69536662"},
+    {file = "falocalrepo-server-3.0.4.tar.gz", hash = "sha256:4b4800056806b90e0086e02056baef19a680e471631a3c7b3aa3686b85cb6cf9"},
+    {file = "falocalrepo_server-3.0.4-py3-none-any.whl", hash = "sha256:2ea11a6d04161e5f461d614a04010b452ff743b9312cff95cc8668da489ce00f"},
 ]
 fastapi = [
-    {file = "fastapi-0.74.1-py3-none-any.whl", hash = "sha256:b8ec8400623ef0b2ff558ebe06753b349f8e3a5dd38afea650800f2644ddba34"},
-    {file = "fastapi-0.74.1.tar.gz", hash = "sha256:b58a2c46df14f62ebe6f24a9439927539ba1959b9be55ba0e2f516a683e5b9d4"},
+    {file = "fastapi-0.75.0-py3-none-any.whl", hash = "sha256:43d12891b78fc497a50623e9c7c24640c569489f060acd9ce2c4902080487a93"},
+    {file = "fastapi-0.75.0.tar.gz", hash = "sha256:124774ce4cb3322841965f559669b233a0b8d343ea24fdd8b293253c077220d7"},
 ]
 filetype = [
     {file = "filetype-1.0.10-py2.py3-none-any.whl", hash = "sha256:63fbe6e818a3d1cfac1d62b196574a7a4b7fc8e06a6c500d53577c018ef127d9"},
@@ -528,8 +528,8 @@ idna = [
     {file = "idna-3.3.tar.gz", hash = "sha256:9d643ff0a55b762d5cdb124b8eaa99c66322e2157b69160bc32796e824360e6d"},
 ]
 jinja2 = [
-    {file = "Jinja2-3.0.3-py3-none-any.whl", hash = "sha256:077ce6014f7b40d03b47d1f1ca4b0fc8328a692bd284016f806ed0eaca390ad8"},
-    {file = "Jinja2-3.0.3.tar.gz", hash = "sha256:611bb273cd68f3b993fabdc4064fc858c5b47a973cb5aa7999ec1ba405c87cd7"},
+    {file = "Jinja2-3.1.1-py3-none-any.whl", hash = "sha256:539835f51a74a69f41b848a9645dbdc35b4f20a3b601e2d9a7e22947b15ff119"},
+    {file = "Jinja2-3.1.1.tar.gz", hash = "sha256:640bed4bb501cbd17194b3cace1dc2126f5b619cf068a726b98192a0fde74ae9"},
 ]
 lxml = [
     {file = "lxml-4.8.0-cp27-cp27m-macosx_10_14_x86_64.whl", hash = "sha256:e1ab2fac607842ac36864e358c42feb0960ae62c34aa4caaf12ada0a1fb5d99b"},
