@@ -1,5 +1,12 @@
 # Changelog
 
+## 4.1.13
+
+### Dependencies
+
+* faapi dependency set to [\~3.6.0](https://pypi.org/project/faapi/3.6.0)
+* falocalrepo-server dependency set to [\~3.0.4](https://pypi.org/project/falocalrepo-server/3.0.4)
+
 ## 4.1.12
 
 ### Changes
