@@ -7,8 +7,8 @@ on:
   workflow_dispatch:
 
 env:
-  PYTHON_VERSION: 3.10.1
-  POETRY_VERSION: 1.1.12
+  PYTHON_VERSION: 3.10.2
+  POETRY_VERSION: 1.1.13
 
 jobs:
   build:
