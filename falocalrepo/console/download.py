@@ -293,7 +293,7 @@ def download_submissions(ctx: Context, database: Callable[..., Database], submis
 @pass_context
 @docstring_format()
 def download_journals(ctx: Context, database: Callable[..., Database], journal_id: tuple[int], replace: bool,
-                      retry: int | None, dry_run: bool, verbose_report: bool, report_file: TextIO | None):
+                      dry_run: bool, verbose_report: bool, report_file: TextIO | None):
     """
     Download single journals, where {yellow}JOURNAL_ID{reset} is the ID of the journal.
 
@@ -304,7 +304,7 @@ def download_journals(ctx: Context, database: Callable[..., Database], journal_i
     """
     db: Database = database()
     api: FAAPI = open_api(db, ctx)
-    downloader: Downloader = Downloader(db, api, color=ctx.color, retry=retry or 0, dry_run=dry_run)
+    downloader: Downloader = Downloader(db, api, color=ctx.color, dry_run=dry_run)
     if not dry_run:
         add_history(db, ctx, journal_id=journal_id, replace=replace)
     try:
