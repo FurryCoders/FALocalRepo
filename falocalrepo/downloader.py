@@ -11,19 +11,27 @@ from typing import TextIO
 from typing import TypeVar
 
 from click import echo
+from faapi import Comment
 from faapi import FAAPI
+from faapi import Journal
+from faapi import Submission
 from faapi import SubmissionPartial
 from faapi import UserPartial
+from faapi.comment import flatten_comments
 from faapi.exceptions import DisabledAccount
 from faapi.exceptions import NotFound
 from faapi.exceptions import NoticeMessage
 from faapi.exceptions import ServerError
+from faapi.journal import JournalPartial
 from falocalrepo_database import Column
 from falocalrepo_database import Database
 from falocalrepo_database.selector import SelectorBuilder as Sb
+from falocalrepo_database.tables import CommentsColumns
 from falocalrepo_database.tables import JournalsColumns
 from falocalrepo_database.tables import SubmissionsColumns
 from falocalrepo_database.tables import UsersColumns
+from falocalrepo_database.tables import journals_table
+from falocalrepo_database.tables import submissions_table
 from requests import RequestException
 from requests import Response
 
@@ -103,6 +111,16 @@ def download_catch(func: Callable[..., T], *args, **kwargs) -> tuple[T | None, i
         return None, 3
 
 
+def save_comments(db: Database, parent_table: str, parent_id: int, comments: list[Comment], *, replace: bool = False):
+    for comment in filter(lambda c: not c.hidden, flatten_comments(comments)):
+        db.comments.save_comment(
+            {**format_entry(dict(comment), db.comments.columns),
+             CommentsColumns.PARENT_TABLE.name: parent_table,
+             CommentsColumns.PARENT_ID.name: parent_id,
+             CommentsColumns.REPLY_TO.name: comment.reply_to.id if comment.reply_to else None,
+             CommentsColumns.AUTHOR.name: comment.author.name}, replace=replace)
+
+
 class Bar:
     def __init__(self, length: int = 0, *, message: str = ""):
         self.length: int = length
@@ -145,11 +163,13 @@ class Bar:
 
 # noinspection DuplicatedCode
 class Downloader:
-    def __init__(self, db: Database, api: FAAPI, *, color: bool = True, retry: int = 0, dry_run: bool = False):
+    def __init__(self, db: Database, api: FAAPI, *, color: bool = True, retry: int = 0, comments: bool = False,
+                 dry_run: bool = False):
         self.db: Database = db
         self.output: OutputType = OutputType.rich if terminal_width() > 0 else OutputType.simple
         self.color: bool = color
         self.retry: int = retry
+        self.save_comments: bool = comments
         self.dry_run: bool = dry_run
         self.api: FAAPI = api
         self.bar_width: int = 10
@@ -303,7 +323,26 @@ class Downloader:
             self.bar_close(close_end)
         return err
 
-    def download_submission(self, submission_id: int, user_update: int, favorites: Iterable[str] | None,
+    def download_journal(self, journal_id: int, user_update: bool, replace: bool = False) -> int:
+        self.bar_clear()
+        self.bar_message("DOWNLOAD")
+        result, err = download_catch(self.api.journal, journal_id)
+        if self.err_to_bar(err):
+            self.journal_errors += [journal_id]
+            return err
+        journal: Journal = result
+        self.db.journals.save_journal({
+            **format_entry(dict(journal), self.db.journals.columns),
+            "author": journal.author.name,
+            JournalsColumns.USERUPDATE.name: int(user_update)
+        }, replace=replace)
+        if self.save_comments:
+            save_comments(self.db, journals_table, journal.id, journal.comments, replace=replace)
+        self.db.commit()
+        self.bar_message("ADDED", green, always=True)
+        return 0
+
+    def download_submission(self, submission_id: int, user_update: bool, favorites: Iterable[str] | None,
                             thumbnail: str, replace: bool = False) -> int:
         self.bar_clear()
         self.bar_message("DOWNLOAD")
@@ -311,7 +350,7 @@ class Downloader:
         if self.err_to_bar(err):
             self.submission_errors += [submission_id]
             return err
-        submission, _ = result
+        submission: Submission = result[0]
         self.bar_clear()
         self.bar_close("\b")
         self.bar(7)
@@ -333,8 +372,10 @@ class Downloader:
         self.db.submissions.save_submission({**format_entry(dict(submission), self.db.submissions.columns),
                                              "author": submission.author.name,
                                              SubmissionsColumns.FAVORITE.value.name: {*favorites} if favorites else {},
-                                             SubmissionsColumns.USERUPDATE.value.name: int(user_update)},
+                                             SubmissionsColumns.USERUPDATE.value.name: user_update},
                                             file, thumb, replace=replace)
+        if self.save_comments:
+            save_comments(self.db, submissions_table, submission.id, submission.comments, replace=replace)
         self.db.commit()
         self.bar_message(("#" * self.bar_width) if thumb else "ERROR", green if thumb else red, always=True)
         self.bar_close()
@@ -420,7 +461,7 @@ class Downloader:
                 elif self.dry_run:
                     self.bar_message("SKIPPED", green)
                 else:
-                    err = save[0](entry)
+                    err = save[0](entry) or 0
                     if not self.err_to_bar(err) and save[1]:
                         self.bar_message(save[1], green, always=True)
                     entries_added.append(entry_id_getter(entry))
@@ -432,15 +473,23 @@ class Downloader:
         return 0, (entries_added, entries_modified, entries_errors)
 
     def download_user_journals(self, user: str, stop: int = -1, clear_last_found: bool = False) -> int:
+        def save(journal: JournalPartial) -> int:
+            if self.save_comments:
+                return self.download_journal(journal.id, True)
+            else:
+                self.db.journals.save_journal(
+                    {**format_entry(dict(journal), self.db.journals.columns),
+                     JournalsColumns.AUTHOR.name: journal.author.name,
+                     JournalsColumns.USERUPDATE.value.name: True})
+            return 0
+
         err, [entries_added, entries_modified, entries_errors] = self.download_user_folder(
             user=user, folder=Folder.journals, downloader_entries=self.api.journals, page_start=1,
             entry_id_getter=lambda j: j.id,
             entry_formats=("{0.id:010}", "{0.title}"),
             contains=lambda j: self.db.journals[j.id],
             modify_checks=[(lambda journal, _: self.db.journals.set_user_update(journal.id, True), "")],
-            save=(lambda journal: self.db.journals.save_journal(
-                {**format_entry(dict(journal) | {"author": journal.author.name}, self.db.journals.columns),
-                 JournalsColumns.USERUPDATE.value.name: 1, }), "ADDED"),
+            save=(save, "ADDED"),
             stop=stop, clear_last_found=clear_last_found
         )
         self.added_journals.extend(entries_added)
@@ -469,7 +518,7 @@ class Downloader:
             contains=lambda s: self.db.submissions[s.id],
             modify_checks=modify_checks,
             save=(lambda sub_partial: self.download_submission(
-                sub_partial.id, int(folder != Folder.favorites),
+                sub_partial.id, folder != Folder.favorites,
                 [user] if folder == Folder.favorites else None,
                 sub_partial.thumbnail_url), ""),
             stop=stop, clear_last_found=clear_last_found
@@ -683,7 +732,7 @@ class Downloader:
                 self.bar_close()
                 continue
             self.download_submission(submission_id,
-                                     entry.get(SubmissionsColumns.USERUPDATE.value.name, 0),
+                                     entry.get(SubmissionsColumns.USERUPDATE.value.name, False),
                                      entry.get(SubmissionsColumns.FAVORITE.value.name, {}),
                                      "", replace)
 
@@ -707,11 +756,14 @@ class Downloader:
             if self.err_to_bar(err):
                 self.journal_errors += [journal.id]
                 continue
-            self.db.journals.save_journal({
-                **format_entry(dict(journal), self.db.journals.columns),
-                "author": journal.author.name,
-                (u := JournalsColumns.USERUPDATE.value.name): entry.get(u, 0)
-            }, replace=replace)
+            if self.save_comments:
+                self.download_journal(journal.id, entry.get(JournalsColumns.USERUPDATE.name, False), replace=replace)
+            else:
+                self.db.journals.save_journal({
+                    **format_entry(dict(journal), self.db.journals.columns),
+                    JournalsColumns.AUTHOR.name: journal.author.name,
+                    (u := JournalsColumns.USERUPDATE.name): entry.get(u, False)
+                }, replace=replace)
             self.added_journals += [journal.id]
             self.db.commit()
             self.bar_message("ADDED", green, always=True)
