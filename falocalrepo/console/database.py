@@ -423,6 +423,7 @@ def view_entry(entry: dict[str, Any], html_fields: list[str], *, raw_html: bool 
     users_columns="\n    ".join(f" * {c.name:<8} {c.type.__name__}" for c in UsersColumns.as_list()),
     submissions_columns="\n    ".join(f" * {c.name:<11} {c.type.__name__}" for c in SubmissionsColumns.as_list()),
     journals_columns="\n    ".join(f" * {c.name:<10} {c.type.__name__}" for c in JournalsColumns.as_list()),
+    comments_columns="\n    ".join(f" * {c.name:<12} {c.type.__name__}" for c in CommentsColumns.as_list()),
     prog_name=__prog_name__, version=__version__)
 def database_app():
     """
@@ -442,6 +443,10 @@ def database_app():
     \b
     {cyan}Journals{reset}
     {journals_columns}
+
+    \b
+    {cyan}Comments{reset}
+    {comments_columns}
     """
     pass
 
