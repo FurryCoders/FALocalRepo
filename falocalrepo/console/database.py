@@ -38,16 +38,19 @@ from click import pass_context
 from click import secho
 from click import style
 from click.shell_completion import CompletionItem
+from falocalrepo_database import Column
 from falocalrepo_database import Cursor
 from falocalrepo_database import Database
 from falocalrepo_database import Table
 from falocalrepo_database import __version__ as __database_version__
 from falocalrepo_database.database import query_to_sql
 from falocalrepo_database.selector import SelectorBuilder as Sb
+from falocalrepo_database.tables import CommentsColumns
 from falocalrepo_database.tables import HistoryColumns
 from falocalrepo_database.tables import JournalsColumns
 from falocalrepo_database.tables import SubmissionsColumns
 from falocalrepo_database.tables import UsersColumns
+from falocalrepo_database.tables import comments_table
 from falocalrepo_database.tables import journals_table
 from falocalrepo_database.tables import submissions_table
 from falocalrepo_database.tables import users_table
@@ -89,6 +92,7 @@ class TableChoice(CompleteChoice):
         CompletionItem(submissions_table),
         CompletionItem(journals_table),
         CompletionItem(users_table),
+        CompletionItem(comments_table),
     ]
 
 
@@ -129,6 +133,8 @@ class SortColumnsChoice(ColumnsChoice):
           for c in JournalsColumns.as_list()],
         *[(users_table, CompletionItem(c.name, help=f"{users_table}:{c.name}"))
           for c in UsersColumns.as_list()],
+        *[(comments_table, CompletionItem(c.name, help=f"{comments_table}:{c.name}"))
+          for c in CommentsColumns.as_list()],
     ]
 
 
@@ -138,6 +144,7 @@ class SearchColumnsChoice(ColumnsChoice):
         (submissions_table, CompletionItem("@", help=f"{submissions_table}:ALL")),
         (journals_table, CompletionItem("@", help=f"{journals_table}:ALL")),
         (users_table, CompletionItem("@", help=f"{users_table}:ALL")),
+        (comments_table, CompletionItem("@", help=f"{comments_table}:ALL")),
     ]
 
 
@@ -161,6 +168,8 @@ def column_callback(ctx: Context, param: Option, value: tuple[str]) -> tuple[str
         table_columns = [c.name for c in JournalsColumns.as_list()]
     elif table == users_table:
         table_columns = [c.name for c in UsersColumns.as_list()]
+    elif table == comments_table:
+        table_columns = [c.name for c in CommentsColumns.as_list()]
     if (col := next((c for c in value if c not in table_columns and c != "@"), None)) is not None:
         raise BadParameter(f"{col!r} is not one of {', '.join(map(repr, table_columns))}.", ctx, param)
     return value
@@ -203,6 +212,8 @@ def get_table(db: Database, table: str) -> Table:
         return db.submissions
     elif table == journals_table.lower():
         return db.journals
+    elif table == comments_table.lower():
+        return db.comments
     else:
         return db[table]
 
@@ -269,7 +280,7 @@ def print_json(results: Cursor, file: TextIO) -> int:
     return results_total
 
 
-def search(table: Table, headers: list[str], query: str, sort: tuple[tuple[str, str]], limit: int | None,
+def search(table: Table, headers: list[str | Column], query: str, sort: tuple[tuple[str, str]], limit: int | None,
            offset: int | None, sql: bool) -> tuple[Cursor, tuple[str, list[str]]]:
     cols_table: list[str] = [c.name for c in table.columns]
     query_elems, values = ([query], []) if sql or not query.strip() else query_to_sql(
@@ -545,7 +556,7 @@ def database_search(ctx: Context, database: Callable[..., Database], table: str,
 
     db: Database = database()
     db_table: Table = get_table(db, table)
-    headers: list[tuple[str, int]] = [*zip(map(str.upper, column), (*table_widths, *([0] * len(column))))]
+    headers: list[tuple[str | Column, int]] = [*zip(map(str.upper, column), (*table_widths, *([0] * len(column))))]
 
     if table in (submissions_table, journals_table):
         headers = headers or [*zip(cols := [SubmissionsColumns.ID.name, SubmissionsColumns.AUTHOR.name,
@@ -557,16 +568,23 @@ def database_search(ctx: Context, database: Callable[..., Database], table: str,
             *zip(cols := [UsersColumns.USERNAME.name, UsersColumns.ACTIVE.name, UsersColumns.FOLDERS.name],
                  ((*table_widths, *([0] * len(cols))) if table_widths else (40, 6, 0)))]
         sort = sort or ((UsersColumns.USERNAME.name, "ASC"),)
+    elif table == comments_table:
+        headers = headers or [*zip(cols := [CommentsColumns.ID.name, CommentsColumns.PARENT_TABLE.name,
+                                            CommentsColumns.PARENT_ID.name, CommentsColumns.AUTHOR.name,
+                                            CommentsColumns.DATE.value],
+                                   ((*table_widths, *([0] * len(cols))) if table_widths else (10, 11, 10, 16, 0)))]
+        sort = sort or ((CommentsColumns.ID.name, "desc"),)
 
     if any(h == "@" for h, _ in headers):
-        headers = list(zip([c.name for c in db_table.columns], (*table_widths, *([0] * len(db_table.columns)))))
+        headers = list(zip([c for c in db_table.columns], (*table_widths, *([0] * len(db_table.columns)))))
 
     headers[-1] = (headers[-1][0], 0)
     results, [query, values] = search(db_table, [h for h, _ in headers], query, sort, limit, offset, sql)
     results_total: int = 0
 
     if output == Output.table:
-        results_total = print_table(ctx, results, headers, ignore_width)
+        results_total = print_table(ctx, results, [(h.name if isinstance(h, Column) else h, w) for h, w in headers],
+                                    ignore_width)
     elif output == Output.csv:
         results_total = print_csv(results, stdout, ",")
     elif output == Output.tsv:
@@ -614,6 +632,8 @@ def database_view(ctx: Context, database: Callable[..., Database], table: str, i
         echo(view_entry(entry, [JournalsColumns.CONTENT.name], raw_html=raw_content), color=ctx.color)
     elif table == users_table:
         echo(view_entry(entry, [UsersColumns.USERPAGE.name], raw_html=raw_content), color=ctx.color)
+    elif table == comments_table:
+        echo(view_entry(entry, [CommentsColumns.TEXT.name], raw_html=raw_content), color=ctx.color)
     else:
         echo(view_entry(entry, [], raw_html=raw_content), color=ctx.color)
 
