@@ -1,5 +1,26 @@
 # Changelog
 
+## 4.2.0
+
+### New Features
+
+* Comments! 💬
+    * New `--save-comments` option for `download` commands allows saving comments of submissions and journals
+    * Comments can be updated on a per-entry basis using the `download submission` and `download journal` commands with
+      both the `--replace` and `--save-comments` options enabled
+    * Comments can be viewed with the `database view` command and in the web app with the `server` command
+    * Search, edit, remove, etc. all work with comments
+        * Submissions and journals search cannot query the comments table
+
+### Fixes
+
+* Fix incorrect argument error for `download journals`
+
+### Dependencies
+
+* falocalrepo-database dependency set to [\~5.2.0](https://pypi.org/project/falocalrepo-database/5.2.0)
+* falocalrepo-server dependency set to [\~3.1.0](https://pypi.org/project/falocalrepo-server/3.1.0)
+
 ## 4.1.13
 
 ### Dependencies
