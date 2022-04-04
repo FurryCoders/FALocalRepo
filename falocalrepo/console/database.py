@@ -301,6 +301,68 @@ def html_to_ansi(html: str, *, root: bool = False) -> str:
         br.replaceWith("\n")
     for hr in html_parsed.select("hr"):
         hr.replaceWith(f"\n{'-' * (width or 40):^{(width or 1) - 1}}\n")
+    for tag in html_parsed.select("i.smilie"):
+        tag_class: Iterable[str] = tag.get("class", [])
+        if "embarrassed" in tag_class:
+            tag.replaceWith("😃")
+        elif "tongue" in tag_class:
+            tag.replaceWith("😛")
+        elif "cool" in tag_class:
+            tag.replaceWith("😎")
+        elif "wink" in tag_class:
+            tag.replaceWith("😉")
+        elif "oooh" in tag_class:
+            tag.replaceWith("😮")
+        elif "smile" in tag_class:
+            tag.replaceWith("🙂")
+        elif "evil" in tag_class:
+            tag.replaceWith("😈")
+        elif "huh" in tag_class:
+            tag.replaceWith("😵‍💫")
+        elif "whatever" in tag_class:
+            tag.replaceWith(":3")
+        elif "angel" in tag_class:
+            tag.replaceWith("😇")
+        elif "badhairday" in tag_class:
+            tag.replaceWith(":badhair:")
+        elif "lmao" in tag_class:
+            tag.replaceWith("😂")
+        elif "cd" in tag_class:
+            tag.replaceWith("💿")
+        elif "crying" in tag_class:
+            tag.replaceWith("😭")
+        elif "dunno" in tag_class:
+            tag.replaceWith("🤨")
+        elif "embarrassed" in tag_class:
+            tag.replaceWith("😳")
+        elif "note" in tag_class:
+            tag.replaceWith("🎁")
+        elif "coffee" in tag_class:
+            tag.replaceWith("🍺")
+        elif "love" in tag_class:
+            tag.replaceWith("❤️")
+        elif "nerd" in tag_class:
+            tag.replaceWith("🤓")
+        elif "note" in tag_class:
+            tag.replaceWith("🎵")
+        elif "derp" in tag_class:
+            tag.replaceWith("🥴")
+        elif "sarcastic" in tag_class:
+            tag.replaceWith("🤨")
+        elif "serious" in tag_class:
+            tag.replaceWith("😐")
+        elif "sad" in tag_class:
+            tag.replaceWith("☹️")
+        elif "sleepy" in tag_class:
+            tag.replaceWith("🥱")
+        elif "teeth" in tag_class:
+            tag.replaceWith("😡")
+        elif "veryhappy" in tag_class:
+            tag.replaceWith("😃")
+        elif "yelling" in tag_class:
+            tag.replaceWith("🤬")
+        elif "zipped" in tag_class:
+            tag.replaceWith("🤐")
     for [tag_name, tag_style] in (("i", italic), ("strong", bold), ("u", underline), ("s", strikethrough)):
         for tag in html_parsed.select(tag_name):
             for child in tag.select("*"):
