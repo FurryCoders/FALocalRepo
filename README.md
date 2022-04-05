@@ -258,7 +258,8 @@ All download operations pertaining submissions (`users`, `update` and `submissio
 enable download retries for submission files and thumbnails up to 5 times. The default behaviour is to retry one time.
 
 All download operations support the `--save-comments` option to enable downloading and saving comments of submissions
-and journals.
+and journals. Comments can be updated on a per-entry basis using the `download submission` and `download journal`
+commands with both the `--replace` and `--save-comments` options enabled.
 
 When downloading, submission and journal titles will be displayed in the terminal. Characters in the titles outside the
 ASCII range will be replaced with □ to avoid formatting errors.
