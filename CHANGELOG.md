@@ -19,7 +19,9 @@
 ### Dependencies
 
 * falocalrepo-database dependency set to [\~5.2.0](https://pypi.org/project/falocalrepo-database/5.2.0)
+    * Add comments table
 * falocalrepo-server dependency set to [\~3.1.0](https://pypi.org/project/falocalrepo-server/3.1.0)
+    * View comments for submissions and journals
 
 ## 4.1.13
 
