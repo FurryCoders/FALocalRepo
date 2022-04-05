@@ -114,11 +114,13 @@ def download_catch(func: Callable[..., T], *args, **kwargs) -> tuple[T | None, i
 def save_comments(db: Database, parent_table: str, parent_id: int, comments: list[Comment], *, replace: bool = False):
     for comment in filter(lambda c: not c.hidden, flatten_comments(comments)):
         db.comments.save_comment(
-            {**format_entry(dict(comment), db.comments.columns),
+            {CommentsColumns.ID.name: comment.id,
              CommentsColumns.PARENT_TABLE.name: parent_table,
              CommentsColumns.PARENT_ID.name: parent_id,
              CommentsColumns.REPLY_TO.name: comment.reply_to.id if comment.reply_to else None,
-             CommentsColumns.AUTHOR.name: comment.author.name}, replace=replace)
+             CommentsColumns.AUTHOR.name: comment.author.name,
+             CommentsColumns.DATE.name: comment.date,
+             CommentsColumns.TEXT.name: comment.text}, replace=replace)
 
 
 class Bar:
