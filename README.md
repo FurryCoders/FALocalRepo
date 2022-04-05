@@ -257,6 +257,9 @@ database or not.
 All download operations pertaining submissions (`users`, `update` and `submissions`) support the `--retry` option to
 enable download retries for submission files and thumbnails up to 5 times. The default behaviour is to retry one time.
 
+All download operations support the `--save-comments` option to enable downloading and saving comments of submissions
+and journals.
+
 When downloading, submission and journal titles will be displayed in the terminal. Characters in the titles outside the
 ASCII range will be replaced with □ to avoid formatting errors.
 
@@ -271,7 +274,7 @@ Check whether the cookies stored in the database belong to a login Fur Affinity 
 #### users
 
 ```
-users [--retry] [--dry-run] [--verbose-report] [--report-file REPORT_FILE] -u <USER>... -f <FOLDER>...
+users [--retry] [--save-comments] [--dry-run] [--verbose-report] [--report-file REPORT_FILE] -u <USER>... -f <FOLDER>...
 ```
 
 Download specific user folders, where `FOLDER` is one of gallery, scraps, favorites, journals, userpage, watchlist-by,
@@ -295,7 +298,7 @@ program. The `--report-file` options allows saving a detailed download report in
 #### update
 
 ```
-update [--retry] [--dry-run] [--deactivated] [--stop N] [--verbose-report] [--report-file REPORT_FILE] [--like] [-u <USER>...] [-f <FOLDER>...]
+update [--retry] [--save-comments] [--dry-run] [--deactivated] [--stop N] [--verbose-report] [--report-file REPORT_FILE] [--like] [-u <USER>...] [-f <FOLDER>...]
 ```
 
 Download new entries using the users and folders already in the database. `--user` and `--folder` options can be used to
@@ -335,7 +338,7 @@ name, not by watch date
 #### submissions
 
 ```
-submissions [--retry] [--replace] [--verbose-report] [--report-file REPORT_FILE] <SUBMISSION_ID>...
+submissions [--retry] [--save-comments] [--replace] [--verbose-report] [--report-file REPORT_FILE] <SUBMISSION_ID>...
 ```
 
 Download single submissions, where `SUBMISSION_ID` is the ID of the submission. If the `--replace` option is used,
@@ -351,7 +354,7 @@ program. The `--report-file` options allows saving a detailed download report in
 #### journals
 
 ```
-journals [--replace] [--verbose-report] [--report-file REPORT_FILE] <JOURNAL_ID>...
+journals [--save-comments] [--replace] [--verbose-report] [--report-file REPORT_FILE] <JOURNAL_ID>...
 ```
 
 Download single journals, where `JOURNAL_ID` is the ID of the journal. If the `--replace` option is used, database
