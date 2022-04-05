@@ -57,10 +57,12 @@ project's [GitHub wiki](https://github.com/FurryCoders/falocalrepo/wiki).
     9. [Help](#help)
     10. [Paw](#paw)
 5. [Database](#database-1)
-    1. [Settings](#settings)
-    2. [Users](#users)
-    3. [Submissions](#submissions)
-    4. [Journals](#journals)
+    1. [Users](#users)
+    2. [Submissions](#submissions)
+    3. [Journals](#journals)
+    4. [Comments](#comments)
+    5. [Settings](#settings)
+    6. [History](#history)
 6. [Submission Files](#submission-files)
 7. [Upgrading Database](#upgrading-database)
 8. [Contributing](#contributing)
@@ -703,6 +705,18 @@ The journals' table contains the metadata of the journals downloaded by the prog
 * `CONTENT` content in html format
 * `MENTIONS` a bar-separated list of users that are mentioned in the journal content as links
 * `USERUPDATE` whether the journal was added as a user update or single entry
+
+### Comments
+
+The comments' table contains the metadata of the journals and submissions stored in the database.
+
+* `ID` the id of the comment
+* `PARENT_TABLE` `SUBMISSIONS` if the comment relates to a submission, `JOURNAL` if the comment relates to a journal
+* `PARENT_ID` the id of the parent object (submission or journal)
+* `REPLY_TO` the id of the parent comment, if the comment is a reply
+* `AUTHOR` the username of the author in full format
+* `DATE` post date in ISO format _YYYY-MM-DDTHH:MM:SS_
+* `TEXT` the text of the comment in HTML format
 
 ### Settings
 
