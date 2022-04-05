@@ -65,7 +65,8 @@ output_option = option("--simple-output", is_flag=True, default=False, help="Sim
 dry_run_option = option("--dry-run", is_flag=True, default=False, help="Fetch entries without modifying database.")
 verbose_report_option = option("--verbose-report", is_flag=True, default=False, help="Output full report with IDs.")
 report_file_option = option("--report-file", default=None, type=File("w"), help="Write download report to a file.")
-retry_option = option("--retry", metavar="INTEGER", default=1, type=IntRange(1, 5), show_default=True, help="Retry downloads.")
+retry_option = option("--retry", metavar="INTEGER", default=1, type=IntRange(1, 5), show_default=True,
+                      help="Retry downloads.")
 comments_option = option("--save-comments", is_flag=True, default=False, help="Save entries' comments.")
 
 
