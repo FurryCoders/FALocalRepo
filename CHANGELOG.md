@@ -9,7 +9,7 @@
     * Comments can be updated on a per-entry basis using the `download submission` and `download journal` commands with
       both the `--replace` and `--save-comments` options enabled
     * Comments can be viewed with the `database view` command and in the web app with the `server` command
-    * Search, edit, remove, etc. all work with comments
+    * Search, view, edit, remove, etc. all work with comments
         * Submissions and journals search cannot query the comments table
 
 ### Fixes
