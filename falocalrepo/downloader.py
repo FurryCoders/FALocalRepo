@@ -335,8 +335,8 @@ class Downloader:
         journal: Journal = result
         self.db.journals.save_journal({
             **format_entry(dict(journal), self.db.journals.columns),
-            "author": journal.author.name,
-            JournalsColumns.USERUPDATE.name: int(user_update)
+            JournalsColumns.AUTHOR.name: journal.author.name,
+            JournalsColumns.USERUPDATE.name: user_update
         }, replace=replace)
         if self.save_comments:
             save_comments(self.db, journals_table, journal.id, journal.comments, replace=replace)
@@ -372,9 +372,9 @@ class Downloader:
             self.api.handle_delay()
             thumb = self.download_bytes(submission.thumbnail_url or thumbnail)
         self.db.submissions.save_submission({**format_entry(dict(submission), self.db.submissions.columns),
-                                             "author": submission.author.name,
-                                             SubmissionsColumns.FAVORITE.value.name: {*favorites} if favorites else {},
-                                             SubmissionsColumns.USERUPDATE.value.name: user_update},
+                                             SubmissionsColumns.AUTHOR.name: submission.author.name,
+                                             SubmissionsColumns.FAVORITE.name: {*favorites} if favorites else {},
+                                             SubmissionsColumns.USERUPDATE.name: user_update},
                                             file, thumb, replace=replace)
         if self.save_comments:
             save_comments(self.db, submissions_table, submission.id, submission.comments, replace=replace)
