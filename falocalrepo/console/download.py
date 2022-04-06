@@ -126,6 +126,7 @@ def download_login(ctx: Context, database: Callable[..., Database]):
         callback=lambda _c, _p, v: sort_set(v), help="Folder to download.")
 @retry_option
 @comments_option
+@option("--replace", is_flag=True, default=False, show_default=True, help="Replace entries already in database.")
 @dry_run_option
 @verbose_report_option
 @report_file_option
@@ -137,7 +138,7 @@ def download_login(ctx: Context, database: Callable[..., Database]):
                             [Folder.watchlist_by.value + f":{yellow}FOLDER{reset}"] +
                             [Folder.watchlist_to.value + f":{yellow}FOLDER{reset}"]))
 def download_users(ctx: Context, database: Callable[..., Database], users: tuple[str], folders: tuple[str],
-                   retry: int | None, save_comments: bool, dry_run: bool, verbose_report: bool,
+                   retry: int | None, save_comments: bool, replace: bool, dry_run: bool, verbose_report: bool,
                    report_file: TextIO | None):
     """
     Download specific user folders, where {yellow}FOLDER{reset} is one of {0}. Multiple {yellow}--user{reset} and
@@ -156,7 +157,7 @@ def download_users(ctx: Context, database: Callable[..., Database], users: tuple
     db: Database = database()
     api: FAAPI = open_api(db, ctx)
     downloader: Downloader = Downloader(db, api, color=ctx.color, comments=save_comments, retry=retry or 0,
-                                        dry_run=dry_run)
+                                        replace=replace, dry_run=dry_run)
     if not dry_run:
         add_history(db, ctx, users=users, folders=folders)
     watchlist_by: list[str] = [f.split(":")[1] for f in folders if f.startswith(Folder.watchlist_by.value)]
