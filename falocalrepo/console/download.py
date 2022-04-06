@@ -283,11 +283,11 @@ def download_submissions(ctx: Context, database: Callable[..., Database], submis
     db: Database = database()
     api: FAAPI = open_api(db, ctx)
     downloader: Downloader = Downloader(db, api, color=ctx.color, comments=save_comments, retry=retry or 0,
-                                        dry_run=dry_run)
+                                        replace=replace, dry_run=dry_run)
     if not dry_run:
         add_history(db, ctx, submission_id=submission_id, replace=replace)
     try:
-        downloader.download_submissions(list(submission_id), replace)
+        downloader.download_submissions(list(submission_id))
     except Unauthorized as err:
         secho(f"\nError: Unauthorized{(': ' + ' '.join(err.args)) if err.args else ''}", fg="red", color=ctx.color)
     except RequestException as err:
@@ -328,11 +328,12 @@ def download_journals(ctx: Context, database: Callable[..., Database], journal_i
     """
     db: Database = database()
     api: FAAPI = open_api(db, ctx)
-    downloader: Downloader = Downloader(db, api, color=ctx.color, comments=save_comments, dry_run=dry_run)
+    downloader: Downloader = Downloader(db, api, color=ctx.color, comments=save_comments, replace=replace,
+                                        dry_run=dry_run)
     if not dry_run:
         add_history(db, ctx, journal_id=journal_id, replace=replace)
     try:
-        downloader.download_journals(list(journal_id), replace)
+        downloader.download_journals(list(journal_id))
     except Unauthorized as err:
         secho(f"\nError: Unauthorized{(': ' + ' '.join(err.args)) if err.args else ''}", fg="red", color=ctx.color)
     except RequestException as err:

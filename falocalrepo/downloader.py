@@ -166,12 +166,13 @@ class Bar:
 # noinspection DuplicatedCode
 class Downloader:
     def __init__(self, db: Database, api: FAAPI, *, color: bool = True, retry: int = 0, comments: bool = False,
-                 dry_run: bool = False):
+                 replace: bool = False, dry_run: bool = False):
         self.db: Database = db
         self.output: OutputType = OutputType.rich if terminal_width() > 0 else OutputType.simple
         self.color: bool = color
         self.retry: int = retry
         self.save_comments: bool = comments
+        self.replace: bool = replace
         self.dry_run: bool = dry_run
         self.api: FAAPI = api
         self.bar_width: int = 10
@@ -390,7 +391,7 @@ class Downloader:
                              page_start: P, entry_id_getter: Callable[[T], int | str], entry_formats: tuple[str, str],
                              contains: Callable[[T], dict | None],
                              modify_checks: list[tuple[Callable[[T, dict], bool], str]],
-                             save: tuple[Callable[[T], int | None], str], stop: int = -1,
+                             save: tuple[Callable[[T, dict | None], int | None], str], stop: int = -1,
                              clear_last_found: bool = False, clear_found: bool = False,
                              ) -> tuple[int, tuple[list[int | str], list[int | str], list[int | str]]]:
         entries_added: list[int | str] = []
@@ -440,7 +441,8 @@ class Downloader:
                      nl=self.output == OutputType.simple, color=self.color)
                 self.bar()
                 self.bar_message("SEARCHING")
-                if curr_entry := contains(entry):
+                db_entry: dict | None = contains(entry)
+                if db_entry and not self.replace:
                     self.bar_message("IN DB", green, always=True)
                     if self.dry_run:
                         stop -= 1
@@ -450,7 +452,7 @@ class Downloader:
                     else:
                         modified: bool = False
                         for check, message in modify_checks:
-                            if modified := check(entry, curr_entry):
+                            if modified := check(entry, db_entry):
                                 self.db.commit()
                                 self.bar_message(message or "UPDATED", green, always=True)
                                 entries_modified.append(entry_id_getter(entry))
@@ -463,7 +465,7 @@ class Downloader:
                 elif self.dry_run:
                     self.bar_message("SKIPPED", green)
                 else:
-                    err = save[0](entry) or 0
+                    err = save[0](entry, db_entry) or 0
                     if not self.err_to_bar(err) and save[1]:
                         self.bar_message(save[1], green, always=True)
                     entries_added.append(entry_id_getter(entry))
@@ -475,14 +477,15 @@ class Downloader:
         return 0, (entries_added, entries_modified, entries_errors)
 
     def download_user_journals(self, user: str, stop: int = -1, clear_last_found: bool = False) -> int:
-        def save(journal: JournalPartial) -> int:
+        def save(journal: JournalPartial, _db_entry: dict | None) -> int:
             if self.save_comments:
-                return self.download_journal(journal.id, True)
+                return self.download_journal(journal.id, True, self.replace)
             else:
                 self.db.journals.save_journal(
                     {**format_entry(dict(journal), self.db.journals.columns),
                      JournalsColumns.AUTHOR.name: journal.author.name,
-                     JournalsColumns.USERUPDATE.value.name: True})
+                     JournalsColumns.USERUPDATE.name: True},
+                    replace=self.replace)
             return 0
 
         err, [entries_added, entries_modified, entries_errors] = self.download_user_folder(
@@ -513,16 +516,22 @@ class Downloader:
                                                      self.db.submissions.set_folder(submission.id, folder.value)),
                               "UPDATED")]
 
+        def save(sub_partial: SubmissionPartial, db_entry: dict | None,) -> int:
+            return self.download_submission(
+                sub_partial.id,
+                (db_entry or {}).get(SubmissionsColumns.USERUPDATE.name, False) or folder != Folder.favorites,
+                [*(db_entry or {}).get(SubmissionsColumns.FAVORITE.name, []),
+                 *([user] if folder == Folder.favorites else [])],
+                sub_partial.thumbnail_url,
+                self.replace)
+
         err, [_entries_added, entries_modified, _entries_errors] = self.download_user_folder(
             user=user, folder=folder, downloader_entries=downloader, page_start=page_start,
             entry_id_getter=lambda s: s.id,
             entry_formats=("{0.id:010}", "{0.title}"),
             contains=lambda s: self.db.submissions[s.id],
             modify_checks=modify_checks,
-            save=(lambda sub_partial: self.download_submission(
-                sub_partial.id, folder != Folder.favorites,
-                [user] if folder == Folder.favorites else None,
-                sub_partial.thumbnail_url), ""),
+            save=(save, ""),
             stop=stop, clear_last_found=clear_last_found
         )
         self.modified_submissions.extend(entries_modified)
@@ -544,6 +553,7 @@ class Downloader:
                 return True
             return False
 
+        self.replace = False
         err, [entries_added, entries_modified, _entries_errors] = self.download_user_folder(
             user=user, folder=watchlist, downloader_entries=downloader, page_start=1,
             entry_id_getter=lambda u: u.name_url,
@@ -715,17 +725,19 @@ class Downloader:
         if not users_folders:
             return echo("No users to update")
 
+        self.replace = False
         self._download_users(users_folders, stop)
 
     # noinspection DuplicatedCode
-    def download_submissions(self, submission_ids: list[int], replace: bool = False):
+    def download_submissions(self, submission_ids: list[int]):
         header_width: int = (len(str(len(submission_ids))) * 2) + 2
         for i, submission_id in enumerate(submission_ids, 1):
             echo(f"{i}/{len(submission_ids)}".ljust(header_width) + f"{blue}{submission_id:010}{reset} ",
                  nl=self.output == OutputType.simple, color=self.color)
             self.bar()
             self.bar_message("SEARCHING")
-            if (entry := (self.db.submissions[submission_id] or {})) and not replace:
+            entry: dict = (self.db.submissions[submission_id] or {})
+            if entry and not self.replace:
                 self.bar_message("IN DB", green)
                 self.bar_close()
                 continue
@@ -736,17 +748,18 @@ class Downloader:
             self.download_submission(submission_id,
                                      entry.get(SubmissionsColumns.USERUPDATE.value.name, False),
                                      entry.get(SubmissionsColumns.FAVORITE.value.name, {}),
-                                     "", replace)
+                                     "", self.replace)
 
     # noinspection DuplicatedCode
-    def download_journals(self, journal_ids: list[int], replace: bool = False):
+    def download_journals(self, journal_ids: list[int]):
         header_width: int = (len(str(len(journal_ids))) * 2) + 2
         for i, journal_id in enumerate(journal_ids, 1):
             echo(f"{i}/{len(journal_ids)}".ljust(header_width) + f"{blue}{journal_id:010}{reset} ",
                  nl=self.output == OutputType.simple, color=self.color)
             self.bar()
             self.bar_message("SEARCHING")
-            if (entry := (self.db.journals[journal_id] or {})) and not replace:
+            entry: dict = (self.db.journals[journal_id] or {})
+            if entry and not self.replace:
                 self.bar_message("IN DB", green)
                 self.bar_close()
                 continue
@@ -758,13 +771,13 @@ class Downloader:
             if self.err_to_bar(err):
                 self.journal_errors += [journal.id]
                 continue
-            if self.save_comments:
-                save_comments(self.db, journals_table, journal.id, journal.comments, replace=replace)
             self.db.journals.save_journal({
                 **format_entry(dict(journal), self.db.journals.columns),
                 JournalsColumns.AUTHOR.name: journal.author.name,
                 (u := JournalsColumns.USERUPDATE.name): entry.get(u, False)
-            }, replace=replace)
+            }, replace=self.replace)
+            if self.save_comments:
+                save_comments(self.db, journals_table, journal.id, journal.comments, replace=self.replace)
             self.added_journals += [journal.id]
             self.db.commit()
             self.bar_message("ADDED", green, always=True)
