@@ -304,7 +304,7 @@ def download_submissions(ctx: Context, database: Callable[..., Database], submis
 @download_app.command("journals", short_help="Download single journals.", no_args_is_help=True)
 @argument("journal_id", nargs=-1, required=True, type=IntRange(1),
           callback=lambda _c, _p, v: sorted(set(v), key=v.index))
-@option("--replace", is_flag=True, default=False, show_default=True, help="Replace submissions already in database.")
+@option("--replace", is_flag=True, default=False, show_default=True, help="Replace journals already in database.")
 @comments_option
 @dry_run_option
 @verbose_report_option
