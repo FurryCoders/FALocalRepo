@@ -15,11 +15,14 @@
 ### Fixes
 
 * Fix journals stopping after the first page due to a change in Fur Affinity's journals page that broke the FAAPI parser
+* Fix database merge/copy not working because of `COMMENTS` table
 
 ### Dependencies
 
 * faapi dependency set to [\~3.6.1](https://pypi.org/project/faapi/3.6.1)
     * Fix `FAAPI.journals` not detecting the next page correctly, caused by a change in Fur Affinity's journals page
+* falocalrepo-database dependency set to [\~5.2.1](https://pypi.org/project/falocalrepo-database/5.2.1)
+    * Fix missing support for merge/copy of `COMMENTS` table
 
 ## 4.2.0
 
