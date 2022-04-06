@@ -1,5 +1,22 @@
 # Changelog
 
+## 4.2.1
+
+### New Features
+
+* New `--replace` option for `download users`
+    * Update metadata for entire user galleries
+    * Fetch the latest comments with the `--save-comments` option
+
+### Fixes
+
+* Fix journals stopping after the first page due to a change in Fur Affinity's journals page that broke the FAAPI parser
+
+### Dependencies
+
+* faapi dependency set to [\~3.6.1](https://pypi.org/project/faapi/3.6.1)
+    * Fix `FAAPI.journals` not detecting the next page correctly, caused by a change in Fur Affinity's journals page
+
 ## 4.2.0
 
 ### New Features
