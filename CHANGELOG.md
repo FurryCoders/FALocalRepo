@@ -8,6 +8,10 @@
     * Update metadata for entire user galleries
     * Fetch the latest comments with the `--save-comments` option
 
+### Changes
+
+* Add comments to `database info`
+
 ### Fixes
 
 * Fix journals stopping after the first page due to a change in Fur Affinity's journals page that broke the FAAPI parser
