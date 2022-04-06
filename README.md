@@ -275,13 +275,15 @@ Check whether the cookies stored in the database belong to a login Fur Affinity 
 #### users
 
 ```
-users [--retry] [--save-comments] [--dry-run] [--verbose-report] [--report-file REPORT_FILE] -u <USER>... -f <FOLDER>...
+users [--retry] [--save-comments] [--replace] [--dry-run] [--verbose-report] [--report-file REPORT_FILE] -u <USER>... -f <FOLDER>...
 ```
 
 Download specific user folders, where `FOLDER` is one of gallery, scraps, favorites, journals, userpage, watchlist-by,
 watchlist-to. Multiple `--user` and `--folder` arguments can be passed. `USER` can be set to `@me` to fetch own
 username. `watchlist-by:FOLDER` and `watchlist-to:FOLDER` arguments add the specified `FOLDER`(s) to the new user
 entries.
+
+If the `--replace` option is used, existing entries in the database will be updated (favorites are maintained).
 
 The `--verbose-report` options enables printing all the IDs and usernames of the entries fetched/added/modified by the
 program. The `--report-file` options allows saving a detailed download report in JSON format to `REPORT_FILE`.

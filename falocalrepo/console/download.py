@@ -151,6 +151,9 @@ def download_users(ctx: Context, database: Callable[..., Database], users: tuple
     The {yellow}--save-comments{reset} option allows saving comments for downloaded submissions and journals. Comments
     are otherwise ignored.
 
+    If the {yellow}--replace{reset} option is used, existing entries in the database will be updated (favorites are
+    maintained).
+
     The optional {yellow}--dry-run{reset} option disables downloading and saving and simply lists fetched entries.
     Users are not added/deactivated.
     """
