@@ -484,6 +484,8 @@ def database_info(ctx: Context, database: Callable[..., Database]):
     echo(f"{yellow}{len(db.submissions)}{reset}", color=ctx.color)
     echo(f"{blue}Journals{reset}   : ", nl=False, color=ctx.color)
     echo(f"{yellow}{len(db.journals)}{reset}", color=ctx.color)
+    echo(f"{blue}Comments{reset}   : ", nl=False, color=ctx.color)
+    echo(f"{yellow}{len(db.comments)}{reset}", color=ctx.color)
     echo(f"{blue}History{reset}    : ", nl=False, color=ctx.color)
     echo(f"{yellow}{len(db.history)}{reset}", color=ctx.color)
 
