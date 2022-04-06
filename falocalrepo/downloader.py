@@ -759,13 +759,12 @@ class Downloader:
                 self.journal_errors += [journal.id]
                 continue
             if self.save_comments:
-                self.download_journal(journal.id, entry.get(JournalsColumns.USERUPDATE.name, False), replace=replace)
-            else:
-                self.db.journals.save_journal({
-                    **format_entry(dict(journal), self.db.journals.columns),
-                    JournalsColumns.AUTHOR.name: journal.author.name,
-                    (u := JournalsColumns.USERUPDATE.name): entry.get(u, False)
-                }, replace=replace)
+                save_comments(self.db, journals_table, journal.id, journal.comments, replace=replace)
+            self.db.journals.save_journal({
+                **format_entry(dict(journal), self.db.journals.columns),
+                JournalsColumns.AUTHOR.name: journal.author.name,
+                (u := JournalsColumns.USERUPDATE.name): entry.get(u, False)
+            }, replace=replace)
             self.added_journals += [journal.id]
             self.db.commit()
             self.bar_message("ADDED", green, always=True)
