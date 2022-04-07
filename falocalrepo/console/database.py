@@ -371,7 +371,7 @@ def html_to_ansi(html: str, *, root: bool = False) -> str:
     for a in html_parsed.select("a"):
         for child in a.select("*"):
             child.replaceWith(html_to_ansi(str(child)))
-        a.replaceWith(f"[{a.text.strip()}]({a['href']})")
+        a.replaceWith(f"[{text}]({a['href']})" if (text := a.text.strip()) != a["href"] else a["href"])
     for span in html_parsed.select("span.bbcode[style*=color]"):
         for child in span.select("*"):
             child.replaceWith(html_to_ansi(str(child)))
