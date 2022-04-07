@@ -2,6 +2,15 @@
 
 ## 4.2.2
 
+### New Features
+
+* Comments to submissions and journals can now be viewed directly in the terminal with `database view` using
+  the `--view-comments` option
+
+### Changes
+
+* Improvements to link rendering with `database view`
+
 ### Fixes
 
 * Fix `database merge` and `database copy` not finding all entries when using `%` as query
