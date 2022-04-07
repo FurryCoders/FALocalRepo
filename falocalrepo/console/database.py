@@ -416,6 +416,15 @@ def view_entry(entry: dict[str, Any], html_fields: list[str], *, raw_html: bool 
     return "\n".join(outputs)
 
 
+def view_comments(db: Database, entry_table: str, entry_id: int, *, raw_html: bool = False) -> str:
+    outputs: list[str] = []
+    for comment in db.comments.get_comments(entry_table, entry_id):
+        del comment[CommentsColumns.PARENT_TABLE.name]
+        del comment[CommentsColumns.PARENT_ID.name]
+        outputs.append(view_entry(comment, [CommentsColumns.TEXT.name], raw_html=raw_html))
+    return "\n\n".join(outputs)
+
+
 @group("database", cls=CustomHelpColorsGroup, short_help="Operate on the database.", no_args_is_help=True)
 @color_option
 @help_option
@@ -674,12 +683,14 @@ def database_search(ctx: Context, database: Callable[..., Database], table: str,
 @argument("table", nargs=1, required=True, is_eager=True, type=TableChoice())
 @argument("id_", metavar="ID", nargs=1, required=True, type=str, callback=id_callback)
 @option("--raw-content", is_flag=True, default=False, help="Do not format HTMl fields.")
+@option("--view-comments", "view_comments_", is_flag=True, default=False,
+        help="Show comments for submissions and journals.")
 @database_exists_option
 @color_option
 @help_option
 @pass_context
 def database_view(ctx: Context, database: Callable[..., Database], table: str, id_: tuple[str | int, ...],
-                  raw_content: bool):
+                  raw_content: bool, view_comments_: bool):
     """
     View a single entry in the terminal. Submission descriptions, journal contents, and user profile pages are rendered
     and formatted.
@@ -697,8 +708,14 @@ def database_view(ctx: Context, database: Callable[..., Database], table: str, i
         secho(f"Entry {id_[0]!r} could not be found in {table.lower()}", fg="red", color=ctx.color)
     elif table == submissions_table:
         echo(view_entry(entry, [SubmissionsColumns.DESCRIPTION.name], raw_html=raw_content), color=ctx.color)
+        if view_comments_:
+            echo(f"\n\n{blue}COMMENTS{reset}:")
+            echo(view_comments(db, submissions_table, id_[0], raw_html=raw_content))
     elif table == journals_table:
         echo(view_entry(entry, [JournalsColumns.CONTENT.name], raw_html=raw_content), color=ctx.color)
+        if view_comments_:
+            echo(f"\n\n{blue}COMMENTS{reset}:")
+            echo(view_comments(db, journals_table, id_[0], raw_html=raw_content))
     elif table == users_table:
         echo(view_entry(entry, [UsersColumns.USERPAGE.name], raw_html=raw_content), color=ctx.color)
     elif table == comments_table:
