@@ -1,5 +1,11 @@
 # Changelog
 
+## 4.2.2
+
+### Fixes
+
+* Fix `database merge` and `database copy` not finding all entries when using `%` as query
+
 ## 4.2.1
 
 ### New Features
