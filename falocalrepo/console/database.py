@@ -403,10 +403,11 @@ def html_to_ansi(html: str, *, root: bool = False) -> str:
     return html_parsed.text
 
 
-def view_entry(entry: dict[str, Any], html_fields: list[str], *, raw_html: bool = False) -> str:
+def view_entry(entry: dict[str, Any], html_fields: list[str], exclude_fields: list[str], *,
+               raw_html: bool = False) -> str:
     outputs: list[str] = []
     padding: int = max(map(len, entry.keys()))
-    for field, value in ((k, v) for k, v in entry.items() if k not in html_fields):
+    for field, value in ((k, v) for k, v in entry.items() if k not in html_fields and k not in exclude_fields):
         output = f"{blue}{field:<{padding}}{reset}: " + \
                  (("\n" + (" " * (padding + 2))).join(value) if isinstance(value, (list, set)) else str(value).strip())
         outputs.append(output)
@@ -416,13 +417,14 @@ def view_entry(entry: dict[str, Any], html_fields: list[str], *, raw_html: bool 
     return "\n".join(outputs)
 
 
-def view_comments(db: Database, entry_table: str, entry_id: int, *, raw_html: bool = False) -> str:
+def view_comments(comments: list[dict], *, raw_html: bool = False) -> str:
     outputs: list[str] = []
-    for comment in db.comments.get_comments(entry_table, entry_id):
+    for comment in comments:
         del comment[CommentsColumns.PARENT_TABLE.name]
         del comment[CommentsColumns.PARENT_ID.name]
-        outputs.append(view_entry(comment, [CommentsColumns.TEXT.name], raw_html=raw_html))
-    return "\n\n".join(outputs)
+        outputs.extend([view_entry(comment, [CommentsColumns.TEXT.name], ["REPLIES"], raw_html=raw_html),
+                        view_comments(comment.get("REPLIES", []))])
+    return "\n\n".join(filter(bool, outputs))
 
 
 @group("database", cls=CustomHelpColorsGroup, short_help="Operate on the database.", no_args_is_help=True)
@@ -707,21 +709,21 @@ def database_view(ctx: Context, database: Callable[..., Database], table: str, i
     if not (entry := get_table(db, table)[id_[0]]):
         secho(f"Entry {id_[0]!r} could not be found in {table.lower()}", fg="red", color=ctx.color)
     elif table == submissions_table:
-        echo(view_entry(entry, [SubmissionsColumns.DESCRIPTION.name], raw_html=raw_content), color=ctx.color)
+        echo(view_entry(entry, [SubmissionsColumns.DESCRIPTION.name], [], raw_html=raw_content), color=ctx.color)
         if view_comments_:
             echo(f"\n\n{blue}COMMENTS{reset}:")
-            echo(view_comments(db, submissions_table, id_[0], raw_html=raw_content))
+            echo(view_comments(db.comments.get_comments_tree(submissions_table, id_[0]), raw_html=raw_content))
     elif table == journals_table:
-        echo(view_entry(entry, [JournalsColumns.CONTENT.name], raw_html=raw_content), color=ctx.color)
+        echo(view_entry(entry, [JournalsColumns.CONTENT.name], [], raw_html=raw_content), color=ctx.color)
         if view_comments_:
             echo(f"\n\n{blue}COMMENTS{reset}:")
-            echo(view_comments(db, journals_table, id_[0], raw_html=raw_content))
+            echo(view_comments(db.comments.get_comments_tree(journals_table, id_[0]), raw_html=raw_content))
     elif table == users_table:
-        echo(view_entry(entry, [UsersColumns.USERPAGE.name], raw_html=raw_content), color=ctx.color)
+        echo(view_entry(entry, [UsersColumns.USERPAGE.name], [], raw_html=raw_content), color=ctx.color)
     elif table == comments_table:
-        echo(view_entry(entry, [CommentsColumns.TEXT.name], raw_html=raw_content), color=ctx.color)
+        echo(view_entry(entry, [CommentsColumns.TEXT.name], [], raw_html=raw_content), color=ctx.color)
     else:
-        echo(view_entry(entry, [], raw_html=raw_content), color=ctx.color)
+        echo(view_entry(entry, [], [], raw_html=raw_content), color=ctx.color)
 
 
 @database_app.command("remove", no_args_is_help=True, short_help="Remove entries.")
