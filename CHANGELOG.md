@@ -15,6 +15,11 @@
 ### Fixes
 
 * Fix journals stopping after the first page due to a change in Fur Affinity's journals page that broke the FAAPI parser
+    * To fix the affected users and download their journals, use the following
+      command `download update -f journals --stop 9999`
+        * This will update all users that have `journals` in their folders, and not stop until 9999 journals are found
+          in the database for each user (or no more journals are available on FA)
+        * To be sure that all journals are downloaded, a higher stop number can be used
 * Fix database merge/copy not working because of `COMMENTS` table
 
 ### Dependencies
