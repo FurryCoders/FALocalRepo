@@ -6,6 +6,10 @@
 
 * Fix `database merge` and `database copy` not finding all entries when using `%` as query
 
+### Dependencies
+
+* falocalrepo-server dependency set to [\~3.1.1](https://pypi.org/project/falocalrepo-server/3.1.1)
+
 ## 4.2.1
 
 ### New Features
