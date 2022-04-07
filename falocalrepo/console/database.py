@@ -280,8 +280,8 @@ def print_json(results: Cursor, file: TextIO) -> int:
     return results_total
 
 
-def search(table: Table, headers: list[str | Column], query: str, sort: tuple[tuple[str, str]], limit: int | None,
-           offset: int | None, sql: bool) -> tuple[Cursor, tuple[str, list[str]]]:
+def search(table: Table, headers: list[str | Column], query: str, sort: tuple[tuple[str, str]], limit: int = 0,
+           offset: int = 0, sql: bool = False) -> tuple[Cursor, tuple[str, list[str]]]:
     cols_table: list[str] = [c.name for c in table.columns]
     query_elems, values = ([query], []) if sql or not query.strip() else query_to_sql(
         query, "any", [*map(str.lower, {*cols_table, "any"} - {"ID", "AUTHOR", "USERNAME"})],
@@ -918,8 +918,9 @@ def database_copy(ctx: Context, database: Callable[..., Database], database_dest
     cursors: list[Cursor]
     if query:
         cursors = [
-            search(tb := get_table(db, t), [c.name for c in tb.columns], q, ((tb.key.name, ""),), None, None, False)[0]
-            for t, q in query]
+            search(tb := get_table(db2, t), tb.columns, q if q.strip() != "%" else "", ((tb.key.name, ""),))[0]
+            for t, q in query
+        ]
     else:
         cursors = [get_table(db, t.value).select() for t in TableChoice.completion_items]
 
@@ -962,8 +963,9 @@ def database_merge(ctx: Context, database: Callable[..., Database], database_ori
     cursors: list[Cursor]
     if query:
         cursors = [
-            search(tb := get_table(db2, t), [c.name for c in tb.columns], q, ((tb.key.name, ""),), None, None, False)[0]
-            for t, q in query]
+            search(tb := get_table(db2, t), tb.columns, q if q.strip() != "%" else "", ((tb.key.name, ""),))[0]
+            for t, q in query
+        ]
     else:
         cursors = [get_table(db2, t.value).select() for t in TableChoice.completion_items]
 
