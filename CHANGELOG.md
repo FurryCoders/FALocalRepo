@@ -1,5 +1,19 @@
 # Changelog
 
+## 4.2.3
+
+### Fixes
+
+* Fix comments for submissions overwriting comments for journals (and vice versa) if the comment ID was the same
+    * Caused by Fur Affinity not using a unique ID key for comments, using instead the submission/journal ID as part of
+      unique index
+
+### Dependencies
+
+* falocalrepo-database dependency set to [\~5.2.2](https://pypi.org/project/falocalrepo-database/5.2.2)
+    * Update `COMMENTS` table to accept comments with same ID but different parent
+* falocalrepo-server dependency set to [\~3.1.2](https://pypi.org/project/falocalrepo-server/3.1.2)
+
 ## 4.2.2
 
 ### New Features
