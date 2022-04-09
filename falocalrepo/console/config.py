@@ -94,6 +94,7 @@ def config_cookies(ctx: Context, database: Callable[..., Database], cookies: lis
              color=ctx.color)
 
 
+# noinspection PyProtectedMember
 @config_app.command("files-folder", short_help="Read or modify the submission files folder.")
 @argument("new_folder", nargs=1, default=None, required=False,
           type=PathClick(file_okay=False, writable=True, path_type=Path))
@@ -119,7 +120,7 @@ def config_files_folder(ctx: Context, database: Callable[..., Database], new_fol
     db: Database = database()
 
     if new_folder is None:
-        folder: str = db.settings[db.settings.files_folder_setting]
+        folder: str = db.settings[db.settings._files_folder_setting]
         echo(f"{bold}Files Folder{reset}\n"
              f"{blue}Value{reset}: {yellow}{folder}{reset}\n"
              f"{blue}Path{reset} : {yellow}{db.settings.files_folder.resolve()}{reset}", color=ctx.color)
@@ -136,7 +137,7 @@ def config_files_folder(ctx: Context, database: Callable[..., Database], new_fol
     else:
         new_folder = new_folder.resolve()
 
-    if str(new_folder) == db.settings[db.settings.files_folder_setting]:
+    if str(new_folder) == db.settings[db.settings._files_folder_setting]:
         echo(f"Files folder is already {yellow}{new_folder}{reset}", color=ctx.color)
         return
 
