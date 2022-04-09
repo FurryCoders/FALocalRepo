@@ -1,5 +1,11 @@
 # Changelog
 
+## 4.2.4
+
+### Fixes
+
+* Fix error when setting a new files folder using `config files-folder`
+
 ## 4.2.3
 
 ### Fixes
