@@ -392,7 +392,7 @@ class Downloader:
                              contains: Callable[[T], dict | None],
                              modify_checks: list[tuple[Callable[[T, dict], bool], str]],
                              save: tuple[Callable[[T, dict | None], int | None], str], stop: int = -1,
-                             clear_last_found: bool = False, clear_found: bool = False,
+                             clear_last_found: bool = False, clear_found: bool = False, replace_overwrite: bool = None
                              ) -> tuple[int, tuple[list[int | str], list[int | str], list[int | str]]]:
         entries_added: list[int | str] = []
         entries_modified: list[int | str] = []
@@ -442,7 +442,7 @@ class Downloader:
                 self.bar()
                 self.bar_message("SEARCHING")
                 db_entry: dict | None = contains(entry)
-                if db_entry and not self.replace:
+                if db_entry and not (replace_overwrite if replace_overwrite is not None else self.replace):
                     self.bar_message("IN DB", green, always=True)
                     if self.dry_run:
                         stop -= 1
