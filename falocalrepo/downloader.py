@@ -560,7 +560,7 @@ class Downloader:
             entry_formats=("{0.status}{0.name}", ""),
             contains=lambda u: self.db.users[u.name_url],
             modify_checks=[(lambda w, e: check_folders(self.db, w, e), "UPDATED")],
-            save=(lambda watch: self.db.users.save_user(
+            save=(lambda watch, _db_entry: self.db.users.save_user(
                 {UsersColumns.USERNAME.value.name: watch.name_url,
                  UsersColumns.FOLDERS.value.name: set(folders),
                  UsersColumns.ACTIVE.value.name: True,
