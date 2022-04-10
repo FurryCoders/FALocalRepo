@@ -1,5 +1,13 @@
 # Changelog
 
+## 4.2.5
+
+### Fixes
+
+* Fix error occurring on watchlist download/update when adding a new watch for a user that wasn't part of the database
+  already
+* Fix `--replace` value not respect in `download users` for folders declared after a watchlist folder option
+
 ## 4.2.4
 
 ### Fixes
