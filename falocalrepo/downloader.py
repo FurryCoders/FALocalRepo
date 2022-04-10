@@ -553,7 +553,6 @@ class Downloader:
                 return True
             return False
 
-        self.replace = False
         err, [entries_added, entries_modified, _entries_errors] = self.download_user_folder(
             user=user, folder=watchlist, downloader_entries=downloader, page_start=1,
             entry_id_getter=lambda u: u.name_url,
@@ -565,7 +564,7 @@ class Downloader:
                  UsersColumns.FOLDERS.value.name: set(folders),
                  UsersColumns.ACTIVE.value.name: True,
                  UsersColumns.USERPAGE.value.name: ""}), "ADDED"),
-            stop=-1, clear_found=clear_found
+            stop=-1, clear_found=clear_found, replace_overwrite=False
         )
         self.added_users.extend(entries_added)
         self.modified_users.extend(entries_modified)
