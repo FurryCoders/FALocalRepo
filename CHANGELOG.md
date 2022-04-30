@@ -5,6 +5,11 @@
 ### Changes
 
 * `config files-folder` command does not move files by default, only when using the `--move` option
+    * Remove `--no-move` option
+
+### Fixes
+
+* Fix `FileNotFoundError` when moving files to a new location with `config files-folder`
 
 ### Dependencies
 
