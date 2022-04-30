@@ -102,7 +102,7 @@ def config_cookies(ctx: Context, database: Callable[..., Database], cookies: lis
           type=PathClick(file_okay=False, writable=True, path_type=Path))
 @option("--relative/--absolute", "relative", is_flag=True, default=True, show_default=True,
         help="Use relative or absolute path.")
-@option("--move/--no-move", default=False, help="Move files from old folder.", show_default=True)
+@option("--move", is_flag=True, default=False, help="Move files from old folder.")
 @database_exists_option
 @color_option
 @help_option
