@@ -1,5 +1,17 @@
 # Changelog
 
+## 4.2.6
+
+### Changes
+
+* `config files-folder` command does not move files by default, only when using the `--move` option
+
+### Dependencies
+
+* faapi dependency set to [\~3.7.0](https://pypi.org/project/faapi/3.7.0)
+* falocalrepo-server dependency set to [\~3.1.4](https://pypi.org/project/falocalrepo-server/3.1.4)
+* click dependency set to [\~8.1.3](https://pypi.org/project/click/8.1.3)
+
 ## 4.2.5
 
 ### Fixes
