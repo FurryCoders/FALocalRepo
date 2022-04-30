@@ -117,6 +117,8 @@ def config_files_folder(ctx: Context, database: Callable[..., Database], new_fol
     By default, {yellow}NEW_FOLDER{reset} is considered to be relative to the database folder. Absolute values are
     allowed as long as a relative path to the database parent folder can exist. To force the use of an absolute value,
     activate the {yellow}--absolute{reset} option.
+
+    If {yellow}--move{reset} option is used, all files will be moved to the new location.
     """
 
     db: Database = database()

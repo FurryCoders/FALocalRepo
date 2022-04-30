@@ -226,7 +226,7 @@ Read or modify stored cookies. If no `--cookie` option is given, the current val
 #### files-folder
 
 ```
-files-folder [--move | --no-move] [--relative | --absolute] [<NEW_FOLDER>]
+files-folder [--move] [--relative | --absolute] [<NEW_FOLDER>]
 ```
 
 Read or modify the folder used to store submission files, where `NEW_FOLDER` is the path to the new folder. If
@@ -236,8 +236,10 @@ By default, `NEW_FOLDER` is considered to be relative to the database folder. Ab
 relative path to the database parent folder can exist. To force the use of an absolute value, activate the
 `--absolute` option.
 
+If `--move` option is used, all files will be moved to the new location.
+
 > ```
-> falocalrepo config files-folder --no-move FA.files2
+> falocalrepo config files-folder --move FA.files2
 > ```
 
 ### Download
