@@ -1,8 +1,9 @@
 from math import ceil
 from math import log10
+from os import makedirs
 from pathlib import Path
-from typing import Callable
 from shutil import copy
+from typing import Callable
 
 from click import BadParameter
 from click import Context
@@ -32,6 +33,7 @@ def move_submission_file(file: Path, old_folder: Path, new_folder: Path):
     file_no_root: Path = Path(str(file).removeprefix(str(old_folder)))
     new_file: Path = new_folder / str(file_no_root).removeprefix(file_no_root.anchor)
     try:
+        makedirs(new_file.parent, exist_ok=True)
         new_file.unlink(missing_ok=True)
         copy(file, new_file)
         file.unlink(missing_ok=True)
