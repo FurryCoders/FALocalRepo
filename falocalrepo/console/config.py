@@ -155,7 +155,7 @@ def config_files_folder(ctx: Context, database: Callable[..., Database], new_fol
             folder: Path = db.settings.files_folder
             new_folder_abs: Path = new_folder.resolve()
             total: int = len(db.submissions)
-            total_log: int = ceil(log10(total))
+            total_log: int = ceil(log10(total or 1))
             submissions: Cursor = db.submissions.select(columns=[SubmissionsColumns.ID.value])
             for i, [id_] in enumerate(submissions.tuples, 1):
                 echo(f"\r{i:0{total_log}}/{total} ", nl=False)
