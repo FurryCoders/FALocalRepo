@@ -2,7 +2,7 @@ from math import ceil
 from math import log10
 from os import makedirs
 from pathlib import Path
-from shutil import copy
+from shutil import copy2
 from typing import Callable
 
 from click import BadParameter
@@ -35,7 +35,7 @@ def move_submission_file(file: Path, old_folder: Path, new_folder: Path):
     try:
         makedirs(new_file.parent, exist_ok=True)
         new_file.unlink(missing_ok=True)
-        copy(file, new_file)
+        copy2(file, new_file)
         file.unlink(missing_ok=True)
     except BaseException:
         new_file.unlink(missing_ok=True)
