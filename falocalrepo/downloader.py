@@ -1,6 +1,5 @@
 from enum import Enum
 from enum import EnumMeta
-from enum import auto
 from json import dump
 from operator import itemgetter
 from shutil import get_terminal_size
@@ -44,9 +43,9 @@ T = TypeVar("T")
 P = TypeVar("P")
 
 
-class OutputType(str, Enum):
-    rich = auto()
-    simple = auto()
+class OutputType(int, Enum):
+    rich = 1
+    simple = 2
 
 
 class Folder(str, Enum):
@@ -516,7 +515,7 @@ class Downloader:
                                                      self.db.submissions.set_folder(submission.id, folder.value)),
                               "UPDATED")]
 
-        def save(sub_partial: SubmissionPartial, db_entry: dict | None,) -> int:
+        def save(sub_partial: SubmissionPartial, db_entry: dict | None, ) -> int:
             return self.download_submission(
                 sub_partial.id,
                 (db_entry or {}).get(SubmissionsColumns.USERUPDATE.name, False) or folder != Folder.favorites,
