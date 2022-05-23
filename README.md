@@ -495,8 +495,7 @@ and ignore existing entries, use the `--replace` option.
 > ```
 
 > ```
-> falocalrepo database add SUBMISSIONS submission.json --submission-file file1.png --submission-file file2.gif
->   --submission-thumbnail thumbnail.jpg
+> falocalrepo database add SUBMISSIONS submission.json --submission-file file1.png --submission-file file2.gif --submission-thumbnail thumbnail.jpg
 > ```
 
 #### remove
