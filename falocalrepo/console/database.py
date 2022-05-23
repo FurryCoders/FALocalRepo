@@ -1044,6 +1044,7 @@ database_app.list_commands = lambda *_: [
     database_search.name,
     database_view.name,
     database_add.name,
+    database_edit.name,
     database_remove.name,
     database_merge.name,
     database_copy.name,
