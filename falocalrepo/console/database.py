@@ -853,18 +853,20 @@ def database_add(ctx: Context, database: Callable[..., Database], table: str, fi
 @database_app.command("edit", short_help="Edit entries manually.")
 @argument("table", nargs=1, required=True, is_eager=True, type=TableChoice())
 @argument("_id", metavar="ID", nargs=1, required=True, is_eager=True)
-@argument("file", nargs=1, required=False, type=File("r"))
-@option("--submission-file", required=False, multiple=True, type=File("rb"))
-@option("--submission-thumbnail", required=False, default=None, type=File("rb"))
+@argument("file", nargs=1, required=False, default=None, type=File("r"))
+@option("--submission-file", multiple=True, default=None, type=File("rb"), help="Specify a submission file.")
+@option("--add-submission-files", is_flag=True, default=False, show_default=True,
+        help="Add submission files instead of replacing.")
+@option("--submission-thumbnail", default=None, type=File("rb"), help="Specify a submission thumbnail.")
 @database_exists_option
 @color_option
 @help_option
 @pass_context
-def database_edit(ctx: Context, database: Callable[..., Database], table: str, _id: str | int, file: TextIO,
-                  submission_file: tuple[BytesIO], submission_thumbnail: BytesIO | None):
+def database_edit(ctx: Context, database: Callable[..., Database], table: str, _id: str | int, file: TextIO | None,
+                  submission_file: tuple[BytesIO], add_submission_files: bool, submission_thumbnail: BytesIO | None):
     """
     Edit entries and submission files manually using a JSON file. Submission files/thumbnails can be added using the
-    respective options; existing files are overwritten.
+    respective options; existing files are overwritten unless the {yellow}--add-submission-files{reset} is used.
 
     The JSON fields must match the column names of the selected table. For a list of columns for each table, please see
     the README at {blue}https://pypi.org/project/{prog_name}/{version}{reset}.
@@ -874,26 +876,34 @@ def database_edit(ctx: Context, database: Callable[..., Database], table: str, _
     """
     db: Database = database()
     db_table: Table = get_table(db, table)
-    data: dict = load(file)
-    file.close()
+    data: dict = {}
+    if file:
+        data = load(file)
+        file.close()
 
     if not data and table.lower() != db.submissions.name.lower():
         raise BadParameter(f"FILE cannot be empty for {table} table.", ctx, get_param(ctx, "file"))
     elif not isinstance(data, dict):
         raise BadParameter(f"Data must be in JSON object format.", ctx, get_param(ctx, "file"))
+    elif submission_file and table.lower() != db.submissions.name.lower():
+        raise BadParameter(f"--submission-file option is not supported for {table}.", ctx,
+                           get_param(ctx, "submission_file"))
+    elif submission_thumbnail and table.lower() != db.submissions.name.lower():
+        raise BadParameter(f"--submission-thumbnail option is not supported for {table}.", ctx,
+                           get_param(ctx, "submission_file"))
 
-    add_history(db, ctx, table=table, id=_id, file=file.name,
+    add_history(db, ctx, table=table, id=_id, file=file.name if file else None,
                 submission_file=[f.name for f in submission_file] if submission_file else None,
                 submission_thumbnail=submission_thumbnail.name if submission_thumbnail else None)
 
     if (entry := db_table[_id]) is None:
         raise BadParameter(f"No entry with ID {_id} in {table}.", ctx, get_param(ctx, "_id"))
 
-    data |= {(f := SubmissionsColumns.FILESAVED.value.name): entry[f]}
-
     if submission_file:
-        exts: list[str] = []
-        for n, f in enumerate(submission_file):
+        data |= {(f := SubmissionsColumns.FILESAVED.value.name): entry[f]}
+        exts: list[str] = entry[SubmissionsColumns.FILEEXT.value.name] if add_submission_files else []
+        for n, f in enumerate(submission_file,
+                              len(entry[SubmissionsColumns.FILEEXT.value.name]) if add_submission_files else 0):
             exts.append(db.submissions.save_submission_file(_id, f.read(), "submission", "", n))
         data |= {(f := SubmissionsColumns.FILESAVED.value.name): (data[f] & 0b001) + 0b110,
                  SubmissionsColumns.FILEEXT.value.name: exts}
@@ -902,7 +912,8 @@ def database_edit(ctx: Context, database: Callable[..., Database], table: str, _
         data |= {(f := SubmissionsColumns.FILESAVED.value.name): (data[f] & 0b100) + (data[f] & 0b010) + 1}
 
     if data:
-        db_table.update(Sb(db_table.key.name).__eq__(_id), data)
+        db_table.update(Sb(db_table.key.name).__eq__(_id), db_table.format_entry(data))
+        db.commit()
 
     if submission_file or submission_thumbnail or data:
         backup_database(db, ctx, "database")
