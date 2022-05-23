@@ -1,3 +1,5 @@
+from json import dumps
+from json import loads
 from math import ceil
 from math import log10
 from os import makedirs
@@ -6,8 +8,10 @@ from shutil import copy2
 from typing import Callable
 
 from click import BadParameter
+from click import Choice
 from click import Context
 from click import Path as PathClick
+from click import UsageError
 from click import argument
 from click import echo
 from click import group
@@ -20,6 +24,7 @@ from falocalrepo_database.tables import SubmissionsColumns
 from .colors import *
 from .util import CustomHelpColorsGroup
 from .util import add_history
+from .util import backup_database
 from .util import color_option
 from .util import database_exists_option
 from .util import docstring_format
@@ -65,6 +70,70 @@ def config_list(database: Callable[..., Database]):
     config_files_folder.callback(database=lambda: db, new_folder=None, relative=False, move=False)
     echo()
     config_cookies.callback(database=lambda: db, cookies=[])
+    echo()
+    config_backup.callback(database=lambda: db, date_format=None, trigger=None, folder=None, remove=False)
+
+
+@config_app.command("backup", short_help="Configure backup settings.")
+@argument("trigger", type=Choice(["download", "edit", "config"]), required=False, default=None)
+@option("--date-format", type=str, metavar="FMT", default="%Y %W", show_default=True,
+        help="Set a date format for the trigger.")
+@option("--folder", type=PathClick(file_okay=False, writable=True, path_type=Path), default=None,
+        help="Set backup folder")
+@option("--remove", is_flag=True, default=False, help="Remove a trigger.")
+@database_exists_option
+@color_option
+@help_option
+@pass_context
+@docstring_format()
+def config_backup(ctx: Context, database: Callable[..., Database], trigger: str | None, date_format: str,
+                  folder: Path | None, remove: bool):
+    """
+    Read or modify automatic backup settings. Backup will be performed automatically based on stored triggers and date
+    formats. The date format {yellow}FMT{reset} supports the standard C {italic}strftime{reset} codes.
+
+    To set the backup folder, use the {yellow}--folder{reset} option.
+
+    To remove a trigger from the settings, use the {yellow}--remove{reset} option.
+
+    \b
+    {cyan}Triggers{reset}
+    * download  backup after performing download operations
+    * edit      backup after editing the database
+    * config    backup after changing settings
+    """
+
+    if remove and trigger is None:
+        raise UsageError("--remove option requires a trigger.", ctx)
+
+    db: Database = database()
+    backup_settings: dict[str, str] = loads(bs) if (bs := db.settings["BACKUPSETTINGS"]) else {}
+
+    echo(f"{bold}Backup{reset}")
+
+    if folder:
+        db.settings.backup_folder = folder
+        db.commit()
+
+    if remove:
+        backup_settings = {t: f for t, f in backup_settings.items() if t != trigger}
+        db.settings["BACKUPSETTINGS"] = dumps(backup_settings, separators=(",", ":"))
+        db.commit()
+    elif trigger:
+        backup_settings |= {trigger: date_format}
+        db.settings["BACKUPSETTINGS"] = dumps(backup_settings, separators=(",", ":"))
+        db.commit()
+
+    if bf := db.settings.backup_folder:
+        echo(f"{blue}folder{reset}: {bf}")
+    else:
+        echo(f"{red}No folder set{reset}")
+    for trg, fmt in backup_settings.items():
+        echo(f"{blue}{trg}{reset}: {fmt}")
+
+    if folder or remove or trigger:
+        add_history(db, ctx, trigger=trigger, date_format=date_format, folder=folder, remove=remove)
+        backup_database(db, ctx, "config")
 
 
 @config_app.command("cookies")
@@ -94,6 +163,7 @@ def config_cookies(ctx: Context, database: Callable[..., Database], cookies: lis
         from .download import download_app, download_login
         echo(f"Check cookies validity with the {yellow}{download_app.name} {download_login.name}{reset} command.",
              color=ctx.color)
+        backup_database(db, ctx, "config")
 
 
 # noinspection PyProtectedMember
@@ -172,9 +242,12 @@ def config_files_folder(ctx: Context, database: Callable[..., Database], new_fol
     finally:
         db.commit()
 
+    backup_database(db, ctx, "config")
+
 
 config_app.list_commands = lambda *_: [
     config_list.name,
     config_cookies.name,
     config_files_folder.name,
+    config_backup.name,
 ]
