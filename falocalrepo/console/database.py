@@ -284,7 +284,7 @@ def search(table: Table, headers: list[str | Column], query: str, sort: tuple[tu
            offset: int = 0, sql: bool = False) -> tuple[Cursor, tuple[str, list[str]]]:
     cols_table: list[str] = [c.name for c in table.columns]
     query_elems, values = ([query], []) if sql or not query.strip() else query_to_sql(
-        query, "any", [*map(str.lower, {*cols_table, "any"} - {"ID", "AUTHOR", "USERNAME"})],
+        query, "any", [*map(str.lower, {*cols_table, "any"} - {"ID", "FILESAVED", "USERUPDATE", "ACTIVE"})],
         {"author": "replace(author, '_', '')",
          "any": f"({'||'.join(set(cols_table) - {'FAVORITE', 'FILESAVED', 'USERUPDATE', 'ACTIVE'})})"})
     query = " ".join(query_elems)
