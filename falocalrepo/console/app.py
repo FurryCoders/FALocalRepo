@@ -211,8 +211,11 @@ def app_init(ctx: Context, database: Callable[..., Database]):
 
     db: Database = database(check_init=False, check_version=False)
 
-    if db.settings not in db:
+    if not db.is_formatted:
         db.init()
+        # noinspection PyProtectedMember
+        db.settings.backup_folder = db.settings._default_backup_folder
+        db.commit()
         add_history(db, ctx, version=db.version)
         echo(f"Database initialised (version {yellow}{db.version}{reset})", color=ctx.color)
     else:
