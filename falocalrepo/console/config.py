@@ -79,7 +79,7 @@ def config_list(database: Callable[..., Database]):
 @option("--date-format", type=str, metavar="FMT", default="%Y %W", show_default=True,
         help="Set a date format for the trigger.")
 @option("--folder", type=PathClick(file_okay=False, writable=True, path_type=Path), default=None,
-        help="Set backup folder")
+        help="Set backup folder.")
 @option("--remove", is_flag=True, default=False, help="Remove a trigger.")
 @database_exists_option
 @color_option
