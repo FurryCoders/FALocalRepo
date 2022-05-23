@@ -482,7 +482,7 @@ add [--replace] [--submission-file FILENAME] [--submission-thumbnail FILENAME] {
 ```
 
 Add entries and submission files manually using a JSON file. Submission files/thumbnails can be added using the
-respective options.
+respective options; existing files are overwritten. Multiple submission files can be passed.
 
 The JSON file must contain fields for all columns of the table. For a list of columns for each table,
 see [Database](#database-1). By default, the program will throw an error when trying to add an entry that already
@@ -490,6 +490,11 @@ exists. To override this behaviour and ignore existing entries, use the `--repla
 
 > ```
 > falocalrepo database add USERS user.json
+> ```
+
+> ```
+> falocalrepo database add SUBMISSIONS submission.json --submission-file file1.png --submission-file file2.gif
+>   --submission-thumbnail thumbnail.jpg
 > ```
 
 #### remove
