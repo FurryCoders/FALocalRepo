@@ -900,6 +900,10 @@ def database_edit(ctx: Context, database: Callable[..., Database], table: str, _
         raise BadParameter(f"No entry with ID {_id} in {table}.", ctx, get_param(ctx, "_id"))
 
     if submission_file:
+        if not add_submission_files and entry[SubmissionsColumns.FILEEXT.value.name]:
+            fs, _ = db.submissions.get_submission_files(_id)
+            for f in fs:
+                f.unlink()
         data |= {(f := SubmissionsColumns.FILESAVED.value.name): entry[f]}
         exts: list[str] = entry[SubmissionsColumns.FILEEXT.value.name] if add_submission_files else []
         for n, f in enumerate(submission_file,
