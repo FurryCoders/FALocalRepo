@@ -498,6 +498,29 @@ and ignore existing entries, use the `--replace` option.
 > falocalrepo database add SUBMISSIONS submission.json --submission-file file1.png --submission-file file2.gif --submission-thumbnail thumbnail.jpg
 > ```
 
+#### edit
+
+```
+edit [--submission-file FILENAME] [--add-submission-files] [--submission-thumbnail FILENAME] {SUBMISSIONS|JOURNALS|USERS} <ID> [<FILE>]
+```
+
+Edit entries and submission files manually using a JSON file. Submission files/thumbnails can be added using the
+respective options; existing files are overwritten unless the `--add-submission-files` option is used. Multiple
+submission files can be passed.
+
+The JSON fields must match the column names of the selected table. For a list of columns for each table,
+see [Database](#database-1).
+
+If the `--submission-file` and/or `--submission-thumbnail` options are used, the `FILE` argument can be omitted.
+
+> ```
+> falocalrepo database edit JOURNALS 123456 journal.json
+> ```
+
+> ```
+> falocalrepo database edit SUBMISSIONS 12345678 --submission-file alt.png --add-submission-files
+> ```
+
 #### remove
 
 ```
