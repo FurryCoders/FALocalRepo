@@ -61,6 +61,7 @@ from .util import CompleteChoice
 from .util import CustomHelpColorsGroup
 from .util import EnvVars
 from .util import add_history
+from .util import backup_database
 from .util import clean_string
 from .util import color_option
 from .util import database_callback
@@ -549,6 +550,7 @@ def database_history(ctx: Context, database: Callable[..., Database], clear: boo
 
     if clear:
         echo(f"Removed {yellow}{removed}{reset} entries.")
+        backup_database(db, ctx, "database")
 
 
 @database_app.command("search", short_help="Search database entries.", no_args_is_help=True)
@@ -768,6 +770,9 @@ def database_remove(ctx: Context, database: Callable[..., Database], table: str,
             finally:
                 db.commit()
 
+    if ids:
+        backup_database(db, ctx, "database")
+
 
 @database_app.command("add", short_help="Add entries manually.")
 @argument("table", nargs=1, required=True, is_eager=True, type=TableChoice())
@@ -842,6 +847,8 @@ def database_add(ctx: Context, database: Callable[..., Database], table: str, fi
         finally:
             db.commit()
 
+    backup_database(db, ctx, "database")
+
 
 @database_app.command("edit", short_help="Edit entries manually.")
 @argument("table", nargs=1, required=True, is_eager=True, type=TableChoice())
@@ -893,12 +900,15 @@ def database_edit(ctx: Context, database: Callable[..., Database], table: str, _
     if data:
         db_table.update(Sb(db_table.key.name).__eq__(_id), data)
 
+    backup_database(db, ctx, "database")
+
 
 @database_app.command("clean", short_help="Clean database.")
 @database_exists_option
 @color_option
 @help_option
-def database_clean(database: Callable[..., Database]):
+@pass_context
+def database_clean(ctx: Context, database: Callable[..., Database]):
     """
     Clean database using the SQLite VACUUM function.
     """
@@ -908,6 +918,8 @@ def database_clean(database: Callable[..., Database]):
     db.execute("VACUUM")
     db.commit()
     echo("Done")
+
+    backup_database(db, ctx, "database")
 
 
 # noinspection DuplicatedCode
@@ -998,6 +1010,8 @@ def database_merge(ctx: Context, database: Callable[..., Database], database_ori
     add_history(db, ctx, query=query, origin=db2.path)
 
     echo("Done")
+
+    backup_database(db, ctx, "database")
 
 
 @database_app.command("upgrade", short_help="Upgrade database.")
