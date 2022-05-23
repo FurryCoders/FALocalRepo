@@ -1,3 +1,4 @@
+from datetime import datetime
 from functools import partial
 from json import dumps
 from json import loads
@@ -17,6 +18,7 @@ from click import Context
 from click import Option
 from click import Parameter
 from click import Path as PathClick
+from click import UsageError
 from click import echo
 from click import help_option as help_option_click
 from click import option
@@ -154,6 +156,23 @@ def open_database(path: Path, *, ctx: Context, param: Parameter, check_init: boo
                            ctx, param)
 
     return db
+
+
+def backup_database(db: Database, ctx: Context, trigger: str):
+    backup_settings: dict[str, str] = loads(bs) if (bs := db.settings["BACKUPSETTINGS"]) else {}
+    if trigger not in backup_settings:
+        return
+    backup_folder: Path | None = db.settings.backup_folder
+    if backup_folder is None:
+        from .config import config_app, config_backup
+        raise UsageError(f"Backup folder is not set.\n\nSet with '{config_app.name} {config_backup.name}'.", ctx)
+    m_time: datetime = datetime.fromtimestamp(db.path.stat().st_mtime)
+    dest: str = f"{db.path.name.removesuffix(db.path.suffix)} " + \
+                f"{m_time.strftime(backup_settings[trigger])}" + \
+                f"{db.path.suffix}"
+    echo(f"Backing up to {yellow}{backup_folder / dest}{reset} ... ", color=ctx.color, nl=False)
+    db.backup(folder=backup_folder, date_format=backup_settings[trigger])
+    echo("Done")
 
 
 def open_api(db: Database, ctx: Context = None, *, check_login: bool = True) -> FAAPI:
