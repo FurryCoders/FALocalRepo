@@ -806,6 +806,9 @@ For example, a submission `1457893` will be padded to `0001457893` and divided i
 submission file will then be saved as `00/01/45/78/93/submission.file` with the correct extension extracted from the
 file itself - FurAffinity links do not always contain the right extension.
 
+Extra submission files are saved in the same folder with 0-based index postfixed to the filename. The first file is
+named `submission.file`, and subsequent files are called `submission1.file`, `submission2.file`, etc.
+
 ## Upgrading Database
 
 When the program starts, it checks the version of the database against the one used by the program and if the latter is
