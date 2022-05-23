@@ -904,7 +904,8 @@ def database_edit(ctx: Context, database: Callable[..., Database], table: str, _
     if data:
         db_table.update(Sb(db_table.key.name).__eq__(_id), data)
 
-    backup_database(db, ctx, "database")
+    if submission_file or submission_thumbnail or data:
+        backup_database(db, ctx, "database")
 
 
 @database_app.command("clean", short_help="Clean database.")
