@@ -864,7 +864,7 @@ def database_edit(ctx: Context, database: Callable[..., Database], table: str, _
                   submission_file: tuple[BytesIO], submission_thumbnail: BytesIO | None):
     """
     Edit entries and submission files manually using a JSON file. Submission files/thumbnails can be added using the
-    respective options.
+    respective options; existing files are overwritten.
 
     The JSON fields must match the column names of the selected table. For a list of columns for each table, please see
     the README at {blue}https://pypi.org/project/{prog_name}/{version}{reset}.
