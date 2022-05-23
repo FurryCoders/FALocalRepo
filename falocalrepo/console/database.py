@@ -789,7 +789,7 @@ def database_add(ctx: Context, database: Callable[..., Database], table: str, fi
                  submission_file: tuple[BytesIO], submission_thumbnail: BytesIO | None, replace: bool):
     """
     Add entries and submission files manually using a JSON file. Submission files/thumbnails can be added using the
-    respective options; existing files are overwritten. Multiple submission files can be passed.
+    respective options; all existing files are removed. Multiple submission files can be passed.
 
     The JSON file must contain fields for all columns of the table. For a list of columns for each table, please see
     the README at {blue}https://pypi.org/project/{prog_name}/{version}{reset}.
@@ -798,50 +798,47 @@ def database_add(ctx: Context, database: Callable[..., Database], table: str, fi
     behaviour and ignore existing entries, use the {yellow}--replace{reset} option.
     """
     db: Database = database()
+    db_table: Table = get_table(db, table)
+
+    data: dict = load(file)
+    file.close()
+    data = {k.upper(): v for k, v in data.items()}
+
+    if any(c.name.upper() not in data for c in db_table.columns):
+        raise BadParameter(f"Missing fields {set(map(str.upper, db_table.columns)) - set(data.keys())}"
+                           f" for table {table}",
+                           ctx, get_param(ctx, "file"))
+    elif not replace and (id_ := data[idc := db_table.key.name.upper()]) in db_table:
+        raise BadParameter(f"Entry with {idc} {id_!r} already exists in {table} table, but '--replace' is not set.",
+                           ctx, get_param(ctx, "file"))
 
     add_history(db, ctx, table=table, file=file.name, submission_file=submission_file is not None,
                 submission_thumbnail=submission_thumbnail is not None, replace=replace)
 
-    data: dict = load(file)
-    file.close()
-
-    data = {k.upper(): v for k, v in data.items()}
-
     if table.lower() == submissions_table.lower():
-        if any(c.name.upper() not in data for c in db.submissions.columns):
-            raise BadParameter(f"Missing fields {set(map(str.upper, db.submissions.columns)) - set(data.keys())}"
-                               f" for table {table}",
-                               ctx, get_param(ctx, "file"))
-        elif not replace and (id_ := data[idc := db.submissions.key.name.upper()]) in db.submissions:
-            raise BadParameter(f"Entry with {idc} {id_!r} already exists in {table} table, but '--replace' is not set.",
-                               ctx, get_param(ctx, "file"))
-        sub_files_orig, sub_thumb_orig = db.submissions.get_submission_files(data["id"])
-        sub_files: list[bytes] = [None]
+        sub_files_orig, sub_thumb_orig = db.submissions.get_submission_files(data["ID"])
+        if sub_files_orig:
+            for f in sub_files_orig:
+                f.unlink()
+        if sub_thumb_orig:
+            sub_thumb_orig.unlink()
+
+        sub_files: list[bytes] = []
         sub_thumb: bytes | None = None
+
         if submission_file:
             for f in submission_file:
                 sub_files.append(f.read())
                 f.close()
-        elif sub_files_orig:
-            sub_files = [f.read_bytes() for f in sub_files_orig]
         if submission_thumbnail:
             sub_thumb: bytes = submission_thumbnail.read()
             submission_thumbnail.close()
-        elif sub_thumb_orig:
-            sub_thumb = sub_thumb_orig.read_bytes()
+
         try:
             db.submissions.save_submission(data, sub_files, sub_thumb, replace=replace)
         finally:
             db.commit()
     else:
-        db_table: Table = get_table(db, table)
-        if any(c.name.upper() not in data for c in db_table.columns):
-            raise BadParameter(f"Missing fields {set(map(str.upper, db_table.columns)) - set(data.keys())}"
-                               f" for table {table}",
-                               ctx, get_param(ctx, "file"))
-        elif not replace and (id_ := data[idc := db_table.key.name.upper()]) in db_table:
-            raise BadParameter(f"Entry with {idc} {id_!r} already exists in {table} table, but '--replace' is not set.",
-                               ctx, get_param(ctx, "file"))
         try:
             db_table.insert(db_table.format_entry(data), replace=replace)
         finally:
