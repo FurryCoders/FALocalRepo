@@ -90,7 +90,8 @@ def config_backup(ctx: Context, database: Callable[..., Database], trigger: str 
                   folder: Path | None, remove: bool):
     """
     Read or modify automatic backup settings. Backup will be performed automatically based on stored triggers and date
-    formats. The date format {yellow}FMT{reset} supports the standard C {italic}strftime{reset} codes.
+    formats. The date format {yellow}FMT{reset} supports the standard C {italic}strftime{reset} codes, and it defaults
+    to {cyan}%Y %W{reset} (year and week).
 
     To set the backup folder, use the {yellow}--folder{reset} option.
 
