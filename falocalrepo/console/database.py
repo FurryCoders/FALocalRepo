@@ -854,14 +854,14 @@ def database_add(ctx: Context, database: Callable[..., Database], table: str, fi
 @argument("table", nargs=1, required=True, is_eager=True, type=TableChoice())
 @argument("_id", metavar="ID", nargs=1, required=True, is_eager=True)
 @argument("file", nargs=1, required=False, type=File("r"))
-@option("--submission-file", required=False, default=None, type=File("rb"))
+@option("--submission-file", required=False, multiple=True, type=File("rb"))
 @option("--submission-thumbnail", required=False, default=None, type=File("rb"))
 @database_exists_option
 @color_option
 @help_option
 @pass_context
 def database_edit(ctx: Context, database: Callable[..., Database], table: str, _id: str | int, file: TextIO,
-                  submission_file: BytesIO | None, submission_thumbnail: BytesIO | None):
+                  submission_file: tuple[BytesIO], submission_thumbnail: BytesIO | None):
     """
     Edit entries and submission files manually using a JSON file. Submission files/thumbnails can be added using the
     respective options.
@@ -883,19 +883,23 @@ def database_edit(ctx: Context, database: Callable[..., Database], table: str, _
         raise BadParameter(f"Data must be in JSON object format.", ctx, get_param(ctx, "file"))
 
     add_history(db, ctx, table=table, id=_id, file=file.name,
-                submission_file=submission_file.name if submission_file else None,
+                submission_file=[f.name for f in submission_file] if submission_file else None,
                 submission_thumbnail=submission_thumbnail.name if submission_thumbnail else None)
 
     if (entry := db_table[_id]) is None:
         raise BadParameter(f"No entry with ID {_id} in {table}.", ctx, get_param(ctx, "_id"))
 
+    data |= {(f := SubmissionsColumns.FILESAVED.value.name): entry[f]}
+
     if submission_file:
-        ext: str = db.submissions.save_submission_file(_id, submission_file.read(), "submission", "")
-        data = data | {(f := SubmissionsColumns.FILESAVED.value.name): (entry[f] & 0b01) + 0b10,
-                       SubmissionsColumns.FILEEXT.value.name: ext}
+        exts: list[str] = []
+        for n, f in enumerate(submission_file):
+            exts.append(db.submissions.save_submission_file(_id, f.read(), "submission", "", n))
+        data |= {(f := SubmissionsColumns.FILESAVED.value.name): (data[f] & 0b001) + 0b110,
+                 SubmissionsColumns.FILEEXT.value.name: exts}
     if submission_thumbnail:
-        db.submissions.save_submission_file(_id, submission_file.read(), "submission", "")
-        data = data | {(f := SubmissionsColumns.FILESAVED.value.name): (entry[f] & 0b10) + 0b01}
+        db.submissions.save_submission_thumbnail(_id, submission_thumbnail.read())
+        data |= {(f := SubmissionsColumns.FILESAVED.value.name): (data[f] & 0b100) + (data[f] & 0b010) + 1}
 
     if data:
         db_table.update(Sb(db_table.key.name).__eq__(_id), data)
