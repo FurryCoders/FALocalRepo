@@ -892,6 +892,8 @@ def database_edit(ctx: Context, database: Callable[..., Database], table: str, _
     elif submission_thumbnail and table.lower() != db.submissions.name.lower():
         raise BadParameter(f"--submission-thumbnail option is not supported for {table}.", ctx,
                            get_param(ctx, "submission_file"))
+    elif _id not in db_table:
+        raise BadParameter(f"Cannot find {_id!r} in {table}.", ctx, get_param(ctx, "_id"))
 
     add_history(db, ctx, table=table, id=_id, file=file.name if file else None,
                 submission_file=[f.name for f in submission_file] if submission_file else None,
