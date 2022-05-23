@@ -789,7 +789,7 @@ def database_add(ctx: Context, database: Callable[..., Database], table: str, fi
                  submission_file: tuple[BytesIO], submission_thumbnail: BytesIO | None, replace: bool):
     """
     Add entries and submission files manually using a JSON file. Submission files/thumbnails can be added using the
-    respective options; existing files are overwritten.
+    respective options; existing files are overwritten. Multiple submission files can be passed.
 
     The JSON file must contain fields for all columns of the table. For a list of columns for each table, please see
     the README at {blue}https://pypi.org/project/{prog_name}/{version}{reset}.
@@ -867,6 +867,7 @@ def database_edit(ctx: Context, database: Callable[..., Database], table: str, _
     """
     Edit entries and submission files manually using a JSON file. Submission files/thumbnails can be added using the
     respective options; existing files are overwritten unless the {yellow}--add-submission-files{reset} is used.
+    Multiple submission files can be passed.
 
     The JSON fields must match the column names of the selected table. For a list of columns for each table, please see
     the README at {blue}https://pypi.org/project/{prog_name}/{version}{reset}.
