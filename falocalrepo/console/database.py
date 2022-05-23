@@ -156,7 +156,7 @@ def serializer(obj: object) -> object:
 def date_callback(ctx: Context, param: Parameter, value: str) -> tuple[str | None, ...] | None:
     if not value:
         return None
-    elif m := match(r"(?:(\d{4})(?:-(\d\d?)(?:-(\d\d?))?)?)?[ ]?(?:(\d\d?)(?::(\d\d?)(?::(\d\d?))?)?)?", value):
+    elif m := match(r"(?:(\d{4})(?:-(\d\d?)(?:-(\d\d?))?)?)? ?(?:(\d\d?)(?::(\d\d?)(?::(\d\d?))?)?)?", value):
         return m.groups()
     raise BadParameter("Not a valid date format.", ctx, param)
 
@@ -678,7 +678,7 @@ def database_search(ctx: Context, database: Callable[..., Database], table: str,
         results_total = sum(1 for _ in results.cursor)
 
     if show_sql:
-        echo(f"{blue}Query{reset}: {yellow}{sub(r'(?<=[()])[ ](?=[()])', '', query)}{reset}", color=ctx.color)
+        echo(f"{blue}Query{reset}: {yellow}{sub(r'(?<=[()]) (?=[()])', '', query)}{reset}", color=ctx.color)
         echo(f"{blue}Items{reset}: {yellow}{dumps(values)}{reset}", color=ctx.color)
     if total:
         echo(f"{blue}Total{reset}: {yellow}{results_total}{reset}", color=ctx.color)
