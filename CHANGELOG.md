@@ -17,6 +17,7 @@
   results
 * The `@author` query field matches using `LIKE` instead of finding only exact matches (i.e. `ab` matches `cabd`, `abcd`
   , etc.)
+* Show paths to submission files with `database view`
 
 ### Fixes
 
