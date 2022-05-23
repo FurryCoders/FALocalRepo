@@ -1,5 +1,38 @@
 # Changelog
 
+## 4.3.0
+
+### New Features
+
+* Multiple submission files 🗂
+    * Add extra submission files for submissions in the database for alts, extra versions, attachments, etc.
+    * All submission files can be viewed with the web app
+* Automatic backups 💾
+    * Automatic backup options can be set using the new `config backup` command
+    * Backup can be triggered for downloads, added/modified/removed entries, or modified options
+
+### Changes
+
+* The `@any` query field does not include `FAVORITES`, `FILESAVED`, `USERUPDATE`, nor `ACTIVE` to avoid redundant
+  results
+* The `@author` query field matches using `LIKE` instead of finding only exact matches (i.e. `ab` matches `cabd`, `abcd`
+  , etc.)
+
+### Fixes
+
+* Fix `database add` and `database edit` using submission thumbnail as submission file
+* Fix missing `database edit` from `database` commands list
+* Fix incorrect formatting for `database edit` help
+
+### Dependencies
+
+* falocalrepo-database dependency set to [\~5.3.0](https://pypi.org/project/falocalrepo-database/5.3.0)
+    * Support multiple submission files
+* falocalrepo-server dependency set to [\~3.2.0](https://pypi.org/project/falocalrepo-server/3.2.0)
+    * Support multiple submission files
+    * Support video files for submissions
+    * Update style to Bootstrap 5.2.0 (beta 1)
+
 ## 4.2.6
 
 ### Changes
