@@ -620,19 +620,22 @@ def database_search(ctx: Context, database: Callable[..., Database], table: str,
 
     All other strings are considered search terms.
 
-    The search uses the {c}@any{r} field by default, allowing to do general searches without specifying a field.
+    The search uses the {c}@any{r} field by default for submissions and journals, allowing to do general searches
+    without specifying a field. The {c}@any{r} field does not include the {c}FAVORITE{r}, {c}FILESAVED{r},
+    {c}USERUPDATE{r}, and {c}ACTIVE{r} fields and must be searched manually using the respective query fields. When
+    searching users, {c}@username{r} is the default field.
 
     Search terms that are not separated by a logic operator are considered {i}AND{r} terms (i.e. {c}a b c{r} <->
     {c}a & b & c{r}).
 
-    Except for the {c}ID{r}, {c}AUTHOR{r}, and {c}USERNAME{r} fields, all search terms are matched by fields containing
-    the term: i.e. {c}@description cat{r} will match any item whose description field contains "cat". To match items
-    that contain only "cat" (or start with, end with, etc.), the {c}%{r}, {c}_{r}, {c}^{r}, and {c}${r} operators need
-    to be used (e.g. {c}@description ^cat{r}).
+    Except for the {c}ID{r}, {c}FILESAVED{r}, {c}USERUPDATE{r}, and {c}ACTIVE{r} fields, all search terms are searched
+    through the whole content of the various fields: i.e. {c}@description cat{r} will match any item whose description
+    field contains "cat". To match items that contain only "cat" (or start with, end with, etc.), the {c}%{r}, {c}_{r},
+    {c}^{r}, and {c}${r} operators need to be used (e.g. {c}@description ^cat{r}).
 
-    Search terms for {c}ID{r}, {c}AUTHOR{r}, and {c}USERNAME{r} are matched exactly as they are: i.e. {c}@author tom{r}
-    will match only items whose author field is exactly equal to "tom", to match items that contain "tom" the {c}%{r},
-    {c}_{r}, {c}^{r}, and {c}${r} operators need to be used (e.g. {c}@author %tom%{r}).
+    Search terms for {c}ID{r}, {c}FILESAVED{r}, {c}USERUPDATE{r}, and {c}ACTIVE{r} are matched exactly as they are: i.e.
+    {c}@id 1{r} will match only items whose ID field is exactly equal to "1", to match items that contain "1" the
+    {c}%{r}, {c}_{r}, {c}^{r}, or {c}${r} operators need to be used (e.g. {c}@id %1%{r}).
 
     For examples, please read the full README at {blue}https://pypi.org/project/{prog_name}/{version}{reset}.
     """

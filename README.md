@@ -598,17 +598,20 @@ Affinity website. Its basic elements are:
 
 All other strings are considered search terms.
 
-The search uses the `@any` field by default, allowing to do general searches without specifying a field.
+The search uses the `@any` field by default for submissions and journals, allowing to do general searches without
+specifying a field. The `@any` field does not include the `FAVORITE`, `FILESAVED`, `USERUPDATE`, and `ACTIVE` fields and
+must be searched manually using the respective query fields. When searching users, `@username` is the default field.
 
-Search terms that are not separated by a logic operator are considered AND terms (i.e. `a b c` &harr; `a & b & c`).
+Search terms that are not separated by a logic operator are considered _AND_ terms (i.e. `a b c` -> `a & b & c`).
 
-Except for the `ID`, `AUTHOR`, and `USERNAME` fields, all search terms are matched by fields containing the term: i.e.
-`@description cat` will match any item whose description field contains "cat". To match items that contain only "cat" (
-or start with, end with, etc.), the `%`, `_`, `^`, and `$` operators need to be used (e.g. `@description ^cat`).
+Except for the `ID`, `FILESAVED`, `USERUPDATE`, and `ACTIVE` fields, all search terms are searched through the
+whole content of the various fields: i.e. `@description cat` will match any item whose description field contains "cat".
+To match items that contain only "cat" (or start with, end with, etc.), the `%`, `_`, `^`, and `$` operators need to be
+used (e.g. `@description ^cat`).
 
-Search terms for `ID`, `AUTHOR`, and `USERNAME` are matched exactly as they are: i.e. `@author tom` will match only
-items whose author field is exactly equal to "tom", to match items that contain "tom" the `%`, `_`, `^`, and `$`
-operators need to be used (e.g. `@author %tom%`).
+Search terms for `ID`, `FILESAVED`, `USERUPDATE`, and `ACTIVE` are matched exactly as they are: i.e. `@id 1` will match
+only items whose ID field is exactly equal to "1", to match items that contain "1" the `%`, `_`, `^`, or `$` operators
+need to be used (e.g. `@id %1%`).
 
 ### Server
 
