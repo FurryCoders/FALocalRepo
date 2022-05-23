@@ -862,6 +862,7 @@ def database_add(ctx: Context, database: Callable[..., Database], table: str, fi
 @color_option
 @help_option
 @pass_context
+@docstring_format(prog_name=__prog_name__, version=__version__)
 def database_edit(ctx: Context, database: Callable[..., Database], table: str, _id: str | int, file: TextIO | None,
                   submission_file: tuple[BytesIO], add_submission_files: bool, submission_thumbnail: BytesIO | None):
     """
