@@ -863,7 +863,7 @@ def database_edit(ctx: Context, database: Callable[..., Database], table: str, _
                   submission_file: tuple[BytesIO], add_submission_files: bool, submission_thumbnail: BytesIO | None):
     """
     Edit entries and submission files manually using a JSON file. Submission files/thumbnails can be added using the
-    respective options; existing files are overwritten unless the {yellow}--add-submission-files{reset} is used.
+    respective options; existing files are overwritten unless the {yellow}--add-submission-files{reset} option is used.
     Multiple submission files can be passed.
 
     The JSON fields must match the column names of the selected table. For a list of columns for each table, please see
