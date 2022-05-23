@@ -372,10 +372,11 @@ class Downloader:
             self.api.handle_delay()
             thumb = self.download_bytes(submission.thumbnail_url or thumbnail)
         self.db.submissions.save_submission({**format_entry(dict(submission), self.db.submissions.columns),
+                                             SubmissionsColumns.FILEURL.name: [submission.file_url],
                                              SubmissionsColumns.AUTHOR.name: submission.author.name,
                                              SubmissionsColumns.FAVORITE.name: {*favorites} if favorites else {},
                                              SubmissionsColumns.USERUPDATE.name: user_update},
-                                            file, thumb, replace=replace)
+                                            [file], thumb, replace=replace)
         if self.save_comments:
             save_comments(self.db, submissions_table, submission.id, submission.comments, replace=replace)
         self.db.commit()
