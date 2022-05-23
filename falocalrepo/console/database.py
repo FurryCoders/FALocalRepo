@@ -751,13 +751,13 @@ def database_remove(ctx: Context, database: Callable[..., Database], table: str,
         if id_ not in db_table:
             secho(f"Entry {id_!r} could not be found in {db_table.name.lower()}", fg="red", color=ctx.color)
         elif db_table.name.lower() == submissions_table.lower():
-            f, t = db.submissions.get_submission_files(id_)
+            fs, t = db.submissions.get_submission_files(id_)
             try:
                 del db_table[id_]
                 echo(f"Deleted entry {yellow}{id_}{reset} from {table}.", color=ctx.color)
             finally:
                 db.commit()
-                if f:
+                for f in fs or []:
                     f.unlink(missing_ok=True)
                 if t:
                     t.unlink(missing_ok=True)
@@ -772,7 +772,7 @@ def database_remove(ctx: Context, database: Callable[..., Database], table: str,
 @database_app.command("add", short_help="Add entries manually.")
 @argument("table", nargs=1, required=True, is_eager=True, type=TableChoice())
 @argument("file", nargs=1, required=True, type=File("r"))
-@option("--submission-file", required=False, default=None, type=File("rb"))
+@option("--submission-file", required=False, multiple=True, type=File("rb"))
 @option("--submission-thumbnail", required=False, default=None, type=File("rb"))
 @option("--replace", is_flag=True, default=False, show_default=True)
 @database_exists_option
@@ -781,10 +781,10 @@ def database_remove(ctx: Context, database: Callable[..., Database], table: str,
 @pass_context
 @docstring_format(prog_name=__prog_name__, version=__version__)
 def database_add(ctx: Context, database: Callable[..., Database], table: str, file: TextIO,
-                 submission_file: BytesIO | None, submission_thumbnail: BytesIO | None, replace: bool):
+                 submission_file: tuple[BytesIO], submission_thumbnail: BytesIO | None, replace: bool):
     """
     Add entries and submission files manually using a JSON file. Submission files/thumbnails can be added using the
-    respective options.
+    respective options; existing files are overwritten.
 
     The JSON file must contain fields for all columns of the table. For a list of columns for each table, please see
     the README at {blue}https://pypi.org/project/{prog_name}/{version}{reset}.
@@ -810,21 +810,22 @@ def database_add(ctx: Context, database: Callable[..., Database], table: str, fi
         elif not replace and (id_ := data[idc := db.submissions.key.name.upper()]) in db.submissions:
             raise BadParameter(f"Entry with {idc} {id_!r} already exists in {table} table, but '--replace' is not set.",
                                ctx, get_param(ctx, "file"))
-        sub_file_orig, sub_thumb_orig = db.submissions.get_submission_files(data["id"])
-        sub_file: bytes | None = None
+        sub_files_orig, sub_thumb_orig = db.submissions.get_submission_files(data["id"])
+        sub_files: list[bytes] = [None]
         sub_thumb: bytes | None = None
         if submission_file:
-            sub_file: bytes = submission_file.read()
-            submission_file.close()
-        elif sub_file_orig:
-            sub_file = sub_file_orig.read_bytes()
+            for f in submission_file:
+                sub_files.append(f.read())
+                f.close()
+        elif sub_files_orig:
+            sub_files = [f.read_bytes() for f in sub_files_orig]
         if submission_thumbnail:
-            sub_file: bytes = submission_thumbnail.read()
+            sub_thumb: bytes = submission_thumbnail.read()
             submission_thumbnail.close()
         elif sub_thumb_orig:
-            sub_file = sub_thumb_orig.read_bytes()
+            sub_thumb = sub_thumb_orig.read_bytes()
         try:
-            db.submissions.save_submission(data, sub_file, sub_thumb, replace=replace)
+            db.submissions.save_submission(data, sub_files, sub_thumb, replace=replace)
         finally:
             db.commit()
     else:

@@ -159,9 +159,10 @@ def config_files_folder(ctx: Context, database: Callable[..., Database], new_fol
             submissions: Cursor = db.submissions.select(columns=[SubmissionsColumns.ID.value])
             for i, [id_] in enumerate(submissions.tuples, 1):
                 echo(f"\r{i:0{total_log}}/{total} ", nl=False)
-                f, t = db.submissions.get_submission_files(id_)
-                if f and f.is_file():
-                    move_submission_file(f.resolve(), folder, new_folder_abs)
+                fs, t = db.submissions.get_submission_files(id_)
+                for f in fs or []:
+                    if f.is_file():
+                        move_submission_file(f.resolve(), folder, new_folder_abs)
                 if t and t.is_file():
                     move_submission_file(t.resolve(), folder, new_folder_abs)
                 if i == 10:
