@@ -242,6 +242,25 @@ If `--move` option is used, all files will be moved to the new location.
 > falocalrepo config files-folder --move FA.files2
 > ```
 
+#### backup
+
+```
+backup [--remove] [--folder DIRECTORY] [--date-format FMT] [{download|database|config}]
+```
+
+Read or modify automatic backup settings. Backup will be performed automatically based on stored triggers and date
+formats. The date format `FMT` supports the standard C _strftime_ codes, and it defaults to `%Y %W` (year and week).
+
+To set the backup folder, use the `--folder` option.
+
+To remove a trigger from the settings, use the `--remove` option.
+
+The trigger can be one of:
+
+* `download`  backup after performing download operations
+* `database`  backup after editing the database
+* `config`    backup after changing settings
+
 ### Download
 
 ```
