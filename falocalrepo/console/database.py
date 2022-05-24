@@ -1,7 +1,6 @@
 from csv import writer as csv_writer
 from datetime import datetime
 from enum import Enum
-from io import BytesIO
 from json import dumps
 from json import load
 from os.path import getsize
@@ -508,7 +507,7 @@ def database_info(ctx: Context, database: Callable[..., Database]):
         help=f"Show entries containing {yellow}FILTER{reset}.")
 @option("--filter-date", metavar="DATE", type=str, default=None, callback=date_callback,
         help=f"Filter by {yellow}DATE{reset}.")
-@option("--clear", is_flag=True, default=False, required=False, help="Clear entries.")
+@option("--clear", is_flag=True, default=False, help="Clear entries.")
 @database_exists_option
 @color_option
 @help_option
@@ -783,9 +782,10 @@ def database_remove(ctx: Context, database: Callable[..., Database], table: str,
 @database_app.command("add", short_help="Add entries manually.")
 @argument("table", nargs=1, required=True, is_eager=True, type=TableChoice())
 @argument("file", nargs=1, required=True, type=File("r"))
-@option("--submission-file", required=False, multiple=True, type=PathClick(exists=True, dir_okay=False, path_type=Path))
-@option("--submission-thumbnail", required=False, default=None,
-        type=PathClick(exists=True, dir_okay=False, path_type=Path))
+@option("--submission-file", multiple=True, type=PathClick(exists=True, dir_okay=False, path_type=Path),
+        help="Specify a submission file.")
+@option("--submission-thumbnail", default=None, type=PathClick(exists=True, dir_okay=False, path_type=Path),
+        help="Specify a submission thumbnail.")
 @option("--replace", is_flag=True, default=False, show_default=True)
 @database_exists_option
 @color_option
