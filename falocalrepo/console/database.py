@@ -783,8 +783,9 @@ def database_remove(ctx: Context, database: Callable[..., Database], table: str,
 @database_app.command("add", short_help="Add entries manually.")
 @argument("table", nargs=1, required=True, is_eager=True, type=TableChoice())
 @argument("file", nargs=1, required=True, type=File("r"))
-@option("--submission-file", required=False, multiple=True, type=File("rb"))
-@option("--submission-thumbnail", required=False, default=None, type=File("rb"))
+@option("--submission-file", required=False, multiple=True, type=PathClick(exists=True, dir_okay=False, path_type=Path))
+@option("--submission-thumbnail", required=False, default=None,
+        type=PathClick(exists=True, dir_okay=False, path_type=Path))
 @option("--replace", is_flag=True, default=False, show_default=True)
 @database_exists_option
 @color_option
@@ -792,7 +793,7 @@ def database_remove(ctx: Context, database: Callable[..., Database], table: str,
 @pass_context
 @docstring_format(prog_name=__prog_name__, version=__version__)
 def database_add(ctx: Context, database: Callable[..., Database], table: str, file: TextIO,
-                 submission_file: tuple[BytesIO], submission_thumbnail: BytesIO | None, replace: bool):
+                 submission_file: tuple[Path], submission_thumbnail: Path | None, replace: bool):
     """
     Add entries and submission files manually using a JSON file. Submission files/thumbnails can be added using the
     respective options; all existing files are removed. Multiple submission files can be passed.
@@ -829,16 +830,8 @@ def database_add(ctx: Context, database: Callable[..., Database], table: str, fi
         if sub_thumb_orig:
             sub_thumb_orig.unlink()
 
-        sub_files: list[bytes] = []
-        sub_thumb: bytes | None = None
-
-        if submission_file:
-            for f in submission_file:
-                sub_files.append(f.read())
-                f.close()
-        if submission_thumbnail:
-            sub_thumb: bytes = submission_thumbnail.read()
-            submission_thumbnail.close()
+        sub_files: list[bytes] = [f.read_bytes() for f in submission_file]
+        sub_thumb: bytes | None = submission_thumbnail.read_bytes() if submission_thumbnail else None
 
         try:
             db.submissions.save_submission(data, sub_files, sub_thumb, replace=replace)
@@ -857,17 +850,19 @@ def database_add(ctx: Context, database: Callable[..., Database], table: str, fi
 @argument("table", nargs=1, required=True, is_eager=True, type=TableChoice())
 @argument("_id", metavar="ID", nargs=1, required=True, is_eager=True)
 @argument("file", nargs=1, required=False, default=None, type=File("r"))
-@option("--submission-file", multiple=True, default=None, type=File("rb"), help="Specify a submission file.")
+@option("--submission-file", multiple=True, type=PathClick(exists=True, dir_okay=False, path_type=Path),
+        help="Specify a submission file.")
 @option("--add-submission-files", is_flag=True, default=False, show_default=True,
         help="Add submission files instead of replacing.")
-@option("--submission-thumbnail", default=None, type=File("rb"), help="Specify a submission thumbnail.")
+@option("--submission-thumbnail", default=None, type=PathClick(exists=True, dir_okay=False, path_type=Path),
+        help="Specify a submission thumbnail.")
 @database_exists_option
 @color_option
 @help_option
 @pass_context
 @docstring_format(prog_name=__prog_name__, version=__version__)
 def database_edit(ctx: Context, database: Callable[..., Database], table: str, _id: str | int, file: TextIO | None,
-                  submission_file: tuple[BytesIO], add_submission_files: bool, submission_thumbnail: BytesIO | None):
+                  submission_file: tuple[Path], add_submission_files: bool, submission_thumbnail: Path | None):
     """
     Edit entries and submission files manually using a JSON file. Submission files/thumbnails can be added using the
     respective options; existing files are overwritten unless the {yellow}--add-submission-files{reset} option is used.
@@ -915,12 +910,12 @@ def database_edit(ctx: Context, database: Callable[..., Database], table: str, _
         exts: list[str] = entry[SubmissionsColumns.FILEEXT.value.name] if add_submission_files else []
         for n, f in enumerate(submission_file,
                               len(entry[SubmissionsColumns.FILEEXT.value.name]) if add_submission_files else 0):
-            exts.append(db.submissions.save_submission_file(_id, f.read(), "submission", "", n))
+            exts.append(db.submissions.save_submission_file(_id, f.read_bytes(), "submission", "", n))
         data |= {(f := SubmissionsColumns.FILESAVED.value.name): (data[f] & 0b001) + 0b110,
                  SubmissionsColumns.FILEEXT.value.name: exts}
     if submission_thumbnail:
         data |= {(f := SubmissionsColumns.FILESAVED.value.name): data.get(f, entry[f])}
-        db.submissions.save_submission_thumbnail(_id, submission_thumbnail.read())
+        db.submissions.save_submission_thumbnail(_id, submission_thumbnail.read_bytes())
         data |= {(f := SubmissionsColumns.FILESAVED.value.name): (data[f] & 0b100) + (data[f] & 0b010) + 1}
 
     if data:
