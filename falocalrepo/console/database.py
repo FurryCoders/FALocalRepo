@@ -919,6 +919,7 @@ def database_edit(ctx: Context, database: Callable[..., Database], table: str, _
         data |= {(f := SubmissionsColumns.FILESAVED.value.name): (data[f] & 0b001) + 0b110,
                  SubmissionsColumns.FILEEXT.value.name: exts}
     if submission_thumbnail:
+        data |= {(f := SubmissionsColumns.FILESAVED.value.name): data.get(f, entry[f])}
         db.submissions.save_submission_thumbnail(_id, submission_thumbnail.read())
         data |= {(f := SubmissionsColumns.FILESAVED.value.name): (data[f] & 0b100) + (data[f] & 0b010) + 1}
 
