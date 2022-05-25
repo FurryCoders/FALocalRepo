@@ -696,7 +696,7 @@ Print a PRIDE paw!
 
 <img src="https://raw.githubusercontent.com/FurryCoders/Logos/main/logos/paw-pride.svg" height="300" alt="">
 
-Built-in colors are available for the following flags: pride (default), trans, bisexual, pansexual, nonbinary, lesbian,
+Built-in colors are available for the following flags: pride (default), trans, bisexual, pansexual, non-binary, lesbian,
 agender, asexual, genderqueer, genderfluid, aromantic, polyamory.
 
 The program will try to determine if the terminal supports truecolor mode (24bit, 16 million colors), if not it will
