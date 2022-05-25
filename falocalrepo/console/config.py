@@ -199,9 +199,10 @@ def config_files_folder(ctx: Context, database: Callable[..., Database], new_fol
 
     if new_folder is None:
         folder: str = db.settings[db.settings._files_folder_setting]
+        folder_p: Path = Path(folder)
         echo(f"{bold}Files Folder{reset}\n"
-             f"{blue}Value{reset}: {yellow}{folder}{reset}\n"
-             f"{blue}Path{reset} : {yellow}{db.settings.files_folder.resolve()}{reset}", color=ctx.color)
+             f"{blue}Folder{reset}: {yellow}{folder}{reset}"
+             f" ({yellow}{db.path.parent / folder_p}{reset})" if not folder_p.is_absolute() else "", color=ctx.color)
         return
 
     if relative and new_folder.is_absolute() and not new_folder.is_relative_to(db.path.parent):
