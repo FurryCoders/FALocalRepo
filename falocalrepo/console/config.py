@@ -127,9 +127,9 @@ def config_backup(ctx: Context, database: Callable[..., Database], trigger: str 
 
     # noinspection PyProtectedMember
     if bf := db.settings[db.settings._backup_folder_setting]:
-        bfp = Path(bf)
+        bfp: Path = Path(bf)
         echo(f"{blue}folder{reset}: {yellow}{bfp}{reset}"
-             f" ({yellow}{db.path / bfp}{reset})" if not bfp.is_absolute() else "")
+             f" ({yellow}{db.path.parent / bfp}{reset})" if not bfp.is_absolute() else "")
     else:
         echo(f"{red}No folder set{reset}")
     for trg, fmt in backup_settings.items():
