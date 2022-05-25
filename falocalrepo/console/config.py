@@ -63,7 +63,7 @@ def config_app():
 @help_option
 def config_list(database: Callable[..., Database]):
     """
-    Print a list of stored settings.
+    Show a list of all stored settings.
     """
 
     db: Database = database()

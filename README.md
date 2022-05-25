@@ -211,6 +211,8 @@ The config command allows reading and changing the settings used by the program.
 list
 ```
 
+Show a list of all stored settings. 
+
 #### cookies
 
 ```
