@@ -751,9 +751,9 @@ The submissions' table contains the metadata of the submissions downloaded by th
 * `FILEURL` a bar-separated list of the remote URLs for the submission files
 * `FILEEXT` a bar-separated list of extensions of the downloaded files. Can be empty if the file contained errors and
   could not be recognised upon download
-* `FILESAVED` file and thumbnail download status as a 2bit flag: `1x` if at least one file was valid `0x` if not; `1xx`
-  if all given files where valid, `0xx` if not; `x1` if thumbnail was downloaded, `x0` if not. Possible values are `0`
-  through `7` (3 bit).
+* `FILESAVED` file and thumbnail download status as a 3bit flag:`xx1` if thumbnail was downloaded, `xx0` if not; `x1x`
+  if at least one file was valid `x0x` if not; `1xx` if all given files where valid, `0xx` if not. Possible values
+  are `0` through `7` (3 bit).
 * `FAVORITE` a bar-separated list of users that have "faved" the submission
 * `MENTIONS` a bar-separated list of users that are mentioned in the submission description as links
 * `FOLDER` the folder of the submission (`gallery` or `scraps`)
