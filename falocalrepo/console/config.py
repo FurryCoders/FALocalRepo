@@ -128,12 +128,14 @@ def config_backup(ctx: Context, database: Callable[..., Database], trigger: str 
     # noinspection PyProtectedMember
     if bf := db.settings[db.settings._backup_folder_setting]:
         bfp: Path = Path(bf)
-        echo(f"{blue}folder{reset}: {yellow}{bfp}{reset}"
+        echo(f"{blue}Folder{reset}: {yellow}{bfp}{reset}"
              f" ({yellow}{db.path.parent / bfp}{reset})" if not bfp.is_absolute() else "")
     else:
         echo(f"{red}No folder set{reset}")
     for trg, fmt in backup_settings.items():
         echo(f"{blue}{trg}{reset}: {yellow}{fmt}{reset}")
+    if not backup_settings:
+        echo(f"{red}No triggers set{reset}")
 
     if folder or remove or trigger:
         add_history(db, ctx, trigger=trigger, date_format=date_format, folder=folder, remove=remove)
