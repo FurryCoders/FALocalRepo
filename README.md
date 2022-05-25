@@ -211,7 +211,7 @@ The config command allows reading and changing the settings used by the program.
 list
 ```
 
-Show a list of all stored settings. 
+Show a list of all stored settings.
 
 #### cookies
 
@@ -251,7 +251,9 @@ backup [--remove] [--folder DIRECTORY] [--date-format FMT] [{download|database|c
 ```
 
 Read or modify automatic backup settings. Backup will be performed automatically based on stored triggers and date
-formats. The date format `FMT` supports the standard C _strftime_ codes, and it defaults to `%Y %W` (year and week).
+formats. The date format `FMT` supports the standard
+[C _strftime_ codes](https://docs.python.org/3/library/datetime.html#strftime-and-strptime-format-codes), and it
+defaults to `%Y %W` (year and week).
 
 To set the backup folder, use the `--folder` option.
 
