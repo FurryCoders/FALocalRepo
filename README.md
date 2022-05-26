@@ -806,15 +806,15 @@ For example, a submission `1457893` will be padded to `0001457893` and divided i
 submission file will then be saved as `00/01/45/78/93/submission.file` with the correct extension extracted from the
 file itself - FurAffinity links do not always contain the right extension.
 
-Extra submission files are saved in the same folder with 0-based index postfixed to the filename. The first file is
+Extra submission files are saved in the same folder with a 0-based index appended to the filename. The first file is
 named `submission.file`, and subsequent files are called `submission1.file`, `submission2.file`, etc.
 
 ## Upgrading Database
 
 When the program starts, it checks the version of the database against the one used by the program and if the latter is
-more advanced it upgrades the database.
+more advanced it stops execution and prompts the user to upgrade using the [`database upgrade`](#upgrade) command.
 
-_Note:_ versions prior to 4.19.0 are not supported by falocalrepo-database version 5.0.0 and above. To update from
+_Note:_ versions prior to 4.19.0 are not supported by falocalrepo version 4.0.0 and above. To update from
 those, use [falocalrepo version 3.25.0](https://pypi.org/project/falocalrepo/v3.25.0) to upgrade the database to version
 4.19.0 first.
 
