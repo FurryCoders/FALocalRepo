@@ -133,7 +133,7 @@ def config_backup(ctx: Context, database: Callable[..., Database], trigger: str 
     else:
         echo(f"{red}No folder set{reset}")
     for trg, fmt in backup_settings.items():
-        echo(f"{blue}{trg}{reset}: {yellow}{fmt}{reset}")
+        echo(f"{blue}Trigger{reset} {yellow}{trg}{reset}: {yellow}{fmt}{reset}")
     if not backup_settings:
         echo(f"{red}No triggers set{reset}")
 
