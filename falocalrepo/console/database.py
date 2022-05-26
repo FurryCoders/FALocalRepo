@@ -792,7 +792,7 @@ def database_remove(ctx: Context, database: Callable[..., Database], table: str,
 @color_option
 @help_option
 @pass_context
-@docstring_format(prog_name=__prog_name__, version=__version__)
+@docstring_format(prog_name=__prog_name__, version=__version__, db_app=database_app.name)
 def database_add(ctx: Context, database: Callable[..., Database], table: str, file: TextIO,
                  submission_file: tuple[Path], submission_thumbnail: Path | None, replace: bool):
     """
@@ -800,7 +800,7 @@ def database_add(ctx: Context, database: Callable[..., Database], table: str, fi
     respective options; all existing files are removed. Multiple submission files can be passed.
 
     The JSON file must contain fields for all columns of the table. For a list of columns for each table, please see
-    the README at {blue}https://pypi.org/project/{prog_name}/{version}{reset}.
+    the help of the {yellow}{db_app}{reset} command.
 
     By default, the program will throw an error when trying to add an entry that already exists. To override this
     behaviour and ignore existing entries, use the {yellow}--replace{reset} option.
@@ -861,7 +861,7 @@ def database_add(ctx: Context, database: Callable[..., Database], table: str, fi
 @color_option
 @help_option
 @pass_context
-@docstring_format(prog_name=__prog_name__, version=__version__)
+@docstring_format(prog_name=__prog_name__, version=__version__, db_app=database_app.name)
 def database_edit(ctx: Context, database: Callable[..., Database], table: str, _id: str | int, file: TextIO | None,
                   submission_file: tuple[Path], add_submission_files: bool, submission_thumbnail: Path | None):
     """
@@ -870,7 +870,7 @@ def database_edit(ctx: Context, database: Callable[..., Database], table: str, _
     Multiple submission files can be passed.
 
     The JSON fields must match the column names of the selected table. For a list of columns for each table, please see
-    the README at {blue}https://pypi.org/project/{prog_name}/{version}{reset}.
+    the help of the {yellow}{db_app}{reset} command.
 
     If the {yellow}--submission-file{reset} and/or {yellow}--submission-thumbnail{reset} options are used, the
     {yellow}FILE{reset} argument can be omitted.
