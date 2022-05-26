@@ -310,11 +310,11 @@ def app_completions(ctx: Context, shell: Type[ShellComplete], alias: str | None)
 @option("--port", metavar="PORT", type=str, default="80, 443", show_default=True, callback=port_callback,
         help="Server port.")
 @option("--ssl-cert", type=PathClick(exists=True, dir_okay=False, path_type=Path), default=None,
-        help="Path to SSL certificate file for HTTPS")
+        help="Path to SSL certificate file for HTTPS.")
 @option("--ssl-key", type=PathClick(exists=True, dir_okay=False, path_type=Path), default=None,
-        help="Path to SSL key file for HTTPS")
+        help="Path to SSL key file for HTTPS.")
 @option("--redirect-http", metavar="PORT2", type=int, default=None, callback=port_callback,
-        help=f"Redirect all traffic from http://HOST:{yellow}PORT{reset} to https://HOST:{yellow}PORT2{reset}")
+        help=f"Redirect all traffic from http://HOST:{yellow}PORT{reset} to https://HOST:{yellow}PORT2{reset}.")
 @option("--auth", metavar="USERNAME:PASSWORD", type=str, default=None,
         help=f"Enable HTTP Basic authentication.")
 @option("--precache", is_flag=True, default=False, help="Cache tables on startup.")
