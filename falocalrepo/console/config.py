@@ -7,7 +7,6 @@ from pathlib import Path
 from shutil import copy2
 from typing import Callable
 
-from click import BadParameter
 from click import Choice
 from click import Context
 from click import Path as PathClick
@@ -28,7 +27,6 @@ from .util import backup_database
 from .util import color_option
 from .util import database_exists_option
 from .util import docstring_format
-from .util import get_param
 from .util import help_option
 from .util import read_cookies
 from .util import write_cookies
