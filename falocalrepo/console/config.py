@@ -187,11 +187,8 @@ def config_files_folder(ctx: Context, database: Callable[..., Database], new_fol
     Read or modify the folder used to store submission files, where {yellow}NEW_FOLDER{reset} is the path to the new
     folder. If {yellow}NEW_FOLDER{reset} is omitted, the current value is read instead.
 
-    By default, {yellow}NEW_FOLDER{reset} is considered to be relative to the database folder. Absolute values are
-    allowed as long as a relative path to the database parent folder can exist. To force the use of an absolute value,
-    activate the {yellow}--absolute{reset} option.
 
-    If {yellow}--move{reset} option is used, all files will be moved to the new location.
+    If the {yellow}--move{reset} option is used, all files will be moved to the new location.
     """
 
     db: Database = database()
