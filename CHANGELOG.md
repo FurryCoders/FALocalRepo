@@ -36,7 +36,7 @@
     * Support video files for submissions
     * Update style to Bootstrap 5.2.0 (beta 1)
 * faapi dependency set to [\~3.7.1](https://pypi.org/project/faapi/3.7.1)
-    * Fix incorrect username extracted from userpages, which broke the `@me` user targe for `download` commands
+    * Fix incorrect username extracted from userpages, which broke `@me` for `download` commands
 
 ## 4.2.6
 
