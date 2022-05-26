@@ -50,8 +50,8 @@ from ..__version__ import __version__
 # noinspection SpellCheckingInspection
 _pride_colors: dict[str, list[tuple[str, str]]] = {
     "pride": [
-        *([(bright_red, "\x1b[38;2;229;0;0m")] * 3),
         *([(red, "\x1b[38;2;255;141;0m")] * 3),
+        *([(bright_red, "\x1b[38;2;229;0;0m")] * 3),
         *([(bright_yellow, "\x1b[38;2;255;238;0m")] * 3),
         *([(green, "\x1b[38;2;2;129;33m")] * 3),
         *([(bright_blue, "\x1b[38;2;0;76;255m")] * 3),
