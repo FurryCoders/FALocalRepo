@@ -787,7 +787,7 @@ def database_remove(ctx: Context, database: Callable[..., Database], table: str,
         help="Specify a submission file.")
 @option("--submission-thumbnail", default=None, type=PathClick(exists=True, dir_okay=False, path_type=Path),
         help="Specify a submission thumbnail.")
-@option("--replace", is_flag=True, default=False, show_default=True)
+@option("--replace", is_flag=True, default=False, show_default=True, help="Replace existing entries if present.")
 @database_exists_option
 @color_option
 @help_option
