@@ -13,6 +13,7 @@
 
 ### Changes
 
+* Removed the `--relative/--absolute` option from `config files-folder` command, the given folder path is saved as-is
 * The `@any` query field does not include `FAVORITES`, `FILESAVED`, `USERUPDATE`, nor `ACTIVE` to avoid redundant
   results
 * The `@author` query field matches using `LIKE` instead of finding only exact matches (i.e. `ab` matches `cabd`, `abcd`
@@ -23,7 +24,8 @@
 
 * Fix `database add` and `database edit` using submission thumbnail as submission file
 * Fix missing `database edit` from `database` commands list
-* Fix incorrect formatting for `database edit` help
+* Fix incorrect formatting for `database edit` and `database view` help
+* Fix missing help message for `--replace` option of `database add` command
 
 ### Dependencies
 
