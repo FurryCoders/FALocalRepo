@@ -176,16 +176,13 @@ def config_cookies(ctx: Context, database: Callable[..., Database], cookies: lis
 @config_app.command("files-folder", short_help="Read or modify the submission files folder.")
 @argument("new_folder", nargs=1, default=None, required=False,
           type=PathClick(file_okay=False, writable=True, path_type=Path))
-@option("--relative/--absolute", "relative", is_flag=True, default=True, show_default=True,
-        help="Use relative or absolute path.")
 @option("--move", is_flag=True, default=False, help="Move files from old folder.")
 @database_exists_option
 @color_option
 @help_option
 @pass_context
 @docstring_format()
-def config_files_folder(ctx: Context, database: Callable[..., Database], new_folder: Path | None, relative: bool,
-                        move: bool):
+def config_files_folder(ctx: Context, database: Callable[..., Database], new_folder: Path | None, move: bool):
     """
     Read or modify the folder used to store submission files, where {yellow}NEW_FOLDER{reset} is the path to the new
     folder. If {yellow}NEW_FOLDER{reset} is omitted, the current value is read instead.
@@ -199,35 +196,22 @@ def config_files_folder(ctx: Context, database: Callable[..., Database], new_fol
 
     db: Database = database()
 
+    folder: str = db.settings[db.settings._files_folder_setting]
+    folder_p: Path = Path(folder)
+    echo(f"{bold}Files Folder{reset}\n" +
+         f"{blue}Folder{reset}: {yellow}{folder}{reset}" +
+         (f" ({yellow}{db.path.parent / folder_p}{reset})" if not folder_p.is_absolute() else ""), color=ctx.color)
+
     if new_folder is None:
-        folder: str = db.settings[db.settings._files_folder_setting]
-        folder_p: Path = Path(folder)
-        echo(f"{bold}Files Folder{reset}\n" +
-             f"{blue}Folder{reset}: {yellow}{folder}{reset}" +
-             (f" ({yellow}{db.path.parent / folder_p}{reset})" if not folder_p.is_absolute() else ""), color=ctx.color)
         return
-
-    if relative and new_folder.is_absolute() and not new_folder.is_relative_to(db.path.parent):
-        raise BadParameter(f"Path {str(new_folder)!r} is absolute but '--relative' is used.",
-                           ctx, get_param(ctx, "new_folder"))
-    elif relative:
-        new_folder = new_folder.relative_to(db.path.parent) if new_folder.is_absolute() else new_folder
-    elif not new_folder.is_absolute():
-        raise BadParameter(f"Path {str(new_folder)!r} is relative but '--absolute' is used.",
-                           ctx, get_param(ctx, "new_folder"))
-    else:
-        new_folder = new_folder.resolve()
-
-    if str(new_folder) == db.settings[db.settings._files_folder_setting]:
+    elif str(new_folder) == db.settings[db.settings._files_folder_setting]:
         echo(f"Files folder is already {yellow}{new_folder}{reset}", color=ctx.color)
         return
 
-    echo(f"Changing files folder to {yellow}{new_folder}{reset}", color=ctx.color)
+    echo(f"{blue}New Folder{reset}: {yellow}{new_folder}{reset}", color=ctx.color)
 
     try:
-        if not move:
-            echo(f"Not moving files from original folder {yellow}{db.settings.files_folder}{reset}", color=ctx.color)
-        else:
+        if move:
             echo(f"Moving files to new folder {yellow}{new_folder}{reset}", color=ctx.color)
             folder: Path = db.settings.files_folder
             new_folder_abs: Path = new_folder.resolve()
@@ -245,8 +229,8 @@ def config_files_folder(ctx: Context, database: Callable[..., Database], new_fol
                 if i == 10:
                     break
         db.settings.files_folder = new_folder
-        add_history(db, ctx, new_folder=new_folder, relative=relative, move=move)
     finally:
+        add_history(db, ctx, new_folder=new_folder, move=move)
         db.commit()
 
     backup_database(db, ctx, "config")
