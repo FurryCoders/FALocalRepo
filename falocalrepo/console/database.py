@@ -696,6 +696,7 @@ def database_search(ctx: Context, database: Callable[..., Database], table: str,
 @color_option
 @help_option
 @pass_context
+@docstring_format()
 def database_view(ctx: Context, database: Callable[..., Database], table: str, id_: tuple[str | int, ...],
                   raw_content: bool, view_comments_: bool):
     """
