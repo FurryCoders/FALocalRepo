@@ -318,6 +318,7 @@ def app_completions(ctx: Context, shell: Type[ShellComplete], alias: str | None)
 @option("--auth", metavar="USERNAME:PASSWORD", type=str, default=None,
         help=f"Enable HTTP Basic authentication.")
 @option("--precache", is_flag=True, default=False, help="Cache tables on startup.")
+@option("--browser/--no-browser", is_flag=True, default=True, show_default=True, help="Open browser on startup.")
 @database_exists_option
 @color_option
 @help_option
@@ -325,12 +326,18 @@ def app_completions(ctx: Context, shell: Type[ShellComplete], alias: str | None)
 @docstring_format(server_name=__server_name__, server_version=__server_version__)
 def app_server(ctx: Context, database: Callable[..., Database], host: str | None, port: int | None,
                ssl_cert: Path | None, ssl_key: Path | None, redirect_http: int | None, auth: str | None,
-               precache: bool):
+               precache: bool, browser: bool):
     """
     Start a server at {yellow}HOST{reset}:{yellow}PORT{reset} to navigate the database. The {yellow}--ssl-cert{reset}
     and {yellow}--ssl-cert{reset} allow serving with HTTPS. Setting {yellow}--redirect-http{reset} starts the server in
-    HTTP to HTTPS redirection mode. For more details on usage see
-    {blue}https://pypi.org/project/{server_name}/{server_version}{reset}.
+    HTTP to HTTPS redirection mode.
+
+    {yellow}DATABASE{reset} can be omitted when using the {yellow}--redirect-http{reset} option.
+
+    When the app has finished loading, it automatically opens a browser window. To avoid this, use the
+    {yellow}--no-browser{reset} option.
+
+    For more details on usage see https://pypi.org/project/{server_name}/{server_version}.
     """
 
     if ssl_cert and not ssl_key:
@@ -344,7 +351,7 @@ def app_server(ctx: Context, database: Callable[..., Database], host: str | None
     del db
 
     server(db_path, host=host, port=port, ssl_cert=ssl_cert, ssl_key=ssl_key, redirect_port=redirect_http,
-           precache=precache, authentication=auth)
+           precache=precache, browser=browser, authentication=auth)
 
 
 @app.command("paw", short_help="Print the PRIDE paw!")
