@@ -200,6 +200,8 @@ def open_api(db: Database, ctx: Context = None, *, check_login: bool = True) -> 
         raise BadParameter(f"Unauthorized cookies.\n\nSet using '{app.name} {config_app.name} {config_cookies.name}'",
                            ctx)
 
+    api.timeout = 60
+
     return api
 
 
