@@ -125,7 +125,7 @@ values = "*"
 
 [[package]]
 name = "faapi"
-version = "3.7.1"
+version = "3.7.3"
 description = "Python module to implement API-like functionality for the FurAffinity.net website."
 category = "main"
 optional = false
@@ -140,7 +140,7 @@ requests = ">=2.27.1,<3.0.0"
 
 [[package]]
 name = "falocalrepo-database"
-version = "5.3.0"
+version = "5.3.1"
 description = "Database functionality for falocalrepo."
 category = "main"
 optional = false
@@ -153,7 +153,7 @@ psutil = ">=5.9.1,<6.0.0"
 
 [[package]]
 name = "falocalrepo-server"
-version = "3.2.0"
+version = "3.2.2"
 description = "Web interface for falocalrepo."
 category = "main"
 optional = false
@@ -164,17 +164,17 @@ beautifulsoup4 = ">=4.10.0,<5.0.0"
 chardet = ">=4.0.0,<5.0.0"
 click = ">=8.0.12,<9.0.0"
 click-help-colors = ">=0.9.1,<0.10.0"
-falocalrepo-database = ">=5.3.0,<5.4.0"
-fastapi = ">=0.75.1,<0.76.0"
+falocalrepo-database = ">=5.3.1,<5.4.0"
+fastapi = ">=0.78.0,<0.79.0"
 htmlmin = ">=0.1.12,<0.2.0"
 Jinja2 = ">=3.0.3,<4.0.0"
 lxml = ">=4.8.0,<5.0.0"
-Pillow = ">=9.0.0,<10.0.0"
+Pillow = ">=9.1.1,<10.0.0"
 uvicorn = ">=0.17.6,<0.18.0"
 
 [[package]]
 name = "fastapi"
-version = "0.75.2"
+version = "0.78.0"
 description = "FastAPI framework, high performance, easy to learn, fast to code, ready for production"
 category = "main"
 optional = false
@@ -182,11 +182,11 @@ python-versions = ">=3.6.1"
 
 [package.dependencies]
 pydantic = ">=1.6.2,<1.7 || >1.7,<1.7.1 || >1.7.1,<1.7.2 || >1.7.2,<1.7.3 || >1.7.3,<1.8 || >1.8,<1.8.1 || >1.8.1,<2.0.0"
-starlette = "0.17.1"
+starlette = "0.19.1"
 
 [package.extras]
 all = ["requests (>=2.24.0,<3.0.0)", "jinja2 (>=2.11.2,<4.0.0)", "python-multipart (>=0.0.5,<0.0.6)", "itsdangerous (>=1.1.0,<3.0.0)", "pyyaml (>=5.3.1,<7.0.0)", "ujson (>=4.0.1,!=4.0.2,!=4.1.0,!=4.2.0,!=4.3.0,!=5.0.0,!=5.1.0,<6.0.0)", "orjson (>=3.2.1,<4.0.0)", "email_validator (>=1.1.1,<2.0.0)", "uvicorn[standard] (>=0.12.0,<0.18.0)"]
-dev = ["python-jose[cryptography] (>=3.3.0,<4.0.0)", "passlib[bcrypt] (>=1.7.2,<2.0.0)", "autoflake (>=1.4.0,<2.0.0)", "flake8 (>=3.8.3,<4.0.0)", "uvicorn[standard] (>=0.12.0,<0.18.0)"]
+dev = ["python-jose[cryptography] (>=3.3.0,<4.0.0)", "passlib[bcrypt] (>=1.7.2,<2.0.0)", "autoflake (>=1.4.0,<2.0.0)", "flake8 (>=3.8.3,<4.0.0)", "uvicorn[standard] (>=0.12.0,<0.18.0)", "pre-commit (>=2.17.0,<3.0.0)"]
 doc = ["mkdocs (>=1.1.2,<2.0.0)", "mkdocs-material (>=8.1.4,<9.0.0)", "mdx-include (>=1.4.1,<2.0.0)", "mkdocs-markdownextradata-plugin (>=0.1.7,<0.3.0)", "typer (>=0.4.1,<0.5.0)", "pyyaml (>=5.3.1,<7.0.0)"]
 test = ["pytest (>=6.2.4,<7.0.0)", "pytest-cov (>=2.12.0,<4.0.0)", "mypy (==0.910)", "flake8 (>=3.8.3,<4.0.0)", "black (==22.3.0)", "isort (>=5.0.6,<6.0.0)", "requests (>=2.24.0,<3.0.0)", "httpx (>=0.14.0,<0.19.0)", "email_validator (>=1.1.1,<2.0.0)", "sqlalchemy (>=1.3.18,<1.5.0)", "peewee (>=3.13.3,<4.0.0)", "databases[sqlite] (>=0.3.2,<0.6.0)", "orjson (>=3.2.1,<4.0.0)", "ujson (>=4.0.1,!=4.0.2,!=4.1.0,!=4.2.0,!=4.3.0,!=5.0.0,!=5.1.0,<6.0.0)", "python-multipart (>=0.0.5,<0.0.6)", "flask (>=1.1.2,<3.0.0)", "anyio[trio] (>=3.2.1,<4.0.0)", "types-ujson (==4.2.1)", "types-orjson (==3.6.2)", "types-dataclasses (==0.6.5)"]
 
@@ -370,14 +370,14 @@ python-versions = ">=3.6"
 
 [[package]]
 name = "starlette"
-version = "0.17.1"
+version = "0.19.1"
 description = "The little ASGI library that shines."
 category = "main"
 optional = false
 python-versions = ">=3.6"
 
 [package.dependencies]
-anyio = ">=3.0.0,<4"
+anyio = ">=3.4.0,<5"
 
 [package.extras]
 full = ["itsdangerous", "jinja2", "python-multipart", "pyyaml", "requests"]
@@ -450,7 +450,7 @@ python-versions = "*"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "4d00b23d7ab60b1c583f0fff5654693a8a3d9c7be3c9cd3c0091a2c83e605e6c"
+content-hash = "9755414043ebafb7b1505c99bea3239c606bc5250c8f62ecc468a60fa6ff42a0"
 
 [metadata.files]
 anyio = [
@@ -497,20 +497,20 @@ dict = [
     {file = "dict-2020.12.3.tar.gz", hash = "sha256:8a14ff62e2a9dff5ef751a2e5eee07715c79ddab6b9ca06c59e73622f80761b5"},
 ]
 faapi = [
-    {file = "faapi-3.7.1-py3-none-any.whl", hash = "sha256:19da1212945b0b95612bc77368f47c84e6576bc12904d99cea0c4dcdeb472f93"},
-    {file = "faapi-3.7.1.tar.gz", hash = "sha256:796bd306330420a5c9e32ddb402fba4d01719743cda36ff66fd6359b2870e307"},
+    {file = "faapi-3.7.3-py3-none-any.whl", hash = "sha256:7c54cb657161ab22b9ef4a4f4abd7788e87f1a15c883384ab1401fd1339e8c97"},
+    {file = "faapi-3.7.3.tar.gz", hash = "sha256:c5746cc674f175d1c907d83cbc21a391fcf6b344096917110801642eb25e207a"},
 ]
 falocalrepo-database = [
-    {file = "falocalrepo-database-5.3.0.tar.gz", hash = "sha256:a90a757a6cdd445ef7ecf27be42145eed2c7ca059187ffeb0126285037584f22"},
-    {file = "falocalrepo_database-5.3.0-py3-none-any.whl", hash = "sha256:f63c74595a17e1dcd97a8339691237d0b9146d9ff43e98efed3b9ff691b42377"},
+    {file = "falocalrepo-database-5.3.1.tar.gz", hash = "sha256:0fddf63cd507d3afba21b5bf8a510ee947213a9c326c4c21ba4e67ee1d45ce0a"},
+    {file = "falocalrepo_database-5.3.1-py3-none-any.whl", hash = "sha256:09cff67778ec9d58f78b70d63b8077b601eb644c85c875b8c1f467893990b60f"},
 ]
 falocalrepo-server = [
-    {file = "falocalrepo-server-3.2.0.tar.gz", hash = "sha256:0638b5938fa700539c82bc30c449468d3477ab04673762a16f5481671dc13e36"},
-    {file = "falocalrepo_server-3.2.0-py3-none-any.whl", hash = "sha256:35bceabe6acce693288bf88bac4774b0578b875a5cbc0d8806b6531867b0938d"},
+    {file = "falocalrepo-server-3.2.2.tar.gz", hash = "sha256:3be6ca501bfc7bb436b50a4f4af2983291f1a986c0070392b9d551e7abedcd77"},
+    {file = "falocalrepo_server-3.2.2-py3-none-any.whl", hash = "sha256:5810c1219e67a56a02315fce2f2d0c1d6279a9106d21433c644bd2f3eb3f3b2d"},
 ]
 fastapi = [
-    {file = "fastapi-0.75.2-py3-none-any.whl", hash = "sha256:a70d31f4249b6b42dbe267667d22f83af645b2d857876c97f83ca9573215784f"},
-    {file = "fastapi-0.75.2.tar.gz", hash = "sha256:b5dac161ee19d33346040d3f44d8b7a9ac09b37df9efff95891f5e7641fa482f"},
+    {file = "fastapi-0.78.0-py3-none-any.whl", hash = "sha256:15fcabd5c78c266fa7ae7d8de9b384bfc2375ee0503463a6febbe3bab69d6f65"},
+    {file = "fastapi-0.78.0.tar.gz", hash = "sha256:3233d4a789ba018578658e2af1a4bb5e38bdd122ff722b313666a9b2c6786a83"},
 ]
 filetype = [
     {file = "filetype-1.0.13-py2.py3-none-any.whl", hash = "sha256:8f5d2d5ae7fec00c71dadfe8a747c2d6da91d77f9b4e550bbdb0881f63a07e43"},
@@ -776,8 +776,8 @@ soupsieve = [
     {file = "soupsieve-2.3.2.post1.tar.gz", hash = "sha256:fc53893b3da2c33de295667a0e19f078c14bf86544af307354de5fcf12a3f30d"},
 ]
 starlette = [
-    {file = "starlette-0.17.1-py3-none-any.whl", hash = "sha256:26a18cbda5e6b651c964c12c88b36d9898481cd428ed6e063f5f29c418f73050"},
-    {file = "starlette-0.17.1.tar.gz", hash = "sha256:57eab3cc975a28af62f6faec94d355a410634940f10b30d68d31cb5ec1b44ae8"},
+    {file = "starlette-0.19.1-py3-none-any.whl", hash = "sha256:5a60c5c2d051f3a8eb546136aa0c9399773a689595e099e0877704d5888279bf"},
+    {file = "starlette-0.19.1.tar.gz", hash = "sha256:c6d21096774ecb9639acad41b86b7706e52ba3bf1dc13ea4ed9ad593d47e24c7"},
 ]
 supports-color = [
     {file = "supports-color-0.1.2.tar.gz", hash = "sha256:37f03ce1a46b2f12b50e1a75c3597ba7f27915b5b91e21099c554242468eaddf"},
