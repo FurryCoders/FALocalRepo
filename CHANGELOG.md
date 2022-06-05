@@ -1,5 +1,33 @@
 # Changelog
 
+## 4.3.1
+
+### New Features
+
+* Open browser for server 💻
+    * A new browser tab/window is opened automatically when using the `server` command 
+    * New `--browser` and `--no-browser` options for `server` to toggle opening the browser (defaults on)
+
+### Changes
+
+* Requests are timed out after 60 seconds to avoid infinite waits during file downloads.
+
+### Dependencies
+
+* falocalrepo-database dependency set to [\~5.3.4](https://pypi.org/project/falocalrepo-database/5.3.4)
+    * Fix incorrect extension selection for files with non-specific MIME types (e.g. docx)
+    * Interrupting a database backup does not leave a temporary file behind
+* falocalrepo-server dependency set to [\~3.2.2](https://pypi.org/project/falocalrepo-server/3.2.2)
+    * Open browser on startup
+    * Fix [CVE-2022-30595](https://github.com/advisories/GHSA-hr8g-f6r6-mr22)
+    * Fix journals searches
+    * Fix visual errors
+    * Support spoiler text
+    * Add file counter in search results for submissions with multiple files
+* faapi dependency set to [\~3.7.2](https://pypi.org/project/faapi/3.7.2)
+    * Fix journals parsing when using full date format
+    * Add requests timeout
+
 ## 4.3.0
 
 ### New Features
