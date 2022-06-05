@@ -635,13 +635,19 @@ need to be used (e.g. `@id %1%`).
 ### Server
 
 ```
-server [--host HOST] [--port PORT] [--ssl-cert FILE] [--ssl-key FILE] [--redirect-http PORT2] [--auth USERNAME:PASSWORD] [--precache]
+server [--host HOST] [--port PORT] [--ssl-cert FILE] [--ssl-key FILE] [--redirect-http PORT2] [--auth USERNAME:PASSWORD] [--precache] [--browser/--no-browser]
 ```
 
 Start a server at `HOST`:`PORT` to navigate the database. The `--ssl-cert` and `--ssl-cert` allow serving with HTTPS.
 Using `--redirect-http` starts the server in HTTP to HTTPS redirection mode. `--auth` enables HTTP Basic
-authentication. `--precache` caches database entries at startup. For more details on usage see
-[falocalrepo-server](https://pypi.org/project/falocalrepo_server/).
+authentication.
+
+Using the `--precache` caches database entries at startup.
+
+When the app has finished loading, it automatically opens a browser window. To avoid this, use the `--no-browser`
+option.
+
+For more details on usage see [falocalrepo-server](https://pypi.org/project/falocalrepo_server/).
 
 ### Completions
 
