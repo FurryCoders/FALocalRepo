@@ -141,29 +141,29 @@ def config_backup(ctx: Context, database: Callable[..., Database], trigger: str 
 
 
 @config_app.command("cookies")
-@option("--cookie", "-c", "cookies", type=(str, str), metavar="<NAME VALUE>", multiple=True, default=[],
+@option("--cookie", "-c", "cookie", type=(str, str), metavar="<NAME VALUE>", multiple=True, default=[],
         help="New cookie.")
 @database_exists_option
 @color_option
 @help_option
 @pass_context
 @docstring_format()
-def config_cookies(ctx: Context, database: Callable[..., Database], cookies: list[tuple[str, str]]):
+def config_cookies(ctx: Context, database: Callable[..., Database], cookie: list[tuple[str, str]]):
     """
     Read or modify stored cookies. If no {yellow}--cookie{reset} option is given, the current values are read instead.
     """
 
     db: Database = database()
 
-    if cookies:
-        write_cookies(db, dict(cookies))
-        add_history(db, ctx, cookies=cookies)
+    if cookie:
+        write_cookies(db, dict(cookie))
+        add_history(db, ctx, cookies=cookie)
 
     echo(f"{bold}Cookies{reset}\n" +
          "\n".join(f"{blue}Cookie{reset} {yellow}{c['name']}{reset}: {yellow}{c['value']}{reset}"
                    for c in read_cookies(db)), color=ctx.color)
 
-    if cookies:
+    if cookie:
         from .download import download_app, download_login
         echo(f"Check cookies validity with the {yellow}{download_app.name} {download_login.name}{reset} command.",
              color=ctx.color)
