@@ -318,7 +318,7 @@ def app_completions(ctx: Context, shell: Type[ShellComplete], alias: str | None)
 @option("--auth", metavar="USERNAME:PASSWORD", type=str, default=None,
         help=f"Enable HTTP Basic authentication.")
 @option("--precache", is_flag=True, default=False, help="Cache tables on startup.")
-@option("--browser/--no-browser", is_flag=True, default=True, show_default=True, help="Open browser on startup.")
+@option("--no-browser", "browser", is_flag=True, default=True, help="Do not browser on startup.")
 @database_exists_option
 @color_option
 @help_option
