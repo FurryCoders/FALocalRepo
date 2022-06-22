@@ -183,10 +183,12 @@ def download_users(ctx: Context, database: Callable[..., Database], users: tuple
         secho(f"\nError: Unauthorized{(': ' + ' '.join(err.args)) if err.args else ''}", fg="red", color=ctx.color)
         echo()
         backup_database(db, ctx, "download")
+        ctx.exit(1)
     except RequestException as err:
         secho(f"\nError: An error occurred during download: {err!r}.", fg="red", color=ctx.color)
         echo()
         backup_database(db, ctx, "download")
+        ctx.exit(1)
     finally:
         echo()
         downloader.verbose_report() if verbose_report else downloader.report()
@@ -255,10 +257,12 @@ def download_update(ctx: Context, database: Callable[..., Database], users: tupl
         secho(f"\nError: Unauthorized{(': ' + ' '.join(err.args)) if err.args else ''}", fg="red", color=ctx.color)
         echo()
         backup_database(db, ctx, "download")
+        ctx.exit(1)
     except RequestException as err:
         secho(f"\nError: An error occurred during download: {err!r}.", fg="red", color=ctx.color)
         echo()
         backup_database(db, ctx, "download")
+        ctx.exit(1)
     finally:
         echo()
         downloader.verbose_report() if verbose_report else downloader.report()
@@ -311,10 +315,12 @@ def download_submissions(ctx: Context, database: Callable[..., Database], submis
         secho(f"\nError: Unauthorized{(': ' + ' '.join(err.args)) if err.args else ''}", fg="red", color=ctx.color)
         echo()
         backup_database(db, ctx, "download")
+        ctx.exit(1)
     except RequestException as err:
         secho(f"\nError: An error occurred during download: {err!r}.", fg="red", color=ctx.color)
         echo()
         backup_database(db, ctx, "download")
+        ctx.exit(1)
     finally:
         echo()
         downloader.verbose_report() if verbose_report else downloader.report()
@@ -363,10 +369,12 @@ def download_journals(ctx: Context, database: Callable[..., Database], journal_i
         secho(f"\nError: Unauthorized{(': ' + ' '.join(err.args)) if err.args else ''}", fg="red", color=ctx.color)
         echo()
         backup_database(db, ctx, "download")
+        ctx.exit(1)
     except RequestException as err:
         secho(f"\nError: An error occurred during download: {err!r}.", fg="red", color=ctx.color)
         echo()
         backup_database(db, ctx, "download")
+        ctx.exit(1)
     finally:
         echo()
         downloader.verbose_report() if verbose_report else downloader.report()
