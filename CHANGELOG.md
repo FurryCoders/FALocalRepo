@@ -17,7 +17,7 @@
 ### New Features
 
 * Open browser for server 💻
-    * A new browser tab/window is opened automatically when using the `server` command 
+    * A new browser tab/window is opened automatically when using the `server` command
     * New `--browser` and `--no-browser` options for `server` to toggle opening the browser (defaults on)
 
 ### Changes
