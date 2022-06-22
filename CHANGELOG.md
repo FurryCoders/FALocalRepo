@@ -1,5 +1,17 @@
 # Changelog
 
+## 4.3.2
+
+### Changes
+
+* Remove `--browser` option from the `server` command as it had no effect since it was the default value;
+  the `--no-browser` option remains to disable opening the browser automatically
+* When an error is countered during downloads, the program exists with status code 1 instead of 0
+
+### Dependencies
+
+* falocalrepo-server dependency set to [\~3.2.4](https://pypi.org/project/falocalrepo-server/3.2.4)
+
 ## 4.3.1
 
 ### New Features
