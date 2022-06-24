@@ -1,5 +1,21 @@
 # Changelog
 
+## 4.3.3
+
+### Changes
+
+* Remove `--replace` option from `database add` command, the `database edit` command can be used modify existing entries
+
+### Fixes
+
+* Fix submission files extensions not being correctly detected for some files when adding/replacing them
+  with `database edit`
+
+### Dependencies
+
+* falocalrepo-database dependency set to [\~5.3.5](https://pypi.org/project/falocalrepo-database/5.3.5)
+    * Improve detection of plain text files
+
 ## 4.3.2
 
 ### Changes
