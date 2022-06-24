@@ -497,7 +497,7 @@ closest ANSI color match will be used instead.
 #### add
 
 ```
-add [--replace] [--submission-file FILENAME] [--submission-thumbnail FILENAME] {SUBMISSIONS|JOURNALS|USERS} <FILE>
+add [--submission-file FILENAME] [--submission-thumbnail FILENAME] {SUBMISSIONS|JOURNALS|USERS} <FILE>
 ```
 
 Add entries and submission files manually using a JSON file. Submission files/thumbnails can be added using the
@@ -506,8 +506,8 @@ respective options; all existing files are removed. Multiple submission files ca
 The JSON file must contain fields for all columns of the table. For a list of columns for each table,
 see [Database](#database-1).
 
-By default, the program will throw an error when trying to add an entry that already exists. To override this behaviour
-and ignore existing entries, use the `--replace` option.
+The program will throw an error when trying to add an entry that already exists. To edit entries use
+the [`database edit`](#edit) command, or remove the entry with [`database remove`](#remove).
 
 > ```
 > falocalrepo database add USERS user.json
