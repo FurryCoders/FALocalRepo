@@ -802,8 +802,8 @@ def database_add(ctx: Context, database: Callable[..., Database], table: str, fi
     The JSON file must contain fields for all columns of the table. For a list of columns for each table, please see
     the help of the {yellow}{db_app}{reset} command.
 
-    By default, the program will throw an error when trying to add an entry that already exists. To override this
-    behaviour and ignore existing entries, use the {yellow}--replace{reset} option.
+    The program will throw an error when trying to add an entry that already exists. To edit entries use the
+    {yellow}{db_app} edit{reset} command, or remove the entry with {yellow}{db_app} remove{reset}.
     """
     db: Database = database()
     db_table: Table = get_table(db, table)
@@ -816,12 +816,11 @@ def database_add(ctx: Context, database: Callable[..., Database], table: str, fi
         raise BadParameter(f"Missing fields {set(map(str.upper, db_table.columns)) - set(data.keys())}"
                            f" for table {table}",
                            ctx, get_param(ctx, "file"))
-    elif not replace and (id_ := data[idc := db_table.key.name.upper()]) in db_table:
-        raise BadParameter(f"Entry with {idc} {id_!r} already exists in {table} table, but '--replace' is not set.",
-                           ctx, get_param(ctx, "file"))
+    elif (id_ := data[idc := db_table.key.name.upper()]) in db_table:
+        raise BadParameter(f"Entry with {idc} {id_!r} already exists in {table} table.", ctx, get_param(ctx, "file"))
 
     add_history(db, ctx, table=table, file=file.name, submission_file=submission_file is not None,
-                submission_thumbnail=submission_thumbnail is not None, replace=replace)
+                submission_thumbnail=submission_thumbnail is not None)
 
     if table.lower() == submissions_table.lower():
         sub_files_orig, sub_thumb_orig = db.submissions.get_submission_files(data["ID"])
@@ -835,12 +834,12 @@ def database_add(ctx: Context, database: Callable[..., Database], table: str, fi
         sub_thumb: bytes | None = submission_thumbnail.read_bytes() if submission_thumbnail else None
 
         try:
-            db.submissions.save_submission(data, sub_files, sub_thumb, replace=replace)
+            db.submissions.save_submission(data, sub_files, sub_thumb)
         finally:
             db.commit()
     else:
         try:
-            db_table.insert(db_table.format_entry(data), replace=replace)
+            db_table.insert(db_table.format_entry(data))
         finally:
             db.commit()
 
