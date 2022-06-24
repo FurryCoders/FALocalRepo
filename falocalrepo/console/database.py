@@ -910,9 +910,9 @@ def database_edit(ctx: Context, database: Callable[..., Database], table: str, _
             for f in fs:
                 f.unlink()
         exts: list[str] = entry[SubmissionsColumns.FILEEXT.value.name] if add_submission_files else []
-        for n, f in enumerate(submission_file,
-                              len(entry[SubmissionsColumns.FILEEXT.value.name]) if add_submission_files else 0):
-            exts.append(db.submissions.save_submission_file(_id, f.read_bytes(), "submission", "", n))
+        for n, f in enumerate(submission_file, len(exts)):
+            exts.append(db.submissions.save_submission_file(_id, f.read_bytes(), "submission",
+                                                            f.suffix.removeprefix("."), n))
         filesaved = (filesaved & 0b001) + 0b110
         data |= {SubmissionsColumns.FILESAVED.value.name: filesaved, SubmissionsColumns.FILEEXT.value.name: exts}
     if submission_thumbnail:
