@@ -22,7 +22,7 @@
 
 * Remove `--browser` option from the `server` command as it had no effect since it was the default value;
   the `--no-browser` option remains to disable opening the browser automatically
-* When an error is countered during downloads, the program exists with status code 1 instead of 0
+* When an error is encountered during downloads, the program exists with status code 1 instead of 0
 
 ### Dependencies
 
