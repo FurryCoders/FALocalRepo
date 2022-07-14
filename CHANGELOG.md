@@ -1,5 +1,15 @@
 # Changelog
 
+## 4.3.4
+
+### Dependencies
+
+* Use [faapi ~3.7.4](https://pypi.org/project/faapi/3.7.4)
+    * Fix [CVE-2022-2309](https://cve.report/CVE-2022-2309.pdf) issue
+* Use [falocalrepo-server ~3.2.7](https://pypi.org/project/falocalrepo-server/3.2.7)
+    * Fix [CVE-2022-2309](https://cve.report/CVE-2022-2309.pdf) issue
+* Use [falocalrepo-database ~5.3.7](https://pypi.org/project/falocalrepo-database/5.3.7)
+
 ## 4.3.3
 
 ### Changes
