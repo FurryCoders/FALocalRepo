@@ -901,23 +901,24 @@ def database_edit(ctx: Context, database: Callable[..., Database], table: str, _
     if (entry := db_table[_id]) is None:
         raise BadParameter(f"No entry with ID {_id} in {table}.", ctx, get_param(ctx, "_id"))
 
-    filesaved: int = data.get(f := SubmissionsColumns.FILESAVED.value.name, entry[f])
+    if db_table.name == db.submissions.name:
+        filesaved: int = data.get(f := SubmissionsColumns.FILESAVED.value.name, entry[f])
 
-    if submission_file:
-        if not add_submission_files and entry[SubmissionsColumns.FILEEXT.value.name]:
-            fs, _ = db.submissions.get_submission_files(_id)
-            for f in fs:
-                f.unlink()
-        exts: list[str] = entry[SubmissionsColumns.FILEEXT.value.name] if add_submission_files else []
-        for n, f in enumerate(submission_file, len(exts)):
-            exts.append(db.submissions.save_submission_file(_id, f.read_bytes(), "submission",
-                                                            f.suffix.removeprefix("."), n))
-        filesaved = (filesaved & 0b001) + 0b110
-        data |= {SubmissionsColumns.FILESAVED.value.name: filesaved, SubmissionsColumns.FILEEXT.value.name: exts}
-    if submission_thumbnail:
-        db.submissions.save_submission_thumbnail(_id, submission_thumbnail.read_bytes())
-        filesaved = (filesaved & 0b100) + (filesaved & 0b010) + 0b001
-        data |= {SubmissionsColumns.FILESAVED.value.name: filesaved}
+        if submission_file:
+            if not add_submission_files and entry[SubmissionsColumns.FILEEXT.value.name]:
+                fs, _ = db.submissions.get_submission_files(_id)
+                for f in fs:
+                    f.unlink()
+            exts: list[str] = entry[SubmissionsColumns.FILEEXT.value.name] if add_submission_files else []
+            for n, f in enumerate(submission_file, len(exts)):
+                exts.append(db.submissions.save_submission_file(_id, f.read_bytes(), "submission",
+                                                                f.suffix.removeprefix("."), n))
+            filesaved = (filesaved & 0b001) + 0b110
+            data |= {SubmissionsColumns.FILESAVED.value.name: filesaved, SubmissionsColumns.FILEEXT.value.name: exts}
+        if submission_thumbnail:
+            db.submissions.save_submission_thumbnail(_id, submission_thumbnail.read_bytes())
+            filesaved = (filesaved & 0b100) + (filesaved & 0b010) + 0b001
+            data |= {SubmissionsColumns.FILESAVED.value.name: filesaved}
 
     if data:
         db_table.update(Sb(db_table.key.name).__eq__(_id), db_table.format_entry(data))
