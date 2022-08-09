@@ -1,5 +1,15 @@
 # Changelog
 
+## 4.3.5
+
+### Fixes
+
+* Fix editing of non-submissions tables (USERS, JOURNALS, and COMMENTS)
+
+### Dependencies
+
+* Use [falocalrepo-server ~3.2.8](https://pypi.org/project/falocalrepo-server/3.2.8)
+
 ## 4.3.4
 
 ### Dependencies
