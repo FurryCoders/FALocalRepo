@@ -142,7 +142,7 @@ psutil = ">=5.9.1,<6.0.0"
 
 [[package]]
 name = "falocalrepo-server"
-version = "3.2.7"
+version = "3.2.8"
 description = "Web interface for falocalrepo."
 category = "main"
 optional = false
@@ -154,7 +154,7 @@ chardet = ">=5.0.0,<6.0.0"
 click = ">=8.0.12,<9.0.0"
 click-help-colors = ">=0.9.1,<0.10.0"
 falocalrepo-database = ">=5.3.7,<5.4.0"
-fastapi = ">=0.78.0,<0.79.0"
+fastapi = "0.79.0"
 htmlmin = ">=0.1.12,<0.2.0"
 Jinja2 = ">=3.0.3,<4.0.0"
 lxml = ">=4.9.1,<5.0.0"
@@ -163,7 +163,7 @@ uvicorn = ">=0.18.2,<0.19.0"
 
 [[package]]
 name = "fastapi"
-version = "0.78.0"
+version = "0.79.0"
 description = "FastAPI framework, high performance, easy to learn, fast to code, ready for production"
 category = "main"
 optional = false
@@ -438,7 +438,7 @@ python-versions = "*"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "f16ba55983877cc010103c8b3d20cafb288899b8010dac49ce3086d0c6a8457e"
+content-hash = "1173b11a33b6fbe1aee3547f3475bd1079d34701a3ea66385723236b71fee5d9"
 
 [metadata.files]
 anyio = [
@@ -489,12 +489,12 @@ falocalrepo-database = [
     {file = "falocalrepo_database-5.3.7-py3-none-any.whl", hash = "sha256:e1d6ca11512f468d4aa0811f862cd502c3497a3364d0b1db3a60d0546b91813a"},
 ]
 falocalrepo-server = [
-    {file = "falocalrepo-server-3.2.7.tar.gz", hash = "sha256:562944e8cbb18c730cc9d0dc2c20258bb60e6b2accb37eef4fef494494fc6e48"},
-    {file = "falocalrepo_server-3.2.7-py3-none-any.whl", hash = "sha256:cd49cccf114720e2de7ac3a905cd808f510bb795445634771467aca972bd6e6c"},
+    {file = "falocalrepo-server-3.2.8.tar.gz", hash = "sha256:6f322b51a1c7fa074a88c947e79e7a2837543c724e400f17e8e4e0fce0a26f52"},
+    {file = "falocalrepo_server-3.2.8-py3-none-any.whl", hash = "sha256:f6c80dea653cb2aa1b27e12eccfdb51ebcfb165ca39d067731f67102ffd61928"},
 ]
 fastapi = [
-    {file = "fastapi-0.78.0-py3-none-any.whl", hash = "sha256:15fcabd5c78c266fa7ae7d8de9b384bfc2375ee0503463a6febbe3bab69d6f65"},
-    {file = "fastapi-0.78.0.tar.gz", hash = "sha256:3233d4a789ba018578658e2af1a4bb5e38bdd122ff722b313666a9b2c6786a83"},
+    {file = "fastapi-0.79.0-py3-none-any.whl", hash = "sha256:d337563424ceada23857f73d5abe8dae0c28e4cccb53b2af06e78b7bb4a1c7d7"},
+    {file = "fastapi-0.79.0.tar.gz", hash = "sha256:cf0ff6db25b91d321050c4112baab0908c90f19b40bf257f9591d2f9780d1f22"},
 ]
 filetype = [
     {file = "filetype-1.1.0-py2.py3-none-any.whl", hash = "sha256:117e25a50988d1a03a32ed510f4a15353e7291e683e94c63930497dd2c66ce24"},
