@@ -787,14 +787,13 @@ def database_remove(ctx: Context, database: Callable[..., Database], table: str,
         help="Specify a submission file.")
 @option("--submission-thumbnail", default=None, type=PathClick(exists=True, dir_okay=False, path_type=Path),
         help="Specify a submission thumbnail.")
-@option("--replace", is_flag=True, default=False, show_default=True, help="Replace existing entries if present.")
 @database_exists_option
 @color_option
 @help_option
 @pass_context
 @docstring_format(prog_name=__prog_name__, version=__version__, db_app=database_app.name)
 def database_add(ctx: Context, database: Callable[..., Database], table: str, file: TextIO,
-                 submission_file: tuple[Path], submission_thumbnail: Path | None, replace: bool):
+                 submission_file: tuple[Path], submission_thumbnail: Path | None):
     """
     Add entries and submission files manually using a JSON file. Submission files/thumbnails can be added using the
     respective options; all existing files are removed. Multiple submission files can be passed.
