@@ -1,5 +1,11 @@
 # Changelog
 
+## 4.3.7
+
+### Fixes
+
+* Fix `config list` not working
+
 ## 4.3.6
 
 ### Fixes
