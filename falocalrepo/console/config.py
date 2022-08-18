@@ -67,7 +67,7 @@ def config_list(database: Callable[..., Database]):
     db: Database = database()
     config_files_folder.callback(database=lambda: db, new_folder=None, move=False)
     echo()
-    config_cookies.callback(database=lambda: db, cookies=[])
+    config_cookies.callback(database=lambda: db, cookie=[])
     echo()
     config_backup.callback(database=lambda: db, date_format=None, trigger=None, folder=None, remove=False)
 
