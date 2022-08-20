@@ -1,14 +1,16 @@
 from pathlib import Path
+from platform import system
 from signal import SIGINT
 from sys import exit
 from sys import stderr
+from sys import stdout
 from traceback import print_exc
 
 from click import BadParameter
 from click import ClickException
-from click import UsageError
 from click import echo
 from click import secho
+from click import UsageError
 from click.exceptions import Abort
 from click.exceptions import Exit
 from falocalrepo_database.exceptions import MultipleConnections
@@ -40,8 +42,19 @@ def _activate_pretty_errors():
         pretty_errors.mono()
 
 
+def _hide_cursor():
+    if system().lower() in ["linux", "darwin"]:
+        stdout.write("\033[?25l")
+
+
+def _show_cursor():
+    if system().lower() in ["linux", "darwin"]:
+        stdout.write("\033[?25h")
+
+
 def main():
     try:
+        _hide_cursor()
         exit(app.main(standalone_mode=False) or 0)
     except SystemExit:
         raise
@@ -69,6 +82,8 @@ def main():
             secho(f"Trace written to {f.name}", fg="red", bold=True, file=stderr)
         _activate_pretty_errors()
         raise
+    finally:
+        _show_cursor()
 
 
 if __name__ == "__main__":
