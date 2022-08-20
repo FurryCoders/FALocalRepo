@@ -119,7 +119,7 @@ def save_comments(db: Database, parent_table: str, parent_id: int, comments: lis
              CommentsColumns.REPLY_TO.name: comment.reply_to.id if comment.reply_to else None,
              CommentsColumns.AUTHOR.name: comment.author.name,
              CommentsColumns.DATE.name: comment.date,
-             CommentsColumns.TEXT.name: comment.text}, replace=replace)
+             CommentsColumns.TEXT.name: comment.text}, replace=replace, exist_ok=True)
 
 
 class Bar:
