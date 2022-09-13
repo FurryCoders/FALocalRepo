@@ -418,7 +418,7 @@ class Downloader:
             self.clear_line()
             entries: list[T] = result[0]
             page = result[1]
-            entries_width: int = len(str(len(entries)))
+            entries_width: int = w if (w := len(str(len(entries)))) > 1 else 2
             for i, entry in enumerate(entries, 1):
                 t_width: int = terminal_width()
                 available_space: int = t_width - self.bar_width - 2 - 1 - 1
