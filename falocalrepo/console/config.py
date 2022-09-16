@@ -189,8 +189,8 @@ def config_bbcode(ctx: Context, database: Callable[..., Database], bbcode: bool 
     """
     Read or modify the BBCode setting of the database and convert existing entries when changing it.
 
-    {bold}{red}WARNING:{reset} HTML to BBCode conversion (and vice versa) is still a work in progress and it may cause some
-    content to be lost. A backup of the database should be made before changing the setting.
+    {bold}{red}WARNING:{reset} HTML to BBCode conversion (and vice versa) is still a work in progress and it may cause
+    some content to be lost. A backup of the database should be made before changing the setting.
     """
 
     db: Database = database()
