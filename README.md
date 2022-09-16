@@ -754,7 +754,8 @@ The submissions' table contains the metadata of the submissions downloaded by th
 * `AUTHOR` the username of the author (uploader) in full format
 * `TITLE`
 * `DATE` upload date in ISO format _YYYY-MM-DDTHH:MM_
-* `DESCRIPTION` description in HTML format
+* `DESCRIPTION` description in HTML/BBCode format
+* `FOOTER` footer in HTML/BBCode format
 * `TAGS` bar-separated tags
 * `CATEGORY`
 * `SPECIES`
@@ -780,7 +781,9 @@ The journals' table contains the metadata of the journals downloaded by the prog
 * `AUTHOR` the username of the author (uploader) in full format
 * `TITLE`
 * `DATE` upload date in ISO format _YYYY-MM-DDTHH:MM_
-* `CONTENT` content in HTML format
+* `CONTENT` content in HTML/BBCode format
+* `HEADER` header in HTML/BBCode format
+* `FOOTER` footer in HTML/BBCode format
 * `MENTIONS` a bar-separated list of users that are mentioned in the journal content as links
 * `USERUPDATE` whether the journal was added as a user update or single entry
 
@@ -794,7 +797,7 @@ The comments' table contains the metadata of the journals and submissions stored
 * `REPLY_TO` the id of the parent comment, if the comment is a reply
 * `AUTHOR` the username of the author in full format
 * `DATE` post date in ISO format _YYYY-MM-DDTHH:MM:SS_
-* `TEXT` the text of the comment in HTML format
+* `TEXT` the text of the comment in HTML/BBCode format
 
 ### Settings
 
@@ -806,6 +809,7 @@ The settings table contains settings for the program and variable used by the da
 * `SERVER.SEARCH` search settings if saved using the web server (see [server](#server))
 * `BACKUPFOLDER` folder for automatic backups
 * `BACKUPSETTINGS` settings for automatic backups
+* `BBCODE` settings for BBCode mode
 
 ### History
 
