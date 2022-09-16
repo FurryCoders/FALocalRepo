@@ -509,6 +509,7 @@ class Downloader:
                      JournalsColumns.FOOTER.name: "",
                      },
                     replace=self.replace)
+                self.db.commit()
             return 0
 
         err, [entries_added, entries_modified, entries_errors] = self.download_user_folder(
