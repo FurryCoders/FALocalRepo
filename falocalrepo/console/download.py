@@ -296,8 +296,8 @@ def download_submissions(ctx: Context, database: Callable[..., Database], submis
 
     The {yellow}--retry{reset} option enables downloads retries for submission files and thumbnails up to 5 retries.
 
-    The {yellow}--save-comments{reset} option allows saving comments for downloaded submissions and journals. Comments
-    are otherwise ignored.
+    The {yellow}--save-comments{reset} option allows saving comments for downloaded submissions. Comments are otherwise
+    ignored.
 
     The optional {yellow}--dry-run{reset} option disables downloading and saving and simply lists fetched entries
     """
@@ -350,8 +350,8 @@ def download_journals(ctx: Context, database: Callable[..., Database], journal_i
     If the {yellow}--replace{reset} option is used, database entries will be overwritten with new data (favorites will
     be maintained).
 
-    The {yellow}--save-comments{reset} option allows saving comments for downloaded submissions and journals. Comments
-    are otherwise ignored.
+    The {yellow}--save-comments{reset} option allows saving comments for downloaded journals. Comments are otherwise
+    ignored.
 
     The optional {yellow}--dry-run{reset} option disables downloading and saving and simply lists fetched entries.
     """
