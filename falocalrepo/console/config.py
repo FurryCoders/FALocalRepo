@@ -16,9 +16,16 @@ from click import echo
 from click import group
 from click import option
 from click import pass_context
+from faapi.parse import bbcode_to_html
+from faapi.parse import clean_html
+from faapi.parse import html_to_bbcode
 from falocalrepo_database import Cursor
 from falocalrepo_database import Database
+from falocalrepo_database.selector import SelectorBuilder as Sb
+from falocalrepo_database.tables import CommentsColumns
+from falocalrepo_database.tables import JournalsColumns
 from falocalrepo_database.tables import SubmissionsColumns
+from falocalrepo_database.tables import UsersColumns
 
 from .colors import *
 from .util import CustomHelpColorsGroup
@@ -167,6 +174,101 @@ def config_cookies(ctx: Context, database: Callable[..., Database], cookie: list
         from .download import download_app, download_login
         echo(f"Check cookies validity with the {yellow}{download_app.name} {download_login.name}{reset} command.",
              color=ctx.color)
+        backup_database(db, ctx, "config")
+
+
+# noinspection DuplicatedCode
+@config_app.command("bbcode")
+@option("--true/--false", "bbcode", is_eager=True, is_flag=True, default=None, help="Enable or disable BBCode.")
+@database_exists_option
+@color_option
+@help_option
+@pass_context
+@docstring_format()
+def config_bbcode(ctx: Context, database: Callable[..., Database], bbcode: bool = None):
+    """
+    Read or modify the BBCode setting of the database and convert existing entries when changing it.
+
+    {bold}{red}WARNING:{reset} HTML to BBCode conversion (and vice versa) is still a work in progress and it may cause some
+    content to be lost. A backup of the database should be made before changing the setting.
+    """
+
+    db: Database = database()
+    updated: bool = False
+
+    echo(f"{bold}BBCode{reset}", color=ctx.color)
+
+    if bbcode is not None and bbcode == db.settings.bbcode:
+        echo(f"BBCode is already set to {yellow}{bbcode}{reset}.\n", color=ctx.color)
+    elif bbcode is not None and bbcode != db.settings.bbcode:
+        echo(f"\n{bold}{red}WARNING:{reset} HTML to BBCode conversion (and vice versa) is still a work in progress and"
+             f" it may cause some content to be lost. A backup of the database should be made before changing the"
+             f" setting.\n",
+             color=ctx.color)
+
+        updated = True
+        try:
+            db.settings.bbcode = bbcode
+
+            users_total: int = len(db.users)
+            echo(f"Converting {yellow}USERS{reset} ({users_total} entries)", color=ctx.color)
+            for n, entry in enumerate(db.users, 1):
+                echo(f"\r{n}/{users_total}", nl=False)
+                u = entry[UsersColumns.USERPAGE.name]
+                entry |= {UsersColumns.USERPAGE.name: clean_html(html_to_bbcode(u)) if bbcode else bbcode_to_html(u)}
+                db.users[entry[db.users.key.name]] = entry
+            echo("\r" + (" " * ((len(str(users_total)) * 2) + 1)) + "\r", nl=False)
+
+            submissions_total: int = len(db.submissions)
+            echo(f"Converting {yellow}SUBMISSIONS{reset} ({submissions_total} entries)", color=ctx.color)
+            for n, entry in enumerate(db.submissions, 1):
+                echo(f"\r{n}/{submissions_total}", nl=False)
+                d, f = entry[SubmissionsColumns.DESCRIPTION.name], entry[SubmissionsColumns.FOOTER.name]
+                entry |= {
+                    SubmissionsColumns.DESCRIPTION.name: clean_html(html_to_bbcode(d)) if bbcode else bbcode_to_html(d),
+                    SubmissionsColumns.FOOTER.name: clean_html(html_to_bbcode(f)) if bbcode else bbcode_to_html(f),
+                }
+                db.submissions[entry[db.submissions.key.name]] = entry
+            echo("\r" + (" " * ((len(str(submissions_total)) * 2) + 1)) + "\r", nl=False)
+
+            journals_total: int = len(db.journals)
+            echo(f"Converting {yellow}JOURNALS{reset} ({journals_total} entries)", color=ctx.color)
+            for n, entry in enumerate(db.journals, 1):
+                echo(f"\r{n}/{journals_total}", nl=False)
+                c, h, f = (
+                    entry[JournalsColumns.CONTENT.name],
+                    entry[JournalsColumns.HEADER.name],
+                    entry[JournalsColumns.FOOTER.name],
+                )
+                entry |= {
+                    JournalsColumns.CONTENT.name: clean_html(html_to_bbcode(c)) if bbcode else bbcode_to_html(c),
+                    JournalsColumns.HEADER.name: clean_html(html_to_bbcode(h)) if bbcode else bbcode_to_html(h),
+                    JournalsColumns.FOOTER.name: clean_html(html_to_bbcode(f)) if bbcode else bbcode_to_html(f),
+                }
+                db.journals[entry[db.journals.key.name]] = entry
+            echo("\r" + (" " * ((len(str(journals_total)) * 2) + 1)) + "\r", nl=False)
+
+            comments_total: int = len(db.comments)
+            echo(f"Converting {yellow}COMMENTS{reset} ({comments_total} entries)", color=ctx.color)
+            for n, entry in enumerate(db.comments, 1):
+                echo(f"\r{n}/{comments_total}", nl=False)
+                t = entry[CommentsColumns.TEXT.name]
+                entry |= {CommentsColumns.TEXT.name: clean_html(html_to_bbcode(t)) if bbcode else bbcode_to_html(t)}
+                db.comments.update(Sb() & [Sb(k.name) == k.to_entry(entry[k.name]) for k in db.comments.keys],
+                                   db.comments.format_entry(entry))
+            echo("\r" + (" " * ((len(str(comments_total)) * 2) + 1)) + "\r", nl=False)
+
+            db.commit()
+
+            echo(f"\nAll entries have been converted to {'BBCode' if bbcode else 'HTML'}.\n")
+        except BaseException:
+            db.close()
+            echo(f"\n{red}Conversion was interrupted and all temporary changes have been deleted{reset}")
+            raise
+
+    echo(f"{blue}BBCode{reset}: {yellow}{db.settings.bbcode}{reset}", color=ctx.color)
+
+    if updated:
         backup_database(db, ctx, "config")
 
 
