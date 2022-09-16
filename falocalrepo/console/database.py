@@ -37,6 +37,7 @@ from click import pass_context
 from click import secho
 from click import style
 from click.shell_completion import CompletionItem
+from faapi.parse import bbcode_to_html
 from falocalrepo_database import Column
 from falocalrepo_database import Cursor
 from falocalrepo_database import Database
@@ -405,7 +406,7 @@ def html_to_ansi(html: str, *, root: bool = False) -> str:
 
 
 def view_entry(entry: dict[str, Any], html_fields: list[str], exclude_fields: list[str], *,
-               raw_html: bool = False) -> str:
+               raw_html: bool = False, use_bbcode: bool = False) -> str:
     outputs: list[str] = []
     padding: int = max(map(len, entry.keys()))
     for field, value in ((k, v) for k, v in entry.items() if k not in html_fields and k not in exclude_fields):
@@ -414,7 +415,10 @@ def view_entry(entry: dict[str, Any], html_fields: list[str], exclude_fields: li
         outputs.append(output)
     for field, value in zip(html_fields, map(entry.__getitem__, html_fields)):
         outputs.append(f"{blue}{field:<{padding}}{reset}:\n" +
-                       (value if raw_html else html_to_ansi(value, root=True)).strip())
+                       (
+                           value if raw_html else
+                           html_to_ansi(bbcode_to_html(value) if use_bbcode else value, root=True)
+                       ).strip())
     return "\n".join(outputs)
 
 
