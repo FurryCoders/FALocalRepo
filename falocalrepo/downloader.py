@@ -345,6 +345,8 @@ class Downloader:
             JournalsColumns.AUTHOR.name: journal.author.name,
             JournalsColumns.USERUPDATE.name: user_update,
             JournalsColumns.CONTENT.name: journal.content_bbcode if self.bbcode else journal.content,
+            JournalsColumns.HEADER.name: journal.header_bbcode if self.bbcode else journal.header,
+            JournalsColumns.FOOTER.name: journal.footer_bbcode if self.bbcode else journal.footer,
         }, replace=replace)
         if self.save_comments:
             save_comments(self.db, journals_table, journal.id, journal.comments, replace=replace, bbcode=self.bbcode)
