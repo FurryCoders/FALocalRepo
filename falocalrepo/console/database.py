@@ -693,7 +693,7 @@ def database_search(ctx: Context, database: Callable[..., Database], table: str,
 @database_app.command("view", short_help="View and entry.", no_args_is_help=True)
 @argument("table", nargs=1, required=True, is_eager=True, type=TableChoice())
 @argument("id_", metavar="ID", nargs=1, required=True, type=str, callback=id_callback)
-@option("--raw-content", is_flag=True, default=False, help="Do not format HTMl fields.")
+@option("--raw-content", is_flag=True, default=False, help="Do not format HTMl/BBCode fields.")
 @option("--view-comments", "view_comments_", is_flag=True, default=False,
         help="Show comments for submissions and journals.")
 @database_exists_option
@@ -708,8 +708,8 @@ def database_view(ctx: Context, database: Callable[..., Database], table: str, i
     and formatted.
 
     Formatting is limited to alignment, horizontal lines, quotes, links, color, and emphasis. To view the properly
-    formatted HTML content, use the {yellow}server{reset} command. Formatting can be disabled with the
-    {yellow}--raw-content{reset} option to print the raw HTML content.
+    formatted HTML/BBCode content, use the {yellow}server{reset} command. Formatting can be disabled with the
+    {yellow}--raw-content{reset} option to print the raw content.
 
     {italic}Note{reset}: full color support is only enabled for truecolor terminals. If the terminal does not support
     truecolor, the closest ANSI color match will be used instead.
