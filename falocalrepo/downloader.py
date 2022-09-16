@@ -388,8 +388,9 @@ class Downloader:
             SubmissionsColumns.FAVORITE.name: {*favorites} if favorites else {},
             SubmissionsColumns.USERUPDATE.name: user_update,
             SubmissionsColumns.DESCRIPTION.name: submission.description_bbcode if self.bbcode
-            else submission.description},
-            [file], thumb, replace=replace)
+            else submission.description,
+            SubmissionsColumns.FOOTER.name: submission.footer_bbcode if self.bbcode else submission.footer,
+        }, [file], thumb, replace=replace)
         if self.save_comments:
             save_comments(self.db, submissions_table, submission.id, submission.comments,
                           replace=replace, bbcode=self.bbcode)
