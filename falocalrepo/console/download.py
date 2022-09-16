@@ -36,28 +36,28 @@ from ..downloader import sort_set
 
 class FolderChoice(CompleteChoice):
     completion_items: list[CompletionItem] = [
-        CompletionItem(Folder.gallery.value, help="User's gallery folder"),
-        CompletionItem(Folder.scraps.value, help="User's scraps folder"),
-        CompletionItem(Folder.favorites.value, help="User's favorites folder"),
-        CompletionItem(Folder.journals.value, help="User's journals"),
-        CompletionItem(Folder.userpage.value, help="User's profile page"),
+        CompletionItem(Folder.gallery, help="User's gallery folder"),
+        CompletionItem(Folder.scraps, help="User's scraps folder"),
+        CompletionItem(Folder.favorites, help="User's favorites folder"),
+        CompletionItem(Folder.journals, help="User's journals"),
+        CompletionItem(Folder.userpage, help="User's profile page"),
     ]
 
 
 class UpdateFolderChoice(CompleteChoice):
     completion_items: list[CompletionItem] = [
         *FolderChoice.completion_items,
-        CompletionItem(f"{Folder.watchlist_by.value}", help=f"User's watches"),
-        CompletionItem(f"{Folder.watchlist_to.value}", help=f"Users watching user"),
+        CompletionItem(f"{Folder.watchlist_by}", help=f"User's watches"),
+        CompletionItem(f"{Folder.watchlist_to}", help=f"Users watching user"),
     ]
 
 
 class DownloadFolderChoice(CompleteChoice):
     completion_items: list[CompletionItem] = [
         *FolderChoice.completion_items,
-        *[CompletionItem(f"{Folder.watchlist_by.value}:{f}", help=f"User's watches ({f})")
+        *[CompletionItem(f"{Folder.watchlist_by}:{f}", help=f"User's watches ({f})")
           for f in Folder if f != Folder.watchlist_by and f != Folder.watchlist_to],
-        *[CompletionItem(f"{Folder.watchlist_to.value}:{f}", help=f"Users watching user ({f})")
+        *[CompletionItem(f"{Folder.watchlist_to}:{f}", help=f"Users watching user ({f})")
           for f in Folder if f != Folder.watchlist_by and f != Folder.watchlist_to],
     ]
 
@@ -136,8 +136,8 @@ def download_login(ctx: Context, database: Callable[..., Database]):
 @help_option
 @pass_context
 @docstring_format(', '.join([c.value for c in FolderChoice.completion_items] +
-                            [Folder.watchlist_by.value + f":{yellow}FOLDER{reset}"] +
-                            [Folder.watchlist_to.value + f":{yellow}FOLDER{reset}"]))
+                            [Folder.watchlist_by + f":{yellow}FOLDER{reset}"] +
+                            [Folder.watchlist_to + f":{yellow}FOLDER{reset}"]))
 def download_users(ctx: Context, database: Callable[..., Database], users: tuple[str], folders: tuple[str],
                    retry: int | None, save_comments: bool, replace: bool, dry_run: bool, verbose_report: bool,
                    report_file: TextIO | None):
@@ -164,16 +164,16 @@ def download_users(ctx: Context, database: Callable[..., Database], users: tuple
                                         replace=replace, dry_run=dry_run)
     if not dry_run:
         add_history(db, ctx, users=users, folders=folders)
-    watchlist_by: list[str] = [f.split(":")[1] for f in folders if f.startswith(Folder.watchlist_by.value)]
-    watchlist_to: list[str] = [f.split(":")[1] for f in folders if f.startswith(Folder.watchlist_to.value)]
+    watchlist_by: list[str] = [f.split(":")[1] for f in folders if f.startswith(Folder.watchlist_by)]
+    watchlist_to: list[str] = [f.split(":")[1] for f in folders if f.startswith(Folder.watchlist_to)]
     folders_ = [f for f in folders
-                if not (f.startswith(Folder.watchlist_by.value) or f.startswith(Folder.watchlist_to.value))]
+                if not (f.startswith(Folder.watchlist_by) or f.startswith(Folder.watchlist_to))]
     if watchlist_by:
-        folders_.insert(folders.index(next((f for f in folders if f.startswith(Folder.watchlist_by.value)))),
-                        f"{Folder.watchlist_by.value}:{':'.join(watchlist_by)}")
+        folders_.insert(folders.index(next((f for f in folders if f.startswith(Folder.watchlist_by)))),
+                        f"{Folder.watchlist_by}:{':'.join(watchlist_by)}")
     if watchlist_to:
-        folders_.insert(folders.index(next((f for f in folders if f.startswith(Folder.watchlist_to.value)))),
-                        f"{Folder.watchlist_to.value}:{':'.join(watchlist_to)}")
+        folders_.insert(folders.index(next((f for f in folders if f.startswith(Folder.watchlist_to)))),
+                        f"{Folder.watchlist_to}:{':'.join(watchlist_to)}")
     folders = folders_
     try:
         downloader.download_users(list(users), list(folders))
