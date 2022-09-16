@@ -171,13 +171,14 @@ class Bar:
 # noinspection DuplicatedCode
 class Downloader:
     def __init__(self, db: Database, api: FAAPI, *, color: bool = True, retry: int = 0, comments: bool = False,
-                 replace: bool = False, dry_run: bool = False):
+                 content_only: bool = False, replace: bool = False, dry_run: bool = False):
         self.db: Database = db
         self.bbcode: bool = self.db.settings.bbcode
         self.output: OutputType = OutputType.rich if terminal_width() > 0 else OutputType.simple
         self.color: bool = color
         self.retry: int = retry
         self.save_comments: bool = comments
+        self.content_only: bool = content_only
         self.replace: bool = replace
         self.dry_run: bool = dry_run
         self.api: FAAPI = api
@@ -345,8 +346,10 @@ class Downloader:
             JournalsColumns.AUTHOR.name: journal.author.name,
             JournalsColumns.USERUPDATE.name: user_update,
             JournalsColumns.CONTENT.name: journal.content_bbcode if self.bbcode else journal.content,
-            JournalsColumns.HEADER.name: journal.header_bbcode if self.bbcode else journal.header,
-            JournalsColumns.FOOTER.name: journal.footer_bbcode if self.bbcode else journal.footer,
+            JournalsColumns.HEADER.name: (journal.header_bbcode if self.bbcode else journal.header)
+            if not self.content_only else "",
+            JournalsColumns.FOOTER.name: (journal.footer_bbcode if self.bbcode else journal.footer)
+            if not self.content_only else "",
         }, replace=replace)
         if self.save_comments:
             save_comments(self.db, journals_table, journal.id, journal.comments, replace=replace, bbcode=self.bbcode)
@@ -389,7 +392,8 @@ class Downloader:
             SubmissionsColumns.USERUPDATE.name: user_update,
             SubmissionsColumns.DESCRIPTION.name: submission.description_bbcode if self.bbcode
             else submission.description,
-            SubmissionsColumns.FOOTER.name: submission.footer_bbcode if self.bbcode else submission.footer,
+            SubmissionsColumns.FOOTER.name: (submission.footer_bbcode if self.bbcode else submission.footer)
+            if not self.content_only else "",
         }, [file], thumb, replace=replace)
         if self.save_comments:
             save_comments(self.db, submissions_table, submission.id, submission.comments,
@@ -493,7 +497,7 @@ class Downloader:
 
     def download_user_journals(self, user: str, stop: int = -1, clear_last_found: bool = False) -> int:
         def save(journal: JournalPartial, _db_entry: dict | None) -> int:
-            if self.save_comments:
+            if self.save_comments or not self.content_only:
                 return self.download_journal(journal.id, True, self.replace)
             else:
                 self.db.journals.save_journal(
@@ -796,8 +800,10 @@ class Downloader:
                 (u := JournalsColumns.USERUPDATE.name): entry.get(u, False),
                 JournalsColumns.AUTHOR.name: journal.author.name,
                 JournalsColumns.CONTENT.name: journal.content_bbcode if self.bbcode else journal.content,
-                JournalsColumns.HEADER.name: journal.header_bbcode if self.bbcode else journal.header,
-                JournalsColumns.FOOTER.name: journal.footer_bbcode if self.bbcode else journal.footer,
+                JournalsColumns.HEADER.name: (journal.header_bbcode if self.bbcode else journal.header)
+                if not self.content_only else "",
+                JournalsColumns.FOOTER.name: (journal.footer_bbcode if self.bbcode else journal.footer)
+                if not self.content_only else "",
             }, replace=self.replace)
             if self.save_comments:
                 save_comments(self.db, journals_table, journal.id, journal.comments,
