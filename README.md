@@ -481,8 +481,8 @@ View a single entry in the terminal. Submission descriptions, journal contents, 
 formatted.
 
 Formatting is limited to alignment, horizontal lines, quotes, links, color, and emphasis. To view the properly formatted
-HTML content, use the `server` command. Formatting can be disabled with the `--raw-content` option to print the raw HTML
-content.
+HTML/BBCode content, use the `server` command. Formatting can be disabled with the `--raw-content` option to print the
+raw content.
 
 _Note_: full color support is only enabled for truecolor terminals. If the terminal does not support truecolor, the
 closest ANSI color match will be used instead.
