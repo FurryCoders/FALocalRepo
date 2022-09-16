@@ -8,7 +8,9 @@ from typing import Callable
 from typing import Iterable
 from typing import TextIO
 from typing import TypeVar
+from warnings import filterwarnings
 
+import bs4
 from click import echo
 from faapi import Comment
 from faapi import FAAPI
@@ -36,6 +38,8 @@ from requests import Response
 
 from .console.colors import *
 from .console.util import clean_string
+
+filterwarnings("ignore", category=bs4.MarkupResemblesLocatorWarning, module="bs4")
 
 _FolderDownloader = Callable[[str, int | str], tuple[list[SubmissionPartial], str | int]]
 
@@ -110,7 +114,8 @@ def download_catch(func: Callable[..., T], *args, **kwargs) -> tuple[T | None, i
         return None, 3
 
 
-def save_comments(db: Database, parent_table: str, parent_id: int, comments: list[Comment], *, replace: bool = False):
+def save_comments(db: Database, parent_table: str, parent_id: int, comments: list[Comment],
+                  *, replace: bool = False, bbcode: bool = False):
     for comment in filter(lambda c: not c.hidden, flatten_comments(comments)):
         db.comments.save_comment(
             {CommentsColumns.ID.name: comment.id,
@@ -119,7 +124,8 @@ def save_comments(db: Database, parent_table: str, parent_id: int, comments: lis
              CommentsColumns.REPLY_TO.name: comment.reply_to.id if comment.reply_to else None,
              CommentsColumns.AUTHOR.name: comment.author.name,
              CommentsColumns.DATE.name: comment.date,
-             CommentsColumns.TEXT.name: comment.text}, replace=replace, exist_ok=True)
+             CommentsColumns.TEXT.name: comment.text_bbcode if bbcode else comment.text},
+            replace=replace, exist_ok=True)
 
 
 class Bar:
@@ -167,6 +173,7 @@ class Downloader:
     def __init__(self, db: Database, api: FAAPI, *, color: bool = True, retry: int = 0, comments: bool = False,
                  replace: bool = False, dry_run: bool = False):
         self.db: Database = db
+        self.bbcode: bool = self.db.settings.bbcode
         self.output: OutputType = OutputType.rich if terminal_width() > 0 else OutputType.simple
         self.color: bool = color
         self.retry: int = retry
@@ -336,10 +343,11 @@ class Downloader:
         self.db.journals.save_journal({
             **format_entry(dict(journal), self.db.journals.columns),
             JournalsColumns.AUTHOR.name: journal.author.name,
-            JournalsColumns.USERUPDATE.name: user_update
+            JournalsColumns.USERUPDATE.name: user_update,
+            JournalsColumns.CONTENT.name: journal.content_bbcode if self.bbcode else journal.content,
         }, replace=replace)
         if self.save_comments:
-            save_comments(self.db, journals_table, journal.id, journal.comments, replace=replace)
+            save_comments(self.db, journals_table, journal.id, journal.comments, replace=replace, bbcode=self.bbcode)
         self.db.commit()
         self.bar_message("ADDED", green, always=True)
         return 0
@@ -371,14 +379,18 @@ class Downloader:
             self.bar_message(f"RETRY {self.retry - retry + 1}", red)
             self.api.handle_delay()
             thumb = self.download_bytes(submission.thumbnail_url or thumbnail)
-        self.db.submissions.save_submission({**format_entry(dict(submission), self.db.submissions.columns),
-                                             SubmissionsColumns.FILEURL.name: [submission.file_url],
-                                             SubmissionsColumns.AUTHOR.name: submission.author.name,
-                                             SubmissionsColumns.FAVORITE.name: {*favorites} if favorites else {},
-                                             SubmissionsColumns.USERUPDATE.name: user_update},
-                                            [file], thumb, replace=replace)
+        self.db.submissions.save_submission({
+            **format_entry(dict(submission), self.db.submissions.columns),
+            SubmissionsColumns.FILEURL.name: [submission.file_url],
+            SubmissionsColumns.AUTHOR.name: submission.author.name,
+            SubmissionsColumns.FAVORITE.name: {*favorites} if favorites else {},
+            SubmissionsColumns.USERUPDATE.name: user_update,
+            SubmissionsColumns.DESCRIPTION.name: submission.description_bbcode if self.bbcode
+            else submission.description},
+            [file], thumb, replace=replace)
         if self.save_comments:
-            save_comments(self.db, submissions_table, submission.id, submission.comments, replace=replace)
+            save_comments(self.db, submissions_table, submission.id, submission.comments,
+                          replace=replace, bbcode=self.bbcode)
         self.db.commit()
         self.bar_message(("#" * self.bar_width) if thumb else "ERROR", green if thumb else red, always=True)
         self.bar_close()
@@ -484,7 +496,11 @@ class Downloader:
                 self.db.journals.save_journal(
                     {**format_entry(dict(journal), self.db.journals.columns),
                      JournalsColumns.AUTHOR.name: journal.author.name,
-                     JournalsColumns.USERUPDATE.name: True},
+                     JournalsColumns.USERUPDATE.name: True,
+                     JournalsColumns.CONTENT.name: journal.content_bbcode if self.bbcode else journal.content,
+                     JournalsColumns.HEADER.name: "",
+                     JournalsColumns.FOOTER.name: "",
+                     },
                     replace=self.replace)
             return 0
 
@@ -513,7 +529,7 @@ class Downloader:
                               "ADDED FAV")]
         else:
             modify_checks = [(lambda submission, _: (self.db.submissions.set_user_update(submission.id, True) +
-                                                     self.db.submissions.set_folder(submission.id, folder.value)),
+                                                     self.db.submissions.set_folder(submission.id, folder)),
                               "UPDATED")]
 
         def save(sub_partial: SubmissionPartial, db_entry: dict | None, ) -> int:
@@ -560,10 +576,10 @@ class Downloader:
             contains=lambda u: self.db.users[u.name_url],
             modify_checks=[(lambda w, e: check_folders(self.db, w, e), "UPDATED")],
             save=(lambda watch, _db_entry: self.db.users.save_user(
-                {UsersColumns.USERNAME.value.name: watch.name_url,
-                 UsersColumns.FOLDERS.value.name: set(folders),
-                 UsersColumns.ACTIVE.value.name: True,
-                 UsersColumns.USERPAGE.value.name: ""}), "ADDED"),
+                {UsersColumns.USERNAME.name: watch.name_url,
+                 UsersColumns.FOLDERS.name: set(folders),
+                 UsersColumns.ACTIVE.name: True,
+                 UsersColumns.USERPAGE.name: ""}), "ADDED"),
             stop=-1, clear_found=clear_found, replace_overwrite=False
         )
         self.added_users.extend(entries_added)
@@ -587,14 +603,16 @@ class Downloader:
         if err:
             self.user_errors += [username]
             return err
-        added: bool = (current := self.db.users[username][UsersColumns.USERPAGE.value.name]) == ""
-        updated: bool = not added and user.profile != current
+        added: bool = (current := self.db.users[username][UsersColumns.USERPAGE.name]) == ""
+        updated: bool = not added and user.profile_bbcode != current
         if not added and not updated:
             self.bar_message("IN DB", green, always=True)
             self.bar_close("" if clear_found else "\n")
             self.clear_line()
             return 0
-        self.db.users[username] = self.db.users[username] | {UsersColumns.USERPAGE.value.name: user.profile}
+        self.db.users[username] = self.db.users[username] | {
+            UsersColumns.USERPAGE.name: user.profile_bbcode if self.bbcode else user.profile
+        }
         self.added_userpages += [username] if added else []
         self.modified_userpages += [username] if updated else []
         self.bar_message("ADDED" if added else "UPDATED", green, always=True)
@@ -627,10 +645,10 @@ class Downloader:
             user_downloaded: bool = False
             if not self.dry_run:
                 if user_added := user not in self.db.users:
-                    self.db.users.save_user({UsersColumns.USERNAME.value.name: user,
-                                             UsersColumns.FOLDERS.value.name: {},
-                                             UsersColumns.ACTIVE.value.name: True,
-                                             UsersColumns.USERPAGE.value.name: ""})
+                    self.db.users.save_user({UsersColumns.USERNAME.name: user,
+                                             UsersColumns.FOLDERS.name: {},
+                                             UsersColumns.ACTIVE.name: True,
+                                             UsersColumns.USERPAGE.name: ""})
                     self.db.commit()
                     self.added_users += [user]
                 self.db.users.set_active(user, True)
@@ -702,14 +720,14 @@ class Downloader:
 
         users_cursor: Iterable[dict]
         if like and users:
-            users_cursor = self.db.users.select(Sb() | [Sb(UsersColumns.USERNAME.value.name) % u for u in users])
+            users_cursor = self.db.users.select(Sb() | [Sb(UsersColumns.USERNAME.name) % u for u in users])
         elif users:
             users_cursor = self.db.users[users]
         else:
-            users_cursor = self.db.users.select(order=[UsersColumns.USERNAME.value.name])
+            users_cursor = self.db.users.select(order=[UsersColumns.USERNAME.name])
         users_folders: list[tuple[str, list[str]]]
-        users_folders = [(u[UsersColumns.USERNAME.value.name], [*u[UsersColumns.FOLDERS.value.name]])
-                         for u in users_cursor if u[UsersColumns.ACTIVE.value.name] or deactivated]
+        users_folders = [(u[UsersColumns.USERNAME.name], [*u[UsersColumns.FOLDERS.name]])
+                         for u in users_cursor if u[UsersColumns.ACTIVE.name] or deactivated]
 
         users_folders = sorted(users_folders, key=lambda uf: users.index(uf[0]) if users and not like else uf[0])
 
@@ -745,8 +763,8 @@ class Downloader:
                 self.bar_close()
                 continue
             self.download_submission(submission_id,
-                                     entry.get(SubmissionsColumns.USERUPDATE.value.name, False),
-                                     entry.get(SubmissionsColumns.FAVORITE.value.name, {}),
+                                     entry.get(SubmissionsColumns.USERUPDATE.name, False),
+                                     entry.get(SubmissionsColumns.FAVORITE.name, {}),
                                      "", self.replace)
 
     # noinspection DuplicatedCode
@@ -772,11 +790,15 @@ class Downloader:
                 continue
             self.db.journals.save_journal({
                 **format_entry(dict(journal), self.db.journals.columns),
+                (u := JournalsColumns.USERUPDATE.name): entry.get(u, False),
                 JournalsColumns.AUTHOR.name: journal.author.name,
-                (u := JournalsColumns.USERUPDATE.name): entry.get(u, False)
+                JournalsColumns.CONTENT.name: journal.content_bbcode if self.bbcode else journal.content,
+                JournalsColumns.HEADER.name: journal.header_bbcode if self.bbcode else journal.header,
+                JournalsColumns.FOOTER.name: journal.footer_bbcode if self.bbcode else journal.footer,
             }, replace=self.replace)
             if self.save_comments:
-                save_comments(self.db, journals_table, journal.id, journal.comments, replace=self.replace)
+                save_comments(self.db, journals_table, journal.id, journal.comments,
+                              replace=self.replace, bbcode=self.bbcode)
             self.added_journals += [journal.id]
             self.db.commit()
             self.bar_message("ADDED", green, always=True)
