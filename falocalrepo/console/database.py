@@ -489,7 +489,7 @@ def database_info(ctx: Context, database: Callable[..., Database]):
         return
     last_history: dict | None = next(db.history.select(order=[db.history.key.name + ' desc'], limit=1), None)
     echo(f"{blue}Last update{reset}: ", nl=False, color=ctx.color)
-    echo(f"{yellow}{(last_history or {}).get(HistoryColumns.TIME.value.name, None)}{reset}", color=ctx.color)
+    echo(f"{yellow}{(last_history or {}).get(HistoryColumns.TIME.name, None)}{reset}", color=ctx.color)
     echo(f"{blue}Users{reset}      : ", nl=False, color=ctx.color)
     echo(f"{yellow}{len(db.users)}{reset}", color=ctx.color)
     echo(f"{blue}Submissions{reset}: ", nl=False, color=ctx.color)
@@ -656,7 +656,7 @@ def database_search(ctx: Context, database: Callable[..., Database], table: str,
     elif table == comments_table:
         headers = headers or [*zip(cols := [CommentsColumns.ID.name, CommentsColumns.PARENT_TABLE.name,
                                             CommentsColumns.PARENT_ID.name, CommentsColumns.AUTHOR.name,
-                                            CommentsColumns.DATE.value],
+                                            CommentsColumns.DATE.name],
                                    ((*table_widths, *([0] * len(cols))) if table_widths else (10, 11, 10, 16, 0)))]
         sort = sort or ((CommentsColumns.ID.name, "desc"),)
 
@@ -901,23 +901,23 @@ def database_edit(ctx: Context, database: Callable[..., Database], table: str, _
         raise BadParameter(f"No entry with ID {_id} in {table}.", ctx, get_param(ctx, "_id"))
 
     if db_table.name == db.submissions.name:
-        filesaved: int = data.get(f := SubmissionsColumns.FILESAVED.value.name, entry[f])
+        filesaved: int = data.get(f := SubmissionsColumns.FILESAVED.name, entry[f])
 
         if submission_file:
-            if not add_submission_files and entry[SubmissionsColumns.FILEEXT.value.name]:
+            if not add_submission_files and entry[SubmissionsColumns.FILEEXT.name]:
                 fs, _ = db.submissions.get_submission_files(_id)
                 for f in fs:
                     f.unlink()
-            exts: list[str] = entry[SubmissionsColumns.FILEEXT.value.name] if add_submission_files else []
+            exts: list[str] = entry[SubmissionsColumns.FILEEXT.name] if add_submission_files else []
             for n, f in enumerate(submission_file, len(exts)):
                 exts.append(db.submissions.save_submission_file(_id, f.read_bytes(), "submission",
                                                                 f.suffix.removeprefix("."), n))
             filesaved = (filesaved & 0b001) + 0b110
-            data |= {SubmissionsColumns.FILESAVED.value.name: filesaved, SubmissionsColumns.FILEEXT.value.name: exts}
+            data |= {SubmissionsColumns.FILESAVED.name: filesaved, SubmissionsColumns.FILEEXT.name: exts}
         if submission_thumbnail:
             db.submissions.save_submission_thumbnail(_id, submission_thumbnail.read_bytes())
             filesaved = (filesaved & 0b100) + (filesaved & 0b010) + 0b001
-            data |= {SubmissionsColumns.FILESAVED.value.name: filesaved}
+            data |= {SubmissionsColumns.FILESAVED.name: filesaved}
 
     if data:
         db_table.update(Sb(db_table.key.name).__eq__(_id), db_table.format_entry(data))

@@ -124,7 +124,7 @@ def config_backup(ctx: Context, database: Callable[..., Database], trigger: str 
         db.commit()
 
     # noinspection PyProtectedMember
-    if bf := db.settings[db.settings._backup_folder_setting]:
+    if bf := db.settings[db.settings.backup_folder_setting]:
         bfp: Path = Path(bf)
         echo(f"{blue}Folder{reset}: {yellow}{bfp}{reset}"
              f" ({yellow}{db.path.parent / bfp}{reset})" if not bfp.is_absolute() else "")
@@ -191,7 +191,7 @@ def config_files_folder(ctx: Context, database: Callable[..., Database], new_fol
 
     db: Database = database()
 
-    folder: str = db.settings[db.settings._files_folder_setting]
+    folder: str = db.settings[db.settings.files_folder_setting]
     folder_p: Path = Path(folder)
     echo(f"{bold}Files Folder{reset}\n" +
          f"{blue}Folder{reset}: {yellow}{folder}{reset}" +
@@ -199,7 +199,7 @@ def config_files_folder(ctx: Context, database: Callable[..., Database], new_fol
 
     if new_folder is None:
         return
-    elif str(new_folder) == db.settings[db.settings._files_folder_setting]:
+    elif str(new_folder) == db.settings[db.settings.files_folder_setting]:
         echo(f"Files folder is already {yellow}{new_folder}{reset}", color=ctx.color)
         return
 
@@ -212,7 +212,7 @@ def config_files_folder(ctx: Context, database: Callable[..., Database], new_fol
             new_folder_abs: Path = new_folder.resolve()
             total: int = len(db.submissions)
             total_log: int = ceil(log10(total or 1))
-            submissions: Cursor = db.submissions.select(columns=[SubmissionsColumns.ID.value])
+            submissions: Cursor = db.submissions.select(columns=[SubmissionsColumns.ID])
             for i, [id_] in enumerate(submissions.tuples, 1):
                 echo(f"\r{i:0{total_log}}/{total} ", nl=False)
                 fs, t = db.submissions.get_submission_files(id_)
@@ -234,6 +234,7 @@ def config_files_folder(ctx: Context, database: Callable[..., Database], new_fol
 config_app.list_commands = lambda *_: [
     config_list.name,
     config_cookies.name,
+    config_bbcode.name,
     config_files_folder.name,
     config_backup.name,
 ]
