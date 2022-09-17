@@ -487,7 +487,8 @@ class Downloader:
                     err = save[0](entry, db_entry) or 0
                     if not self.err_to_bar(err) and save[1]:
                         self.bar_message(save[1], green, always=True)
-                    entries_added.append(entry_id_getter(entry))
+                    if not err:
+                        entries_added.append(entry_id_getter(entry))
                 self.bar_close()
                 if stop == 0:
                     page = None
