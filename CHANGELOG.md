@@ -10,7 +10,7 @@
 
 ### Fixes
 
-* Fix remaining `--replace` option in `database add` help message 
+* Fix remaining `--replace` option in `database add` help message
 
 ## 4.3.5
 
