@@ -1,5 +1,40 @@
 # Changelog
 
+## 4.4.0
+
+### New Features
+
+* \[BBCode\]
+    * Thanks to the new HTML to BBCode converter introduced with [faapi 3.8.0](https://pypi.org/project/faapi),
+      submissions, journals, and user profiles can now be stored in BBCode format instead of the raw HTML
+    * BBCode mode can be toggled on and off using the new `config bbcode` command
+    * BBCode mode greatly improves search results by removing HTML boilerplate, and reduces the size of the database
+    * **Warning**: HTML to BBCode conversion (and vice versa) is still a work in progress, and it may cause some
+      content to be lost, so a backup of the database should be made before changing the setting
+* Headers and footers
+    * Submissions and journals now support headers and footers as separate columns in their respective tables
+    * Headers and footers can be temporarily turned off when running `download` commands using the `--content-only`
+      option; when turned off journal downloads are much faster, as the program doesn't need to get each individual
+      journal page
+
+### Changes
+
+* Improve formatting of counters during download
+* Hide terminal cursor on Linux and macOS systems
+
+### Fixes
+
+* Fix journals not being always saved when comments were disabled, the journals folder was the last one to be
+  downloaded/updated, and the download was interrupted manually or by an error
+* Fix after-download counters not being correct if the download was interrupted
+
+### Dependencies
+
+* Use [faapi ~3.9.0](https://pypi.org/project/faapi/3.9.0)
+* Use [falocalrepo-database ~5.4.2](https://pypi.org/project/falocalrepo-server/5.4.2)
+* Use [falocalrepo-server ~3.3.0](https://pypi.org/project/falocalrepo-server/3.3.0)
+* Use [psutil ~5.9.2](https://pypi.org/project/faapi/5.9.2)
+
 ## 4.3.7
 
 ### Fixes
