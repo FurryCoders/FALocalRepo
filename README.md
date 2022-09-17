@@ -188,6 +188,15 @@ Cookies need to be set manually with the config command before the program will 
   **Warning**: using this option may cause the database to become corrupt and irreparable.
 * `FALOCALREPO_NO_COLOR` turn off colors for all commands.
 
+### BBCode
+
+Starting from version 4.4.0, falocalrepo supports saving data in BBCode format instead of HTML. This is achieved thanks
+to the HTML to BBCode converter introduced with [faapi 3.8.0](https://pypi.org/project/faapi/3.8.0). This converter is
+not perfect however, and it is possible that data may be lost during the conversion process.
+
+It is suggested to keep your main database in HTML mode, and only use BBCode in a copy to be used with
+the [`server`](#server) command.
+
 ### Init
 
 ```
@@ -225,15 +234,16 @@ Read or modify stored cookies. If no `--cookie` option is given, the current val
 > falocalrepo config cookies --cookie a 38565475-3421-3f21-7f63-3d341339737 --cookie b 356f5962-5a60-0922-1c11-65003b703038
 > ```
 
-#### BBCode
+#### bbcode
 
 ```
 bbcode [--true | --false]
 ```
 
-Read or modify the BBCode setting of the database and convert existing entries when changing it.
+Read or modify the BBCode setting of the database and convert existing entries when changing it. See [BBCode](#bbcode)
+for more details.
 
-**WARNING**: HTML to BBCode conversion (and vice versa) is still a work in progress and it may cause some content to be
+**WARNING**: HTML to BBCode conversion (and vice versa) is still a work in progress, and it may cause some content to be
 lost. A backup of the database should be made before changing the setting.
 
 #### files-folder
