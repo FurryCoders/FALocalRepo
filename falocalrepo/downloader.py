@@ -411,11 +411,11 @@ class Downloader:
                              contains: Callable[[T], dict | None],
                              modify_checks: list[tuple[Callable[[T, dict], bool], str]],
                              save: tuple[Callable[[T, dict | None], int | None], str], stop: int = -1,
-                             clear_last_found: bool = False, clear_found: bool = False, replace_overwrite: bool = None
-                             ) -> tuple[int, tuple[list[int | str], list[int | str], list[int | str]]]:
-        entries_added: list[int | str] = []
-        entries_modified: list[int | str] = []
-        entries_errors: list[int | str] = []
+                             clear_last_found: bool = False, clear_found: bool = False, replace_overwrite: bool = None,
+                             save_added_entry: Callable[[int | str], Any] = lambda *_: None,
+                             save_modified_entry: Callable[[int | str], Any] = lambda *_: None,
+                             save_error_entry: Callable[[int | str], Any] = lambda *_: None
+                             ) -> int:
         page: P | None = page_start
         page_i: int = 0
         while page:
@@ -432,7 +432,7 @@ class Downloader:
             if err:
                 self.user_errors += [user]
                 self.err_to_bar(err)
-                return err, (entries_added, entries_modified, entries_errors)
+                return err
             self.bar_close("")
             self.clear_line()
             entries: list[T] = result[0]
@@ -474,7 +474,7 @@ class Downloader:
                             if modified := check(entry, db_entry):
                                 self.db.commit()
                                 self.bar_message(message or "UPDATED", green, always=True)
-                                entries_modified.append(entry_id_getter(entry))
+                                save_modified_entry(entry_id_getter(entry))
                                 break
                         if not modified:
                             stop -= 1
@@ -487,14 +487,16 @@ class Downloader:
                     err = save[0](entry, db_entry) or 0
                     if not self.err_to_bar(err) and save[1]:
                         self.bar_message(save[1], green, always=True)
-                    if not err:
-                        entries_added.append(entry_id_getter(entry))
+                    if err:
+                        save_error_entry(entry_id_getter(entry))
+                    else:
+                        save_added_entry(entry_id_getter(entry))
                 self.bar_close()
                 if stop == 0:
                     page = None
                     break
             self.clear_line()
-        return 0, (entries_added, entries_modified, entries_errors)
+        return 0
 
     def download_user_journals(self, user: str, stop: int = -1, clear_last_found: bool = False) -> int:
         def save(journal: JournalPartial, _db_entry: dict | None) -> int:
@@ -513,18 +515,18 @@ class Downloader:
                 self.db.commit()
             return 0
 
-        err, [entries_added, entries_modified, entries_errors] = self.download_user_folder(
+        err = self.download_user_folder(
             user=user, folder=Folder.journals, downloader_entries=self.api.journals, page_start=1,
             entry_id_getter=lambda j: j.id,
             entry_formats=("{0.id:010}", "{0.title}"),
             contains=lambda j: self.db.journals[j.id],
             modify_checks=[(lambda journal, _: self.db.journals.set_user_update(journal.id, True), "")],
             save=(save, "ADDED"),
-            stop=stop, clear_last_found=clear_last_found
+            stop=stop, clear_last_found=clear_last_found,
+            save_added_entry=lambda a: self.added_journals.append(a),
+            save_modified_entry=lambda m: self.modified_journals.append(m),
+            save_error_entry=lambda e: self.journal_errors.append(e),
         )
-        self.added_journals.extend(entries_added)
-        self.modified_journals.extend(entries_modified)
-        self.journal_errors.extend(entries_errors)
         return err
 
     def download_user_submissions(self, user: str, folder: Folder, stop: int = -1,
@@ -550,16 +552,16 @@ class Downloader:
                 sub_partial.thumbnail_url,
                 self.replace)
 
-        err, [_entries_added, entries_modified, _entries_errors] = self.download_user_folder(
+        err = self.download_user_folder(
             user=user, folder=folder, downloader_entries=downloader, page_start=page_start,
             entry_id_getter=lambda s: s.id,
             entry_formats=("{0.id:010}", "{0.title}"),
             contains=lambda s: self.db.submissions[s.id],
             modify_checks=modify_checks,
             save=(save, ""),
-            stop=stop, clear_last_found=clear_last_found
+            stop=stop, clear_last_found=clear_last_found,
+            save_modified_entry=lambda m: self.modified_submissions.append(m),
         )
-        self.modified_submissions.extend(entries_modified)
         return err
 
     def download_user_watchlist(self, user: str, watchlist: Folder, folders: list[str], clear_found: bool = False
@@ -578,7 +580,7 @@ class Downloader:
                 return True
             return False
 
-        err, [entries_added, entries_modified, _entries_errors] = self.download_user_folder(
+        err = self.download_user_folder(
             user=user, folder=watchlist, downloader_entries=downloader, page_start=1,
             entry_id_getter=lambda u: u.name_url,
             entry_formats=("{0.status}{0.name}", ""),
@@ -589,10 +591,11 @@ class Downloader:
                  UsersColumns.FOLDERS.name: set(folders),
                  UsersColumns.ACTIVE.name: True,
                  UsersColumns.USERPAGE.name: ""}), "ADDED"),
-            stop=-1, clear_found=clear_found, replace_overwrite=False
+            stop=-1, clear_found=clear_found, replace_overwrite=False,
+            save_added_entry=lambda a: self.added_users.append(a),
+            save_modified_entry=lambda m: self.modified_users.append(m),
+            save_error_entry=lambda e: self.user_errors.append(e),
         )
-        self.added_users.extend(entries_added)
-        self.modified_users.extend(entries_modified)
 
         return err
 
