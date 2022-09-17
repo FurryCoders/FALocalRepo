@@ -19,8 +19,10 @@ from click import pass_context
 from faapi.parse import bbcode_to_html
 from faapi.parse import clean_html
 from faapi.parse import html_to_bbcode
+from falocalrepo_database import Column
 from falocalrepo_database import Cursor
 from falocalrepo_database import Database
+from falocalrepo_database import Table
 from falocalrepo_database.selector import SelectorBuilder as Sb
 from falocalrepo_database.tables import CommentsColumns
 from falocalrepo_database.tables import JournalsColumns
@@ -208,55 +210,25 @@ def config_bbcode(ctx: Context, database: Callable[..., Database], bbcode: bool 
 
         updated = True
         try:
+            def convert_entries(table: Table, fields: list[Column]):
+                total: int = len(table)
+                echo(f"Converting {yellow}{table.name.upper()}{reset} ({total} entries)", color=ctx.color)
+                for n, entry in enumerate(table, 1):
+                    echo(f"\r{n}/{total}", nl=False)
+                    table.update(Sb() & [Sb(k.name) == entry[k.name] for k in table.keys],
+                                 table.format_entry({
+                                     c.name: html_to_bbcode(clean_html(entry[c.name])) if bbcode
+                                     else bbcode_to_html(entry[c.name])
+                                     for c in fields
+                                 }, defaults=False))
+                echo("\r" + (" " * ((len(str(total)) * 2) + 1)) + "\r", nl=False)
+
             db.settings.bbcode = bbcode
 
-            users_total: int = len(db.users)
-            echo(f"Converting {yellow}USERS{reset} ({users_total} entries)", color=ctx.color)
-            for n, entry in enumerate(db.users, 1):
-                echo(f"\r{n}/{users_total}", nl=False)
-                u = entry[UsersColumns.USERPAGE.name]
-                entry |= {UsersColumns.USERPAGE.name: html_to_bbcode(clean_html(u)) if bbcode else bbcode_to_html(u)}
-                db.users[entry[db.users.key.name]] = entry
-            echo("\r" + (" " * ((len(str(users_total)) * 2) + 1)) + "\r", nl=False)
-
-            submissions_total: int = len(db.submissions)
-            echo(f"Converting {yellow}SUBMISSIONS{reset} ({submissions_total} entries)", color=ctx.color)
-            for n, entry in enumerate(db.submissions, 1):
-                echo(f"\r{n}/{submissions_total}", nl=False)
-                d, f = entry[SubmissionsColumns.DESCRIPTION.name], entry[SubmissionsColumns.FOOTER.name]
-                entry |= {
-                    SubmissionsColumns.DESCRIPTION.name: html_to_bbcode(clean_html(d)) if bbcode else bbcode_to_html(d),
-                    SubmissionsColumns.FOOTER.name: html_to_bbcode(clean_html(f)) if bbcode else bbcode_to_html(f),
-                }
-                db.submissions[entry[db.submissions.key.name]] = entry
-            echo("\r" + (" " * ((len(str(submissions_total)) * 2) + 1)) + "\r", nl=False)
-
-            journals_total: int = len(db.journals)
-            echo(f"Converting {yellow}JOURNALS{reset} ({journals_total} entries)", color=ctx.color)
-            for n, entry in enumerate(db.journals, 1):
-                echo(f"\r{n}/{journals_total}", nl=False)
-                c, h, f = (
-                    entry[JournalsColumns.CONTENT.name],
-                    entry[JournalsColumns.HEADER.name],
-                    entry[JournalsColumns.FOOTER.name],
-                )
-                entry |= {
-                    JournalsColumns.CONTENT.name: html_to_bbcode(clean_html(c)) if bbcode else bbcode_to_html(c),
-                    JournalsColumns.HEADER.name: html_to_bbcode(clean_html(h)) if bbcode else bbcode_to_html(h),
-                    JournalsColumns.FOOTER.name: html_to_bbcode(clean_html(f)) if bbcode else bbcode_to_html(f),
-                }
-                db.journals[entry[db.journals.key.name]] = entry
-            echo("\r" + (" " * ((len(str(journals_total)) * 2) + 1)) + "\r", nl=False)
-
-            comments_total: int = len(db.comments)
-            echo(f"Converting {yellow}COMMENTS{reset} ({comments_total} entries)", color=ctx.color)
-            for n, entry in enumerate(db.comments, 1):
-                echo(f"\r{n}/{comments_total}", nl=False)
-                t = entry[CommentsColumns.TEXT.name]
-                entry |= {CommentsColumns.TEXT.name: html_to_bbcode(clean_html(t)) if bbcode else bbcode_to_html(t)}
-                db.comments.update(Sb() & [Sb(k.name) == k.to_entry(entry[k.name]) for k in db.comments.keys],
-                                   db.comments.format_entry(entry))
-            echo("\r" + (" " * ((len(str(comments_total)) * 2) + 1)) + "\r", nl=False)
+            convert_entries(db.users, [UsersColumns.USERPAGE])
+            convert_entries(db.submissions, [SubmissionsColumns.DESCRIPTION, SubmissionsColumns.FOOTER])
+            convert_entries(db.journals, [JournalsColumns.CONTENT, JournalsColumns.HEADER, JournalsColumns.FOOTER])
+            convert_entries(db.comments, [CommentsColumns.TEXT])
 
             db.commit()
 
