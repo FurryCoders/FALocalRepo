@@ -215,7 +215,7 @@ def config_bbcode(ctx: Context, database: Callable[..., Database], bbcode: bool 
             for n, entry in enumerate(db.users, 1):
                 echo(f"\r{n}/{users_total}", nl=False)
                 u = entry[UsersColumns.USERPAGE.name]
-                entry |= {UsersColumns.USERPAGE.name: clean_html(html_to_bbcode(u)) if bbcode else bbcode_to_html(u)}
+                entry |= {UsersColumns.USERPAGE.name: html_to_bbcode(clean_html(u)) if bbcode else bbcode_to_html(u)}
                 db.users[entry[db.users.key.name]] = entry
             echo("\r" + (" " * ((len(str(users_total)) * 2) + 1)) + "\r", nl=False)
 
@@ -225,8 +225,8 @@ def config_bbcode(ctx: Context, database: Callable[..., Database], bbcode: bool 
                 echo(f"\r{n}/{submissions_total}", nl=False)
                 d, f = entry[SubmissionsColumns.DESCRIPTION.name], entry[SubmissionsColumns.FOOTER.name]
                 entry |= {
-                    SubmissionsColumns.DESCRIPTION.name: clean_html(html_to_bbcode(d)) if bbcode else bbcode_to_html(d),
-                    SubmissionsColumns.FOOTER.name: clean_html(html_to_bbcode(f)) if bbcode else bbcode_to_html(f),
+                    SubmissionsColumns.DESCRIPTION.name: html_to_bbcode(clean_html(d)) if bbcode else bbcode_to_html(d),
+                    SubmissionsColumns.FOOTER.name: html_to_bbcode(clean_html(f)) if bbcode else bbcode_to_html(f),
                 }
                 db.submissions[entry[db.submissions.key.name]] = entry
             echo("\r" + (" " * ((len(str(submissions_total)) * 2) + 1)) + "\r", nl=False)
@@ -241,9 +241,9 @@ def config_bbcode(ctx: Context, database: Callable[..., Database], bbcode: bool 
                     entry[JournalsColumns.FOOTER.name],
                 )
                 entry |= {
-                    JournalsColumns.CONTENT.name: clean_html(html_to_bbcode(c)) if bbcode else bbcode_to_html(c),
-                    JournalsColumns.HEADER.name: clean_html(html_to_bbcode(h)) if bbcode else bbcode_to_html(h),
-                    JournalsColumns.FOOTER.name: clean_html(html_to_bbcode(f)) if bbcode else bbcode_to_html(f),
+                    JournalsColumns.CONTENT.name: html_to_bbcode(clean_html(c)) if bbcode else bbcode_to_html(c),
+                    JournalsColumns.HEADER.name: html_to_bbcode(clean_html(h)) if bbcode else bbcode_to_html(h),
+                    JournalsColumns.FOOTER.name: html_to_bbcode(clean_html(f)) if bbcode else bbcode_to_html(f),
                 }
                 db.journals[entry[db.journals.key.name]] = entry
             echo("\r" + (" " * ((len(str(journals_total)) * 2) + 1)) + "\r", nl=False)
@@ -253,7 +253,7 @@ def config_bbcode(ctx: Context, database: Callable[..., Database], bbcode: bool 
             for n, entry in enumerate(db.comments, 1):
                 echo(f"\r{n}/{comments_total}", nl=False)
                 t = entry[CommentsColumns.TEXT.name]
-                entry |= {CommentsColumns.TEXT.name: clean_html(html_to_bbcode(t)) if bbcode else bbcode_to_html(t)}
+                entry |= {CommentsColumns.TEXT.name: html_to_bbcode(clean_html(t)) if bbcode else bbcode_to_html(t)}
                 db.comments.update(Sb() & [Sb(k.name) == k.to_entry(entry[k.name]) for k in db.comments.keys],
                                    db.comments.format_entry(entry))
             echo("\r" + (" " * ((len(str(comments_total)) * 2) + 1)) + "\r", nl=False)
