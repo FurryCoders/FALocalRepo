@@ -5,6 +5,7 @@ from sys import exit
 from sys import stderr
 from sys import stdout
 from traceback import print_exc
+from shutil import get_terminal_size
 
 from click import BadParameter
 from click import ClickException
@@ -43,12 +44,12 @@ def _activate_pretty_errors():
 
 
 def _hide_cursor():
-    if system().lower() in ["linux", "darwin"]:
+    if system().lower() in ["linux", "darwin"] and get_terminal_size((0, 0)).columns:
         stdout.write("\033[?25l")
 
 
 def _show_cursor():
-    if system().lower() in ["linux", "darwin"]:
+    if system().lower() in ["linux", "darwin"] and get_terminal_size((0, 0)).columns:
         stdout.write("\033[?25h")
 
 
