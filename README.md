@@ -607,6 +607,30 @@ major tables from the origin database are copied (SUBMISSIONS, JOURNALS, USERS).
 > falocalrepo database copy ~/FA.db --query USERS tom --SUBMISSIONS '@author tom'
 > ```
 
+#### doctor
+
+```
+doctor [--users] [--submissions] [--comments] [--no-fix] [--allow-deletion]
+```
+
+Check the database for errors and attempt to repair them.
+
+Users are checked for inconsistencies in their name to make sure that they can be properly matched with their
+submissions, journals, and comments.
+
+Submissions are checked with their thumbnails and files to ensure they are consistent, and the program will attempt to
+add files that are in the submission folder but are not saved in the database
+
+Comments are checked against their parents, if the parent object does not exist then the comment is deleted if
+the `--allow-deletion` option is used.
+
+To check only specific tables, use the `--users`, `--submissions`, and `--comments` options.
+
+Use the `--no-fix` option to list errors without repairing anything.
+
+Use the `--allow-deletion` option to allow deleting entries that are redundant or erroneous (e.g. a comment without
+parent object).
+
 #### clean
 
 ```
