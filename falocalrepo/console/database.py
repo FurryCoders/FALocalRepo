@@ -480,7 +480,7 @@ def repair_submission(db: Database, submission: dict[str, Any], fix: bool, ctx: 
                     db.submissions.update(Sb(SubmissionsColumns.ID.name) == id_,
                                           db.submissions.format_entry({
                                               SubmissionsColumns.FILEEXT.name: exts[:i] + [ext] + exts[i + 1:]
-                                          }))
+                                          }, defaults=False))
                     db.commit()
                     echo(f"{blue}{id_:010}{reset} {red}Missing file {i + 1} but file exists - fixed{reset}",
                          color=ctx.color)
@@ -497,7 +497,8 @@ def repair_submission(db: Database, submission: dict[str, Any], fix: bool, ctx: 
                     id_, new_file.read_bytes(), "submission",
                     new_file.suffix.removeprefix(".") if "." in new_file.name else "", 0)
                 db.submissions.update(Sb(SubmissionsColumns.ID.name) == id_,
-                                      db.submissions.format_entry({SubmissionsColumns.FILEEXT.name: [ext]}))
+                                      db.submissions.format_entry({SubmissionsColumns.FILEEXT.name: [ext]},
+                                                                  defaults=False))
                 db.submissions.set_filesaved(id_, True, True, filesaved & 0b001)
                 db.commit()
                 echo(f"{blue}{id_:010}{reset} {red}Submission file 1 found - fixed{reset}", color=ctx.color)
