@@ -54,6 +54,7 @@ from falocalrepo_database.tables import comments_table
 from falocalrepo_database.tables import journals_table
 from falocalrepo_database.tables import submissions_table
 from falocalrepo_database.tables import users_table
+from falocalrepo_database.util import clean_username
 from falocalrepo_database.util import tiered_path
 from wcwidth import wcswidth
 
@@ -431,6 +432,20 @@ def view_comments(comments: list[dict], *, raw_html: bool = False) -> str:
         outputs.extend([view_entry(comment, [CommentsColumns.TEXT.name], ["REPLIES"], raw_html=raw_html),
                         view_comments(comment.get("REPLIES", []))])
     return "\n\n".join(filter(bool, outputs))
+
+
+def repair_user(db: Database, user: dict[str, Any], fix: bool, ctx: Context) -> tuple[bool, bool]:
+    username: str = user[UsersColumns.USERNAME.name]
+
+    match [username == (username_clean := clean_username(username)), fix]:
+        case [False, True]:
+            db.users.update(Sb(UsersColumns.USERNAME.name) == username, {UsersColumns.USERNAME.name: username_clean})
+            db.commit()
+            echo(f"{blue}{username}{reset} {red}Incorrectly formatted username - fixed{reset}", color=ctx.color)
+        case [False, False]:
+            echo(f"{blue}{username}{reset} {red}Incorrectly formatted username{reset}", color=ctx.color)
+
+    return False, False
 
 
 # noinspection DuplicatedCode
@@ -1143,6 +1158,7 @@ def database_merge(ctx: Context, database: Callable[..., Database], database_ori
 
 
 @database_app.command("doctor", short_help="Check database for errors.")
+@option("--users", is_flag=True, default=False, help="Check users.")
 @option("--submissions", is_flag=True, default=False, help="Check submissions.")
 @option("--comments", is_flag=True, default=False, help="Check comments.")
 @option("--no-fix", "fix", is_flag=True, default=True, help="Do not fix errors.")
@@ -1152,12 +1168,13 @@ def database_merge(ctx: Context, database: Callable[..., Database], database_ori
 @help_option
 @pass_context
 @docstring_format(__database_version__)
-def database_doctor(ctx: Context, database: Callable[..., Database], submissions: bool, comments: bool, fix: bool,
-                    allow_deletion: bool):
+def database_doctor(ctx: Context, database: Callable[..., Database], users: bool, submissions: bool, comments: bool,
+                    fix: bool, allow_deletion: bool):
     """
     Check the database for errors and attempt to repair them.
 
-    To check only specific tables, use the {yellow}--submissions{reset}, and {yellow}--comments{reset} options.
+    To check only specific tables, use the {yellow}--users{reset}, {yellow}--submissions{reset}, and
+    {yellow}--comments{reset} options.
 
     Use the {yellow}--no-fix{reset} option to list errors without repairing anything.
 
@@ -1167,13 +1184,29 @@ def database_doctor(ctx: Context, database: Callable[..., Database], submissions
 
     db: Database = database()
 
-    check_submissions = submissions or not (submissions + comments)
-    check_comments = comments or not (submissions + comments)
+    check_users = users or not (users + submissions + comments)
+    check_submissions = submissions or not (users + submissions + comments)
+    check_comments = comments or not (users + submissions + comments)
     total: int
     errors: int
     fixed: int
 
     try:
+        if check_users:
+            echo(f"{bold}Checking Users{reset}", color=ctx.color)
+
+            total = len(db.users)
+            errors, fixed = 0, 0
+            for n, user in enumerate(db.users.select(order=[UsersColumns.USERNAME.name]), 1):
+                echo(f"{n}/{total}\r", nl=False)
+                errors_, fixed_ = repair_user(db, user, fix, ctx)
+                errors, fixed = errors + errors_, fixed + fixed_
+
+            echo(f"{red if errors else green}{errors or 'No'} errors{reset}", color=ctx.color)
+            if errors:
+                echo(f"{green if fixed else red}{fixed} errors fixed{reset}", color=ctx.color)
+            echo()
+
         if check_submissions:
             echo(f"{bold}Checking Submissions{reset}", color=ctx.color)
 
