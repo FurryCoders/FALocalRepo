@@ -208,21 +208,21 @@ def config_bbcode(ctx: Context, database: Callable[..., Database], bbcode: bool 
              f" setting.\n",
              color=ctx.color)
 
-        updated = True
-        try:
-            def convert_entries(table: Table, fields: list[Column]):
-                total: int = len(table)
-                echo(f"Converting {yellow}{table.name.upper()}{reset} ({total} entries)", color=ctx.color)
-                for n, entry in enumerate(table, 1):
-                    echo(f"\r{n}/{total}", nl=False)
-                    table.update(Sb() & [Sb(k.name) == entry[k.name] for k in table.keys],
-                                 table.format_entry({
-                                     c.name: html_to_bbcode(clean_html(entry[c.name])) if bbcode
-                                     else bbcode_to_html(entry[c.name])
-                                     for c in fields
-                                 }, defaults=False))
-                echo("\r" + (" " * ((len(str(total)) * 2) + 1)) + "\r", nl=False)
+        def convert_entries(table: Table, fields: list[Column]):
+            total: int = len(table)
+            echo(f"Converting {yellow}{table.name.upper()}{reset} ({total} entries)", color=ctx.color)
+            for n, entry in enumerate(table, 1):
+                echo(f"\r{n}/{total}", nl=False)
+                table.update(Sb() & [Sb(k.name) == entry[k.name] for k in table.keys],
+                             table.format_entry({
+                                 c.name: html_to_bbcode(clean_html(entry[c.name])) if bbcode
+                                 else bbcode_to_html(entry[c.name])
+                                 for c in fields
+                             }, defaults=False))
+            echo("\r" + (" " * ((len(str(total)) * 2) + 1)) + "\r", nl=False)
 
+        try:
+            updated = True
             db.settings.bbcode = bbcode
 
             convert_entries(db.users, [UsersColumns.USERPAGE])
