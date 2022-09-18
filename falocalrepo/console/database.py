@@ -837,12 +837,15 @@ def database_view(ctx: Context, database: Callable[..., Database], table: str, i
         fs, t = db.submissions.get_submission_files(id_[0])
         echo(view_entry(
             entry | {"FILES": list(map(str, filter(bool, [*(fs or []), t])))},
-            [SubmissionsColumns.DESCRIPTION.name], [], raw_html=raw_content), color=ctx.color)
+            [SubmissionsColumns.DESCRIPTION.name, SubmissionsColumns.FOOTER.name], [], raw_html=raw_content),
+            color=ctx.color)
         if view_comments_:
             echo(f"\n\n{blue}COMMENTS{reset}:")
             echo(view_comments(db.comments.get_comments_tree(submissions_table, id_[0]), raw_html=raw_content))
     elif table == journals_table:
-        echo(view_entry(entry, [JournalsColumns.CONTENT.name], [], raw_html=raw_content), color=ctx.color)
+        echo(view_entry(entry, [JournalsColumns.HEADER.name, JournalsColumns.CONTENT.name, JournalsColumns.FOOTER.name],
+                        [], raw_html=raw_content),
+             color=ctx.color)
         if view_comments_:
             echo(f"\n\n{blue}COMMENTS{reset}:")
             echo(view_comments(db.comments.get_comments_tree(journals_table, id_[0]), raw_html=raw_content))
