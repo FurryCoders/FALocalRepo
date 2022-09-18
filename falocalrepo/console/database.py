@@ -448,7 +448,6 @@ def repair_user(db: Database, user: dict[str, Any], fix: bool, ctx: Context) -> 
     return False, False
 
 
-# noinspection DuplicatedCode
 def repair_submission(db: Database, submission: dict[str, Any], fix: bool, ctx: Context) -> tuple[bool, bool]:
     id_: int = submission[SubmissionsColumns.ID.name]
     filesaved: int = submission[SubmissionsColumns.FILESAVED.name]
