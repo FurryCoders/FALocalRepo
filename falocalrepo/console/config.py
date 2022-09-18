@@ -121,6 +121,9 @@ def config_backup(ctx: Context, database: Callable[..., Database], trigger: str 
     db: Database = database()
     backup_settings: dict[str, str] = loads(bs) if (bs := db.settings["BACKUPSETTINGS"]) else {}
 
+    if folder or remove or trigger:
+        backup_database(db, ctx, "preconfig")
+
     echo(f"{bold}Backup{reset}")
 
     if folder:
@@ -169,6 +172,7 @@ def config_cookies(ctx: Context, database: Callable[..., Database], cookie: list
     db: Database = database()
 
     if cookie:
+        backup_database(db, ctx, "preconfig")
         write_cookies(db, dict(cookie))
         add_history(db, ctx, cookies=cookie)
 
@@ -201,6 +205,9 @@ def config_bbcode(ctx: Context, database: Callable[..., Database], bbcode: bool 
 
     db: Database = database()
     updated: bool = False
+
+    if bbcode is not None and bbcode != db.settings.bbcode:
+        backup_database(db, ctx, "preconfig")
 
     echo(f"{bold}BBCode{reset}", color=ctx.color)
 
@@ -268,6 +275,9 @@ def config_files_folder(ctx: Context, database: Callable[..., Database], new_fol
     """
 
     db: Database = database()
+
+    if new_folder:
+        backup_database(db, ctx, "preconfig")
 
     folder: str = db.settings[db.settings.files_folder_setting]
     folder_p: Path = Path(folder)

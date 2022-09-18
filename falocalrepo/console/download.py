@@ -167,6 +167,7 @@ def download_users(ctx: Context, database: Callable[..., Database], users: tuple
     downloader: Downloader = Downloader(db, api, color=ctx.color, comments=save_comments, content_only=content_only,
                                         retry=retry or 0, replace=replace, dry_run=dry_run)
     if not dry_run:
+        backup_database(db, ctx, "predownload")
         add_history(db, ctx, users=users, folders=folders)
     watchlist_by: list[str] = [f.split(":")[1] for f in folders if f.startswith(Folder.watchlist_by)]
     watchlist_to: list[str] = [f.split(":")[1] for f in folders if f.startswith(Folder.watchlist_to)]
@@ -254,6 +255,7 @@ def download_update(ctx: Context, database: Callable[..., Database], users: tupl
     downloader: Downloader = Downloader(db, api, color=ctx.color, comments=save_comments, content_only=content_only,
                                         retry=retry or 0, dry_run=dry_run)
     if not dry_run:
+        backup_database(db, ctx, "predownload")
         add_history(db, ctx, users=users, folders=folders, stop=stop)
     try:
         downloader.download_users_update(list(users), list(folders), stop, deactivated, like)
@@ -315,6 +317,7 @@ def download_submissions(ctx: Context, database: Callable[..., Database], submis
     downloader: Downloader = Downloader(db, api, color=ctx.color, comments=save_comments, content_only=content_only,
                                         retry=retry or 0, replace=replace, dry_run=dry_run)
     if not dry_run:
+        backup_database(db, ctx, "predownload")
         add_history(db, ctx, submission_id=submission_id, replace=replace)
     try:
         downloader.download_submissions(list(submission_id))
@@ -373,6 +376,7 @@ def download_journals(ctx: Context, database: Callable[..., Database], journal_i
     downloader: Downloader = Downloader(db, api, color=ctx.color, comments=save_comments, content_only=content_only,
                                         replace=replace, dry_run=dry_run)
     if not dry_run:
+        backup_database(db, ctx, "predownload")
         add_history(db, ctx, journal_id=journal_id, replace=replace)
     try:
         downloader.download_journals(list(journal_id))

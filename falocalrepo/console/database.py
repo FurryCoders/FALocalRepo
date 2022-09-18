@@ -645,6 +645,9 @@ def database_history(ctx: Context, database: Callable[..., Database], clear: boo
 
     db: Database = database()
 
+    if clear:
+        backup_database(db, ctx, "predatabase")
+
     history: Iterable[tuple[datetime, str]] = db.history.select().tuples
     removed: int = 0
 
@@ -876,6 +879,9 @@ def database_remove(ctx: Context, database: Callable[..., Database], table: str,
 
     add_history(db, ctx, table=table, ids=ids)
 
+    if ids:
+        backup_database(db, ctx, "predatabase")
+
     for id_ in ids:
         if id_ not in db_table:
             secho(f"Entry {id_!r} could not be found in {db_table.name.lower()}", fg="red", color=ctx.color)
@@ -938,6 +944,8 @@ def database_add(ctx: Context, database: Callable[..., Database], table: str, fi
                            ctx, get_param(ctx, "file"))
     elif (id_ := data[idc := db_table.key.name.upper()]) in db_table:
         raise BadParameter(f"Entry with {idc} {id_!r} already exists in {table} table.", ctx, get_param(ctx, "file"))
+
+    backup_database(db, ctx, "predatabase")
 
     add_history(db, ctx, table=table, file=file.name, submission_file=submission_file is not None,
                 submission_thumbnail=submission_thumbnail is not None)
@@ -1014,6 +1022,8 @@ def database_edit(ctx: Context, database: Callable[..., Database], table: str, _
     elif _id not in db_table:
         raise BadParameter(f"Cannot find {_id!r} in {table}.", ctx, get_param(ctx, "_id"))
 
+    backup_database(db, ctx, "predatabase")
+
     add_history(db, ctx, table=table, id=_id, file=file.name if file else None,
                 submission_file=[f.name for f in submission_file] if submission_file else None,
                 submission_thumbnail=submission_thumbnail.name if submission_thumbnail else None)
@@ -1059,6 +1069,9 @@ def database_clean(ctx: Context, database: Callable[..., Database]):
     """
 
     db: Database = database()
+
+    backup_database(db, ctx, "predatabase")
+
     echo("Cleaning database... ", nl=False)
     db.execute("VACUUM")
     db.commit()
@@ -1137,6 +1150,9 @@ def database_merge(ctx: Context, database: Callable[..., Database], database_ori
     """
 
     db: Database = database()
+
+    backup_database(db, ctx, "predatabase")
+
     db2: Database = database_origin(print_envvar=False)
     cursors: list[Cursor]
     if query:
@@ -1185,6 +1201,8 @@ def database_doctor(ctx: Context, database: Callable[..., Database], users: bool
     """
 
     db: Database = database()
+
+    backup_database(db, ctx, "predatabase")
 
     check_users = users or not (users + submissions + comments)
     check_submissions = submissions or not (users + submissions + comments)
