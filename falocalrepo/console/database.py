@@ -54,6 +54,7 @@ from falocalrepo_database.tables import comments_table
 from falocalrepo_database.tables import journals_table
 from falocalrepo_database.tables import submissions_table
 from falocalrepo_database.tables import users_table
+from falocalrepo_database.util import tiered_path
 from wcwidth import wcswidth
 
 from .colors import *
@@ -430,6 +431,81 @@ def view_comments(comments: list[dict], *, raw_html: bool = False) -> str:
         outputs.extend([view_entry(comment, [CommentsColumns.TEXT.name], ["REPLIES"], raw_html=raw_html),
                         view_comments(comment.get("REPLIES", []))])
     return "\n\n".join(filter(bool, outputs))
+
+
+# noinspection DuplicatedCode
+def repair_submission(db: Database, submission: dict[str, Any], fix: bool, ctx: Context) -> tuple[bool, bool]:
+    id_: int = submission[SubmissionsColumns.ID.name]
+    filesaved: int = submission[SubmissionsColumns.FILESAVED.name]
+    exts: list[str] = submission[SubmissionsColumns.FILEEXT.name]
+    error: bool = False
+    fixed: bool = False
+
+    folder: Path = db.submissions.files_folder / tiered_path(id_)
+    thumbnail_files = list(folder.glob("thumbnail.jpg"))
+    files, thumb = db.submissions.get_submission_files(id_)
+
+    match [thumb, thumbnail_files, fix]:
+        case [None, [new_thumbnail, *_], True]:
+            error = fixed = True
+            db.submissions.save_submission_thumbnail(id_, new_thumbnail.read_bytes())
+            db.submissions.set_filesaved(id_, filesaved & 0b100, filesaved & 0b010, True)
+            db.commit()
+            echo(f"{blue}{id_:010}{reset} {red}Thumbnail file found - fixed{reset}", color=ctx.color)
+        case [None, ts, False] if len(ts):
+            error = True
+            echo(f"{blue}{id_:010}{reset} {red}Thumbnail file found{reset}", color=ctx.color)
+        case [t, [], True] if not t.is_file():
+            error = fixed = True
+            echo(f"{blue}{id_:010}{reset} {red}Missing thumbnail - fixed{reset}", color=ctx.color)
+            db.submissions.set_filesaved(id_, filesaved & 0b100, filesaved & 0b010, False)
+            db.commit()
+        case [t, [], False] if not t.is_file():
+            error = True
+            echo(f"{blue}{id_:010}{reset} {red}Missing thumbnail{reset}", color=ctx.color)
+
+    if files is not None:
+        for i, f in enumerate(files):
+            new_file = next(folder.glob(f"submission{i if i else ''}.*"),
+                            next(folder.glob(f"submission{i if i else ''}"), None))
+            match [f.is_file(), new_file, fix]:
+                case [False, None, _]:
+                    error = True
+                    echo(f"{blue}{id_:010}{reset} {red}Missing file {i + 1}{reset}", color=ctx.color)
+                case [False, _, True]:
+                    error = fixed = True
+                    ext = db.submissions.save_submission_file(
+                        id_, new_file.read_bytes(), "submission",
+                        new_file.suffix.removeprefix(".") if "." in new_file.name else "", i)
+                    db.submissions.update(Sb(SubmissionsColumns.ID.name) == id_,
+                                          db.submissions.format_entry({
+                                              SubmissionsColumns.FILEEXT.name: exts[:i] + [ext] + exts[i + 1:]
+                                          }))
+                    db.commit()
+                    echo(f"{blue}{id_:010}{reset} {red}Missing file {i + 1} but file exists - fixed{reset}",
+                         color=ctx.color)
+                case [False, _, False]:
+                    error = True
+                    echo(f"{blue}{id_:010}{reset} {red}Missing file {i + 1} but file exists{reset}", color=ctx.color)
+    elif new_file := next(folder.glob(f"submission.*"), next(folder.glob(f"submission"), None)):
+        match [new_file, fix]:
+            case [None, _]:
+                pass
+            case [_, True]:
+                error = fixed = True
+                ext = db.submissions.save_submission_file(
+                    id_, new_file.read_bytes(), "submission",
+                    new_file.suffix.removeprefix(".") if "." in new_file.name else "", 0)
+                db.submissions.update(Sb(SubmissionsColumns.ID.name) == id_,
+                                      db.submissions.format_entry({SubmissionsColumns.FILEEXT.name: [ext]}))
+                db.submissions.set_filesaved(id_, True, True, filesaved & 0b001)
+                db.commit()
+                echo(f"{blue}{id_:010}{reset} {red}Submission file 1 found - fixed{reset}", color=ctx.color)
+            case [_, False]:
+                error = True
+                echo(f"{blue}{id_:010}{reset} {red}Submission file 1 found{reset}", color=ctx.color)
+
+    return error, fixed
 
 
 @group("database", cls=CustomHelpColorsGroup, short_help="Operate on the database.", no_args_is_help=True)
