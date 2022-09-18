@@ -82,7 +82,8 @@ def config_list(database: Callable[..., Database]):
 
 
 @config_app.command("backup", short_help="Configure backup settings.")
-@argument("trigger", type=Choice(["download", "database", "config"]), required=False, default=None)
+@argument("trigger", type=Choice(["download", "database", "config", "predownload", "predatabase", "preconfig"]),
+          required=False, default=None)
 @option("--date-format", type=str, metavar="FMT", default="%Y %W", show_default=True,
         help="Set a date format for the trigger.")
 @option("--folder", type=PathClick(file_okay=False, writable=True, path_type=Path), default=None,
@@ -106,9 +107,12 @@ def config_backup(ctx: Context, database: Callable[..., Database], trigger: str 
 
     \b
     {cyan}Triggers{reset}
-    * download  backup after performing download operations
-    * database  backup after editing the database
-    * config    backup after changing settings
+    * download     backup after performing download operations
+    * database     backup after editing the database
+    * config       backup after changing settings
+    * predownload  backup before performing download operations
+    * predatabase  backup before editing the database
+    * preconfig    backup before changing settings
     """
 
     if remove and trigger is None:
