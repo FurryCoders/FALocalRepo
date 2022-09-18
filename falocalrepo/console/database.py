@@ -1141,6 +1141,72 @@ def database_merge(ctx: Context, database: Callable[..., Database], database_ori
     backup_database(db, ctx, "database")
 
 
+@database_app.command("doctor", short_help="Check database for errors.")
+@option("--submissions", is_flag=True, default=False, help="Check submissions.")
+@option("--comments", is_flag=True, default=False, help="Check comments.")
+@option("--no-fix", "fix", is_flag=True, default=True, help="Do not fix errors.")
+@option("--allow-deletion", is_flag=True, default=False, help="Allow deleting redundant or erroneous entries.")
+@database_exists_option
+@color_option
+@help_option
+@pass_context
+@docstring_format(__database_version__)
+def database_doctor(ctx: Context, database: Callable[..., Database], submissions: bool, comments: bool, fix: bool,
+                    allow_deletion: bool):
+    """
+    Check the database for errors and attempt to repair them.
+
+    To check only specific tables, use the {yellow}--submissions{reset}, and {yellow}--comments{reset} options.
+
+    Use the {yellow}--no-fix{reset} option to list errors without repairing anything.
+
+    Use the {yellow}--allow-deletion{reset} option to allow deleting entries that are redundant or erroneous (e.g. a
+    comment without parent object).
+    """
+
+    db: Database = database()
+
+    check_submissions = submissions or not (submissions + comments)
+    check_comments = comments or not (submissions + comments)
+    total: int
+    errors: int
+    fixed: int
+
+    try:
+        if check_submissions:
+            echo(f"{bold}Checking Submissions{reset}", color=ctx.color)
+
+            total = len(db.submissions)
+            errors, fixed = 0, 0
+            for n, submission in enumerate(db.submissions.select(order=[SubmissionsColumns.ID.name]), 1):
+                echo(f"{n}/{total}\r", nl=False)
+                errors_, fixed_ = repair_submission(db, submission, fix, ctx)
+                errors, fixed = errors + errors_, fixed + fixed_
+
+            echo(f"{red if errors else green}{errors or 'No'} errors{reset}", color=ctx.color)
+            if errors:
+                echo(f"{green if fixed else red}{fixed} errors fixed{reset}", color=ctx.color)
+            echo()
+
+        if check_comments:
+            echo(f"{bold}Checking Comments{reset}", color=ctx.color)
+
+            errors, fixed = 0, 0
+            for comment in db.comments.select(
+                    order=[CommentsColumns.ID.name, CommentsColumns.PARENT_TABLE.name, CommentsColumns.PARENT_ID.name]):
+                errors_, fixed_ = repair_comment(db, comment, fix, allow_deletion, ctx)
+                errors, fixed = errors + errors_, fixed + fixed_
+
+            echo(f"{red if errors else green}{errors or 'No'} errors{reset}", color=ctx.color)
+            if errors:
+                echo(f"{green if fixed else red}{fixed} errors fixed{reset}", color=ctx.color)
+            echo()
+    finally:
+        db.commit()
+
+    add_history(db, ctx, fix=fix)
+
+
 @database_app.command("upgrade", short_help="Upgrade database.")
 @database_exists_option
 @color_option
@@ -1172,5 +1238,6 @@ database_app.list_commands = lambda *_: [
     database_merge.name,
     database_copy.name,
     database_clean.name,
+    database_doctor.name,
     database_upgrade.name,
 ]
