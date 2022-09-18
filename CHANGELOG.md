@@ -4,7 +4,7 @@
 
 ### New Features
 
-* \[BBCode\]
+* \[BBCode\] 
     * Thanks to the new HTML to BBCode converter introduced with [faapi 3.8.0](https://pypi.org/project/faapi),
       submissions, journals, and user profiles can now be stored in BBCode format instead of the raw HTML
     * BBCode mode can be toggled on and off using the new `config bbcode` command
@@ -24,7 +24,7 @@
     * Headers and footers can be temporarily turned off when running `download` commands using the `--content-only`
       option; when turned off journal downloads are much faster, as the program doesn't need to get each individual
       journal page
-* Pre-operation backups
+* Pre-operation backups 💽
     * New triggers have been added to perform backups before config changes, database edits, and downloads instead of
       only afterwards
 
