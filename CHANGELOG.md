@@ -24,6 +24,9 @@
     * Headers and footers can be temporarily turned off when running `download` commands using the `--content-only`
       option; when turned off journal downloads are much faster, as the program doesn't need to get each individual
       journal page
+* Pre-operation backups
+    * New triggers have been added to perform backups before config changes, database edits, and downloads instead of
+      only afterwards
 
 ### Changes
 
