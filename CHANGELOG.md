@@ -13,11 +13,11 @@
       content to be lost, so a backup of the database should be made before changing the setting
 * Database doctor 🩺
     * New `database doctor` command to check entries for errors and fix them when possible
-    * Users are checked for inconsistencies in their names to make sure that they can be properly matched with their
+    * Users are checked for inconsistencies in their name to make sure that they can be properly matched with their
       submissions, journals, and comments
     * Submissions are checked with their thumbnails and files to ensure they are consistent, and the program will
       attempt to add files that are in the submission folder but are not saved in the database
-    * Comments are checked against their parents, if the parent object does not exit then the comment is deleted if
+    * Comments are checked against their parents, if the parent object does not exist then the comment is deleted if
       the `--allow-deletion` option was used with `database doctor`
 * Headers and footers
     * Submissions and journals now support headers and footers as separate columns in their respective tables
