@@ -1191,6 +1191,15 @@ def database_doctor(ctx: Context, database: Callable[..., Database], users: bool
     """
     Check the database for errors and attempt to repair them.
 
+    Users are checked for inconsistencies in their name to make sure that they can be properly matched with their
+    submissions, journals, and comments.
+
+    Submissions are checked with their thumbnails and files to ensure they are consistent, and the program will attempt
+    to add files that are in the submission folder but are not saved in the database
+
+    Comments are checked against their parents, if the parent object does not exist then the comment is deleted if the
+    {yellow}--allow-deletion{reset} option is used.
+
     To check only specific tables, use the {yellow}--users{reset}, {yellow}--submissions{reset}, and
     {yellow}--comments{reset} options.
 
