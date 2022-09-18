@@ -264,7 +264,7 @@ If the `--move` option is used, all files will be moved to the new location.
 #### backup
 
 ```
-backup [--remove] [--folder DIRECTORY] [--date-format FMT] [{download|database|config}]
+backup [--remove] [--folder DIRECTORY] [--date-format FMT] [{download|database|config|predownload|predatabase|preconfig}]
 ```
 
 Read or modify automatic backup settings. Backup will be performed automatically based on stored triggers and date
@@ -281,6 +281,9 @@ The trigger can be one of:
 * `download`  backup after performing download operations
 * `database`  backup after editing the database
 * `config`    backup after changing settings
+* `predownload`  backup after performing download operations
+* `predatabase`  backup after editing the database
+* `preconfig`    backup after changing settings
 
 ### Download
 
