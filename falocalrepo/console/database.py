@@ -1292,7 +1292,7 @@ database_app.list_commands = lambda *_: [
     database_remove.name,
     database_merge.name,
     database_copy.name,
-    database_clean.name,
     database_doctor.name,
+    database_clean.name,
     database_upgrade.name,
 ]
