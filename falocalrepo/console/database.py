@@ -608,6 +608,8 @@ def database_info(ctx: Context, database: Callable[..., Database]):
     last_history: dict | None = next(db.history.select(order=[db.history.key.name + ' desc'], limit=1), None)
     echo(f"{blue}Last update{reset}: ", nl=False, color=ctx.color)
     echo(f"{yellow}{(last_history or {}).get(HistoryColumns.TIME.name, None)}{reset}", color=ctx.color)
+    echo(f"{blue}BBCode     {reset}: ", nl=False, color=ctx.color)
+    echo(f"{yellow}{db.settings.bbcode}{reset}", color=ctx.color)
     echo(f"{blue}Users{reset}      : ", nl=False, color=ctx.color)
     echo(f"{yellow}{len(db.users)}{reset}", color=ctx.color)
     echo(f"{blue}Submissions{reset}: ", nl=False, color=ctx.color)
