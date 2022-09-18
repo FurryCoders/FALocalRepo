@@ -235,7 +235,7 @@ def config_bbcode(ctx: Context, database: Callable[..., Database], bbcode: bool 
             echo(f"\nAll entries have been converted to {'BBCode' if bbcode else 'HTML'}.\n")
         except BaseException:
             db.close()
-            echo(f"\n{red}Conversion was interrupted and all temporary changes have been deleted{reset}")
+            echo(f"\n{red}Conversion was interrupted and all temporary changes have been rolle back{reset}")
             raise
 
     echo(f"{blue}BBCode{reset}: {yellow}{db.settings.bbcode}{reset}", color=ctx.color)
