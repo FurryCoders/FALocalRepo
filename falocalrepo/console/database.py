@@ -508,6 +508,29 @@ def repair_submission(db: Database, submission: dict[str, Any], fix: bool, ctx: 
     return error, fixed
 
 
+def repair_comment(db: Database, comment: dict[str, Any], fix: bool, allow_deletion: bool, ctx: Context
+                   ) -> tuple[bool, bool]:
+    id_: int = comment[CommentsColumns.ID.name]
+    pt: str = comment[CommentsColumns.PARENT_TABLE.name]
+    pi: str = comment[CommentsColumns.PARENT_ID.name]
+
+    match [pi in get_table(db, pt), fix, allow_deletion]:
+        case [False, True, True]:
+            echo(f"{blue}{id_:010} {pt.upper()} {pi:010}{reset} {red}Missing parent - deleting{reset}", color=ctx.color)
+            db.comments.delete(Sb() & [
+                {CommentsColumns.ID.name: id_},
+                {CommentsColumns.PARENT_TABLE.name: pt},
+                {CommentsColumns.PARENT_ID.name: pi},
+            ])
+            db.commit()
+            return True, True
+        case [False, _, False]:
+            echo(f"{blue}{id_:010} {pt.upper()} {pi:010}{reset} {red}Missing parent{reset}", color=ctx.color)
+            return True, False
+
+    return False, False
+
+
 @group("database", cls=CustomHelpColorsGroup, short_help="Operate on the database.", no_args_is_help=True)
 @color_option
 @help_option
