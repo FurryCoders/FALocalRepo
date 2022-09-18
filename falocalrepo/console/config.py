@@ -139,7 +139,6 @@ def config_backup(ctx: Context, database: Callable[..., Database], trigger: str 
         db.settings["BACKUPSETTINGS"] = dumps(backup_settings, separators=(",", ":"))
         db.commit()
 
-    # noinspection PyProtectedMember
     if bf := db.settings[db.settings.backup_folder_setting]:
         bfp: Path = Path(bf)
         echo(f"{blue}Folder{reset}: {yellow}{bfp}{reset}"
@@ -187,7 +186,6 @@ def config_cookies(ctx: Context, database: Callable[..., Database], cookie: list
         backup_database(db, ctx, "config")
 
 
-# noinspection DuplicatedCode
 @config_app.command("bbcode")
 @option("--true/--false", "bbcode", is_eager=True, is_flag=True, default=None, help="Enable or disable BBCode.")
 @database_exists_option
@@ -255,7 +253,6 @@ def config_bbcode(ctx: Context, database: Callable[..., Database], bbcode: bool 
         backup_database(db, ctx, "config")
 
 
-# noinspection PyProtectedMember
 @config_app.command("files-folder", short_help="Read or modify the submission files folder.")
 @argument("new_folder", nargs=1, default=None, required=False,
           type=PathClick(file_okay=False, writable=True, path_type=Path))
