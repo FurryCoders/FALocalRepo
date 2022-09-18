@@ -1259,6 +1259,7 @@ def database_doctor(ctx: Context, database: Callable[..., Database], users: bool
         db.commit()
 
     add_history(db, ctx, fix=fix)
+    backup_database(db, ctx, "database")
 
 
 @database_app.command("upgrade", short_help="Upgrade database.")
