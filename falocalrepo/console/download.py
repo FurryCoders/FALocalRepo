@@ -182,23 +182,21 @@ def download_users(ctx: Context, database: Callable[..., Database], users: tuple
     folders = folders_
     try:
         downloader.download_users(list(users), list(folders))
+    except KeyboardInterrupt:
         echo()
-        backup_database(db, ctx, "download")
+        raise
     except Unauthorized as err:
         secho(f"\nError: Unauthorized{(': ' + ' '.join(err.args)) if err.args else ''}", fg="red", color=ctx.color)
-        echo()
-        backup_database(db, ctx, "download")
         ctx.exit(1)
     except RequestException as err:
         secho(f"\nError: An error occurred during download: {err!r}.", fg="red", color=ctx.color)
-        echo()
-        backup_database(db, ctx, "download")
         ctx.exit(1)
     finally:
-        echo()
-        downloader.verbose_report() if verbose_report else downloader.report()
+        if report := downloader.verbose_report() if verbose_report else downloader.report():
+            echo(f"\n{report}\n", color=ctx.color)
         if report_file:
             downloader.verbose_report(report_file)
+        backup_database(db, ctx, "download")
 
 
 # noinspection DuplicatedCode
@@ -259,23 +257,21 @@ def download_update(ctx: Context, database: Callable[..., Database], users: tupl
         add_history(db, ctx, users=users, folders=folders, stop=stop)
     try:
         downloader.download_users_update(list(users), list(folders), stop, deactivated, like)
+    except KeyboardInterrupt:
         echo()
-        backup_database(db, ctx, "download")
+        raise
     except Unauthorized as err:
         secho(f"\nError: Unauthorized{(': ' + ' '.join(err.args)) if err.args else ''}", fg="red", color=ctx.color)
-        echo()
-        backup_database(db, ctx, "download")
         ctx.exit(1)
     except RequestException as err:
         secho(f"\nError: An error occurred during download: {err!r}.", fg="red", color=ctx.color)
-        echo()
-        backup_database(db, ctx, "download")
         ctx.exit(1)
     finally:
-        echo()
-        downloader.verbose_report() if verbose_report else downloader.report()
+        if report := downloader.verbose_report() if verbose_report else downloader.report():
+            echo(f"\n{report}\n", color=ctx.color)
         if report_file:
             downloader.verbose_report(report_file)
+        backup_database(db, ctx, "download")
 
 
 # noinspection DuplicatedCode
@@ -321,23 +317,21 @@ def download_submissions(ctx: Context, database: Callable[..., Database], submis
         add_history(db, ctx, submission_id=submission_id, replace=replace)
     try:
         downloader.download_submissions(list(submission_id))
+    except KeyboardInterrupt:
         echo()
-        backup_database(db, ctx, "download")
+        raise
     except Unauthorized as err:
         secho(f"\nError: Unauthorized{(': ' + ' '.join(err.args)) if err.args else ''}", fg="red", color=ctx.color)
-        echo()
-        backup_database(db, ctx, "download")
         ctx.exit(1)
     except RequestException as err:
         secho(f"\nError: An error occurred during download: {err!r}.", fg="red", color=ctx.color)
-        echo()
-        backup_database(db, ctx, "download")
         ctx.exit(1)
     finally:
-        echo()
-        downloader.verbose_report() if verbose_report else downloader.report()
+        if report := downloader.verbose_report() if verbose_report else downloader.report():
+            echo(f"\n{report}\n", color=ctx.color)
         if report_file:
             downloader.verbose_report(report_file)
+        backup_database(db, ctx, "download")
 
 
 # noinspection DuplicatedCode
@@ -380,23 +374,21 @@ def download_journals(ctx: Context, database: Callable[..., Database], journal_i
         add_history(db, ctx, journal_id=journal_id, replace=replace)
     try:
         downloader.download_journals(list(journal_id))
+    except KeyboardInterrupt:
         echo()
-        backup_database(db, ctx, "download")
+        raise
     except Unauthorized as err:
         secho(f"\nError: Unauthorized{(': ' + ' '.join(err.args)) if err.args else ''}", fg="red", color=ctx.color)
-        echo()
-        backup_database(db, ctx, "download")
         ctx.exit(1)
     except RequestException as err:
         secho(f"\nError: An error occurred during download: {err!r}.", fg="red", color=ctx.color)
-        echo()
-        backup_database(db, ctx, "download")
         ctx.exit(1)
     finally:
-        echo()
-        downloader.verbose_report() if verbose_report else downloader.report()
+        if report := downloader.verbose_report() if verbose_report else downloader.report():
+            echo(f"\n{report}\n", color=ctx.color)
         if report_file:
             downloader.verbose_report(report_file)
+        backup_database(db, ctx, "download")
 
 
 download_app.list_commands = lambda *_: [

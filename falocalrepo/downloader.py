@@ -200,7 +200,7 @@ class Downloader:
         self.thumbnail_errors: list[int] = []
         self.journal_errors: list[int] = []
 
-    def report(self):
+    def report(self) -> str:
         items: list[tuple[str, int]] = [
             ("Added users", len(set(self.added_users))),
             ("Modified users", len(set(self.modified_users))),
@@ -219,10 +219,11 @@ class Downloader:
         ]
         if items := list(filter(itemgetter(1), items)):
             name_padding: int = max(map(len, map(itemgetter(0), items or [""])))
-            for name, value in items:
-                echo(f"{blue}{name:<{name_padding}}{reset}: {yellow}{value}{reset}", color=self.color)
+            return "\n".join(f"{blue}{name:<{name_padding}}{reset}: {yellow}{value}{reset}" for name, value in items)
+        else:
+            return ""
 
-    def verbose_report(self, file: TextIO | None = None):
+    def verbose_report(self, file: TextIO | None = None) -> str | None:
         if file:
             dump({
                 "users": {
@@ -263,8 +264,7 @@ class Downloader:
                 ("Journal Errors", sort_set(self.journal_errors)),
             ]
             name_padding: int = max(map(len, map(itemgetter(0), items)))
-            for name, value in items:
-                echo(f"{blue}{name:<{name_padding}}{reset}: {yellow}{value}{reset}", color=self.color)
+            return "\n".join(f"{blue}{name:<{name_padding}}{reset}: {yellow}{value}{reset}" for name, value in items)
 
     def _make_bar(self, bar_width: int = None):
         return Bar(self.bar_width if bar_width is None else bar_width)
