@@ -16,18 +16,9 @@ from click import echo
 from click import group
 from click import option
 from click import pass_context
-from faapi.parse import bbcode_to_html
-from faapi.parse import clean_html
-from faapi.parse import html_to_bbcode
-from falocalrepo_database import Column
 from falocalrepo_database import Cursor
 from falocalrepo_database import Database
-from falocalrepo_database import Table
-from falocalrepo_database.selector import SelectorBuilder as Sb
-from falocalrepo_database.tables import CommentsColumns
-from falocalrepo_database.tables import JournalsColumns
 from falocalrepo_database.tables import SubmissionsColumns
-from falocalrepo_database.tables import UsersColumns
 
 from .colors import *
 from .util import CustomHelpColorsGroup
@@ -186,73 +177,6 @@ def config_cookies(ctx: Context, database: Callable[..., Database], cookie: list
         backup_database(db, ctx, "config")
 
 
-@config_app.command("bbcode")
-@option("--true/--false", "bbcode", is_eager=True, is_flag=True, default=None, help="Enable or disable BBCode.")
-@database_exists_option
-@color_option
-@help_option
-@pass_context
-@docstring_format()
-def config_bbcode(ctx: Context, database: Callable[..., Database], bbcode: bool = None):
-    """
-    Read or modify the BBCode setting of the database and convert existing entries when changing it.
-
-    {bold}{red}WARNING:{reset} HTML to BBCode conversion (and vice versa) is still a work in progress and it may cause
-    some content to be lost. A backup of the database should be made before changing the setting.
-    """
-
-    db: Database = database()
-    updated: bool = False
-
-    if bbcode is not None and bbcode != db.settings.bbcode:
-        backup_database(db, ctx, "preconfig")
-
-    echo(f"{bold}BBCode{reset}", color=ctx.color)
-
-    if bbcode is not None and bbcode == db.settings.bbcode:
-        echo(f"BBCode is already set to {yellow}{bbcode}{reset}.\n", color=ctx.color)
-    elif bbcode is not None and bbcode != db.settings.bbcode:
-        echo(f"\n{bold}{red}WARNING:{reset} HTML to BBCode conversion (and vice versa) is still a work in progress and"
-             f" it may cause some content to be lost. A backup of the database should be made before changing the"
-             f" setting.\n",
-             color=ctx.color)
-
-        def convert_entries(table: Table, fields: list[Column]):
-            total: int = len(table)
-            echo(f"Converting {yellow}{table.name.upper()}{reset} ({total} entries)", color=ctx.color)
-            for n, entry in enumerate(table, 1):
-                echo(f"\r{n}/{total}", nl=False)
-                table.update(Sb() & [Sb(k.name) == entry[k.name] for k in table.keys],
-                             table.format_entry({
-                                 c.name: html_to_bbcode(clean_html(entry[c.name])) if bbcode
-                                 else bbcode_to_html(entry[c.name])
-                                 for c in fields
-                             }, defaults=False))
-            echo("\r" + (" " * ((len(str(total)) * 2) + 1)) + "\r", nl=False)
-
-        try:
-            updated = True
-            db.settings.bbcode = bbcode
-
-            convert_entries(db.users, [UsersColumns.USERPAGE])
-            convert_entries(db.submissions, [SubmissionsColumns.DESCRIPTION, SubmissionsColumns.FOOTER])
-            convert_entries(db.journals, [JournalsColumns.CONTENT, JournalsColumns.HEADER, JournalsColumns.FOOTER])
-            convert_entries(db.comments, [CommentsColumns.TEXT])
-
-            db.commit()
-
-            echo(f"\nAll entries have been converted to {'BBCode' if bbcode else 'HTML'}.\n")
-        except BaseException:
-            db.close()
-            echo(f"\n{red}Conversion was interrupted and all temporary changes have been rolle back{reset}")
-            raise
-
-    echo(f"{blue}BBCode{reset}: {yellow}{db.settings.bbcode}{reset}", color=ctx.color)
-
-    if updated:
-        backup_database(db, ctx, "config")
-
-
 @config_app.command("files-folder", short_help="Read or modify the submission files folder.")
 @argument("new_folder", nargs=1, default=None, required=False,
           type=PathClick(file_okay=False, writable=True, path_type=Path))
@@ -319,7 +243,6 @@ def config_files_folder(ctx: Context, database: Callable[..., Database], new_fol
 config_app.list_commands = lambda *_: [
     config_list.name,
     config_cookies.name,
-    config_bbcode.name,
     config_files_folder.name,
     config_backup.name,
 ]

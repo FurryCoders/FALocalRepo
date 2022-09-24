@@ -38,6 +38,8 @@ from click import secho
 from click import style
 from click.shell_completion import CompletionItem
 from faapi.parse import bbcode_to_html
+from faapi.parse import clean_html
+from faapi.parse import html_to_bbcode
 from falocalrepo_database import Column
 from falocalrepo_database import Cursor
 from falocalrepo_database import Database
@@ -620,6 +622,74 @@ def database_info(ctx: Context, database: Callable[..., Database]):
     echo(f"{yellow}{len(db.comments)}{reset}", color=ctx.color)
     echo(f"{blue}History{reset}    : ", nl=False, color=ctx.color)
     echo(f"{yellow}{len(db.history)}{reset}", color=ctx.color)
+
+
+@database_app.command("bbcode")
+@argument("bbcode", type=Choice(("true", "false")), required=False, default=None)
+@database_exists_option
+@color_option
+@help_option
+@pass_context
+@docstring_format()
+def database_bbcode(ctx: Context, database: Callable[..., Database], bbcode: bool = None):
+    """
+    Read or modify the BBCode setting of the database and convert existing entries when changing it.
+
+    Use {cyan}true{reset} to enable BBCode and convert entries and {cyan}false{reset} to disable BBCode and convert
+    entries back to HTML.
+
+    {bold}{red}WARNING:{reset} HTML to BBCode conversion (and vice versa) is still a work in progress and it may cause
+    some content to be lost. A backup of the database should be made before changing the setting.
+    """
+
+    db: Database = database()
+    updated: bool = False
+
+    if bbcode is not None and bbcode != db.settings.bbcode:
+        backup_database(db, ctx, "predatabase")
+
+    if bbcode is not None and bbcode == db.settings.bbcode:
+        echo(f"BBCode is already set to {yellow}{bbcode}{reset}.\n", color=ctx.color)
+    elif bbcode is not None and bbcode != db.settings.bbcode:
+        echo(f"\n{bold}{red}WARNING:{reset} HTML to BBCode conversion (and vice versa) is still a work in progress and"
+             f" it may cause some content to be lost. A backup of the database should be made before changing the"
+             f" setting.\n",
+             color=ctx.color)
+
+        def convert_entries(table: Table, fields: list[Column]):
+            total: int = len(table)
+            echo(f"Converting {yellow}{table.name.upper()}{reset} ({total} entries)", color=ctx.color)
+            for n, entry in enumerate(table, 1):
+                echo(f"\r{n}/{total}", nl=False)
+                table.update(Sb() & [Sb(k.name) == entry[k.name] for k in table.keys],
+                             table.format_entry({
+                                 c.name: html_to_bbcode(clean_html(entry[c.name])) if bbcode
+                                 else bbcode_to_html(entry[c.name])
+                                 for c in fields
+                             }, defaults=False))
+            echo("\r" + (" " * ((len(str(total)) * 2) + 1)) + "\r", nl=False)
+
+        try:
+            updated = True
+            db.settings.bbcode = bbcode
+
+            convert_entries(db.users, [UsersColumns.USERPAGE])
+            convert_entries(db.submissions, [SubmissionsColumns.DESCRIPTION, SubmissionsColumns.FOOTER])
+            convert_entries(db.journals, [JournalsColumns.CONTENT, JournalsColumns.HEADER, JournalsColumns.FOOTER])
+            convert_entries(db.comments, [CommentsColumns.TEXT])
+
+            db.commit()
+
+            echo(f"\nAll entries have been converted to {'BBCode' if bbcode else 'HTML'}.\n")
+        except BaseException:
+            db.close()
+            echo(f"\n{red}Conversion was interrupted and all temporary changes have been rolle back{reset}")
+            raise
+
+    echo(f"{blue}BBCode{reset}: {yellow}{db.settings.bbcode}{reset}", color=ctx.color)
+
+    if updated:
+        backup_database(db, ctx, "database")
 
 
 @database_app.command("history", short_help="Show database history.")
@@ -1295,6 +1365,7 @@ def database_upgrade(ctx: Context, database: Callable[..., Database]):
 
 database_app.list_commands = lambda *_: [
     database_info.name,
+    database_bbcode.name,
     database_history.name,
     database_search.name,
     database_view.name,
