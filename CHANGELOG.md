@@ -7,7 +7,7 @@
 * \[BBCode\] 
     * Thanks to the new HTML to BBCode converter introduced with [faapi 3.8.0](https://pypi.org/project/faapi),
       submissions, journals, and user profiles can now be stored in BBCode format instead of the raw HTML
-    * BBCode mode can be toggled on and off using the new `config bbcode` command
+    * BBCode mode can be toggled on and off using the new `database bbcode` command
     * BBCode mode greatly improves search results by removing HTML boilerplate, and reduces the size of the database
     * **Warning**: HTML to BBCode conversion (and vice versa) is still a work in progress, and it may cause some
       content to be lost, so a backup of the database should be made before changing the setting
