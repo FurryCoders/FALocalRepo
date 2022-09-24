@@ -625,13 +625,14 @@ def database_info(ctx: Context, database: Callable[..., Database]):
 
 
 @database_app.command("bbcode")
-@argument("bbcode", type=Choice(("true", "false")), required=False, default=None)
+@argument("bbcode", type=Choice(("true", "false")), required=False, default=None,
+          callback=lambda c, p, v: None if v is None else v == "true")
 @database_exists_option
 @color_option
 @help_option
 @pass_context
 @docstring_format()
-def database_bbcode(ctx: Context, database: Callable[..., Database], bbcode: bool = None):
+def database_bbcode(ctx: Context, database: Callable[..., Database], bbcode: bool | None = None):
     """
     Read or modify the BBCode setting of the database and convert existing entries when changing it.
 
