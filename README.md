@@ -234,18 +234,6 @@ Read or modify stored cookies. If no `--cookie` option is given, the current val
 > falocalrepo config cookies --cookie a 38565475-3421-3f21-7f63-3d341339737 --cookie b 356f5962-5a60-0922-1c11-65003b703038
 > ```
 
-#### bbcode
-
-```
-bbcode [--true | --false]
-```
-
-Read or modify the BBCode setting of the database and convert existing entries when changing it. See [BBCode](#bbcode)
-for more details.
-
-**WARNING**: HTML to BBCode conversion (and vice versa) is still a work in progress, and it may cause some content to be
-lost. A backup of the database should be made before changing the setting.
-
 #### files-folder
 
 ```
@@ -433,6 +421,20 @@ info
 ```
 
 Show database information, statistics and version.
+
+#### bbcode
+
+```
+bbcode [true|false]
+```
+
+Read or modify the BBCode setting of the database and convert existing entries when changing it. See [BBCode](#bbcode)
+for more details.
+
+Use `true` to enable BBCode and convert entries and `false` to disable BBCode and convert entries back to HTML.
+
+**WARNING**: HTML to BBCode conversion (and vice versa) is still a work in progress, and it may cause some content to be
+lost. A backup of the database should be made before changing the setting.
 
 #### history
 
