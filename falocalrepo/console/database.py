@@ -652,7 +652,7 @@ def database_bbcode(ctx: Context, database: Callable[..., Database], bbcode: boo
     if bbcode is not None and bbcode == db.settings.bbcode:
         echo(f"BBCode is already set to {yellow}{bbcode}{reset}.\n", color=ctx.color)
     elif bbcode is not None and bbcode != db.settings.bbcode:
-        echo(f"\n{bold}{red}WARNING:{reset} HTML to BBCode conversion (and vice versa) is still a work in progress and"
+        echo(f"{bold}{red}WARNING:{reset} HTML to BBCode conversion (and vice versa) is still a work in progress and"
              f" it may cause some content to be lost. A backup of the database should be made before changing the"
              f" setting.\n",
              color=ctx.color)
