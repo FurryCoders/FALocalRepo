@@ -4,7 +4,7 @@
 
 ### New Features
 
-* \[BBCode\] 
+* \[BBCode\]
     * Thanks to the new HTML to BBCode converter introduced with [faapi 3.8.0](https://pypi.org/project/faapi),
       submissions, journals, and user profiles can now be stored in BBCode format instead of the raw HTML
     * BBCode mode can be toggled on and off using the new `database bbcode` command
@@ -30,6 +30,8 @@
 
 ### Changes
 
+* Comments are now saved by default and can be turned off with the `--no-comments` option (the old `--save-comments` is
+  no longer supported)
 * Improve formatting of counters during download
 * Hide terminal cursor on Linux and macOS systems
 
