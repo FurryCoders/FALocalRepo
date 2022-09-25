@@ -657,6 +657,9 @@ def database_bbcode(ctx: Context, database: Callable[..., Database], bbcode: boo
              f" setting.\n",
              color=ctx.color)
 
+        echo(f"Conversion can be interrupted at any moment with {bold}CTRL+C{reset}"
+             f" and all changes will be rolled back.\n", color=ctx.color)
+
         def convert_entries(table: Table, fields: list[Column]):
             total: int = len(table)
             echo(f"Converting {yellow}{table.name.upper()}{reset} ({total} entries)", color=ctx.color)
@@ -684,7 +687,7 @@ def database_bbcode(ctx: Context, database: Callable[..., Database], bbcode: boo
             echo(f"\nAll entries have been converted to {'BBCode' if bbcode else 'HTML'}.\n")
         except BaseException:
             db.close()
-            echo(f"\n{red}Conversion was interrupted and all temporary changes have been rolle back{reset}")
+            echo(f"\n{red}Conversion was interrupted and all temporary changes have been rolled back{reset}")
             raise
 
     echo(f"{blue}BBCode{reset}: {yellow}{db.settings.bbcode}{reset}", color=ctx.color)
