@@ -1109,6 +1109,8 @@ def database_edit(ctx: Context, database: Callable[..., Database], table: str, _
     if (entry := db_table[_id]) is None:
         raise BadParameter(f"No entry with ID {_id} in {table}.", ctx, get_param(ctx, "_id"))
 
+    echo(f"Editing entry {yellow}{_id}{reset}... ", nl=False, color=ctx.color)
+
     if db_table.name == db.submissions.name:
         filesaved: int = data.get(f := SubmissionsColumns.FILESAVED.name, entry[f])
 
@@ -1131,6 +1133,8 @@ def database_edit(ctx: Context, database: Callable[..., Database], table: str, _
     if data:
         db_table.update(Sb(db_table.key.name).__eq__(_id), db_table.format_entry(data))
         db.commit()
+
+    echo("Done")
 
     if submission_file or submission_thumbnail or data:
         backup_database(db, ctx, "database")
