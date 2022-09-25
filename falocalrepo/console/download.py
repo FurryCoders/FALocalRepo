@@ -68,7 +68,7 @@ verbose_report_option = option("--verbose-report", is_flag=True, default=False, 
 report_file_option = option("--report-file", default=None, type=File("w"), help="Write download report to a file.")
 retry_option = option("--retry", metavar="INTEGER", default=1, type=IntRange(1, 5), show_default=True,
                       help="Retry downloads.")
-comments_option = option("--save-comments", is_flag=True, default=False, help="Save entries' comments.")
+comments_option = option("--no-comments", "save_comments", is_flag=True, default=True, help="Do not save comments.")
 content_only_option = option("--content-only", is_flag=True, default=False, help="Do not save headers and footers.")
 
 
@@ -151,8 +151,7 @@ def download_users(ctx: Context, database: Callable[..., Database], users: tuple
 
     The {yellow}--retry{reset} option enables downloads retries for submission files and thumbnails up to 5 retries.
 
-    The {yellow}--save-comments{reset} option allows saving comments for downloaded submissions and journals. Comments
-    are otherwise ignored.
+    The {yellow}--no-comments{reset} option disables saving comments for submissions and journals.
 
     The {yellow}--content-only{reset} option disables saving headers and footers.
 
@@ -240,8 +239,7 @@ def download_update(ctx: Context, database: Callable[..., Database], users: tupl
 
     The {yellow}--retry{reset} option enables downloads retries for submission files and thumbnails up to 5 retries.
 
-    The {yellow}--save-comments{reset} option allows saving comments for downloaded submissions and journals. Comments
-    are otherwise ignored.
+    The {yellow}--no-comments{reset} option disables saving comments for submissions and journals.
 
     The {yellow}--content-only{reset} option disables saving headers and footers.
 
@@ -280,7 +278,7 @@ def download_update(ctx: Context, database: Callable[..., Database], users: tupl
           callback=lambda _c, _p, v: sorted(set(v), key=v.index))
 @option("--replace", is_flag=True, default=False, show_default=True, help="Replace submissions already in database.")
 @retry_option
-@option("--save-comments", is_flag=True, default=False, help="Save submissions' comments.")
+@comments_option
 @option("--content-only", is_flag=True, default=False, help="Do not save footers.")
 @dry_run_option
 @verbose_report_option
@@ -301,8 +299,7 @@ def download_submissions(ctx: Context, database: Callable[..., Database], submis
 
     The {yellow}--retry{reset} option enables downloads retries for submission files and thumbnails up to 5 retries.
 
-    The {yellow}--save-comments{reset} option allows saving comments for downloaded submissions. Comments are otherwise
-    ignored.
+    The {yellow}--no-comments{reset} option disables saving comments.
 
     The {yellow}--content-only{reset} option disables saving footers.
 
@@ -339,7 +336,7 @@ def download_submissions(ctx: Context, database: Callable[..., Database], submis
 @argument("journal_id", nargs=-1, required=True, type=IntRange(1),
           callback=lambda _c, _p, v: sorted(set(v), key=v.index))
 @option("--replace", is_flag=True, default=False, show_default=True, help="Replace journals already in database.")
-@option("--save-comments", is_flag=True, default=False, help="Save journals' comments.")
+@comments_option
 @content_only_option
 @dry_run_option
 @verbose_report_option
@@ -358,8 +355,7 @@ def download_journals(ctx: Context, database: Callable[..., Database], journal_i
     If the {yellow}--replace{reset} option is used, database entries will be overwritten with new data (favorites will
     be maintained).
 
-    The {yellow}--save-comments{reset} option allows saving comments for downloaded journals. Comments are otherwise
-    ignored.
+    The {yellow}--no-comments{reset} option disables saving comments.
 
     The {yellow}--content-only{reset} option disables saving headers and footers.
 
