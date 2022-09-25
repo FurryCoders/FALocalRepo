@@ -639,8 +639,10 @@ def database_bbcode(ctx: Context, database: Callable[..., Database], bbcode: boo
     Use {cyan}true{reset} to enable BBCode and convert entries and {cyan}false{reset} to disable BBCode and convert
     entries back to HTML.
 
-    {bold}{red}WARNING:{reset} HTML to BBCode conversion (and vice versa) is still a work in progress and it may cause
+    {bold}{red}WARNING:{reset} HTML to BBCode conversion (and vice versa) is still a work in progress, and it may cause
     some content to be lost. A backup of the database should be made before changing the setting.
+
+    Conversion can be interrupted at any moment with {bold}CTRL+C{reset} and all changes will be rolled back.
     """
 
     db: Database = database()
@@ -652,7 +654,7 @@ def database_bbcode(ctx: Context, database: Callable[..., Database], bbcode: boo
     if bbcode is not None and bbcode == db.settings.bbcode:
         echo(f"BBCode is already set to {yellow}{bbcode}{reset}.\n", color=ctx.color)
     elif bbcode is not None and bbcode != db.settings.bbcode:
-        echo(f"{bold}{red}WARNING:{reset} HTML to BBCode conversion (and vice versa) is still a work in progress and"
+        echo(f"{bold}{red}WARNING:{reset} HTML to BBCode conversion (and vice versa) is still a work in progress, and"
              f" it may cause some content to be lost. A backup of the database should be made before changing the"
              f" setting.\n",
              color=ctx.color)
