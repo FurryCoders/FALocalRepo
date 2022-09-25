@@ -37,8 +37,8 @@
 
 ### Fixes
 
-* Fix journals not being always saved when comments were disabled, the journals folder was the last one to be
-  downloaded/updated, and the download was interrupted manually or by an error
+* Fix journals not being always saved when comments, headers, and footers were disabled, the journals folder was the
+  last one to be downloaded/updated, and the download was interrupted manually or by an error
 * Fix after-download counters not being correct if the download was interrupted
 
 ### Dependencies
