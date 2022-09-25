@@ -1028,6 +1028,8 @@ def database_add(ctx: Context, database: Callable[..., Database], table: str, fi
     add_history(db, ctx, table=table, file=file.name, submission_file=submission_file is not None,
                 submission_thumbnail=submission_thumbnail is not None)
 
+    echo(f"Adding entry {yellow}{data[db_table.key.name]}{reset}... ", nl=False, color=ctx.color)
+
     if table.lower() == submissions_table.lower():
         sub_files_orig, sub_thumb_orig = db.submissions.get_submission_files(data["ID"])
         if sub_files_orig:
@@ -1048,6 +1050,8 @@ def database_add(ctx: Context, database: Callable[..., Database], table: str, fi
             db_table.insert(db_table.format_entry(data))
         finally:
             db.commit()
+
+    echo("Done")
 
     backup_database(db, ctx, "database")
 
