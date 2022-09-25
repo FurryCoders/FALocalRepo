@@ -436,6 +436,8 @@ Use `true` to enable BBCode and convert entries and `false` to disable BBCode an
 **WARNING**: HTML to BBCode conversion (and vice versa) is still a work in progress, and it may cause some content to be
 lost. A backup of the database should be made before changing the setting.
 
+Conversion can be interrupted at any moment with `CTRL+C` and all changes will be rolled back.
+
 #### history
 
 ```
