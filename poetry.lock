@@ -40,7 +40,7 @@ lxml = ["lxml"]
 
 [[package]]
 name = "certifi"
-version = "2022.9.14"
+version = "2022.9.24"
 description = "Python package for providing Mozilla's CA Bundle."
 category = "main"
 optional = false
@@ -152,7 +152,7 @@ psutil = ">=5.9.1,<6.0.0"
 
 [[package]]
 name = "falocalrepo-server"
-version = "3.3.0"
+version = "3.3.1"
 description = "Web interface for falocalrepo."
 category = "main"
 optional = false
@@ -200,11 +200,11 @@ python-versions = "*"
 
 [[package]]
 name = "h11"
-version = "0.13.0"
+version = "0.14.0"
 description = "A pure-Python, bring-your-own-I/O implementation of HTTP/1.1"
 category = "main"
 optional = false
-python-versions = ">=3.6"
+python-versions = ">=3.7"
 
 [[package]]
 name = "has-flag"
@@ -465,8 +465,8 @@ beautifulsoup4 = [
     {file = "beautifulsoup4-4.11.1.tar.gz", hash = "sha256:ad9aa55b65ef2808eb405f46cf74df7fcb7044d5cbc26487f96eb2ef2e436693"},
 ]
 certifi = [
-    {file = "certifi-2022.9.14-py3-none-any.whl", hash = "sha256:e232343de1ab72c2aa521b625c80f699e356830fd0e2c620b465b304b17b0516"},
-    {file = "certifi-2022.9.14.tar.gz", hash = "sha256:36973885b9542e6bd01dea287b2b4b3b21236307c56324fcc3f1160f2d655ed5"},
+    {file = "certifi-2022.9.24-py3-none-any.whl", hash = "sha256:90c1a32f1d68f940488354e36370f6cca89f0f106db09518524c88d6ed83f382"},
+    {file = "certifi-2022.9.24.tar.gz", hash = "sha256:0d9c601124e5a6ba9712dbc60d9c53c21e34f5f641fe83002317394311bdce14"},
 ]
 cfscrape = [
     {file = "cfscrape-2.1.1-py3-none-any.whl", hash = "sha256:c62085b42822e196907196f6a09561ec6b2aea8bd87e5a6f84d382e60dd23fe4"},
@@ -504,8 +504,8 @@ falocalrepo-database = [
     {file = "falocalrepo_database-5.4.2-py3-none-any.whl", hash = "sha256:9e1bda1302857ab8f91810c68a90d562167090a5ca86f862a267a59112352932"},
 ]
 falocalrepo-server = [
-    {file = "falocalrepo-server-3.3.0.tar.gz", hash = "sha256:95f7a2a3979c04523b22cb11a72c22d41e1cd04494fdbe225aada7e29910d4d3"},
-    {file = "falocalrepo_server-3.3.0-py3-none-any.whl", hash = "sha256:442ae9333553cff850185effe2f2760cf55d45b4d6fa13133b84cd9f922b3276"},
+    {file = "falocalrepo-server-3.3.1.tar.gz", hash = "sha256:2185ff0f995e99dfe21cbdd03b805bb7fa1c9cbf333e27e6f6bd6ca542bb0722"},
+    {file = "falocalrepo_server-3.3.1-py3-none-any.whl", hash = "sha256:f95ad29ea5aab3de402b8c751490f5e19daee8f6219cbd25bccc12723bd7466e"},
 ]
 fastapi = [
     {file = "fastapi-0.84.0-py3-none-any.whl", hash = "sha256:91e0bf9bc34c20a493ea18378d052b544570d27777fb6af0fb4f26c56ca25325"},
@@ -516,8 +516,8 @@ filetype = [
     {file = "filetype-1.1.0.tar.gz", hash = "sha256:afe4a00029601f66d239b72688065cc7c219dec1c927994f90b825e9e53d8f93"},
 ]
 h11 = [
-    {file = "h11-0.13.0-py3-none-any.whl", hash = "sha256:8ddd78563b633ca55346c8cd41ec0af27d3c79931828beffb46ce70a379e7442"},
-    {file = "h11-0.13.0.tar.gz", hash = "sha256:70813c1135087a248a4d38cc0e1a0181ffab2188141a93eaf567940c3957ff06"},
+    {file = "h11-0.14.0-py3-none-any.whl", hash = "sha256:e3fe4ac4b851c468cc8363d500db52c2ead036020723024a109d37346efaa761"},
+    {file = "h11-0.14.0.tar.gz", hash = "sha256:8f19fbbe99e72420ff35c00b27a34cb9937e902a8b810e2c88300c6f0a3b699d"},
 ]
 has-flag = [
     {file = "has-flag-0.1.1.tar.gz", hash = "sha256:2ade83150630ce9058d4ab07c57f65c10e6d894e8c90a2275b14a9185a3bc533"},
