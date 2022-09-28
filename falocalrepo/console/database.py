@@ -885,7 +885,7 @@ def database_search(ctx: Context, database: Callable[..., Database], table: str,
         echo(f"{blue}Total{reset}: {yellow}{results_total}{reset}", color=ctx.color)
 
 
-@database_app.command("view", short_help="View and entry.", no_args_is_help=True)
+@database_app.command("view", short_help="View entries.", no_args_is_help=True)
 @argument("table", nargs=1, required=True, is_eager=True, type=TableChoice())
 @argument("id_", metavar="ID", nargs=1, required=True, type=str, callback=id_callback)
 @option("--raw-content", is_flag=True, default=False, help="Do not format HTMl/BBCode fields.")
