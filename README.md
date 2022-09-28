@@ -617,7 +617,7 @@ major tables from the origin database are copied (SUBMISSIONS, JOURNALS, USERS).
 #### doctor
 
 ```
-doctor [--users] [--submissions] [--comments] [--no-fix] [--allow-deletion]
+doctor [--users] [--submissions] [--comments] [--fix] [--allow-deletion]
 ```
 
 Check the database for errors and attempt to repair them.
@@ -633,7 +633,8 @@ the `--allow-deletion` option is used.
 
 To check only specific tables, use the `--users`, `--submissions`, and `--comments` options.
 
-Use the `--no-fix` option to list errors without repairing anything.
+By default, errors will only be logged and no attempt will be made to fix them. To allow the program to try to repair
+the database, use the `--fix` option.
 
 Use the `--allow-deletion` option to allow deleting entries that are redundant or erroneous (e.g. a comment without
 parent object).
