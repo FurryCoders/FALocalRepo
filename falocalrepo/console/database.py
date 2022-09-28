@@ -458,25 +458,25 @@ def repair_submission(db: Database, submission: dict[str, Any], fix: bool, ctx: 
     fixed: bool = False
 
     folder: Path = db.submissions.files_folder / tiered_path(id_)
-    thumbnail_files = list(folder.glob("thumbnail.jpg"))
+
     files, thumb = db.submissions.get_submission_files(id_)
 
-    match [thumb, thumbnail_files, fix]:
-        case [None, [new_thumbnail, *_], True]:
+    match [thumb, nt if (nt := folder / "thumbnail.jpg").is_file() else None, fix]:
+        case [None, new_thumbnail, True] if new_thumbnail is not None:
             error = fixed = True
             db.submissions.save_submission_thumbnail(id_, new_thumbnail.read_bytes())
             db.submissions.set_filesaved(id_, filesaved & 0b100, filesaved & 0b010, True)
             db.commit()
             echo(f"{blue}{id_:010}{reset} {red}Thumbnail file found - fixed{reset}", color=ctx.color)
-        case [None, ts, False] if len(ts):
+        case [None, new_thumbnail, False] if new_thumbnail is not None:
             error = True
             echo(f"{blue}{id_:010}{reset} {red}Thumbnail file found{reset}", color=ctx.color)
-        case [t, [], True] if not t.is_file():
+        case [t, None, True] if not t.is_file():
             error = fixed = True
             echo(f"{blue}{id_:010}{reset} {red}Missing thumbnail - fixed{reset}", color=ctx.color)
             db.submissions.set_filesaved(id_, filesaved & 0b100, filesaved & 0b010, False)
             db.commit()
-        case [t, [], False] if not t.is_file():
+        case [t, None, False] if not t.is_file():
             error = True
             echo(f"{blue}{id_:010}{reset} {red}Missing thumbnail{reset}", color=ctx.color)
 
