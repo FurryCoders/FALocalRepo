@@ -1214,7 +1214,7 @@ def database_copy(ctx: Context, database: Callable[..., Database], database_dest
 # noinspection DuplicatedCode
 @database_app.command("merge", short_help="Merge database entries.")
 @argument("database_origin", nargs=1, callback=database_callback,
-          type=PathClick(exists=True, dir_okay=False, writable=True, resolve_path=True, path_type=Path))
+          type=PathClick(exists=True, dir_okay=False, writable=False, resolve_path=True, path_type=Path))
 @option("--query", metavar="<TABLE QUERY>", multiple=True, type=(TableChoice(), str),
         help="Specify a table and query to merge.")
 @option("--replace", is_flag=True, default=False, show_default=True, help="Replace entries already in database.")
