@@ -34,6 +34,7 @@
   no longer supported)
 * Improve formatting of counters during download
 * Hide terminal cursor on Linux and macOS systems
+* Allow second database of `database merge` command to be non-writable (e.g. if it is owned by root on a UNIX systems)
 
 ### Fixes
 
