@@ -1289,8 +1289,8 @@ def database_doctor(ctx: Context, database: Callable[..., Database], users: bool
     To check only specific tables, use the {yellow}--users{reset}, {yellow}--submissions{reset}, and
     {yellow}--comments{reset} options.
 
-    By default, errors will only be logged and no attempt will be made to fix them. To allow the program to try to
-    repair the database, use the {yellow}--fix{reset} option.
+    By default, errors are only logged and no attempt will be made to fix them. To allow the program to try to repair
+    the database, use the {yellow}--fix{reset} option.
 
     Use the {yellow}--allow-deletion{reset} option to allow deleting entries that are redundant or erroneous (e.g. a
     comment without parent object).
