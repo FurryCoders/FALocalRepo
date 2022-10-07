@@ -615,16 +615,15 @@ class Downloader:
         if err:
             self.user_errors += [username]
             return err
+        new = user.profile_bbcode if self.bbcode else user.profile
         added: bool = (current := self.db.users[username][UsersColumns.USERPAGE.name]) == ""
-        updated: bool = not added and user.profile_bbcode != current
+        updated: bool = not added and new != current
         if not added and not updated:
             self.bar_message("IN DB", green, always=True)
             self.bar_close("" if clear_found else "\n")
             self.clear_line()
             return 0
-        self.db.users[username] = self.db.users[username] | {
-            UsersColumns.USERPAGE.name: user.profile_bbcode if self.bbcode else user.profile
-        }
+        self.db.users[username] = self.db.users[username] | {UsersColumns.USERPAGE.name: new}
         self.added_userpages += [username] if added else []
         self.modified_userpages += [username] if updated else []
         self.bar_message("ADDED" if added else "UPDATED", green, always=True)
