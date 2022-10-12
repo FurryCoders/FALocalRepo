@@ -1263,6 +1263,7 @@ def database_merge(ctx: Context, database: Callable[..., Database], database_ori
     backup_database(db, ctx, "database")
 
 
+# noinspection DuplicatedCode
 @database_app.command("doctor", short_help="Check database for errors.")
 @option("--users", is_flag=True, default=False, help="Check users.")
 @option("--submissions", is_flag=True, default=False, help="Check submissions.")
@@ -1319,6 +1320,7 @@ def database_doctor(ctx: Context, database: Callable[..., Database], users: bool
                 echo(f"{n}/{total}\r", nl=False)
                 errors_, fixed_ = repair_user(db, user, fix, ctx)
                 errors, fixed = errors + errors_, fixed + fixed_
+            echo((" " * 21) + "\r", nl=False)
 
             echo(f"{red if errors else green}{errors or 'No'} errors{reset}", color=ctx.color)
             if errors:
@@ -1334,6 +1336,7 @@ def database_doctor(ctx: Context, database: Callable[..., Database], users: bool
                 echo(f"{n}/{total}\r", nl=False)
                 errors_, fixed_ = repair_submission(db, submission, fix, ctx)
                 errors, fixed = errors + errors_, fixed + fixed_
+            echo((" " * 21) + "\r", nl=False)
 
             echo(f"{red if errors else green}{errors or 'No'} errors{reset}", color=ctx.color)
             if errors:
@@ -1348,6 +1351,7 @@ def database_doctor(ctx: Context, database: Callable[..., Database], users: bool
                     order=[CommentsColumns.ID.name, CommentsColumns.PARENT_TABLE.name, CommentsColumns.PARENT_ID.name]):
                 errors_, fixed_ = repair_comment(db, comment, fix, allow_deletion, ctx)
                 errors, fixed = errors + errors_, fixed + fixed_
+            echo((" " * 21) + "\r", nl=False)
 
             echo(f"{red if errors else green}{errors or 'No'} errors{reset}", color=ctx.color)
             if errors:
