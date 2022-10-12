@@ -471,12 +471,14 @@ def repair_submission(db: Database, submission: dict[str, Any], fix: bool, ctx: 
         case [None, new_thumbnail, False] if new_thumbnail is not None:
             error = True
             echo(f"{blue}{id_:010}{reset} {red}Thumbnail file found{reset}", color=ctx.color)
-        case [t, None, True] if not t.is_file():
+        case [None, None, _]:
+            pass
+        case [t, None, True] if t.is_file():
             error = fixed = True
             echo(f"{blue}{id_:010}{reset} {red}Missing thumbnail - fixed{reset}", color=ctx.color)
             db.submissions.set_filesaved(id_, filesaved & 0b100, filesaved & 0b010, False)
             db.commit()
-        case [t, None, False] if not t.is_file():
+        case [t, None, False] if t.is_file():
             error = True
             echo(f"{blue}{id_:010}{reset} {red}Missing thumbnail{reset}", color=ctx.color)
 
