@@ -1301,7 +1301,8 @@ def database_doctor(ctx: Context, database: Callable[..., Database], users: bool
 
     db: Database = database()
 
-    backup_database(db, ctx, "predatabase")
+    if fix:
+        backup_database(db, ctx, "predatabase")
 
     check_users = users or not (users + submissions + comments)
     check_submissions = submissions or not (users + submissions + comments)
@@ -1360,8 +1361,9 @@ def database_doctor(ctx: Context, database: Callable[..., Database], users: bool
     finally:
         db.commit()
 
-    add_history(db, ctx, fix=fix)
-    backup_database(db, ctx, "database")
+    if fix:
+        add_history(db, ctx, fix=fix)
+        backup_database(db, ctx, "database")
 
 
 @database_app.command("upgrade", short_help="Upgrade database.")
