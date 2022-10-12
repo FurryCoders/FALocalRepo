@@ -170,7 +170,9 @@ def backup_database(db: Database, ctx: Context, trigger: str):
     dest: str = f"{db.path.name.removesuffix(db.path.suffix)} " + \
                 f"{m_time.strftime(backup_settings[trigger])}" + \
                 f"{db.path.suffix}"
-    echo(f"Backing up to {yellow}{backup_folder / dest}{reset} ... ", color=ctx.color, nl=False)
+    backup_folder_relative: Path = backup_folder.relative_to(db.path.parent) \
+        if backup_folder.is_relative_to(db.path.parent) else backup_folder
+    echo(f"Backing up to {yellow}{backup_folder_relative / dest}{reset} ... ", color=ctx.color, nl=False)
     db.backup(folder=backup_folder, date_format=backup_settings[trigger])
     echo("Done")
 
