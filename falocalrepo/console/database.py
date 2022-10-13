@@ -1347,9 +1347,11 @@ def database_doctor(ctx: Context, database: Callable[..., Database], users: bool
         if check_comments:
             echo(f"{bold}Checking Comments{reset}", color=ctx.color)
 
+            total = len(db.comments)
             errors, fixed = 0, 0
-            for comment in db.comments.select(
-                    order=[CommentsColumns.ID.name, CommentsColumns.PARENT_TABLE.name, CommentsColumns.PARENT_ID.name]):
+            for n, comment in enumerate(
+                    db.comments.select(order=[CommentsColumns.PARENT_TABLE.name, CommentsColumns.ID.name]), 1):
+                echo(f"{n}/{total}\r", nl=False)
                 errors_, fixed_ = repair_comment(db, comment, fix, allow_deletion, ctx)
                 errors, fixed = errors + errors_, fixed + fixed_
             echo((" " * 21) + "\r", nl=False)
