@@ -626,7 +626,7 @@ def database_info(ctx: Context, database: Callable[..., Database]):
     echo(f"{yellow}{len(db.history)}{reset}", color=ctx.color)
 
 
-@database_app.command("bbcode", help="Set BBCode mode.")
+@database_app.command("bbcode", short_help="Set BBCode mode.")
 @argument("bbcode", type=Choice(("true", "false")), required=False, default=None,
           callback=lambda c, p, v: None if v is None else v == "true")
 @database_exists_option
