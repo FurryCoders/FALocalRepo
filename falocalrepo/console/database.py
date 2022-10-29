@@ -1124,7 +1124,7 @@ def database_edit(ctx: Context, database: Callable[..., Database], table: str, _
             if not add_submission_files and entry[SubmissionsColumns.FILEEXT.name]:
                 fs, _ = db.submissions.get_submission_files(_id)
                 for f in fs:
-                    f.unlink()
+                    f.unlink(missing_ok=True)
             exts: list[str] = entry[SubmissionsColumns.FILEEXT.name] if add_submission_files else []
             for n, f in enumerate(submission_file, len(exts)):
                 exts.append(db.submissions.save_submission_file(_id, f.read_bytes(), "submission",
