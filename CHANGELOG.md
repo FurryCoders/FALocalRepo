@@ -42,13 +42,14 @@
   last one to be downloaded/updated, and the download was interrupted manually or by an error
 * Fix after-download counters not being correct if the download was interrupted
 * Fix typos and errors in help messages
+* Fix ` being removed from usernames
 
 ### Dependencies
 
-* Use [faapi ~3.9.0](https://pypi.org/project/faapi/3.9.0)
-* Use [falocalrepo-database ~5.4.2](https://pypi.org/project/falocalrepo-server/5.4.2)
+* Use [faapi ~3.9.2](https://pypi.org/project/faapi/3.9.2)
+* Use [falocalrepo-database ~5.4.3](https://pypi.org/project/falocalrepo-server/5.4.3)
 * Use [falocalrepo-server ~3.3.0](https://pypi.org/project/falocalrepo-server/3.3.0)
-* Use [psutil ~5.9.2](https://pypi.org/project/faapi/5.9.2)
+* Use [psutil ~5.9.3](https://pypi.org/project/faapi/5.9.3)
 
 ## 4.3.7
 
