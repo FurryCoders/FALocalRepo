@@ -122,7 +122,7 @@ values = "*"
 
 [[package]]
 name = "faapi"
-version = "3.9.0"
+version = "3.9.2"
 description = "Python module to implement API-like functionality for the FurAffinity.net website."
 category = "main"
 optional = false
@@ -139,7 +139,7 @@ requests = ">=2.28.1,<3.0.0"
 
 [[package]]
 name = "falocalrepo-database"
-version = "5.4.2"
+version = "5.4.3"
 description = "Database functionality for falocalrepo."
 category = "main"
 optional = false
@@ -449,7 +449,7 @@ python-versions = "*"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "64eb44b4ad33abefd25558223848964beac0ca57e437dc16e1c1a345c6462254"
+content-hash = "c9dbe33ffa8d5346cd4dde4d853aa70add14c26f6938af48c4f2f484d936ada6"
 
 [metadata.files]
 anyio = [
@@ -496,12 +496,12 @@ dict = [
     {file = "dict-2020.12.3.tar.gz", hash = "sha256:8a14ff62e2a9dff5ef751a2e5eee07715c79ddab6b9ca06c59e73622f80761b5"},
 ]
 faapi = [
-    {file = "faapi-3.9.0-py3-none-any.whl", hash = "sha256:1edb1eff02a6a1885d9530d327a1970c9d7c4ded28f0df7150ee20b8fb3e04e6"},
-    {file = "faapi-3.9.0.tar.gz", hash = "sha256:886178d030316d90cd216fa8c4e5a8b989df6fa5e7d6ee7f459383c834790f44"},
+    {file = "faapi-3.9.2-py3-none-any.whl", hash = "sha256:34bda80c931709794dafb15eb5740e7ea0333a35a6561058a32f808a0cb5820e"},
+    {file = "faapi-3.9.2.tar.gz", hash = "sha256:1a01ab8099f6ee580b5bb3ea2fca843485a29f443033f9c06ecf5733e0a29100"},
 ]
 falocalrepo-database = [
-    {file = "falocalrepo-database-5.4.2.tar.gz", hash = "sha256:4e92a5d9a5b61996932a33126deda9f08ffe5cca325756d56b678f1f46eca92a"},
-    {file = "falocalrepo_database-5.4.2-py3-none-any.whl", hash = "sha256:9e1bda1302857ab8f91810c68a90d562167090a5ca86f862a267a59112352932"},
+    {file = "falocalrepo-database-5.4.3.tar.gz", hash = "sha256:cfb79370a09333993584296b4ba43d9966576dacee8b6f0243882a5652f488ce"},
+    {file = "falocalrepo_database-5.4.3-py3-none-any.whl", hash = "sha256:17e5d7ce615446bf0454b5a4ce5dad381a1636643f5a336bdc50886b4183f88c"},
 ]
 falocalrepo-server = [
     {file = "falocalrepo-server-3.3.1.tar.gz", hash = "sha256:2185ff0f995e99dfe21cbdd03b805bb7fa1c9cbf333e27e6f6bd6ca542bb0722"},
