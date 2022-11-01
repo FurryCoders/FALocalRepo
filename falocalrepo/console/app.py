@@ -234,7 +234,7 @@ def app_init(ctx: Context, database: Callable[..., Database]):
 @docstring_format()
 def app_updates(ctx: Context, shell: bool):
     """
-    Check for updates to falocalrepo and its main dependencies on PyPi. The {yellow}shell{reset} option can be used to
+    Check for updates to falocalrepo and its main dependencies on PyPi. The {yellow}--shell{reset} option can be used to
     output the shell command to upgrade any component that has available updates.
     """
 
