@@ -1193,6 +1193,9 @@ def database_copy(ctx: Context, database: Callable[..., Database], database_dest
     {cyan}%{reset} as query. The {yellow}TABLE{reset} value can be one of {tables}.
 
     If no {yellow}--query{reset} option is given, all major tables from the origin database are copied ({tables}).
+
+    Existing submissions are not replaced by default; to replace existing entries in {yellow}DATABASE_DEST{reset}, use
+    the {yellow}--replace{reset} option.
     """
 
     db: Database = database()
@@ -1238,6 +1241,9 @@ def database_merge(ctx: Context, database: Callable[..., Database], database_ori
     {cyan}%{reset} as query. The {yellow}TABLE{reset} value can be one of {tables}.
 
     If no {yellow}--query{reset} option is given, all major tables from the origin database are copied ({tables}).
+
+    Existing submissions are not replaced by default; to replace existing entries with those from
+    {yellow}DATABASE_ORIGIN{reset}, use the {yellow}--replace{reset} option.
     """
 
     db: Database = database()
