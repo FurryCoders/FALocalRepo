@@ -905,6 +905,8 @@ def database_view(ctx: Context, database: Callable[..., Database], table: str, i
     View a single entry in the terminal. Submission descriptions, journal contents, and user profile pages are rendered
     and formatted.
 
+    Comments are not shown by default; to view them, use the {yellow}--view-comments{reset} option.
+
     Formatting is limited to alignment, horizontal lines, quotes, links, color, and emphasis. To view the properly
     formatted HTML/BBCode content, use the {yellow}server{reset} command. Formatting can be disabled with the
     {yellow}--raw-content{reset} option to print the raw content.
