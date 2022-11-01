@@ -295,6 +295,9 @@ def app_completions(ctx: Context, shell: Type[ShellComplete], alias: str | None)
     Generate tab-completion scripts for your shell. The generated completion must be saved in the correct location for
     it to be recognized and used by the shell.
 
+    The optional {yellow}--alias{reset} option allows generating completion script with a name other than
+    {yellow}falocalrepo{reset}.
+
     \b
     Supported shells are:
     {0}
