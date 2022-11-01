@@ -58,7 +58,7 @@
     * Support BBCode
     * Show user icons
     * Show headers and footers for submissions and journals
-* Use [psutil ~5.9.3](https://pypi.org/project/faapi/5.9.3)
+* Use [psutil ^5.9.3](https://pypi.org/project/faapi/5.9.3)
 
 ## 4.3.7
 
