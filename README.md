@@ -252,7 +252,7 @@ If the `--move` option is used, all files will be moved to the new location.
 #### backup
 
 ```
-backup [--remove] [--folder DIRECTORY] [--date-format FMT] [{download|database|config|predownload|predatabase|preconfig}]
+backup [--date-format FMT] [--folder DIRECTORY] [--remove] [{download|database|config|predownload|predatabase|preconfig}]
 ```
 
 Read or modify automatic backup settings. Backup will be performed automatically based on stored triggers and date
@@ -312,7 +312,7 @@ Check whether the cookies stored in the database belong to a login Fur Affinity 
 #### users
 
 ```
-users [--retry] [--no-comments] [--content-only] [--replace] [--dry-run] [--verbose-report] [--report-file REPORT_FILE] -u <USER>... -f <FOLDER>...
+users -u <USER>... -f <FOLDER>... [--retry] [--no-comments] [--content-only] [--replace] [--dry-run] [--verbose-report] [--report-file REPORT_FILE]
 ```
 
 Download specific user folders, where `FOLDER` is one of gallery, scraps, favorites, journals, userpage, watchlist-by,
@@ -338,7 +338,7 @@ program. The `--report-file` options allows saving a detailed download report in
 #### update
 
 ```
-update [--retry] [--no-comments] [--content-only] [--dry-run] [--deactivated] [--stop N] [--verbose-report] [--report-file REPORT_FILE] [--like] [-u <USER>...] [-f <FOLDER>...]
+update [-u <USER>...] [-f <FOLDER>...] [--stop N] [--deactivated] [--like] [--retry] [--no-comments] [--content-only] [--dry-run] [--verbose-report] [--report-file REPORT_FILE]
 ```
 
 Download new entries using the users and folders already in the database. `--user` and `--folder` options can be used to
@@ -378,7 +378,7 @@ name, not by watch date
 #### submissions
 
 ```
-submissions [--retry] [--no-comments] [--content-only] [--replace] [--verbose-report] [--report-file REPORT_FILE] <SUBMISSION_ID>...
+submissions [--replace] [--retry] [--no-comments] [--content-only] [--verbose-report] [--report-file REPORT_FILE] <SUBMISSION_ID>...
 ```
 
 Download single submissions, where `SUBMISSION_ID` is the ID of the submission. If the `--replace` option is used,
@@ -394,7 +394,7 @@ program. The `--report-file` options allows saving a detailed download report in
 #### journals
 
 ```
-journals [--no-comments] [--content-only] [--replace] [--verbose-report] [--report-file REPORT_FILE] <JOURNAL_ID>...
+journals [--replace] [--no-comments] [--content-only] [--verbose-report] [--report-file REPORT_FILE] <JOURNAL_ID>...
 ```
 
 Download single journals, where `JOURNAL_ID` is the ID of the journal. If the `--replace` option is used, database
@@ -428,7 +428,7 @@ Show database information, statistics and version.
 #### bbcode
 
 ```
-bbcode [true|false]
+bbcode [{true|false}]
 ```
 
 Read or modify the BBCode setting of the database and convert existing entries when changing it. See [BBCode](#bbcode)
@@ -505,11 +505,13 @@ _Note_: characters outside the ASCII range will be replaced with □ when using 
 #### view
 
 ```
-view [--raw-content] {SUBMISSIONS|JOURNALS|USERS} ID
+view [--raw-content] [--view-comments] {SUBMISSIONS|JOURNALS|USERS} ID
 ```
 
 View a single entry in the terminal. Submission descriptions, journal contents, and user profile pages are rendered and
 formatted.
+
+Comments are not shown by default; to view them, use the `--view-comments` option.
 
 Formatting is limited to alignment, horizontal lines, quotes, links, color, and emphasis. To view the properly formatted
 HTML/BBCode content, use the `server` command. Formatting can be disabled with the `--raw-content` option to print the
@@ -592,8 +594,12 @@ merge [--query <TABLE QUERY>...] [--replace] DATABASE_ORIGIN
 
 Merge database from `DATABASE_ORIGIN`. Specific tables can be selected with the `--query` option. For details on the
 syntax for the `QUERY` value, see [Database Query Language](#database-query-language). To select all entries in a table,
-use `%` as query. The `TABLE` value can be one of SUBMISSIONS, JOURNALS, USERS. If no `--query` option is given, all
-major tables from the origin database are copied (SUBMISSIONS, JOURNALS, USERS).
+use `%` as query. The `TABLE` value can be one of SUBMISSIONS, JOURNALS, USERS.
+
+If no `--query` option is given, all major tables from the origin database are copied (SUBMISSIONS, JOURNALS, USERS).
+
+Existing submissions are not replaced by default; to replace existing entries with those from `DATABASE_ORIGIN`, use
+the `--replace` option.
 
 > ```
 > falocalrepo database merge ~/FA.db --query USERS tom --SUBMISSIONS '@author tom'
@@ -607,8 +613,12 @@ copy [--query <TABLE QUERY>...] [--replace] DATABASE_DEST
 
 Copy database to `DATABASE_DEST`. Specific tables can be selected with the `--query` option. For details on the syntax
 for the `QUERY` value, see [Database Query Language](#database-query-language). To select all entries in a table,
-use `%` as query. The `TABLE` value can be one of SUBMISSIONS, JOURNALS, USERS. If no `--query` option is given, all
-major tables from the origin database are copied (SUBMISSIONS, JOURNALS, USERS).
+use `%` as query. The `TABLE` value can be one of SUBMISSIONS, JOURNALS, USERS.
+
+If no `--query` option is given, all major tables from the origin database are copied (SUBMISSIONS, JOURNALS, USERS).
+
+Existing submissions are not replaced by default; to replace existing entries in `DATABASE_DEST`, use the `--replace`
+option.
 
 > ```
 > falocalrepo database copy ~/FA.db --query USERS tom --SUBMISSIONS '@author tom'
@@ -712,8 +722,9 @@ completions [--alias NAME] {bash|fish|zsh}
 ````
 
 Generate tab-completion scripts for your shell. The generated completion must be saved in the correct location for it to
-be recognized and used by the shell. The optional `--alias` option allows generating completion script with a name other
-than `falocalrepo`.
+be recognized and used by the shell.
+
+The optional `--alias` option allows generating completion script with a name other than `falocalrepo`.
 
 Supported shells are:
 
@@ -727,7 +738,7 @@ Supported shells are:
 updates [--shell]
 ```
 
-Check for updates to falocalrepo and its main dependencies on PyPi. The optional `--shell` option can be used to output
+Check for updates to falocalrepo and its main dependencies on PyPi. The `--shell` option can be used to output
 the shell command to upgrade any component that has available updates.
 
 _Note_: The command needs an internet connection.
