@@ -47,8 +47,17 @@
 ### Dependencies
 
 * Use [faapi ~3.9.2](https://pypi.org/project/faapi/3.9.2)
-* Use [falocalrepo-database ~5.4.3](https://pypi.org/project/falocalrepo-server/5.4.3)
-* Use [falocalrepo-server ~3.3.0](https://pypi.org/project/falocalrepo-server/3.3.0)
+    * Fix users with ` in their name not being handled correctly
+    * BBCode to HTML conversion
+    * Improvements to BBCode conversion
+* Use [falocalrepo-database ~5.4.3](https://pypi.org/project/falocalrepo-database/5.4.3)
+    * Add `SUBMISSIONS.FOOTER`, `JOURNAL.HEADER`, and `JOURNAL.FOOTER`
+    * Add BBCode setting to `SETTINGS`
+* Use [falocalrepo-server ~3.3.2](https://pypi.org/project/falocalrepo-server/3.3.2)
+    * New grid view for submissions with multiple files
+    * Support BBCode
+    * Show user icons
+    * Show headers and footers for submissions and journals
 * Use [psutil ~5.9.3](https://pypi.org/project/faapi/5.9.3)
 
 ## 4.3.7
