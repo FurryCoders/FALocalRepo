@@ -1,5 +1,18 @@
 # Changelog
 
+## 4.4.1
+
+### Fixes
+
+* Fix dates for journals and submissions being parsed incorrectly on some occasions
+
+### Dependencies
+
+* Use [faapi ~3.9.6](https://pypi.org/project/faapi/3.9.6)
+    * Fix incorrect parsing of dates on some journals and submissions
+* Use [falocalrepo-server ~3.3.3](https://pypi.org/project/falocalrepo-server/3.3.3)
+    * Fix issues with thumbnails and the zoom button for submissions with multiple files
+
 ## 4.4.0
 
 ### New Features
