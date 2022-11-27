@@ -122,7 +122,7 @@ values = "*"
 
 [[package]]
 name = "faapi"
-version = "3.9.6"
+version = "3.10.0"
 description = "Python module to implement API-like functionality for the FurAffinity.net website."
 category = "main"
 optional = false
@@ -449,7 +449,7 @@ python-versions = "*"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "2a75e13ffa52972b33ffeb514c1b3bb1f0d74fd354f48bef35cf7ca7d8f2117c"
+content-hash = "f4ed7511d0ced96322025db06aa8e87ed46caaf2f8c52db84d461af6dbe02408"
 
 [metadata.files]
 anyio = [
@@ -496,8 +496,8 @@ dict = [
     {file = "dict-2020.12.3.tar.gz", hash = "sha256:8a14ff62e2a9dff5ef751a2e5eee07715c79ddab6b9ca06c59e73622f80761b5"},
 ]
 faapi = [
-    {file = "faapi-3.9.6-py3-none-any.whl", hash = "sha256:57100f88952c7330756162932a2a76e11c1256cf37825037f5e426e144602186"},
-    {file = "faapi-3.9.6.tar.gz", hash = "sha256:3388e5830ba2d358e92de71c21d90ee5468e189eecab1d4a613ef71240382a87"},
+    {file = "faapi-3.10.0-py3-none-any.whl", hash = "sha256:31c3a3c3ef906e3dc3159f3a4b921a9666603cbb782c53ba4e74a6543732a5c6"},
+    {file = "faapi-3.10.0.tar.gz", hash = "sha256:9f51c386f99ff8845a036ee7ff532d58077368aef07c496888722dc5414330e9"},
 ]
 falocalrepo-database = [
     {file = "falocalrepo-database-5.4.3.tar.gz", hash = "sha256:cfb79370a09333993584296b4ba43d9966576dacee8b6f0243882a5652f488ce"},
