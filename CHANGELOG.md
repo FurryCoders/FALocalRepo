@@ -20,7 +20,7 @@
 
 * Support New Fur Affinity UI ✨
     * Support the new UI introduced on November 26, 2022
-    * *Note:* the new UI does not show comment parents yet, but the parent comment link is stil present in the HTML and
+    * *Note:* the new UI does not show comment parents yet, but the parent comment link is still present in the HTML and
       just commented out, so the parser uses regex to extract the parent ID; this could cause unforeseen issues so be
       careful when downloading comments
 
