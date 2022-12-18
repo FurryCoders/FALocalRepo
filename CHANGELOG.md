@@ -4,9 +4,9 @@
 
 ### Fixes
 
-* Fix `ValueError: 'Folder.x' is not in list` errors when running `download update` on Python 3.11
 * Fix user folders being incorrectly saved as `Folder.x` instead of just the folder name in the database when
   running `download users` on Python 3.11
+    * Also fixes `ValueError: 'Folder.x' is not in list` errors when running `download update`
     * *NOTE:* To fix user folders with the wrong content, use the `database edit` command
 
 ### Dependencies
