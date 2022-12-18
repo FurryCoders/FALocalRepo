@@ -1,5 +1,18 @@
 # Changelog
 
+## 4.4.3
+
+### Fixes
+
+* Fix `ValueError: 'Folder.x' is not in list` errors when running `download update` on Python 3.11
+* Fix user folders being incorrectly saved as `Folder.x` instead of just the folder name in the database when
+  running `download users` on Python 3.11
+
+### Dependencies
+
+* Use [falocalrepo-database ~5.4.4](https://pypi.org/project/falocalrepo-database/5.4.4)
+  * Fix crash on startup on Python 3.11 
+
 ## 4.4.2
 
 ### New Features
