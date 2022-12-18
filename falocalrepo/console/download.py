@@ -56,9 +56,9 @@ class DownloadFolderChoice(CompleteChoice):
     completion_items: list[CompletionItem] = [
         *FolderChoice.completion_items,
         *[CompletionItem(f"{Folder.watchlist_by}:{f}", help=f"User's watches ({f})")
-          for f in Folder if f != Folder.watchlist_by and f != Folder.watchlist_to],
+          for f in Folder.as_list() if f != Folder.watchlist_by and f != Folder.watchlist_to],
         *[CompletionItem(f"{Folder.watchlist_to}:{f}", help=f"Users watching user ({f})")
-          for f in Folder if f != Folder.watchlist_by and f != Folder.watchlist_to],
+          for f in Folder.as_list() if f != Folder.watchlist_by and f != Folder.watchlist_to],
     ]
 
 

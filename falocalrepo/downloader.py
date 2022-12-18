@@ -1,5 +1,4 @@
 from enum import Enum
-from enum import EnumMeta
 from json import dump
 from operator import itemgetter
 from shutil import get_terminal_size
@@ -52,7 +51,7 @@ class OutputType(int, Enum):
     simple = 2
 
 
-class Folder(str, Enum):
+class Folder:
     gallery = "gallery"
     scraps = "scraps"
     favorites = "favorites"
@@ -62,8 +61,16 @@ class Folder(str, Enum):
     watchlist_to = "watchlist-to"
 
     @classmethod
-    def as_list(cls: EnumMeta) -> list[str]:
-        return [c.value for c in cls]
+    def as_list(cls) -> list[str]:
+        return [
+            cls.gallery,
+            cls.scraps,
+            cls.favorites,
+            cls.journals,
+            cls.userpage,
+            cls.watchlist_by,
+            cls.watchlist_to,
+        ]
 
 
 def terminal_width() -> int:
@@ -83,7 +90,7 @@ def sort_set(obj: list[T]) -> list[T]:
     return sorted(set(obj), key=obj.index)
 
 
-def get_downloader(api: FAAPI, folder: Folder) -> _FolderDownloader:
+def get_downloader(api: FAAPI, folder: str) -> _FolderDownloader:
     if folder == Folder.gallery:
         return api.gallery
     elif folder == Folder.scraps:
@@ -406,7 +413,7 @@ class Downloader:
         self.thumbnail_errors += [] if thumb else [submission_id]
         return 0
 
-    def download_user_folder(self, user: str, folder: Folder, downloader_entries: Callable[[str, P], tuple[list[T], P]],
+    def download_user_folder(self, user: str, folder: str, downloader_entries: Callable[[str, P], tuple[list[T], P]],
                              page_start: P, entry_id_getter: Callable[[T], int | str], entry_formats: tuple[str, str],
                              contains: Callable[[T], dict | None],
                              modify_checks: list[tuple[Callable[[T, dict], bool], str]],
@@ -421,9 +428,9 @@ class Downloader:
         while page:
             page_i += 1
             page_width: int = len(str(page_i))
-            folder_page_width: int = len(user) + 1 + len(folder.name) + 1 + page_width
+            folder_page_width: int = len(user) + 1 + len(folder) + 1 + page_width
             padding: int = (w - folder_page_width - self.bar_width - 2 - 1) if (w := terminal_width()) else 0
-            echo(f"{yellow}{user}{reset}/{yellow}{folder.name}{reset} {page_i}" +
+            echo(f"{yellow}{user}{reset}/{yellow}{folder}{reset} {page_i}" +
                  (" " * padding),
                  nl=self.output == OutputType.simple, color=self.color)
             self.bar()
@@ -529,7 +536,7 @@ class Downloader:
         )
         return err
 
-    def download_user_submissions(self, user: str, folder: Folder, stop: int = -1,
+    def download_user_submissions(self, user: str, folder: str, stop: int = -1,
                                   clear_last_found: bool = False) -> int:
         downloader: _FolderDownloader = get_downloader(self.api, folder)
         page_start: int | str = "/" if folder == Folder.favorites else 1
@@ -564,7 +571,7 @@ class Downloader:
         )
         return err
 
-    def download_user_watchlist(self, user: str, watchlist: Folder, folders: list[str], clear_found: bool = False
+    def download_user_watchlist(self, user: str, watchlist: str, folders: list[str], clear_found: bool = False
                                 ) -> int:
         downloader: Callable[[str, int], tuple[list[UserPartial], int]]
 
@@ -684,10 +691,10 @@ class Downloader:
                 elif folder == Folder.journals:
                     err = self.download_user_journals(user, stop, stop == 1)
                 elif folder in (Folder.gallery, Folder.scraps, Folder.favorites):
-                    err = self.download_user_submissions(user, Folder[folder.lower()], stop, stop == 1)
-                elif folder.startswith(Folder.watchlist_by.value):
+                    err = self.download_user_submissions(user, folder, stop, stop == 1)
+                elif folder.startswith(Folder.watchlist_by):
                     err = self.download_user_watchlist(user, Folder.watchlist_by, folder.split(":")[1:], stop == 1)
-                elif folder.startswith(Folder.watchlist_to.value):
+                elif folder.startswith(Folder.watchlist_to):
                     err = self.download_user_watchlist(user, Folder.watchlist_to, folder.split(":")[1:], stop == 1)
                 else:
                     raise Exception(f"Unknown folder {folder}")
