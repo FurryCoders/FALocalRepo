@@ -1,6 +1,6 @@
 # Changelog
 
-### 4.4.4
+## 4.4.4
 
 ### Changes
 
