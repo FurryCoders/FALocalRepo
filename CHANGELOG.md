@@ -1,5 +1,22 @@
 # Changelog
 
+### 4.4.4
+
+### Changes
+
+* The new version of FAAPI does not use [CloudflareScrape](https://github.com/Anorov/cloudflare-scrape) anymore
+
+### Fixes
+
+* Fix compatibility issues between version 2.0.0 of [urllib3](https://pypi.org/project/urllib3/)
+  and [cfscrape](https://pypi.org/project/cfscrape/)
+
+### Dependencies
+
+* Use [faapi ~3.11.0](https://pypi.org/project/faapi/3.11.0)
+    * Fix [issue #8](https://github.com/FurryCoders/FALocalRepo/issues/8)
+    * Fix [CVE-2023-32681](https://cve.report/CVE-2023-32681)
+
 ## 4.4.3
 
 ### Fixes
