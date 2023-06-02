@@ -10,7 +10,7 @@
 ### Dependencies
 
 * Use [faapi ~3.11.1](https://pypi.org/project/faapi/3.11.1)
-    * Fix [issue #8](https://github.com/FurryCoders/FALocalRepo/issues/8)
+    * Fix [issue #9](https://github.com/FurryCoders/FALocalRepo/issues/9)
 
 ## 4.4.4
 
