@@ -1,5 +1,17 @@
 # Changelog
 
+## 4.4.5
+
+### Fixes
+
+* Fix errors when downloading submissions with no or partial category
+    * Fix [issue #9](https://github.com/FurryCoders/FALocalRepo/issues/9)
+
+### Dependencies
+
+* Use [faapi ~3.11.1](https://pypi.org/project/faapi/3.11.1)
+    * Fix [issue #8](https://github.com/FurryCoders/FALocalRepo/issues/8)
+
 ## 4.4.4
 
 ### Changes
