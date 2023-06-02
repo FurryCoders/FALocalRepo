@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "falocalrepo"
-version = "4.4.4"
+version = "4.4.5"
 description = "Pure Python program to download any user's gallery, scraps, favorites, and journals from FurAffinity in an easily handled database."
 authors = ["Matteo Campinoti <matteo.campinoti94@gmail.com>"]
 license = "EUPL-1.2"
