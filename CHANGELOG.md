@@ -11,6 +11,7 @@
 
 * Use [faapi ~3.11.3](https://pypi.org/project/faapi/3.11.3)
     * Fix [issue #10](https://github.com/FurryCoders/FALocalRepo/issues/10)
+* Use [click ~8.1.6](https://pypi.org/project/click/8.1.6)
 
 ## 4.4.5
 
