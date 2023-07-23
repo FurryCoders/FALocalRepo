@@ -1,5 +1,17 @@
 # Changelog
 
+## 4.4.6
+
+### Fixes
+
+* Fix recursion limit error when downloading submissions or journals with a long chain of replies
+    * Fix [issue #10](https://github.com/FurryCoders/FALocalRepo/issues/10)
+
+### Dependencies
+
+* Use [faapi ~3.11.3](https://pypi.org/project/faapi/3.11.3)
+    * Fix [issue #10](https://github.com/FurryCoders/FALocalRepo/issues/10)
+
 ## 4.4.5
 
 ### Fixes
