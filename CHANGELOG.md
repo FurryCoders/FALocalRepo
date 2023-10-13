@@ -1,5 +1,25 @@
 # Changelog
 
+## 4.4.7
+
+### Fixes
+
+* Fix square brackets [] being removed from usernames
+    * Fix [issue #11](https://github.com/FurryCoders/FALocalRepo/issues/11)
+
+### Dependencies
+
+* [faapi ~3.11.4](https://pypi.org/project/faapi/3.11.4)
+    * Fix [issue #11](https://github.com/FurryCoders/FALocalRepo/issues/11)
+* [falocalrepo-database ~5.4.5](https://pypi.org/project/falocalrepo-database/5.4.5)
+    * Fix [issue #11](https://github.com/FurryCoders/FALocalRepo/issues/11)
+* [falocalrepo-server ~3.3.5](https://pypi.org/project/falocalrepo-server/3.3.5)
+    * Fix [issue #11](https://github.com/FurryCoders/FALocalRepo/issues/11)
+    * Fix [CVE-2023-4863](https://cve.report/CVE-2023-4863)
+    * Fix [CVE-2023-29159](https://cve.report/CVE-2023-29159)
+    * Fix [CVE-2023-30798](https://cve.report/CVE-2023-30798)
+    * Fix [GHSA-74m5-2c7w-9w3x](https://github.com/advisories/GHSA-74m5-2c7w-9w3x)
+
 ## 4.4.6
 
 ### Fixes
