@@ -97,29 +97,6 @@ def download_app():
     pass
 
 
-@download_app.command("login", short_help="Check cookies' validity.")
-@database_exists_option
-@color_option
-@help_option
-@pass_context
-def download_login(ctx: Context, database: Callable[..., Database]):
-    """
-    Check whether the cookies stored in the database belong to a login Fur Affinity session.
-    """
-
-    db: Database = database()
-    api: FAAPI = open_api(db, ctx, check_login=False)
-
-    echo(f"{bold}Login{reset}", color=ctx.color)
-
-    try:
-        echo(f"{blue}User{reset}: ", nl=False, color=ctx.color)
-        echo(f"{green}{api.me().name}{reset}", color=ctx.color)
-    except (Unauthorized, RequestException) as err:
-        echo(f"{red}{' '.join(err.args)}{reset}", color=ctx.color)
-        ctx.exit(1)
-
-
 # noinspection DuplicatedCode
 @download_app.command("users", short_help="Download users.", no_args_is_help=True)
 @option("--user", "-u", "users", metavar="USER", required=True, multiple=True, type=str, callback=users_callback,
@@ -388,7 +365,6 @@ def download_journals(ctx: Context, database: Callable[..., Database], journal_i
 
 
 download_app.list_commands = lambda *_: [
-    download_login.name,
     download_users.name,
     download_update.name,
     download_submissions.name,
