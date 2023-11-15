@@ -72,7 +72,7 @@ comments_option = option("--no-comments", "save_comments", is_flag=True, default
 content_only_option = option("--content-only", is_flag=True, default=False, help="Do not save headers and footers.")
 
 
-def users_callback(ctx: Context, param: Option, value: tuple[str]) -> tuple[str]:
+def users_callback(ctx: Context, param: Option, value: tuple[str, ...]) -> tuple[str, ...]:
     if not value or ctx.params.get("like"):
         return value
     value_clean: list[str] = [u if u == "@me" else clean_username(u) for u in map(str.lower, value)]
