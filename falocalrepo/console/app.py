@@ -1,9 +1,13 @@
 from functools import reduce
+from http.cookiejar import Cookie
 from pathlib import Path
 from random import choice
+from sys import platform
 from typing import Callable
 from typing import Type
+from webbrowser import get as get_browser
 
+import browser_cookie3 as browser_cookies
 import faapi
 import falocalrepo_database
 import falocalrepo_server
@@ -15,6 +19,7 @@ from click import Path as PathClick
 from click import UsageError
 from click import argument
 from click import echo
+from click import getchar
 from click import group
 from click import option
 from click import pass_context
@@ -29,9 +34,11 @@ from falocalrepo_database import Database
 from falocalrepo_server import __name__ as __server_name__
 from falocalrepo_server import __version__ as __server_version__
 from falocalrepo_server import server
+from urllib3.util import parse_url
 
 from .colors import *
 from .config import config_app
+from .config import config_cookies
 from .database import database_app
 from .download import download_app
 from .util import CompleteChoice
@@ -129,6 +136,21 @@ _pride_colors: dict[str, list[tuple[str, str]]] = {
 }
 
 
+class BrowserChoice(CompleteChoice):
+    completion_items: list[CompletionItem] = [
+        CompletionItem(browser_cookies.Brave.__name__),
+        CompletionItem(browser_cookies.Chrome.__name__),
+        CompletionItem(browser_cookies.Chromium.__name__),
+        CompletionItem(browser_cookies.Edge.__name__),
+        CompletionItem(browser_cookies.Firefox.__name__),
+        CompletionItem(browser_cookies.LibreWolf.__name__),
+        CompletionItem(browser_cookies.Opera.__name__),
+        *([CompletionItem(browser_cookies.OperaGX.__name__)] if platform in ("darwin", "win32") else []),
+        *([CompletionItem(browser_cookies.Safari.__name__)] if platform in ("darwin",) else []),
+        CompletionItem(browser_cookies.Vivaldi.__name__),
+    ]
+
+
 class ShellChoice(CompleteChoice):
     completion_items: list[CompletionItem] = [
         CompletionItem(BashComplete.name, help="The Bourne Again SHell"),
@@ -223,6 +245,77 @@ def app_init(ctx: Context, database: Callable[..., Database]):
         del db
         db = database(print_envvar=False)
         echo(f"Database ready (version {yellow}{db.version}{reset})", color=ctx.color)
+
+
+@app.command("login", short_help="Login using a browser.")
+@argument("browser", metavar="BROWSER", type=BrowserChoice())
+@option("--browser/--no-browser", "interactive", is_flag=True, default=True, help="Open the browser to log in.")
+@option("--domain", type=str, default="furaffinity.net", show_default=True, help="Specify domain.")
+@option("--name", "cookies_filter", type=str, multiple=True, default=("a", "b"), show_default=True,
+        help="Specify cookie names.")
+@database_exists_option
+@color_option
+@help_option
+@pass_context
+@docstring_format(browsers="\n    ".join(f" * {i.value}" for i in BrowserChoice.completion_items))
+def app_login(ctx: Context, database: Callable[..., Database], browser: str, interactive: bool,
+              domain: str, cookies_filter: tuple[str]):
+    """
+    Login using a browser.
+
+    To get the cookies without opening the browser use the {yellow}--no-browser{reset} option.
+
+    To specify a domain other than {cyan}furaffinity.net{reset}, use the {yellow}--domain{reset} option.
+
+    The {yellow}--name{reset} option can be used to specify which cookies to use by name. Defaults to 'a' and 'b'.
+
+    {italic}Note{reset}: depending on the system, the terminal application may require additional access privileges
+    in order to get the cookies from some browsers.
+
+    \b
+    The following browsers are supported:
+    {browsers}
+    """
+    domain = "." + parse_url(domain).hostname.removeprefix("www.").removeprefix(".")
+    cookies_filter = tuple(map(str.lower, cookies_filter))
+
+    browser = next((c.value for c in BrowserChoice.completion_items if c.value.lower() == browser.lower()), None) or ""
+    browser_class = getattr(browser_cookies, browser, None)
+
+    if not browser_class:
+        raise BadParameter(repr(browser), ctx, p := get_param(ctx, "browser"), p.get_error_hint(ctx))
+
+    echo(f"{bold}Login{reset}", color=ctx.color)
+    echo(f"{blue}Browser{reset}: {green}{browser}{reset}")
+
+    if interactive:
+        browser_controller = get_browser(browser)
+        browser_controller.open("https://furaffinity.net")
+        echo(line := "Press ENTER when you have finished logging in", nl=False)
+        getchar()
+        echo("\r" + (" " * len(line)) + "\r", nl=False)
+
+    try:
+        cookies: list[Cookie] = list(browser_class().load())
+        cookies_filter = cookies_filter or tuple(c.name.lower() for c in cookies)
+        cookies = [c for c in cookies if c.domain == domain and c.name.lower() in cookies_filter]
+
+        if not cookies:
+            echo(f"{red}No cookies found for {browser} browser.{reset}", color=ctx.color)
+            ctx.exit(1)
+
+        echo(f"{blue}User{reset}: ", nl=False, color=ctx.color)
+
+        api: faapi.FAAPI = faapi.FAAPI([faapi.connection.CookieDict(name=c.name, value=c.value) for c in cookies])
+        username = api.me().name
+
+        echo(f"{green}{username}{reset}", color=ctx.color)
+        echo()
+
+        config_cookies.callback(database, [(c.name, c.value) for c in cookies], show_login_message=False)
+    except (faapi.exceptions.Unauthorized, browser_cookies.BrowserCookieError) as err:
+        echo(f"{red}{err.__class__.__name__}. {' '.join(err.args).removesuffix('.')}.{reset}", color=ctx.color)
+        ctx.exit(1)
 
 
 @app.command("updates", short_help="Check for updates to components.")
@@ -418,6 +511,7 @@ app.add_command(download_app, download_app.name)
 app.add_command(database_app, database_app.name)
 app.list_commands = lambda *_: [
     app_init.name,
+    app_login.name,
     config_app.name,
     database_app.name,
     download_app.name,
