@@ -5,6 +5,7 @@ from math import log10
 from os import makedirs
 from pathlib import Path
 from shutil import copy2
+from shutil import get_terminal_size
 from typing import Callable
 
 from click import Choice
@@ -166,9 +167,16 @@ def config_cookies(ctx: Context, database: Callable[..., Database], cookie: list
         write_cookies(db, dict(cookie))
         add_history(db, ctx, cookies=cookie)
 
-    echo(f"{bold}Cookies{reset}\n" +
-         "\n".join(f"{blue}Cookie{reset} {yellow}{c['name']}{reset}: {yellow}{c['value']}{reset}"
-                   for c in read_cookies(db)), color=ctx.color)
+    echo(f"{bold}Cookies{reset}")
+
+    cookies = read_cookies(db)
+
+    len_max_name = max(map(len, (c['name'] for c in cookies)))
+    len_max_val = min(get_terminal_size((0, 0)).columns - len_max_name - 10 - 4, 72)
+
+    for c in cookies:
+        echo(f"{blue}Cookie{reset} {yellow}{c['name']:<{len_max_name}}{reset}: "
+             f"{yellow}{c['value'][:len_max_val]}{'...' if len(c['value']) > len_max_val else ''}{reset}")
 
     if cookie:
         from .download import download_app, download_login
