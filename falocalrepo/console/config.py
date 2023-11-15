@@ -179,9 +179,6 @@ def config_cookies(ctx: Context, database: Callable[..., Database], cookie: list
              f"{yellow}{c['value'][:len_max_val]}{'...' if len(c['value']) > len_max_val else ''}{reset}")
 
     if cookie:
-        from .download import download_app, download_login
-        echo(f"Check cookies validity with the {yellow}{download_app.name} {download_login.name}{reset} command.",
-             color=ctx.color)
         backup_database(db, ctx, "config")
 
 
