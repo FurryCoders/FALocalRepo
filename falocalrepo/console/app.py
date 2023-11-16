@@ -5,12 +5,24 @@ from random import choice
 from sys import platform
 from typing import Callable
 from typing import Type
+# noinspection PyProtectedMember
+from webbrowser import BaseBrowser
 from webbrowser import get as get_browser
 
-import browser_cookie3 as browser_cookies
 import faapi
 import falocalrepo_database
 import falocalrepo_server
+from browser_cookie3 import Brave
+from browser_cookie3 import BrowserCookieError
+from browser_cookie3 import Chrome
+from browser_cookie3 import Chromium
+from browser_cookie3 import Edge
+from browser_cookie3 import Firefox
+from browser_cookie3 import LibreWolf
+from browser_cookie3 import Opera
+from browser_cookie3 import OperaGX
+from browser_cookie3 import Safari
+from browser_cookie3 import Vivaldi
 from click import BadParameter
 from click import Context
 from click import Group
@@ -138,16 +150,16 @@ _pride_colors: dict[str, list[tuple[str, str]]] = {
 
 class BrowserChoice(CompleteChoice):
     completion_items: list[CompletionItem] = [
-        CompletionItem(browser_cookies.Brave.__name__),
-        CompletionItem(browser_cookies.Chrome.__name__),
-        CompletionItem(browser_cookies.Chromium.__name__),
-        CompletionItem(browser_cookies.Edge.__name__),
-        CompletionItem(browser_cookies.Firefox.__name__),
-        CompletionItem(browser_cookies.LibreWolf.__name__),
-        CompletionItem(browser_cookies.Opera.__name__),
-        *([CompletionItem(browser_cookies.OperaGX.__name__)] if platform in ("darwin", "win32") else []),
-        *([CompletionItem(browser_cookies.Safari.__name__)] if platform in ("darwin",) else []),
-        CompletionItem(browser_cookies.Vivaldi.__name__),
+        CompletionItem(Brave.__name__),
+        CompletionItem(Chrome.__name__),
+        CompletionItem(Chromium.__name__),
+        CompletionItem(Edge.__name__),
+        CompletionItem(Firefox.__name__),
+        CompletionItem(LibreWolf.__name__),
+        CompletionItem(Opera.__name__),
+        *([CompletionItem(OperaGX.__name__)] if platform in ("darwin", "win32") else []),
+        *([CompletionItem(Safari.__name__)] if platform in ("darwin",) else []),
+        CompletionItem(Vivaldi.__name__),
     ]
 
 
@@ -278,18 +290,36 @@ def app_login(ctx: Context, database: Callable[..., Database], browser: str, int
     """
     domain = "." + parse_url(domain).hostname.removeprefix("www.").removeprefix(".")
     cookies_filter = tuple(map(str.lower, cookies_filter))
+    browser_class: Type
 
-    browser = next((c.value for c in BrowserChoice.completion_items if c.value.lower() == browser.lower()), None) or ""
-    browser_class = getattr(browser_cookies, browser, None)
-
-    if not browser_class:
+    if browser == Brave.__name__:
+        browser_class = Brave
+    elif browser == Chrome.__name__:
+        browser_class = Chrome
+    elif browser == Chromium.__name__:
+        browser_class = Chromium
+    elif browser == Edge.__name__:
+        browser_class = Edge
+    elif browser == Firefox.__name__:
+        browser_class = Firefox
+    elif browser == LibreWolf.__name__:
+        browser_class = LibreWolf
+    elif browser == Opera.__name__:
+        browser_class = Opera
+    elif browser == OperaGX.__name__:
+        browser_class = OperaGX
+    elif browser == Safari.__name__:
+        browser_class = Safari
+    elif browser == Vivaldi.__name__:
+        browser_class = Vivaldi
+    else:
         raise BadParameter(repr(browser), ctx, p := get_param(ctx, "browser"), p.get_error_hint(ctx))
 
     echo(f"{bold}Login{reset}", color=ctx.color)
     echo(f"{blue}Browser{reset}: {green}{browser}{reset}")
 
     if interactive:
-        browser_controller = get_browser(browser)
+        browser_controller: BaseBrowser = get_browser(browser)
         browser_controller.open("https://furaffinity.net")
         echo(line := "Press ENTER when you have finished logging in", nl=False)
         getchar()
@@ -313,7 +343,7 @@ def app_login(ctx: Context, database: Callable[..., Database], browser: str, int
         echo()
 
         config_cookies.callback(database, [(c.name, c.value) for c in cookies], show_login_message=False)
-    except (faapi.exceptions.Unauthorized, browser_cookies.BrowserCookieError) as err:
+    except (faapi.exceptions.Unauthorized, BrowserCookieError) as err:
         echo(f"{red}{err.__class__.__name__}. {' '.join(err.args).removesuffix('.')}.{reset}", color=ctx.color)
         ctx.exit(1)
 
