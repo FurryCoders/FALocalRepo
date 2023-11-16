@@ -333,6 +333,8 @@ def app_login(ctx: Context, database: Callable[..., Database], browser: str, int
         if not cookies:
             echo(f"{red}No cookies found for {browser} browser.{reset}", color=ctx.color)
             ctx.exit(1)
+        elif missing_cookies := {*cookies_filter} - {c.name for c in cookies}:
+            echo(f"{red}WARNING{reset}: Could not find cookies {', '.join(sorted(missing_cookies, key=cookies_filter.index))}")
 
         echo(f"{blue}User{reset}: ", nl=False, color=ctx.color)
 
