@@ -281,12 +281,14 @@ def app_login(ctx: Context, database: Callable[..., Database], browser: str, int
 
     The {yellow}--name{reset} option can be used to specify which cookies to use by name. Defaults to 'a' and 'b'.
 
-    {italic}Note{reset}: depending on the system, the terminal application may require additional access privileges
-    in order to get the cookies from some browsers.
+    Cookies can also be added manually using the {yellow}config cookies{reset} command.
 
     \b
     The following browsers are supported:
     {browsers}
+
+    {italic}Note{reset}: depending on the system, the terminal application may require additional access privileges
+    in order to get the cookies from some browsers.
     """
     domain = "." + parse_url(domain).hostname.removeprefix("www.").removeprefix(".")
     cookies_filter = tuple(filter(bool, map(str.lower, cookies_filter)))
