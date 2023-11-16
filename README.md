@@ -301,14 +301,6 @@ commands, or `download users` to update entire user folders with the `--replace`
 When downloading, submission and journal titles will be displayed in the terminal. Characters in the titles outside the
 ASCII range will be replaced with □ to avoid formatting errors.
 
-#### login
-
-```
-login
-```
-
-Check whether the cookies stored in the database belong to a login Fur Affinity session.
-
 #### users
 
 ```
