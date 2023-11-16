@@ -289,7 +289,7 @@ def app_login(ctx: Context, database: Callable[..., Database], browser: str, int
     {browsers}
     """
     domain = "." + parse_url(domain).hostname.removeprefix("www.").removeprefix(".")
-    cookies_filter = tuple(map(str.lower, cookies_filter))
+    cookies_filter = tuple(filter(bool, map(str.lower, cookies_filter)))
     browser_class: Type
 
     if browser == Brave.__name__:
@@ -342,7 +342,7 @@ def app_login(ctx: Context, database: Callable[..., Database], browser: str, int
         echo(f"{green}{username}{reset}", color=ctx.color)
         echo()
 
-        config_cookies.callback(database, [(c.name, c.value) for c in cookies], show_login_message=False)
+        config_cookies.callback(database, [(c.name, c.value) for c in cookies])
     except (faapi.exceptions.Unauthorized, BrowserCookieError) as err:
         echo(f"{red}{err.__class__.__name__}. {' '.join(err.args).removesuffix('.')}.{reset}", color=ctx.color)
         ctx.exit(1)
