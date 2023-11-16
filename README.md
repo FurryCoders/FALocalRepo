@@ -47,15 +47,16 @@ project's [GitHub wiki](https://github.com/FurryCoders/falocalrepo/wiki).
 4. [Usage](#usage)
     1. [Environmental Variables](#environmental-variables)
     2. [Init](#init)
-    3. [Config](#config)
-    4. [Download](#download)
-    5. [Database](#database)
+    3. [Login](#login)
+    4. [Config](#config)
+    5. [Download](#download)
+    6. [Database](#database)
         1. [Database Query Language](#database-query-language)
-    6. [Server](#server)
-    7. [Completions](#completions)
-    8. [Updates](#updates)
-    9. [Help](#help)
-    10. [Paw](#paw)
+    7. [Server](#server)
+    8. [Completions](#completions)
+    9. [Updates](#updates)
+    10. [Help](#help)
+    11. [Paw](#paw)
 5. [Database](#database-1)
     1. [Users](#users)
     2. [Submissions](#submissions)
@@ -154,6 +155,7 @@ The following global options are available for all commands:
 Available commands are:
 
 * `init` Initialise the database.
+* `login` Login using a browser.
 * `config` Change settings.
 * `download` Download resources.
 * `database` Operate on the database.
@@ -205,6 +207,43 @@ init
 
 The `init` command initialises the database. If a database is already present, no operation is performed except for a
 version check.
+
+### Login
+
+```
+login [--browser/--no-browser] [--domain TEXT] [--name NAME...] BROWSER
+```
+
+Login using a browser.
+
+To get the cookies without opening the browser use the `--no-browser` option.
+
+To specify a domain other than furaffinity.net, use the `--domain` option.
+
+The `--name` option can be used to specify which cookies to use by
+name. Defaults to 'a' and 'b'.
+
+Cookies can also be added manually using the `config cookies` command.
+
+The following browsers are supported:
+
+* Brave
+* Chrome
+* Chromium
+* Edge
+* Firefox
+* LibreWolf
+* Opera
+* OperaGX
+* Safari
+* Vivaldi
+
+_Note_: depending on the system, the terminal application may require
+additional access privileges in order to get the cookies from some browsers.
+
+> ```
+> falocalrepo login Firefox --name a --name b --name cf_clearance
+> ```
 
 ### Config
 
