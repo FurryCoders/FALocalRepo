@@ -1,5 +1,36 @@
 # Changelog
 
+## 4.5.0
+
+### New Features
+
+* Automatic login! 💻
+    * The new `login` command allows getting the cookies from your browser automatically, without having to use the
+      developer console and the `config cookies` command
+    * Users who want extra control can specify the domain the cookies belong to (defaults to ".furaffinity.net"), and
+      the name of the cookies themselves (defaults to "a" and "b")
+    * The following browsers are supported:
+        * Brave
+        * Chrome
+        * Chromium
+        * Edge
+        * Firefox
+        * LibreWolf
+        * Opera
+        * OperaGX (only on macOS and Windows)
+        * Safari (only on macOS)
+        * Vivaldi
+
+
+### Changes
+
+* Removed `download login` command
+  * It has been effectively replaced and extended by the new `login` command
+
+### Dependencies
+
+* [browser-cookie3 ^0.19.1](https://pypi.org/project/browser-cookie3/0.19.1)
+
 ## 4.4.7
 
 ### Fixes
