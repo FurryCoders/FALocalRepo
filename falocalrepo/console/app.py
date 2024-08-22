@@ -259,7 +259,7 @@ def app_init(ctx: Context, database: Callable[..., Database]):
         echo(f"Database ready (version {yellow}{db.version}{reset})", color=ctx.color)
 
 
-@app.command("login", short_help="Login using a browser.")
+@app.command("login", no_args_is_help=True, short_help="Login using a browser.")
 @argument("browser", metavar="BROWSER", type=BrowserChoice())
 @option("--browser/--no-browser", "interactive", is_flag=True, default=True, help="Open the browser to log in.")
 @option("--domain", type=str, default="furaffinity.net", show_default=True, help="Specify domain.")
