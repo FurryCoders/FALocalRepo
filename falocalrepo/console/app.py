@@ -325,7 +325,8 @@ def app_login(ctx: Context, database: Callable[..., Database], browser: str, int
             echo(f"{red}No cookies found for {browser} browser.{reset}", color=ctx.color)
             ctx.exit(1)
         elif missing_cookies := {*cookies_filter} - {c.name for c in cookies}:
-            echo(f"{red}WARNING{reset}: Could not find cookies {', '.join(sorted(missing_cookies, key=cookies_filter.index))}")
+            echo(
+                f"{red}WARNING{reset}: Could not find cookies {', '.join(sorted(missing_cookies, key=cookies_filter.index))}")
 
         echo(f"{blue}User{reset}: ", nl=False, color=ctx.color)
 
@@ -460,8 +461,9 @@ def app_completions(ctx: Context, shell: Type[ShellComplete], alias: str | None)
     multiple=True,
     help="Ignore authentication for IP addresses. [multiple]",
 )
-@option("--editor", type=str, multiple=True, help="Users with editing rights.")
-@option("--max-results", type=IntRange(1000), default=2400, help="Maximum number of results from queries.")
+@option("--editor", metavar="USERNAME", type=str, multiple=True, help="Users with editing rights.")
+@option("--max-results", metavar="INTEGER", type=IntRange(0), default=2400,
+        help="Maximum number of results from queries.")
 @option("--cache/--no-cache", is_flag=True, default=True, help="Use cache.")
 @option("--browser/--no-browser", "browser", is_flag=True, default=True, help="Open browser on startup.")
 @database_exists_option
@@ -479,9 +481,18 @@ def app_server(ctx: Context, database: Callable[..., Database], host: str, port:
     When the app has finished loading, it automatically opens a browser window. To avoid this, use the
     {yellow}--no-browser{reset} option.
 
+    The server caches results by default. To avoid caching, use the {yellow}--no-cache{reset} option.
+
+    To reduce the number of results in search pages, and thus increase the speed of the system, the
+    {yellow}--max-results{reset} option can be used. The default value is 2400. If set to 0, then the queries will
+    not be limited.
+
     Using the {yellow}--auth{reset} option, multiple users can be added, each with their own password. Specific users
     can be given editing rights using the {yellow}--editor{reset} option. If no authorization is given, then anyone
     accessing the server can edit.
+
+    The {yellow}--auth-ignore{reset} option allows skipping authentication for specific IP addresses. The option
+    supports patterns such as "192.168.0.*".
 
     For more details on usage see https://pypi.org/project/{server_name}/{server_version}.
     """
@@ -497,7 +508,7 @@ def app_server(ctx: Context, database: Callable[..., Database], host: str, port:
     del db
 
     server(db_path, host=host, port=port, ssl_cert=ssl_cert, ssl_key=ssl_key, authentication=auth,
-           authentication_ignore=auth_ignore, editors=editor, max_results=max_results, use_cache=cache,
+           authentication_ignore=auth_ignore, editors=editor, max_results=max_results or None, use_cache=cache,
            browser=browser)
 
 
