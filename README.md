@@ -731,17 +731,24 @@ need to be used (e.g. `@id %1%`).
 ### Server
 
 ```
-server [--host HOST] [--port PORT] [--ssl-cert FILE] [--ssl-key FILE] [--redirect-http PORT2] [--auth USERNAME:PASSWORD] [--precache] [--no-browser]
+server [--host HOST] [--port PORT] [--ssl-cert FILE] [--ssl-key FILE] [--auth USERNAME PASSWORD...] [--auth-ignore IP...] [--editor USERNAME...] [--max-results INTEGER] [--no-cache] [--no-browser]
 ```
 
 Start a server at `HOST`:`PORT` to navigate the database. The `--ssl-cert` and `--ssl-cert` allow serving with HTTPS.
-Using `--redirect-http` starts the server in HTTP to HTTPS redirection mode. `--auth` enables HTTP Basic
-authentication.
-
-Using the `--precache` caches database entries at startup.
 
 When the app has finished loading, it automatically opens a browser window. To avoid this, use the `--no-browser`
 option.
+
+The server caches results by default. To avoid caching, use the `--no-cache` option.
+
+To reduce the number of results in search pages, and thus increase the speed of the system, the `--max-results` option
+can be used. The default value is 2400. If set to 0, then the queries will not be limited. 
+
+Using the `--auth` option, multiple users can be added, each with their own password. Specific users can be given
+editing rights using the `--editor` option. If no authorization is given, then anyone accessing the server can edit.
+
+The `--auth-ignore` option allows skipping authentication for specific IP addresses. The option supports patterns such
+as "192.168.0.*".
 
 For more details on usage see [falocalrepo-server](https://pypi.org/project/falocalrepo_server/).
 
