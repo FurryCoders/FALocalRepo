@@ -54,10 +54,18 @@
 
 * Removed `download login` command
   * It has been effectively replaced and extended by the new `login` command
+* The `paw` command does not detect truecolor mode automatically because of an issue with the library providing the feature
+
+### Fixes
+
+* Fix installation issue caused by the [supports-color](https://pypi.org/project/supports-color) package and its dependencies
 
 ### Dependencies
 
 * [browser-cookie3 ^0.19.1](https://pypi.org/project/browser-cookie3/0.19.1)
+* [faapi ~3.11.5](https://pypi.org/project/faapi/3.11.5)
+* [falocalrepo-database ~5.4.6](https://pypi.org/project/falocalrepo-database/5.4.6)
+* [falocalrepo-server ~3.4.0](https://pypi.org/project/falocalrepo-server/3.4.0)
 
 ## 4.4.7
 
