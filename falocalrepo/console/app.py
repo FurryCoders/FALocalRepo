@@ -535,10 +535,9 @@ def paw(ctx: Context, flag: str, truecolor: bool):
     """
     Print a PRIDE {yellow}FLAG{reset} paw!
 
-    If used inside a truecolor-supporting terminal, the full 24bit color range will be used for the most colorful flags!
+    If used inside a truecolor-supporting terminal, the full 24bit color range can be used for the most colorful flags!
 
-    truecolor/8bit color modes can be forcefully enabled using the {yellow}--truecolor{reset} and
-    {yellow}--8bit-color{reset} options.
+    truecolor and 8bit color modes can be set using the {yellow}--truecolor{reset} and {yellow}--8bit-color{reset} options.
 
     \b
     {0}
