@@ -21,44 +21,45 @@
         * Safari (only on macOS)
         * Vivaldi
 * Renovated web app!
-  * Editing
-    * User profiles, submissions, and journals can be edited or deleted directly from the web UI
-    * Files can be sorted, deleted, or added
-    * When using authentication, specific users can be given editing rights with the new `--editor` option
-  * Comments search
-    * Search comments and open the relevant submission or journal
-  * Advanced search operators
-    * Exact matches with equal (`==`) and not equal (`!=`) instead of using `^` and `$`
-    * Comparison matches with greater-than (`>`, `>=`) and lower-than (`<`, `<=`)
-    * Substring matches (`%=`) (to force it on columns that do not use it by default)
-    * Mix & match operators `@date %-03-% >= 2020`
-  * Completely overhauled server application
-    * Overhauled database queries and caching system
-    * Faster loading of submissions, journals, and user pages
-    * Added option to limit results for faster queries
-    * Added option to turn off caching to save on memory
-    * Support multiple users/passwords for authentication
-    * Support logging out
-  * Rewritten frontend
-    * Navigate search results directly from submission and journal pages (only available when caching is enabled)
-    * Support viewing PDF files in the browser (desktop only)
-    * Improve file selector for submissions
-    * Better zoom behaviour for images
-    * Collapsible comment trees
-    * Improved loading placeholders
-    * Show user icons in comments and gallery, scraps, favorites, etc. pages
-    * Sort tables by clicking on headers 
-
+    * Editing
+        * User profiles, submissions, and journals can be edited or deleted directly from the web UI
+        * Files can be sorted, deleted, or added
+        * When using authentication, specific users can be given editing rights with the new `--editor` option
+    * Comments search
+        * Search comments and open the relevant submission or journal
+    * Advanced search operators
+        * Exact matches with equal (`==`) and not equal (`!=`) instead of using `^` and `$`
+        * Comparison matches with greater-than (`>`, `>=`) and lower-than (`<`, `<=`)
+        * Substring matches (`%=`) (to force it on columns that do not use it by default)
+        * Mix & match operators `@date %-03-% >= 2020`
+    * Completely overhauled server application
+        * Overhauled database queries and caching system
+        * Faster loading of submissions, journals, and user pages
+        * Added option to limit results for faster queries
+        * Added option to turn off caching to save on memory
+        * Support multiple users/passwords for authentication
+        * Support logging out
+    * Rewritten frontend
+        * Navigate search results directly from submission and journal pages (only available when caching is enabled)
+        * Support viewing PDF files in the browser (desktop only)
+        * Improve file selector for submissions
+        * Better zoom behaviour for images
+        * Collapsible comment trees
+        * Improved loading placeholders
+        * Show user icons in comments and gallery, scraps, favorites, etc. pages
+        * Sort tables by clicking on headers
 
 ### Changes
 
 * Removed `download login` command
-  * It has been effectively replaced and extended by the new `login` command
-* The `paw` command does not detect truecolor mode automatically because of an issue with the library providing the feature
+    * It has been effectively replaced and extended by the new `login` command
+* The `paw` command does not detect truecolor mode automatically because of an issue with the library providing the
+  feature
 
 ### Fixes
 
-* Fix installation issue caused by the [supports-color](https://pypi.org/project/supports-color) package and its dependencies
+* Fix installation issue caused by the [supports-color](https://pypi.org/project/supports-color) package and its
+  dependencies
 
 ### Dependencies
 
