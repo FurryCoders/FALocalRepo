@@ -55,6 +55,9 @@
     * It has been effectively replaced and extended by the new `login` command
 * The `paw` command does not detect truecolor mode automatically because of an issue with the library providing the
   feature
+* The `paw` command has two additional flags available
+  * Palestine 🇵🇸
+  * Ukraine 🇺🇦
 
 ### Fixes
 
