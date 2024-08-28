@@ -238,7 +238,8 @@ The following browsers are supported:
 * Vivaldi
 
 _Note_: depending on the system, the terminal application may require
-additional access privileges in order to get the cookies from some browsers.
+additional access privileges in order to get the cookies from some browsers. On macOS, the Terminal must be given full
+disk access.
 
 > ```
 > falocalrepo login Firefox --name a --name b --name cf_clearance
