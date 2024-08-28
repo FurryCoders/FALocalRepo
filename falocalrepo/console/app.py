@@ -23,25 +23,25 @@ from browser_cookie3 import Opera
 from browser_cookie3 import OperaGX
 from browser_cookie3 import Safari
 from browser_cookie3 import Vivaldi
+from click import argument
 from click import BadParameter
 from click import Context
-from click import Group
-from click import Option
-from click import Path as PathClick
-from click import UsageError
-from click import argument
 from click import echo
 from click import getchar
+from click import Group
 from click import group
+from click import IntRange
+from click import Option
 from click import option
 from click import pass_context
-from click.core import ParameterSource
+from click import Path as PathClick
+from click import UsageError
 from click.shell_completion import BashComplete
 from click.shell_completion import CompletionItem
 from click.shell_completion import FishComplete
+from click.shell_completion import get_completion_class
 from click.shell_completion import ShellComplete
 from click.shell_completion import ZshComplete
-from click.shell_completion import get_completion_class
 from falocalrepo_database import Database
 from falocalrepo_server import __name__ as __server_name__
 from falocalrepo_server import __version__ as __server_version__
@@ -53,11 +53,11 @@ from .config import config_app
 from .config import config_cookies
 from .database import database_app
 from .download import download_app
-from .util import CompleteChoice
-from .util import CustomHelpColorsGroup
 from .util import add_history
 from .util import check_update
 from .util import color_option
+from .util import CompleteChoice
+from .util import CustomHelpColorsGroup
 from .util import database_exists_option
 from .util import database_no_exists_option
 from .util import docstring_format
@@ -190,17 +190,6 @@ def versions_callback(ctx: Context, _param: Option, value: str):
          f"{bold}falocalrepo-server{reset} {yellow}{falocalrepo_server.__version__}{reset}\n"
          f"{bold}faapi{reset} {yellow}{faapi.__version__}{reset}", color=ctx.color)
     ctx.exit()
-
-
-def port_callback(ctx: Context, param: Option, value: str | int) -> int | None:
-    if ctx.get_parameter_source(param.name) == ParameterSource.DEFAULT:
-        return None
-    elif isinstance(value, str) and not value.lstrip("-").isdigit():
-        raise BadParameter(f"{value!r} is not a valid integer.", ctx, param)
-    elif (value := int(value)) <= 0:
-        raise BadParameter(f"{value!r} is not a valid port.", ctx, param)
-    else:
-        return int(value)
 
 
 def commands_completion(ctx: Context, param: Option, incomplete: str) -> list[CompletionItem]:
@@ -437,32 +426,55 @@ def app_completions(ctx: Context, shell: Type[ShellComplete], alias: str | None)
 # noinspection HttpUrlsUsage
 @app.command("server", short_help="Start a server to browse the database.")
 @option("--host", metavar="HOST", type=str, default="0.0.0.0", show_default=True, help="Server host.")
-@option("--port", metavar="PORT", type=str, default="80, 443", show_default=True, callback=port_callback,
-        help="Server port.")
-@option("--ssl-cert", type=PathClick(exists=True, dir_okay=False, path_type=Path), default=None,
-        help="Path to SSL certificate file for HTTPS.")
-@option("--ssl-key", type=PathClick(exists=True, dir_okay=False, path_type=Path), default=None,
-        help="Path to SSL key file for HTTPS.")
-@option("--redirect-http", metavar="PORT2", type=int, default=None, callback=port_callback,
-        help=f"Redirect all traffic from http://HOST:{yellow}PORT{reset} to https://HOST:{yellow}PORT2{reset}.")
-@option("--auth", metavar="USERNAME:PASSWORD", type=str, default=None,
-        help=f"Enable HTTP Basic authentication.")
-@option("--precache", is_flag=True, default=False, help="Cache tables on startup.")
-@option("--no-browser", "browser", is_flag=True, default=True, help="Do not browser on startup.")
+@option(
+    "--port",
+    metavar="PORT",
+    type=IntRange(1),
+    default=8000,
+    show_default=True,
+    help="Server port.",
+)
+@option(
+    "--ssl-cert",
+    type=PathClick(exists=True, dir_okay=False, path_type=Path),
+    default=None,
+    help="Path to SSL certificate file for HTTPS",
+)
+@option(
+    "--ssl-key",
+    type=PathClick(exists=True, dir_okay=False, path_type=Path),
+    default=None,
+    help="Path to SSL key file for HTTPS",
+)
+@option(
+    "--auth",
+    metavar="<USERNAME PASSWORD>",
+    type=(str, str),
+    multiple=True,
+    help="Username and password for authentication. [multiple]",
+)
+@option(
+    "--auth-ignore",
+    metavar="<IP>",
+    type=str,
+    multiple=True,
+    help="Ignore authentication for IP addresses. [multiple]",
+)
+@option("--editor", type=str, multiple=True, help="Users with editing rights.")
+@option("--max-results", type=IntRange(1000), default=None, help="Maximum number of results from queries.")
+@option("--cache/--no-cache", is_flag=True, default=True, help="Use cache.")
+@option("--browser/--no-browser", "browser", is_flag=True, default=True, help="Open browser on startup.")
 @database_exists_option
 @color_option
 @help_option
 @pass_context
 @docstring_format(server_name=__server_name__, server_version=__server_version__)
-def app_server(ctx: Context, database: Callable[..., Database], host: str | None, port: int | None,
-               ssl_cert: Path | None, ssl_key: Path | None, redirect_http: int | None, auth: str | None,
-               precache: bool, browser: bool):
+def app_server(ctx: Context, database: Callable[..., Database], host: str, port: int,
+               ssl_cert: Path | None, ssl_key: Path | None, auth: tuple[tuple[str, str], ...],
+               auth_ignore: tuple[str, ...], editor: tuple[str, ...], max_results: int, cache: bool, browser: bool):
     """
     Start a server at {yellow}HOST{reset}:{yellow}PORT{reset} to navigate the database. The {yellow}--ssl-cert{reset}
-    and {yellow}--ssl-cert{reset} allow serving with HTTPS. Setting {yellow}--redirect-http{reset} starts the server in
-    HTTP to HTTPS redirection mode.
-
-    {yellow}DATABASE{reset} can be omitted when using the {yellow}--redirect-http{reset} option.
+    and {yellow}--ssl-cert{reset} allow serving with HTTPS.
 
     When the app has finished loading, it automatically opens a browser window. To avoid this, use the
     {yellow}--no-browser{reset} option.
@@ -480,8 +492,9 @@ def app_server(ctx: Context, database: Callable[..., Database], host: str | None
     db.close()
     del db
 
-    server(db_path, host=host, port=port, ssl_cert=ssl_cert, ssl_key=ssl_key, redirect_port=redirect_http,
-           precache=precache, browser=browser, authentication=auth)
+    server(db_path, host=host, port=port, ssl_cert=ssl_cert, ssl_key=ssl_key, authentication=auth,
+           authentication_ignore=auth_ignore, editors=editor, max_results=max_results, use_cache=cache,
+           browser=browser)
 
 
 @app.command("paw", short_help="Print the PRIDE paw!")
