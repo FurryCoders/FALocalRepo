@@ -742,7 +742,7 @@ option.
 The server caches results by default. To avoid caching, use the `--no-cache` option.
 
 To reduce the number of results in search pages, and thus increase the speed of the system, the `--max-results` option
-can be used. The default value is 2400. If set to 0, then the queries will not be limited. 
+can be used. The default value is 2400. If set to 0, then the queries will not be limited.
 
 Using the `--auth` option, multiple users can be added, each with their own password. Specific users can be given
 editing rights using the `--editor` option. If no authorization is given, then anyone accessing the server can edit.
@@ -803,11 +803,12 @@ Print a PRIDE paw!
 <img src="https://raw.githubusercontent.com/FurryCoders/Logos/main/logos/paw-pride.svg" height="300" alt="">
 
 Built-in colors are available for the following flags: pride (default), trans, bisexual, pansexual, non-binary, lesbian,
-agender, asexual, genderqueer, genderfluid, aromantic, polyamory.
+agender, asexual, genderqueer, genderfluid, aromantic, polyamory. Further, the palestinian and ukrainian flags are also
+available.
 
-The program will try to determine if the terminal supports truecolor mode (24bit, 16 million colors), if not it will
-fall back to the standard 8bit ANSI colors. Both truecolor and 8bit colors can be turned on manually using
-the `--truecolor` and `--8bit-color` options respectively.
+If used inside a truecolor-supporting terminal, the full 24bit color range can be used for the most colorful flags!
+
+truecolor and 8bit color modes can be set using the `--truecolor` and `--8bit-color` options respectively.
 
 _Note_: the paw works best with a dark background.
 
