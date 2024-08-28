@@ -144,6 +144,11 @@ _pride_colors: dict[str, list[tuple[str, str]]] = {
         *([(bright_blue, "\x1b[38;2;0;0;255m")] * 5),
         *([(bright_red, "\x1b[38;2;255;0;0m")] * 9),
         *([(dim, "\x1b[38;2;16;16;16m")] * 5)
+    ],
+    "palestine": [
+        *([(dim, "\x1b[38;2;16;16;16m")] * 7),
+        *([(bright_white, "\x1b[38;2;255;255;221m")] * 5),
+        *([(green, "\x1b[38;2;168;212;122m")] * 7),
     ]
 }
 
