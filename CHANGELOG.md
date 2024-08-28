@@ -67,6 +67,20 @@
 * [faapi ~3.11.5](https://pypi.org/project/faapi/3.11.5)
 * [falocalrepo-database ~5.4.6](https://pypi.org/project/falocalrepo-database/5.4.6)
 * [falocalrepo-server ~3.4.0](https://pypi.org/project/falocalrepo-server/3.4.0)
+  * Fix [CVE-2023-37920](https://nvd.nist.gov/vuln/detail/CVE-2023-37920)
+  * Fix [CVE-2023-43804](https://nvd.nist.gov/vuln/detail/CVE-2023-43804)
+  * Fix [CVE-2023-45803](https://nvd.nist.gov/vuln/detail/CVE-2023-45803)
+  * Fix [CVE-2023-50447](https://nvd.nist.gov/vuln/detail/CVE-2023-50447)
+  * Fix [CVE-2023-52323](https://nvd.nist.gov/vuln/detail/CVE-2023-52323)
+  * Fix [CVE-2024-3651](https://nvd.nist.gov/vuln/detail/CVE-2024-3651)
+  * Fix [CVE-2024-3772](https://nvd.nist.gov/vuln/detail/CVE-2024-3772)
+  * Fix [CVE-2024-22195](https://nvd.nist.gov/vuln/detail/CVE-2024-22195)
+  * Fix [CVE-2024-24762](https://nvd.nist.gov/vuln/detail/CVE-2024-24762)
+  * Fix [CVE-2024-24762](https://nvd.nist.gov/vuln/detail/CVE-2024-24762)
+  * Fix [CVE-2024-28219](https://nvd.nist.gov/vuln/detail/CVE-2024-28219)
+  * Fix [CVE-2024-34064](https://nvd.nist.gov/vuln/detail/CVE-2024-34064)
+  * Fix [CVE-2024-35195](https://nvd.nist.gov/vuln/detail/CVE-2024-35195)
+  * Fix [CVE-2024-37891](https://nvd.nist.gov/vuln/detail/CVE-2024-37891)
 
 ## 4.4.7
 
