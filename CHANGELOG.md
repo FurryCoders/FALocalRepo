@@ -1,5 +1,16 @@
 # Changelog
 
+## 4.5.1
+
+### Fixes
+
+* Fix to accept submissions with NULL gender metadata
+    * See [June 18th, 2025- Hardware and Drop Down Updates](https://www.furaffinity.net/journal/11160892)
+
+### Dependencies
+
+* [faapi ~3.11.10](https://pypi.org/project/faapi/3.11.5)
+
 ## 4.5.0
 
 ### New Features
