@@ -393,6 +393,7 @@ class Downloader:
             thumb = self.download_bytes(submission.thumbnail_url or thumbnail)
         self.db.submissions.save_submission({
             **format_entry(dict(submission), self.db.submissions.columns),
+            SubmissionsColumns.GENDER.name: submission.gender or "",
             SubmissionsColumns.FILEURL.name: [submission.file_url],
             SubmissionsColumns.AUTHOR.name: submission.author.name,
             SubmissionsColumns.FAVORITE.name: {*favorites} if favorites else {},
