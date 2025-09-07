@@ -1,5 +1,18 @@
 # Changelog
 
+## 4.5.2
+
+### Fixes
+
+* Fix `login` and `download` commands no longer working due to a change in FurAffinity's robots.txt
+* `server` supports Flash files with Ruffle
+
+### Dependencies
+
+* [faapi ~3.11.11](https://pypi.org/project/faapi/3.11.11)
+* [falocalrepo-server ~3.4.3](https://pypi.org/project/falocalrepo-server/3.4.3)
+* [browser-cookie3 ^0.20.1](https://pypi.org/project/browser-cookie3/0.20.1)
+
 ## 4.5.1
 
 ### Fixes
