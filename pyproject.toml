@@ -29,14 +29,14 @@ falocalrepo = "falocalrepo.__main__:main"
 
 [tool.poetry.dependencies]
 python = "^3.10"
-faapi = ">=3.11.10,<3.12.0"
+faapi = ">=3.11.11,<3.12.0"
 falocalrepo-database = "~5.4.6"
-falocalrepo-server = "~3.4.0"
+falocalrepo-server = ">=3.4.3,<3.5.0"
 click = "^8.1.7"
 click-help-colors = "^0.9.4"
 pretty-errors = "^1.2.25"
 wcwidth = "^0.2.13"
-browser-cookie3 = "^0.19.1"
+browser-cookie3 = "^0.20.1"
 
 [build-system]
 requires = ["poetry>=1.1.12"]
