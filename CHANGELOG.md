@@ -1,5 +1,15 @@
 # Changelog
 
+## 4.5.3
+
+### Fixes
+
+* Fix parsing errors due to FurAffinity's update on 2025-11-28
+
+### Dependencies
+
+* [faapi ~3.12.0](https://pypi.org/project/faapi/3.12.0)
+
 ## 4.5.2
 
 ### Fixes
